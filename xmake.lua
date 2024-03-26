@@ -55,7 +55,6 @@ option_end()
 function defopt()
 	set_languages("c11", "cxx23")
 	add_options("native")
-	add_options("use-iouring")
 	set_exceptions("no-cxx")
 
 	local use_llvm_toolchain = get_config("use-llvm")
