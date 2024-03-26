@@ -11,3 +11,4 @@ build
 .cmake
 !CMakeLists.txt
 test/**/*.exe
+x64

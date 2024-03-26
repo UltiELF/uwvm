@@ -9,7 +9,7 @@
 #include <fast_io_dsal/vector.h>
 #include <fast_io_crypto.h>
 
-namespace fast_io::manipulators
+namespace fast_io
 {
     template <::std::integral char_type>
     constexpr inline bool operator== (basic_os_c_str_with_known_size<char_type> a, basic_os_c_str_with_known_size<char_type> b) noexcept
