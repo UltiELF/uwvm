@@ -1,0 +1,13 @@
+*/build/*
+!.h
+!.cpp
+!.cc
+.tmp
+.vscode
+.xmake
+build
+.vs/
+.*/*
+.cmake
+!CMakeLists.txt
+test/**/*.exe
