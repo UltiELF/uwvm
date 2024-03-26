@@ -4,11 +4,15 @@
 #include <io_device.h>
 #include "../clpara/impl.h"
 #include <version.h>
-#include "../path/install_path.h"
+#if !defined(__MSDOS__)
+    #include "../path/install_path.h"
+#endif
 
 int main(int argc, char** argv)
 {
+#if !defined(__MSDOS__)
     ::uwvm::path::init_install_path(argc ? *argv : nullptr);
+#endif
 
     auto& parse_res{::uwvm::parsing_result};
     int pr{::uwvm::parsing(argc, argv, parse_res, ::uwvm::hash_table)};
@@ -27,7 +31,6 @@ int main(int argc, char** argv)
                          u8"V",
                          ::uwvm::uwvm_version,
                          u8"\033[0m\n");
-
 
     return 0;
 }

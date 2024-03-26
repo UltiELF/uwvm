@@ -12,7 +12,7 @@ namespace uwvm::path
 {
     inline void get_module_install_path_from_argv0(const char* argv0) noexcept
     {
-        #ifndef _WIN32
+#if !defined(_WIN32) && !defined(__MSDOS__)
         if(!argv0) [[unlikely]] { return; }
 
         char newpath[PATH_MAX + 256 + 1];
@@ -110,6 +110,6 @@ namespace uwvm::path
 
         }  // end else
 
-        #endif
+#endif
     }
 }  // namespace uwvm::path

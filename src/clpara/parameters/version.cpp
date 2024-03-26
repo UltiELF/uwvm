@@ -1,7 +1,8 @@
 ﻿#include "version.h"
 #include <version.h>
-#include "../../path/install_path.h"
-
+#if !defined(__MSDOS__)
+    #include "../../path/install_path.h"
+#endif
 ::uwvm::cmdline::parameter_return_type(
     ::uwvm::parameter::details::version_callback)(::std::size_t, ::fast_io::vector<::uwvm::cmdline::parameter_parsing_results>&) noexcept
 {
@@ -23,8 +24,10 @@
                            // Copyright
                            u8"Copyright (C) 2023-present UltiELF Open Source Group"
                            // Install Path
+#if !defined(__MSDOS__)
                            u8"\nInstall Path: ",
                            ::uwvm::path::module_install_path,
+#endif
                            // Version
                            u8"\nVersion: "
                            u8"\033[32m",
@@ -347,7 +350,7 @@
 #elif((__STDC_HOSTED__ == 1 && (!defined(_GLIBCXX_HOSTED) || _GLIBCXX_HOSTED == 1) && !defined(_LIBCPP_FREESTANDING)) ||                                       \
       defined(FAST_IO_ENABLE_HOSTED_FEATURES))
     #if defined(_WIN32) && !defined(__CYGWIN__) && !defined(__WINE__) && !defined(FAST_IO_USE_C_MALLOC)
-        #if defined(_WIN32_WINDOWS)
+        #if defined(_WIN32_WINDOWS) || true
                           u8"win32 heapalloc"
         #else
                           u8"nt rtlallocateheap"
