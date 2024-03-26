@@ -707,7 +707,21 @@ constexpr bool operator==(basic_string<chtype, allocator1> const &lhs, basic_str
 template <::std::integral chtype, typename allocator1, typename allocator2>
 constexpr auto operator<=>(basic_string<chtype, allocator1> const &lhs, basic_string<chtype, allocator2> const &rhs) noexcept
 {
+#if __cpp_lib_concepts >= 202207L
 	return ::std::lexicographical_compare_three_way(lhs.cbegin(), lhs.cend(), rhs.cbegin(), rhs.cend(), ::std::compare_three_way{});
+#else
+    auto lptr{lhs.cbegin()};
+    auto rptr{rhs.cbegin()};
+    const auto lend{lhs.cend()};
+    const auto rend{rhs.cend()};
+    for(; (lptr != lend) && (rptr != rend);)
+    {
+        if(auto i{*lptr <=> *rptr}; i != ::std::strong_ordering::equal) { return i; }
+        ++lptr;
+        ++rptr;
+    }
+    return a.n <=> b.n;
+#endif
 }
 
 template <::std::integral chtype, typename alloctype>
