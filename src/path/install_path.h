@@ -12,10 +12,10 @@ namespace uwvm::path
     {
         ::uwvm::path::get_module_install_path();
 
-        if(::uwvm::path::module_install_path_df.handle == ::fast_io::dir_file{}.handle)
+        if(::uwvm::path::module_install_path_df.native_handle() == ::fast_io::dir_file{}.native_handle())
         {
             ::uwvm::path::get_module_install_path_from_argv0(argv0);
-            if(::uwvm::path::module_install_path_df.handle == ::fast_io::dir_file{}.handle)
+            if(::uwvm::path::module_install_path_df.native_handle() == ::fast_io::dir_file{}.native_handle())
             {
                 ::fast_io::io::perr(::uwvm::u8err,
                                   u8"\033[0m"
