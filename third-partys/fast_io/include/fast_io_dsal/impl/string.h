@@ -720,7 +720,7 @@ constexpr auto operator<=>(basic_string<chtype, allocator1> const &lhs, basic_st
         ++lptr;
         ++rptr;
     }
-    return a.n <=> b.n;
+    return lend - lhs.cbegin() <=> rend - rhs.cbegin();
 #endif
 }
 
