@@ -73,3 +73,7 @@ $ xmake f -m [release|releasedbg|debug] -p [windows|mingw|macosx|linux|iphoneos 
 ```bash 
 --sdk=ToolchainPath
 ```
+* Static linking (Optional for linux, sun, bsd(s) and cross)
+```bash 
+--static=y|n
+```

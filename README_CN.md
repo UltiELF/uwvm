@@ -73,3 +73,7 @@ $ xmake f -m [release|releasedbg|debug] -p [windows|mingw|macosx|linux|iphoneos 
 ```bash 
 --sdk=ToolchainPath
 ```
+* 静态连接（linux, sun, bsd(s), cross 可选）
+```bash
+--static=y|n
+```
