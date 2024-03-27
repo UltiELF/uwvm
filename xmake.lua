@@ -52,6 +52,12 @@ option("use-llvm")
 	set_showmenu(true)
 option_end()
 
+option("static")
+	set_default(true)
+	set_description("Optional on linux, sun, bsd(s) and cross")
+	set_showmenu(true)
+option_end()
+
 function defopt()
 	set_languages("c11", "cxx23")
 	if not is_plat("msdosdjgpp") then
@@ -214,7 +220,10 @@ function defopt()
 
 		add_ldflags("-static-libstdc++")
 		add_ldflags("-static-libgcc")
-		add_ldflags("-static")
+		local static_link = get_config("static")
+		if static_link then	
+			add_ldflags("-static")
+		end
 
 		if is_arch("x86_64") then
 			-- none
@@ -266,7 +275,10 @@ function defopt()
 
 		add_ldflags("-static-libstdc++")
 		add_ldflags("-static-libgcc")
-		add_ldflags("-static")
+		local static_link = get_config("static")
+		if static_link then	
+			add_ldflags("-static")
+		end
 
 	elseif is_plat("macosx", "iphoneos", "watchos") then
 		add_cxflags("-fno-rtti")
@@ -310,7 +322,10 @@ function defopt()
 
 		add_ldflags("-static-libstdc++")
 		add_ldflags("-static-libgcc")
-		add_ldflags("-static")
+		local static_link = get_config("static")
+		if static_link then	
+			add_ldflags("-static")
+		end
 
 	end
 
