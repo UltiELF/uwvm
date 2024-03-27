@@ -22,7 +22,7 @@
 ## 联系我们
 
 - QQ: [284938376](http://qm.qq.com/cgi-bin/qm/qr?_wv=1027&k=XZB6BqBhkGX9RI8lNIvPRQpqjIHYDCpZ&authKey=OPmC%2FnGNXThLAV7IKmEQ57uiQCTfb8EraImxCWzVgq9%2FmdgxGU6rA3wZB%2BbCVxjq&noverify=0&group_code=284938376)
-- repositories: [Gitee](https://gitee.com/UltiELF/ulti-wvm), [GitHub](https://github.com/UltiELF/ulti-wvm)
+- 仓库: [Gitee](https://gitee.com/UltiELF/ulti-wvm), [GitHub](https://github.com/UltiELF/ulti-wvm)
 
 ## 介绍
 Ultimate WebAssembly 虚拟机
@@ -37,6 +37,7 @@ Ultimate WebAssembly 虚拟机
 * unknown-OpenBSD
 * unknown-sun
 * unknown-apple-darwin (苹果全家桶)
+* i386-msdosdjgpp
 * etc.
 
 ## 如何构建

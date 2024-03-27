@@ -37,6 +37,7 @@ Ultimate WebAssembly Virtual Machine
 * unknown-OpenBSD 
 * unknown-sun
 * unknwon-apple-darwin
+* i386-msdosdjgpp
 * etc.
 
 ## How to build
