@@ -21,8 +21,19 @@
 - repositories: [Gitee](https://gitee.com/UltiELF/ulti-wvm), [GitHub](https://github.com/UltiELF/ulti-wvm)
 
 ## Introduce
-
 Ultimate WebAssembly Virtual Machine
+
+## Features
+### Supports multiple platforms
+* (x86\_64, i386, aarch64, arm)-windows-gnu (support UCRT and MSVCRT)
+* (x86\_64, i386, aarch64, arm, loongarch64, riscv64, mips64, powerpc64, etc.)-linux-(gnu, musl, llvm, mlibc, uclibc, avrlibc, etc.)
+* unknown-FreeBSD 
+* unknown-DragonFlyBSD 
+* unknown-NetBSD 
+* unknown-OpenBSD 
+* unknown-sun
+* unknwon-apple-darwin
+* etc.
 
 ## How to build
 1. Install [[xmake]](https://github.com/xmake-io/xmake/)

@@ -21,8 +21,19 @@
 - repositories: [Gitee](https://gitee.com/UltiELF/ulti-wvm), [GitHub](https://github.com/UltiELF/ulti-wvm)
 
 ## 介绍
-
 Ultimate WebAssembly 虚拟机
+
+## 特征
+### 多平台支持
+* (x86\_64, i386, aarch64, arm)-windows-gnu (支持UCRT和MSVCRT)
+* (x86\_64, i386, aarch64, arm, loongarch64, riscv64, mips64, powerpc64, etc.)-linux-(gnu, musl, llvm, mlibc, uclibc, avrlibc, etc.)
+* unknown-FreeBSD
+* unknown-DragonFlyBSD
+* unknown-NetBSD
+* unknown-OpenBSD
+* unknown-sun
+* unknown-apple-darwin (苹果全家桶)
+* etc.
 
 ## 如何构建
 1. 安装 [[xmake]](https://github.com/xmake-io/xmake/)
