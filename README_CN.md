@@ -45,23 +45,14 @@ Ultimate WebAssembly 虚拟机
 2. 安装 [[gcc14+]](https://github.com/trcrsired/gcc-releases/releases) or [[llvm18+]](https://github.com/trcrsired/llvm-releases/releases)
 3. 开始构建
 ```bash
-On Windows:
-
-> xmake f -p mingw
-> xmake 
-> xmake install -o OutputPath 
-```
-```bash
-On Other Platforms:
-
 $ xmake 
 $ xmake install -o OutputPath 
 ```
 4. 构建参数
 ```bash
-$ xmake f -m [release|releasedbg|debug] -p [mingw|macosx|linux|iphoneos ..] -a [x86_64|i386|aarch|aarch64|loongarch64 ..] --cppstdlib=[default|libstdc++|libc++] ..
+$ xmake f -m [release|releasedbg|debug] -p [windows|mingw|macosx|linux|iphoneos ..] -a [x86_64|i386|aarch|aarch64|loongarch64 ..] --cppstdlib=[default|libstdc++|libc++] ..
 ```
-* 目前只支持 gcc 14+ 和 llvm 18+，暂不支持 msvc，所以windows上本地编译请将平台设置成 mingw(unknown-windows-gnu)，而不是默认的 windows(unknown-windows-msvc)
+* 目前只支持 msvc 14.3+，gcc 14+ 以及 llvm 18+。
 * 目前windows上只支持 Windows NT 3.1+ 的系统，不支持Windows 9x (未来可能会支持)。若要编译兼容win10 (默认) 以下系统，请添加参数
 ```bash 
 --min-win32-sys=[WIN10|WINBLUE|WIN8|WIN7|WS08|VISTA|WS03|WINXP]

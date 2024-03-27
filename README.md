@@ -45,23 +45,14 @@ Ultimate WebAssembly Virtual Machine
 2. Install [[gcc14+]](https://github.com/trcrsired/gcc-releases/releases) or [[llvm18+]](https://github.com/trcrsired/llvm-releases/releases)
 3. Build
 ```bash
-On Windows:
-
-> xmake f -p mingw
-> xmake 
-> xmake install -o OutputPath 
-```
-```bash
-On Other Platforms:
-
 $ xmake 
 $ xmake install -o OutputPath 
 ```
 4. Build parameters
 ```bash
-$ xmake f -m [release|releasedbg|debug] -p [mingw|macosx|linux|iphoneos ..] -a [x86_64|i386|aarch|aarch64|loongarch64 ..] --cppstdlib=[default|libstdc++|libc++] ..
+$ xmake f -m [release|releasedbg|debug] -p [windows|mingw|macosx|linux|iphoneos ..] -a [x86_64|i386|aarch|aarch64|loongarch64 ..] --cppstdlib=[default|libstdc++|libc++] ..
 ```
-* Currently, only GCC 14+and LLVM 18+are supported, and MSVC is not currently supported. Therefore, for local compilation on Windows, please set the platform to mingw (unknown windows gnu) instead of the default Windows (unknown windows msmc)
+* Currently, only MSVC 14.3+ GCC 14+ and LLVM 18+ are supported.
 * Currently, Windows only supports Windows NT 3.1+ systems and does not support Windows 9x(Possible future support). To compile systems compatible with Win10 (default) or below, please add parameters
 ```bash 
 --min-win32-sys=[WIN10|WINBLUE|WIN8|WIN7|WS08|VISTA|WS03|WINXP] 
