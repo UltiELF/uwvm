@@ -71,9 +71,9 @@
 #if defined(__alpha__)
                            u8"DEC Alpha",
 #elif defined(__arm64__) || defined(__aarch64__) || defined(_M_ARM64)
-                          u8"aarch64"
+                          u8"AArch64"
 #elif defined(__arm__) || defined(_M_ARM)
-                          u8"arm"
+                          u8"ARM"
 #elif defined(__x86_64__) || defined(_M_AMD64)
                           u8"x86_64"
 #elif defined(__i386__) || defined(_M_IX86)
@@ -125,11 +125,11 @@
     // ARM PROFILE
 #if defined(__ARM_ARCH_PROFILE)
     #if __ARM_ARCH_PROFILE == 'A'
-        u8" (A)"
+        u8" (Cortex-A)"
     #elif __ARM_ARCH_PROFILE == 'R'
-        u8" (R)"
+        u8" (Cortex-R)"
     #else
-        u8" (M)"
+        u8" (Cortex-M)"
     #endif
 #endif
 
