@@ -166,8 +166,8 @@ function defopt()
 			error("invalid name")
 		end
 
-		add_ldflags("-static-libstdc++")
-		add_ldflags("-static-libgcc")
+		--add_ldflags("-static-libstdc++")
+		--add_ldflags("-static-libgcc")
 		add_ldflags("-static")
 
 		add_syslinks("ntdll")
@@ -218,8 +218,8 @@ function defopt()
 			error("invalid name")
 		end
 
-		add_ldflags("-static-libstdc++")
-		add_ldflags("-static-libgcc")
+		--add_ldflags("-static-libstdc++")
+		--add_ldflags("-static-libgcc")
 		local static_link = get_config("static")
 		if static_link then	
 			add_ldflags("-static")
@@ -251,8 +251,8 @@ function defopt()
 			error("invalid name")
 		end
 
-		add_ldflags("-static-libstdc++")
-		add_ldflags("-static-libgcc")
+		--add_ldflags("-static-libstdc++")
+		--add_ldflags("-static-libgcc")
 		add_ldflags("-static")
 
 	elseif is_plat("bsd", "freebsd", "dragonflybsd", "netbsd", "openbsd") then
@@ -273,8 +273,8 @@ function defopt()
 			error("invalid name")
 		end
 
-		add_ldflags("-static-libstdc++")
-		add_ldflags("-static-libgcc")
+		--add_ldflags("-static-libstdc++")
+		--add_ldflags("-static-libgcc")
 		local static_link = get_config("static")
 		if static_link then	
 			add_ldflags("-static")
@@ -298,8 +298,8 @@ function defopt()
 			error("invalid name")
 		end
 
-		add_ldflags("-static-libstdc++")
-		add_ldflags("-static-libgcc")
+		--add_ldflags("-static-libstdc++")
+		--add_ldflags("-static-libgcc")
 		add_ldflags("-static")
 
 	elseif is_plat("cross") then
@@ -320,8 +320,8 @@ function defopt()
 			error("invalid name")
 		end
 
-		add_ldflags("-static-libstdc++")
-		add_ldflags("-static-libgcc")
+		--add_ldflags("-static-libstdc++")
+		--add_ldflags("-static-libgcc")
 		local static_link = get_config("static")
 		if static_link then	
 			add_ldflags("-static")
