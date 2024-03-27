@@ -22,7 +22,7 @@
 #endif
                            u8"\033[0m"
                            // Copyright
-                           u8"Copyright (C) 2023-present UltiELF Open Source Group"
+                           u8"Copyright (C) 2024-present UltiELF Open Source Group"
                            // Install Path
 #if !defined(__MSDOS__)
                            u8"\nInstall Path: ",
