@@ -377,7 +377,7 @@ target("uwvm")
 	end
 
 	add_files("src/clpara/parameters/**.cpp")
-	add_files("src/main/main.cpp")
+	add_files("src/program/uwvm.cpp")
 target_end()
 
 
