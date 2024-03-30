@@ -50,7 +50,7 @@ $ xmake install -o OutputPath
 ```
 4. 构建参数
 ```bash
-$ xmake f -m [release|releasedbg|debug] -p [windows|mingw|macosx|linux|iphoneos ..] -a [x86_64|i386|aarch|aarch64|loongarch64 ..] --cppstdlib=[default|libstdc++|libc++] ..
+$ xmake f -m [release|releasedbg|debug] -p [windows|mingw|macosx|linux|iphoneos ..] -a [x86_64|i386|arm|aarch64 ..] --cppstdlib=[default|libstdc++|libc++] ..
 ```
 * 目前只支持 msvc 14.3+，gcc 14+ 以及 llvm 18+。
 * 目前windows上只支持 Windows NT 3.1+ 的系统，不支持Windows 9x (未来可能会支持)。若要编译兼容win10 (默认) 以下系统，请添加参数

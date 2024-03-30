@@ -50,7 +50,7 @@ $ xmake install -o OutputPath
 ```
 4. Build parameters
 ```bash
-$ xmake f -m [release|releasedbg|debug] -p [windows|mingw|macosx|linux|iphoneos ..] -a [x86_64|i386|aarch|aarch64|loongarch64 ..] --cppstdlib=[default|libstdc++|libc++] ..
+$ xmake f -m [release|releasedbg|debug] -p [windows|mingw|macosx|linux|iphoneos ..] -a [x86_64|i386|arm|aarch64 ..] --cppstdlib=[default|libstdc++|libc++] ..
 ```
 * Currently, only MSVC 14.3+ GCC 14+ and LLVM 18+ are supported.
 * Currently, Windows only supports Windows NT 3.1+ systems and does not support Windows 9x(Possible future support). To compile systems compatible with Win10 (default) or below, please add parameters
