@@ -401,6 +401,10 @@ target("uwvm")
 
 	add_files("src/clpara/parameters/**.cpp")
 	add_files("src/program/uwvm.cpp")
+
+	if is_plat("windows", "mingw") then 
+		add_files("src/program/uwvm.rc")
+	end
 target_end()
 
 
