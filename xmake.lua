@@ -54,7 +54,7 @@ option_end()
 
 option("static")
 	set_default(true)
-	set_description("Optional on linux, sun, bsd(s) and cross")
+	set_description("Static Linking")
 	set_showmenu(true)
 option_end()
 
@@ -102,15 +102,29 @@ function defopt()
 			set_extension(".exe")
 		end
 
+		add_cxflags("-GR-")
+
 		if is_mode("debug") then
-			set_runtimes("MTd")
-			add_cxflags("-GR")
+			add_cxflags("-GS")
+			local static_link = get_config("static")
+			if static_link then	
+				set_runtimes("MTd")
+			else
+				set_runtimes("MDd")
+			end
 		else
-			add_cxflags("-GR-")
 			set_fpmodels("fast")
+
+			add_cxflags("-GS-")
 			add_cxflags("-GL")
 			add_ldflags("-LTCG")
-			set_runtimes("MT")
+
+			local static_link = get_config("static")
+			if static_link then	
+				set_runtimes("MT")
+			else
+				set_runtimes("MD")
+			end
 		end
 
 		local opt_name = get_config("min-win32-sys")
@@ -168,7 +182,10 @@ function defopt()
 
 		--add_ldflags("-static-libstdc++")
 		--add_ldflags("-static-libgcc")
-		add_ldflags("-static")
+		local static_link = get_config("static")
+		if static_link then	
+			add_ldflags("-static")
+		end
 
 		add_syslinks("ntdll")
 
@@ -253,7 +270,10 @@ function defopt()
 
 		--add_ldflags("-static-libstdc++")
 		--add_ldflags("-static-libgcc")
-		add_ldflags("-static")
+		local static_link = get_config("static")
+		if static_link then	
+			add_ldflags("-static")
+		end
 
 	elseif is_plat("bsd", "freebsd", "dragonflybsd", "netbsd", "openbsd") then
 		add_cxflags("-fno-rtti")
@@ -300,7 +320,10 @@ function defopt()
 
 		--add_ldflags("-static-libstdc++")
 		--add_ldflags("-static-libgcc")
-		add_ldflags("-static")
+		local static_link = get_config("static")
+		if static_link then	
+			add_ldflags("-static")
+		end
 
 	elseif is_plat("cross") then
 		add_cxflags("-fno-rtti")

@@ -63,7 +63,7 @@ $ xmake f -m [release|releasedbg|debug] -p [windows|mingw|macosx|linux|iphoneos 
 ```
 * To use the llvm compiler, add parameters
 ```bash 
---use-llvm=y
+--use-llvm=y|n(default)
 ```
 * To perform cross compilation, please turn off compiling the local instruction set
 ```bash 
@@ -73,7 +73,7 @@ $ xmake f -m [release|releasedbg|debug] -p [windows|mingw|macosx|linux|iphoneos 
 ```bash 
 --sdk=ToolchainPath
 ```
-* Static linking (Optional for linux, sun, bsd(s) and cross)
+* Static linking
 ```bash 
---static=y|n
+--static=y(defalut)|n
 ```

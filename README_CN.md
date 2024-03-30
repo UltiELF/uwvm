@@ -63,7 +63,7 @@ $ xmake f -m [release|releasedbg|debug] -p [windows|mingw|macosx|linux|iphoneos 
 ```
 * 若要使用llvm编译器，请添加参数
 ```bash 
---use-llvm=y
+--use-llvm=y|n(default)
 ```
 * 若要进行交叉编译，请关闭编译本地指令集
 ```bash 
@@ -73,7 +73,7 @@ $ xmake f -m [release|releasedbg|debug] -p [windows|mingw|macosx|linux|iphoneos 
 ```bash 
 --sdk=ToolchainPath
 ```
-* 静态连接（linux, sun, bsd(s), cross 可选）
+* 静态连接
 ```bash
---static=y|n
+--static=y(default)|n
 ```
