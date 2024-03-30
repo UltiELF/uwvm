@@ -67,7 +67,7 @@ $ xmake f -m [release|releasedbg|debug] -p [windows|mingw|macosx|linux|iphoneos 
 ```
 * To perform cross compilation, please turn off compiling the local instruction set
 ```bash 
---native=n
+--native=y(default)|n
 ```
 * Select toolchain
 ```bash 

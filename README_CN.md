@@ -67,7 +67,7 @@ $ xmake f -m [release|releasedbg|debug] -p [windows|mingw|macosx|linux|iphoneos 
 ```
 * 若要进行交叉编译，请关闭编译本地指令集
 ```bash 
---native=n
+--native=y(default)|n
 ```
 * 选择工具链
 ```bash 
