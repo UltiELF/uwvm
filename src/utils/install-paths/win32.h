@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include <fast_io.h>
 #include <fast_io_device.h>
 #include <stdlib.h>

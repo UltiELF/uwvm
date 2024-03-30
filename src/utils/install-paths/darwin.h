@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include <mach-o/dyld.h>
 #include <limits.h>
 #include <stdlib.h>
