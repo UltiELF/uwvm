@@ -274,4 +274,7 @@ public:
 using nt_memory_map_file = nt_family_memory_map_file<nt_family::nt>;
 using zw_memory_map_file = nt_family_memory_map_file<nt_family::zw>;
 
+#if defined(_WIN32) && !defined(__WINE__) && !defined(__CYGWIN__) && !defined(__BIONIC__) && !defined(_WIN32_WINDOWS)
+using native_memory_map_file = nt_memory_map_file;
+#endif
 } // namespace fast_io
