@@ -342,25 +342,33 @@
 #endif
                            u8"\nAllocator: "
 #if defined(FAST_IO_USE_CUSTOM_GLOBAL_ALLOCATOR)
-                           u8"custom global allocator"
+	                    u8"custom global"
 #elif defined(FAST_IO_USE_MIMALLOC)
-                          u8"mimalloc"
+                        u8"mimalloc"
 #elif(defined(__linux__) && defined(__KERNEL__)) || defined(FAST_IO_USE_LINUX_KERNEL_ALLOCATOR)
-                          u8"linux kmalloc"
+                        u8"linux kmalloc"
 #elif((__STDC_HOSTED__ == 1 && (!defined(_GLIBCXX_HOSTED) || _GLIBCXX_HOSTED == 1) && !defined(_LIBCPP_FREESTANDING)) ||                                       \
       defined(FAST_IO_ENABLE_HOSTED_FEATURES))
     #if defined(_WIN32) && !defined(__CYGWIN__) && !defined(__WINE__) && !defined(FAST_IO_USE_C_MALLOC)
-        #if defined(_WIN32_WINDOWS) || true
-                          u8"win32 heapalloc"
+        #if defined(_DEBUG) && defined(_MSC_VER)
+                        u8"wincrt malloc dbg"
         #else
-                          u8"nt rtlallocateheap"
+            #if defined(_WIN32_WINDOWS)
+                        u8"win32 heapalloc"
+            #else
+                        u8"nt rtlallocateheap"
+            #endif
         #endif
     #else
-                          u8"c malloc"
+        #if defined(_DEBUG) && defined(_MSC_VER)
+                        u8"wincrt malloc dbg"
+        #else
+                        u8"c malloc"
+        #endif
     #endif
 #else
-                          u8"custom global allocator"
-#endif          
+                        u8"custom global"
+#endif
                           u8"\n\n" // endl
     );
 
