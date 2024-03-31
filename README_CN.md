@@ -29,7 +29,7 @@ Ultimate WebAssembly 虚拟机
 
 ## 特征
 ### 多平台支持
-* (x86\_64, i386, aarch64, arm)-windows-gnu (支持UCRT和MSVCRT)
+* (x86\_64, i386, aarch64, arm)-windows-(gnu, msvc) (支持UCRT和MSVCRT)
 * (x86\_64, i386, aarch64, arm, loongarch64, riscv64, mips64, powerpc64, etc.)-linux-(gnu, musl, llvm, mlibc, uclibc, avrlibc, etc.)
 * unknown-FreeBSD
 * unknown-DragonFlyBSD
@@ -61,13 +61,13 @@ $ xmake f -m [release|releasedbg|debug] -p [windows|mingw|macosx|linux|iphoneos 
 ```bash
 --min-win32-sys=[WINME|WIN98|WIN95]
 ```
-* 若要使用llvm编译器，请添加参数
+* 使用llvm工具链
 ```bash 
 --use-llvm=y|n(default)
 ```
-* 若要进行交叉编译，请关闭编译本地指令集
+* 编译使用本地指令集
 ```bash 
---native=y(default)|n
+--native=y|n(default)
 ```
 * 选择工具链
 ```bash 

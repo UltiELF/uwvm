@@ -24,7 +24,7 @@ set_defaultarchs("msdosdjgpp|i386")
 
 
 option("native")
-	set_default(true)
+	set_default(false)
 	set_showmenu(true)
 	add_defines("UWVM_NATIVE")
 	if is_plat("windows") then

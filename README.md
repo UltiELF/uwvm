@@ -29,7 +29,7 @@ Ultimate WebAssembly Virtual Machine
 
 ## Features
 ### Supports multiple platforms
-* (x86\_64, i386, aarch64, arm)-windows-gnu (support UCRT and MSVCRT)
+* (x86\_64, i386, aarch64, arm)-windows-(gnu, msvc) (support UCRT and MSVCRT)
 * (x86\_64, i386, aarch64, arm, loongarch64, riscv64, mips64, powerpc64, etc.)-linux-(gnu, musl, llvm, mlibc, uclibc, avrlibc, etc.)
 * unknown-FreeBSD 
 * unknown-DragonFlyBSD 
@@ -61,13 +61,13 @@ $ xmake f -m [release|releasedbg|debug] -p [windows|mingw|macosx|linux|iphoneos 
 ```bash 
 --min-win32-sys=[WINME|WIN98|WIN95]
 ```
-* To use the llvm compiler, add parameters
+* Using the llvm toolchain
 ```bash 
 --use-llvm=y|n(default)
 ```
-* To perform cross compilation, please turn off compiling the local instruction set
+* Compile using local instruction sets
 ```bash 
---native=y(default)|n
+--native=y|n(default)
 ```
 * Select toolchain
 ```bash 

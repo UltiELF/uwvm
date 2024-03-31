@@ -3,10 +3,10 @@
 
 namespace uwvm
 {
-    enum class abi : ::std::uint_least32_t
+    enum class abi : ::std::uint_least8_t
     {
         detect,
-        bare, // baremetal
+        bare,
         emscripten,
         wasi
     };
