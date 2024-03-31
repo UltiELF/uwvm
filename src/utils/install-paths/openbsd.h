@@ -1,6 +1,4 @@
 ﻿#pragma once
-#include <fast_io.h>
-#include <fast_io_device.h>
 
 #include <limits.h>
 #include <stdlib.h>
@@ -10,6 +8,9 @@
 #include <dlfcn.h>
 #include <stdbool.h>
 #include <unistd.h>
+
+#include <fast_io.h>
+#include <fast_io_device.h>
 
 #ifndef PATH_MAX
     #define PATH_MAX 4096

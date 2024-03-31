@@ -1,12 +1,13 @@
 ﻿#pragma once
-#include <fast_io.h>
-#include <fast_io_device.h>
 
 #if defined(__linux__)
     #include <linux/limits.h>
 #else
     #include <limits.h>
 #endif
+
+#include <fast_io.h>
+#include <fast_io_device.h>
 
 namespace uwvm::path
 {
