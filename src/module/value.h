@@ -10,6 +10,8 @@ namespace uwvm
         any,
         i32,
         i64,
+        u32,
+        u64,
         f32,
         f64,
         v128,
@@ -23,6 +25,8 @@ namespace uwvm
         {
             case uwvm::i32: return 4;
             case uwvm::i64: return 8;
+            case uwvm::u32: return 4;
+            case uwvm::u64: return 8;
             case uwvm::f32: return 4;
             case uwvm::f64: return 8;
             case uwvm::v128: return 16;
