@@ -3,8 +3,8 @@
 #if !defined(__MSDOS__)
     #include "../../path/install_path.h"
 #endif
-::uwvm::cmdline::parameter_return_type(
-    ::uwvm::parameter::details::version_callback)(::std::size_t, ::fast_io::vector<::uwvm::cmdline::parameter_parsing_results>&) noexcept
+::uwvm::cmdline::parameter_return_type(::uwvm::parameter::details::version_callback)(::std::size_t,
+                                                                                     ::fast_io::vector<::uwvm::cmdline::parameter_parsing_results>&) noexcept
 {
     ::fast_io::io::perr(::uwvm::u8err,
                            u8"\033[0m"

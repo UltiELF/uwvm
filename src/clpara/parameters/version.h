@@ -18,7 +18,7 @@ namespace uwvm::parameter
 
     constexpr inline ::uwvm::cmdline::parameter version{
         .name{::fast_io::mnp::os_c_str_arr("--version")},
-        .describe{::fast_io::mnp::os_c_str_arr(u8"Output version information.")},
+        .describe{::fast_io::mnp::os_c_str_arr(u8"Output version information. Usage: [--version|-v]")},
         .alias{::uwvm::cmdline::kns_str_scatter_t{__builtin_addressof(details::version_alias), 1}},
         .callback{__builtin_addressof(details::version_callback)},
         .is_exist{__builtin_addressof(details::version_is_exist)},

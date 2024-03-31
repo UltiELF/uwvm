@@ -8,6 +8,8 @@
     #include "../path/install_path.h"
 #endif
 
+#include "../run/run.h"
+
 int main(int argc, char** argv)
 {
 #if !defined(__MSDOS__)
@@ -19,7 +21,7 @@ int main(int argc, char** argv)
 
     if(pr != 0) { return 0; }
 
-    // to do
+    ::uwvm::run();
 
     return 0;
 }

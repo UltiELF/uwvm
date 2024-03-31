@@ -6,7 +6,7 @@ namespace uwvm
     enum class abi : ::std::uint_least32_t
     {
         detect,
-        bare,
+        bare, // baremetal
         emscripten,
         gojs,
         wasi
