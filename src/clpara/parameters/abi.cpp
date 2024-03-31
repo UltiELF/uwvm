@@ -26,7 +26,7 @@
                               u8"\033[36m"
                               u8"[--abi|-a] "
                               u8"\033[32m" 
-                              "[bare|emscripten|gojs|wasi]"
+                              "[bare|emscripten|wasi]"
                               u8"\033[0m");
         return ::uwvm::cmdline::parameter_return_type::return_imme;
     }
@@ -34,7 +34,6 @@
     pres_sresp1.type = ::uwvm::cmdline::parameter_parsing_results_type::occupied_arg;
     if(auto s1s{pres_sresp1.str}; s1s == ::fast_io::os_c_str_arr("bare")) { ::uwvm::wasm_abi = ::uwvm::abi::bare; }
     else if(s1s == ::fast_io::os_c_str_arr("emscripten")) { ::uwvm::wasm_abi = ::uwvm::abi::emscripten; }
-    else if(s1s == ::fast_io::os_c_str_arr("gojs")) { ::uwvm::wasm_abi = ::uwvm::abi::gojs; }
     else if(s1s == ::fast_io::os_c_str_arr("wasi")) { ::uwvm::wasm_abi = ::uwvm::abi::wasi; }
     else
     {
@@ -71,7 +70,7 @@
                               u8"\033[36m"
                               u8"[--abi|-a] "
                               u8"\033[32m" 
-                              "[bare|emscripten|gojs|wasi]"
+                              "[bare|emscripten|wasi]"
                               u8"\033[0m");
         return ::uwvm::cmdline::parameter_return_type::return_imme;
     }

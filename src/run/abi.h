@@ -8,7 +8,6 @@ namespace uwvm
         detect,
         bare, // baremetal
         emscripten,
-        gojs,
         wasi
     };
 
