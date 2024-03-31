@@ -335,12 +335,14 @@
                           u8"MUSL"
 #elif defined(__serenity__)
                           u8"serenity"
+#elif defined(__DJGPP__)
+                          u8"djgpp"
 #elif defined(__BSD_VISIBLE) || (defined(__NEWLIB__) && !defined(__CUSTOM_FILE_IO__)) || defined(__MSDOS__)
                           u8"unix"
 #else
                           u8"Unknown"
 #endif
-                           u8"\nAllocator: "
+                          u8"\nAllocator: "
 #if defined(FAST_IO_USE_CUSTOM_GLOBAL_ALLOCATOR)
 	                    u8"custom global"
 #elif defined(FAST_IO_USE_MIMALLOC)
