@@ -1,6 +1,6 @@
 ﻿#include "version.h"
 #include <version.h>
-#if !defined(__MSDOS__)
+#if !defined(__MSDOS__) && !defined(__wasm__)
     #include "../../path/install_path.h"
 #endif
 ::uwvm::cmdline::parameter_return_type(::uwvm::parameter::details::version_callback)(::std::size_t,
@@ -24,7 +24,7 @@
                            // Copyright
                            u8"Copyright (C) 2024-present UltiELF Open Source Group"
                            // Install Path
-#if !defined(__MSDOS__)
+#if !defined(__MSDOS__) && !defined(__wasm__)
                            u8"\nInstall Path: ",
                            ::uwvm::path::module_install_path,
 #endif
@@ -68,14 +68,16 @@
 
                            // architecture
                            u8"\nArchitecture: "
-#if defined(__alpha__)
-                           u8"DEC Alpha",
+#if defined(__wasm__)
+                           u8"WASM"
+#elif defined(__alpha__)
+                           u8"DEC Alpha"
 #elif defined(__arm64__) || defined(__aarch64__) || defined(_M_ARM64)
-                          u8"AArch64"
+                           u8"AArch64"
 #elif defined(__arm__) || defined(_M_ARM)
-                          u8"ARM"
+                           u8"ARM"
 #elif defined(__x86_64__) || defined(_M_AMD64)
-                          u8"x86_64"
+                           u8"x86_64"
 #elif defined(__i386__) || defined(_M_IX86)
                           u8"i386"
 #elif defined(__BFIN__)
@@ -302,7 +304,9 @@
 #endif
                            // C Library
                            u8"\nC Library: "
-#if defined(__MINGW32__) && !defined(_UCRT) && !defined(__BIONIC__)
+#if defined(__wasi__)
+                           u8"WASI"
+#elif defined(__MINGW32__) && !defined(_UCRT) && !defined(__BIONIC__)
                            u8"MSVCRT"
 #elif(defined(_MSC_VER) || defined(_UCRT)) && !defined(__WINE__) && !defined(__CYGWIN__) && !defined(__BIONIC__)
                           u8"UCRT"

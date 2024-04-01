@@ -8,7 +8,7 @@ add_defines("UWVM_VERSION_Y=0")
 add_defines("UWVM_VERSION_Z=0")
 add_defines("UWVM_VERSION_S=0")
 
-set_allowedplats("windows", "mingw", "linux", "sun", "msdosdjgpp", "bsd", "freebsd", "dragonflybsd", "netbsd", "openbsd", "macosx", "iphoneos", "watchos", "cross")
+set_allowedplats("windows", "mingw", "linux", "sun", "msdosdjgpp", "bsd", "freebsd", "dragonflybsd", "netbsd", "openbsd", "macosx", "iphoneos", "watchos", "wasm-wasip1", "wasm-wasip2", "cross")
 
 add_rules("mode.debug", "mode.release", "mode.releasedbg")
 set_defaultmode("releasedbg")
@@ -18,10 +18,12 @@ set_encodings("utf-8")
 
 if is_plat("msdosdjgpp") then
 	set_allowedarchs("i386") -- x86 ms-dos not support (out of memory)
+elseif is_plat("wasm-wasip1", "wasm-wasip2") then
+	set_allowedarchs("wasm32", "wasm64")
 end
 
 set_defaultarchs("msdosdjgpp|i386")
-
+set_defaultarchs("wasm-wasip1|wasm32", "wasm-wasip2|wasm32")
 
 option("native")
 	set_default(false)
@@ -66,9 +68,15 @@ function defopt()
 	set_exceptions("no-cxx")
 
 	local use_llvm_toolchain = get_config("use-llvm")
-	if use_llvm_toolchain then	
-		set_toolchains("clang")
-		add_ldflags("-fuse-ld=lld")
+	if is_plat("windows") then
+		if use_llvm_toolchain then	
+			set_toolchains("clang-cl")
+		end
+	elseif not is_plat("wasm-wasip1", "wasm-wasip2") then 
+		if use_llvm_toolchain then	
+			set_toolchains("clang")
+			add_ldflags("-fuse-ld=lld")
+		end
 	end
 
 	if is_mode("release") then
@@ -323,6 +331,41 @@ function defopt()
 		local static_link = get_config("static")
 		if static_link then	
 			add_ldflags("-static")
+		end
+
+	elseif is_plat("wasm-wasip1", "wasm-wasip2") then
+		add_cxflags("-fno-rtti")
+		add_cxflags("-fno-unwind-tables")
+		add_cxflags("-fno-asynchronous-unwind-tables")
+		if is_mode("release") then
+			add_cxflags("-fno-ident")
+		end
+
+		local csl_name = get_config("cppstdlib")
+		if csl_name == "libstdc++" then
+			add_cxflags("-stdlib=libstdc++")
+		elseif csl_name == "libc++" then
+			add_cxflags("-stdlib=libc++")
+		elseif csl_name == "default" then
+		else
+			error("invalid name")
+		end
+
+		--add_ldflags("-static-libstdc++")
+		--add_ldflags("-static-libgcc")
+		local static_link = get_config("static")
+		if static_link then	
+			add_ldflags("-static")
+		end
+
+		set_toolchains("clang")
+		add_ldflags("-fuse-ld=lld")
+		if is_arch("wasm32") then
+			add_cxflags("--target=")
+			add_ldflags("--target=")
+		elseif is_arch("wasm64") then
+			add_cxflags("--target=")
+			add_ldflags("--target=")
 		end
 
 	elseif is_plat("cross") then

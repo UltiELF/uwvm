@@ -4,7 +4,7 @@
 #include <io_device.h>
 #include "../clpara/impl.h"
 #include <version.h>
-#if !defined(__MSDOS__)
+#if !defined(__MSDOS__) && !defined(__wasm__)
     #include "../path/install_path.h"
 #endif
 
@@ -12,7 +12,7 @@
 
 int main(int argc, char** argv)
 {
-#if !defined(__MSDOS__)
+#if !defined(__MSDOS__) && !defined(__wasm__)
     ::uwvm::path::init_install_path(argc ? *argv : nullptr);
 #endif
 
