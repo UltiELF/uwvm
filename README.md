@@ -38,6 +38,7 @@ Ultimate WebAssembly Virtual Machine
 * unknown-sun
 * unknwon-apple-darwin
 * i386-msdosdjgpp
+* wasm32-wasip1, wasm32-wasip2, wasm64-wasip1, wasm64-wasip2 (bootstrap)
 * etc.
 
 ## How to build
@@ -76,4 +77,8 @@ $ xmake f -m [release|releasedbg|debug] -p [windows|mingw|macosx|linux|iphoneos 
 * Static linking
 ```bash 
 --static=y(defalut)|n
+```
+* Set sysroot
+```bash 
+--sysroot=<path>
 ```

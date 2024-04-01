@@ -38,6 +38,7 @@ Ultimate WebAssembly 虚拟机
 * unknown-sun
 * unknown-apple-darwin (苹果全家桶)
 * i386-msdosdjgpp
+* wasm32-wasip1, wasm32-wasip2, wasm64-wasip1, wasm64-wasip2 (自举)
 * etc.
 
 ## 如何构建
@@ -76,4 +77,8 @@ $ xmake f -m [release|releasedbg|debug] -p [windows|mingw|macosx|linux|iphoneos 
 * 静态连接
 ```bash
 --static=y(default)|n
+```
+* 设置 sysroot
+```bash
+--sysroot=<path>
 ```

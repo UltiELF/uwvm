@@ -8,7 +8,7 @@ add_defines("UWVM_VERSION_Y=0")
 add_defines("UWVM_VERSION_Z=0")
 add_defines("UWVM_VERSION_S=0")
 
-set_allowedplats("windows", "mingw", "linux", "sun", "msdosdjgpp", "bsd", "freebsd", "dragonflybsd", "netbsd", "openbsd", "macosx", "iphoneos", "watchos", "wasm-wasip1", "wasm-wasip2", "cross")
+set_allowedplats("windows", "mingw", "linux", "sun", "msdosdjgpp", "bsd", "freebsd", "dragonflybsd", "netbsd", "openbsd", "macosx", "iphoneos", "watchos", "wasm-wasi" , "wasm-wasip1", "wasm-wasip2", "cross")
 
 add_rules("mode.debug", "mode.release", "mode.releasedbg")
 set_defaultmode("releasedbg")
@@ -18,12 +18,12 @@ set_encodings("utf-8")
 
 if is_plat("msdosdjgpp") then
 	set_allowedarchs("i386") -- x86 ms-dos not support (out of memory)
-elseif is_plat("wasm-wasip1", "wasm-wasip2") then
+elseif is_plat("wasm-wasi", "wasm-wasip1", "wasm-wasip2") then
 	set_allowedarchs("wasm32", "wasm64")
 end
 
 set_defaultarchs("msdosdjgpp|i386")
-set_defaultarchs("wasm-wasip1|wasm32", "wasm-wasip2|wasm32")
+set_defaultarchs("wasm-wasi|wasm32", "wasm-wasip1|wasm32", "wasm-wasip2|wasm32")
 
 option("native")
 	set_default(false)
@@ -60,6 +60,12 @@ option("static")
 	set_showmenu(true)
 option_end()
 
+option("sysroot")
+	set_default("default")
+	set_showmenu(true)
+option_end()
+
+
 function defopt()
 	set_languages("c11", "cxx23")
 	if not is_plat("msdosdjgpp") then
@@ -72,13 +78,22 @@ function defopt()
 		if use_llvm_toolchain then	
 			set_toolchains("clang-cl")
 		end
-	elseif not is_plat("wasm-wasip1", "wasm-wasip2") then 
+	elseif not is_plat("wasm-wasi", "wasm-wasip1", "wasm-wasip2") then 
 		if use_llvm_toolchain then	
 			set_toolchains("clang")
 			add_ldflags("-fuse-ld=lld")
 		end
 	end
-	
+
+	if not is_plat("windows") then
+		local sysroot_para = get_config("sysroot")
+		if sysroot_para ~= "default" and sysroot_para then
+			local sysroot_cvt = "--sysroot=" .. sysroot_para
+			add_cxflags(sysroot_cvt)
+			add_ldflags(sysroot_cvt, {force = true})
+		end
+	end
+
 	if is_mode("release") then
 		set_optimize("aggressive")
 		set_strip("all")
@@ -333,7 +348,9 @@ function defopt()
 			add_ldflags("-static")
 		end
 
-	elseif is_plat("wasm-wasip1", "wasm-wasip2") then
+	elseif is_plat("wasm-wasi", "wasm-wasip1", "wasm-wasip2") then
+		set_extension(".wasm")
+
 		add_cxflags("-fno-rtti")
 		add_cxflags("-fno-unwind-tables")
 		add_cxflags("-fno-asynchronous-unwind-tables")
@@ -361,7 +378,10 @@ function defopt()
 		set_toolchains("clang")
 		add_ldflags("-fuse-ld=lld")
 		if is_arch("wasm32") then
-			if is_plat("wasm-wasip1") then
+			if is_plat("wasm-wasi") then
+				add_cxflags("--target=wasm32-wasi")
+				add_ldflags("--target=wasm32-wasi", {force = true})
+			elseif is_plat("wasm-wasip1") then
 				add_cxflags("--target=wasm32-wasip1")
 				add_ldflags("--target=wasm32-wasip1", {force = true})
 			else
@@ -369,7 +389,10 @@ function defopt()
 				add_ldflags("--target=wasm32-wasip2", {force = true})
 			end
 		elseif is_arch("wasm64") then
-			if is_plat("wasm-wasip1") then
+			if is_plat("wasm-wasi") then
+				add_cxflags("--target=wasm64-wasi")
+				add_ldflags("--target=wasm64-wasi", {force = true})
+			elseif is_plat("wasm-wasip1") then
 				add_cxflags("--target=wasm64-wasip1")
 				add_ldflags("--target=wasm64-wasip1", {force = true})
 			else
