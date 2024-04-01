@@ -33,10 +33,10 @@
     }
     auto& pres_sresp1{pres[sres + 1]};
     pres_sresp1.type = ::uwvm::cmdline::parameter_parsing_results_type::occupied_arg;
-    if(auto s1s{pres_sresp1.str}; s1s == ::fast_io::os_c_str_arr("bare")) { ::uwvm::wasm_abi = ::uwvm::abi::bare; }
-    else if(s1s == ::fast_io::os_c_str_arr("emscripten")) { ::uwvm::wasm_abi = ::uwvm::abi::emscripten; }
-    else if(s1s == ::fast_io::os_c_str_arr("wasip1")) { ::uwvm::wasm_abi = ::uwvm::abi::wasip1; }
-    else if(s1s == ::fast_io::os_c_str_arr("wasip2")) { ::uwvm::wasm_abi = ::uwvm::abi::wasip2; }
+    if(auto s1s{pres_sresp1.str}; s1s == ::fast_io::os_c_str_arr("bare")) { ::uwvm::wasm::wasm_abi = ::uwvm::wasm::abi::bare; }
+    else if(s1s == ::fast_io::os_c_str_arr("emscripten")) { ::uwvm::wasm::wasm_abi = ::uwvm::wasm::abi::emscripten; }
+    else if(s1s == ::fast_io::os_c_str_arr("wasip1")) { ::uwvm::wasm::wasm_abi = ::uwvm::wasm::abi::wasip1; }
+    else if(s1s == ::fast_io::os_c_str_arr("wasip2")) { ::uwvm::wasm::wasm_abi = ::uwvm::wasm::abi::wasip2; }
     else
     {
         ::fast_io::io::perr(::uwvm::u8err,

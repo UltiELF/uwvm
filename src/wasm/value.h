@@ -2,7 +2,7 @@
 #include <cstdint>
 #include <fast_io_core_impl/terminate.h>
 
-namespace uwvm
+namespace uwvm::wasm
 {
     enum value_type : ::std::uint_least8_t
     {
@@ -21,13 +21,13 @@ namespace uwvm
     {
         switch(type)
         {
-            case uwvm::i32: return 4;
-            case uwvm::i64: return 8;
-            case uwvm::f32: return 4;
-            case uwvm::f64: return 8;
-            case uwvm::v128: return 16;
-            case uwvm::externref: [[fallthrough]];
-            case uwvm::funcref: return sizeof(void*);
+            case value_type::i32: return 4;
+            case value_type::i64: return 8;
+            case value_type::f32: return 4;
+            case value_type::f64: return 8;
+            case value_type::v128: return 16;
+            case value_type::externref: [[fallthrough]];
+            case value_type::funcref: return sizeof(void*);
             default: ::fast_io::unreachable();
         }
     }

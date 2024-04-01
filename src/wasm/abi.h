@@ -1,7 +1,7 @@
 #pragma once
 #include <cstdint>
 
-namespace uwvm
+namespace uwvm::wasm
 {
     enum class abi : ::std::uint_least32_t
     {
