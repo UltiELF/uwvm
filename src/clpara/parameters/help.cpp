@@ -53,7 +53,8 @@
                                ,
                                p->describe);
     }
-    ::fast_io::io::perr(buf_u8out, u8"\033[0m");
+    ::fast_io::io::perr(buf_u8out, u8"\033[0m"
+		    u8"\n");
 
     return ::uwvm::cmdline::parameter_return_type::return_soon;
 }

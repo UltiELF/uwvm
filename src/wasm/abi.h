@@ -3,15 +3,15 @@
 
 namespace uwvm
 {
-    enum class abi : ::std::uint_least8_t
+    enum class abi : ::std::uint_least32_t
     {
         detect,
         bare,
         emscripten,
-        wasi
+        wasip1,
+	wasip2
     };
 
     inline abi wasm_abi{};
-    inline ::std::uint_least32_t wasm_abi_version{};
 
 }
