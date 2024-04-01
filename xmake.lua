@@ -78,7 +78,7 @@ function defopt()
 			add_ldflags("-fuse-ld=lld")
 		end
 	end
-
+	
 	if is_mode("release") then
 		set_optimize("aggressive")
 		set_strip("all")
@@ -361,11 +361,21 @@ function defopt()
 		set_toolchains("clang")
 		add_ldflags("-fuse-ld=lld")
 		if is_arch("wasm32") then
-			add_cxflags("--target=")
-			add_ldflags("--target=")
+			if is_plat("wasm-wasip1") then
+				add_cxflags("--target=wasm32-wasip1")
+				add_ldflags("--target=wasm32-wasip1", {force = true})
+			else
+				add_cxflags("--target=wasm32-wasip2")
+				add_ldflags("--target=wasm32-wasip2", {force = true})
+			end
 		elseif is_arch("wasm64") then
-			add_cxflags("--target=")
-			add_ldflags("--target=")
+			if is_plat("wasm-wasip1") then
+				add_cxflags("--target=wasm64-wasip1")
+				add_ldflags("--target=wasm64-wasip1", {force = true})
+			else
+				add_cxflags("--target=wasm64-wasip2")
+				add_ldflags("--target=wasm64-wasip2", {force = true})
+			end
 		end
 
 	elseif is_plat("cross") then
