@@ -348,7 +348,7 @@ function defopt()
 			add_ldflags("-static")
 		end
 
-	elseif is_plat("wasm-wasi", "wasm-wasip1", "wasm-wasip2") then
+	elseif is_plat("wasm-wasi", "wasm-wasip1", "wasm-wasip2") then -- wasm-wasi is equivalent to wasm-wasip1
 		set_extension(".wasm")
 
 		add_cxflags("-fno-rtti")
