@@ -31,12 +31,13 @@ Ultimate WebAssembly 虚拟机
 ### 多平台支持
 * (x86\_64, i386, aarch64, arm)-windows-(gnu, msvc) (支持UCRT和MSVCRT)
 * (x86\_64, i386, aarch64, arm, loongarch64, riscv64, mips64, powerpc64, etc.)-linux-(gnu, musl, llvm, mlibc, uclibc, avrlibc, etc.)
-* unknown-FreeBSD
-* unknown-DragonFlyBSD
-* unknown-NetBSD
-* unknown-OpenBSD
+* unknown-freebsd
+* unknown-dragonflybsd
+* unknown-netbsd
+* unknown-openbsd
+* unknown-bsd
 * unknown-sun
-* unknown-apple-darwin (苹果全家桶)
+* unknown-apple-darwin
 * i386-msdosdjgpp
 * wasm32-wasip1, wasm32-wasip2, wasm64-wasip1, wasm64-wasip2 (自举)
 * etc.
@@ -54,11 +55,11 @@ $ xmake install -o OutputPath
 $ xmake f -m [release|releasedbg|debug] -p [windows|mingw|macosx|linux|iphoneos ..] -a [x86_64|i386|arm|aarch64 ..] --cppstdlib=[default|libstdc++|libc++] ..
 ```
 * 目前只支持 msvc 14.3+，gcc 14+ 以及 llvm 18+。
-* 目前windows上只支持 Windows NT 3.1+ 的系统，不支持Windows 9x (未来可能会支持)。若要编译兼容win10 (默认) 以下系统，请添加参数
+* 若要编译兼容win10 (默认) 以下系统，请添加参数
 ```bash 
 --min-win32-sys=[WIN10|WINBLUE|WIN8|WIN7|WS08|VISTA|WS03|WINXP]
 ```
-* 对于WIN9X (暂不支持)
+* 对于WIN9X
 ```bash
 --min-win32-sys=[WINME|WIN98|WIN95]
 ```

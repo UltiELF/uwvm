@@ -31,10 +31,11 @@ Ultimate WebAssembly Virtual Machine
 ### Supports multiple platforms
 * (x86\_64, i386, aarch64, arm)-windows-(gnu, msvc) (support UCRT and MSVCRT)
 * (x86\_64, i386, aarch64, arm, loongarch64, riscv64, mips64, powerpc64, etc.)-linux-(gnu, musl, llvm, mlibc, uclibc, avrlibc, etc.)
-* unknown-FreeBSD 
-* unknown-DragonFlyBSD 
-* unknown-NetBSD 
-* unknown-OpenBSD 
+* unknown-freebsd
+* unknown-dragonflybsd
+* unknown-netbsd
+* unknown-openbsd
+* unknown-bsd
 * unknown-sun
 * unknwon-apple-darwin
 * i386-msdosdjgpp
@@ -54,7 +55,7 @@ $ xmake install -o OutputPath
 $ xmake f -m [release|releasedbg|debug] -p [windows|mingw|macosx|linux|iphoneos ..] -a [x86_64|i386|arm|aarch64 ..] --cppstdlib=[default|libstdc++|libc++] ..
 ```
 * Currently, only MSVC 14.3+ GCC 14+ and LLVM 18+ are supported.
-* Currently, Windows only supports Windows NT 3.1+ systems and does not support Windows 9x(Possible future support). To compile systems compatible with Win10 (default) or below, please add parameters
+* To compile systems compatible with Win10 (default) or below, please add parameters
 ```bash 
 --min-win32-sys=[WIN10|WINBLUE|WIN8|WIN7|WS08|VISTA|WS03|WINXP] 
 ```
