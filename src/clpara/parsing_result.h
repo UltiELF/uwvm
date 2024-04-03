@@ -110,7 +110,7 @@ namespace uwvm
                               u8"\033[36m"
                               u8"[--run|-r] "
                               u8"\033[32m" 
-                              "<wasm file> <argv1> <argv2> ..."
+                              "<file> <argv1> <argv2> ..."
                               u8"\033[0m"
 			                  u8"\n\n");
 
