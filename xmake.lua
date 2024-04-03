@@ -320,7 +320,7 @@ function defopt()
 			add_ldflags("-static")
 		end
 
-	elseif is_plat("macosx", "iphoneos", "watchos") then
+	elseif is_plat("macosx", "iphoneos", "watchos") then -- unknown-apple-darwin
 		add_cxflags("-fno-rtti")
 		add_cxflags("-fno-unwind-tables")
 		add_cxflags("-fno-asynchronous-unwind-tables")
