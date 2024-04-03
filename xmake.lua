@@ -94,16 +94,13 @@ function defopt()
 		end
 	end
 
-	if is_mode("release") then
+	if is_mode("release", "releasedbg") then
 		set_optimize("aggressive")
 		set_strip("all")
 
 		if is_kind("binary") then
 			set_policy("build.optimization.lto", true)
 		end
-	elseif is_mode("releasedbg") then
-		set_optimize("aggressive")
-		set_symbols("debug")
 	elseif is_mode("debug") then
 		set_optimize("none")
 		set_symbols("debug")
@@ -189,7 +186,7 @@ function defopt()
 		add_cxflags("-fno-rtti")
 		add_cxflags("-fno-unwind-tables")
 		add_cxflags("-fno-asynchronous-unwind-tables")
-		if is_mode("release") then
+		if is_mode("release", "releasedbg") then
 			add_cxflags("-fno-ident")
 		end
 
@@ -244,7 +241,7 @@ function defopt()
 		add_cxflags("-fno-rtti")
 		add_cxflags("-fno-unwind-tables")
 		add_cxflags("-fno-asynchronous-unwind-tables")
-		if is_mode("release") then
+		if is_mode("release", "releasedbg") then
 			add_cxflags("-fno-ident")
 		end
 		
@@ -277,7 +274,7 @@ function defopt()
 		add_cxflags("-fno-rtti")
 		add_cxflags("-fno-unwind-tables")
 		add_cxflags("-fno-asynchronous-unwind-tables")
-		if is_mode("release") then
+		if is_mode("release", "releasedbg") then
 			add_cxflags("-fno-ident")
 		end
 		
@@ -302,7 +299,7 @@ function defopt()
 		add_cxflags("-fno-rtti")
 		add_cxflags("-fno-unwind-tables")
 		add_cxflags("-fno-asynchronous-unwind-tables")
-		if is_mode("release") then
+		if is_mode("release", "releasedbg") then
 			add_cxflags("-fno-ident")
 		end
 	
@@ -327,7 +324,7 @@ function defopt()
 		add_cxflags("-fno-rtti")
 		add_cxflags("-fno-unwind-tables")
 		add_cxflags("-fno-asynchronous-unwind-tables")
-		if is_mode("release") then
+		if is_mode("release", "releasedbg") then
 			add_cxflags("-fno-ident")
 		end
 
@@ -354,7 +351,7 @@ function defopt()
 		add_cxflags("-fno-rtti")
 		add_cxflags("-fno-unwind-tables")
 		add_cxflags("-fno-asynchronous-unwind-tables")
-		if is_mode("release") then
+		if is_mode("release", "releasedbg") then
 			add_cxflags("-fno-ident")
 		end
 
@@ -405,7 +402,7 @@ function defopt()
 		add_cxflags("-fno-rtti")
 		add_cxflags("-fno-unwind-tables")
 		add_cxflags("-fno-asynchronous-unwind-tables")
-		if is_mode("release") then
+		if is_mode("release", "releasedbg") then
 			add_cxflags("-fno-ident")
 		end
 	
