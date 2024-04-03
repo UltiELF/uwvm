@@ -2,14 +2,19 @@
 #include <cstddef>
 #include <fast_io.h>
 #include <io_device.h>
+#include "wasm_file.h"
+#include "../clpara/parsing_result.h"
 
 namespace uwvm
 {
-    inline ::std::size_t wasm_file_ppos{};
-    inline ::fast_io::basic_os_c_str_with_known_size<char> wasm_file_name{};
-
-    inline void run() noexcept 
-    { 
-        // ::fast_io::perrln(::uwvm::u8err, wasm_file_ppos, u8" ", ::fast_io::mnp::code_cvt(wasm_file_name));
+    inline void run() noexcept
+    {
+#if 0
+        ::fast_io::perrln(::uwvm::u8err, wasm_file_ppos, u8" ", ::fast_io::mnp::code_cvt(wasm_file_name));
+        for(auto i{wasm_file_ppos + 1}; i < ::uwvm::parsing_result.size(); ++i)
+        {
+            ::fast_io::perrln(::uwvm::u8err, ::fast_io::mnp::code_cvt(::uwvm::parsing_result[i].str));
+        }
+#endif
     }
 }  // namespace uwvm

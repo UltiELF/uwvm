@@ -2,6 +2,9 @@
 #include "../../wasm/abi.h"
 #include <io_device.h>
 
+#if __has_cpp_attribute(__gnu__::__cold__)
+[[__gnu__::__cold__]]
+#endif
 ::uwvm::cmdline::parameter_return_type(::uwvm::parameter::details::abi_callback)(::std::size_t sres,
                                                                                  ::fast_io::vector<::uwvm::cmdline::parameter_parsing_results>& pres) noexcept
 {

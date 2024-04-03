@@ -1,6 +1,9 @@
 ﻿#include "help.h"
 #include "../parameters.h"
 
+#if __has_cpp_attribute(__gnu__::__cold__)
+[[__gnu__::__cold__]]
+#endif
 ::uwvm::cmdline::parameter_return_type(::uwvm::parameter::details::help_callback)(::std::size_t,
                                                                                   ::fast_io::vector<::uwvm::cmdline::parameter_parsing_results>&) noexcept
 {

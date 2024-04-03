@@ -5,7 +5,7 @@
 #include <fast_io.h>
 #include <cmdline/impl.h>
 #include <io_device.h>
-#include "../run/run.h"
+#include "../run/wasm_file.h"
 
 namespace uwvm
 {
