@@ -8,13 +8,7 @@
 namespace uwvm
 {
     inline void run() noexcept
-    {
-#if 0
-        ::fast_io::perrln(::uwvm::u8err, wasm_file_ppos, u8" ", ::fast_io::mnp::code_cvt(wasm_file_name));
-        for(auto i{wasm_file_ppos + 1}; i < ::uwvm::parsing_result.size(); ++i)
-        {
-            ::fast_io::perrln(::uwvm::u8err, ::fast_io::mnp::code_cvt(::uwvm::parsing_result[i].str));
-        }
-#endif
+    { 
+        ::uwvm::wasm_file_loader = ::fast_io::native_file_loader{::uwvm::wasm_file_name};
     }
 }  // namespace uwvm
