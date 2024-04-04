@@ -20,7 +20,7 @@ namespace uwvm::parameter
 
     constexpr inline ::uwvm::cmdline::parameter help{
         .name{::fast_io::mnp::os_c_str_arr("--help")},
-        .describe{::fast_io::mnp::os_c_str_arr(u8"Get help information.")},
+        .describe{::fast_io::mnp::os_c_str_arr(u8"Get help information. Usage: [--help|-h|-?]")},
         .alias{::uwvm::cmdline::kns_str_scatter_t{details::help_alias.data(), details::help_alias.size()}},
         .callback{__builtin_addressof(details::help_callback)},
         .is_exist{__builtin_addressof(details::help_is_exist)},

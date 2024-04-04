@@ -5,6 +5,7 @@
 #include <fast_io.h>
 #include <cmdline/impl.h>
 #include <io_device.h>
+#include "../run/wasm_file.h"
 
 namespace uwvm
 {
@@ -16,7 +17,7 @@ namespace uwvm
 #endif
     constexpr inline int
         parsing(int argc,
-                char** argv,
+                const char* const* argv,
                 ::fast_io::vector<::uwvm::cmdline::parameter_parsing_results>& pr,
                 const ::uwvm::cmdline::parameters_hash_table<hash_table_size, conflict_size>& ht) noexcept
     {
@@ -48,9 +49,7 @@ namespace uwvm
 
         if(*argv != nullptr)
         {
-            pr.emplace_back_unchecked(::fast_io::mnp::os_c_str(*argv, __builtin_strlen(*argv)),
-                                      nullptr,
-                                      ::uwvm::cmdline::parameter_parsing_results_type::dir);
+            pr.emplace_back_unchecked(::fast_io::mnp::os_c_str(*argv, __builtin_strlen(*argv)), nullptr, ::uwvm::cmdline::parameter_parsing_results_type::dir);
         }
 #if 0
 	if (argc > 1) {
@@ -74,7 +73,7 @@ namespace uwvm
 		}
 	}
 #endif
-        for(int i{1}; i < argc; i++)
+        for(int i{1}; i < argc; ++i)
         {
             if(argv[i] == nullptr) { continue; }
 
@@ -84,13 +83,55 @@ namespace uwvm
 
             if(argv_str.ptr[0] == '-')
             {
+                constexpr auto run_para{__builtin_addressof(::uwvm::parameter::run)};
                 auto para{::uwvm::cmdline::find_from_hash_table<hash_table_size, conflict_size>(ht, argv_str)};
                 if(para == nullptr) { pr.emplace_back_unchecked(argv_str, nullptr, ::uwvm::cmdline::parameter_parsing_results_type::invalid_parameter); }
+                else if(para == run_para) [[unlikely]]
+                {
+                    pr.emplace_back_unchecked(argv_str, run_para, ::uwvm::cmdline::parameter_parsing_results_type::parameter);
+                    if(++i == argc)
+                    {
+                        ::fast_io::io::perr(::uwvm::u8err,
+                              u8"\033[0m"
+#ifdef __MSDOS__
+                              u8"\033[37m"
+#else
+                              u8"\033[97m"
+#endif
+                              u8"uwvm: "
+                              u8"\033[31m"
+                              u8"[error] "
+#ifdef __MSDOS__
+                              u8"\033[37m"
+#else
+                              u8"\033[97m"
+#endif
+                              u8"Usage: " 
+                              u8"\033[36m"
+                              u8"[--run|-r] "
+                              u8"\033[32m" 
+                              "<file> <argv1> <argv2> ..."
+                              u8"\033[0m"
+			                  u8"\n\n");
+
+                        return -1;
+                    }
+                    ::uwvm::wasm_file_ppos = i;
+                    ::uwvm::wasm_file_name = ::fast_io::mnp::os_c_str(argv[i], __builtin_strlen(argv[i]));
+                    pr.emplace_back_unchecked(::uwvm::wasm_file_name, nullptr, ::uwvm::cmdline::parameter_parsing_results_type::occupied_arg);
+                    for(++i; i < argc; ++i)
+                    {
+                        pr.emplace_back_unchecked(::fast_io::mnp::os_c_str(argv[i], __builtin_strlen(argv[i])),
+                                                  nullptr,
+                                                  ::uwvm::cmdline::parameter_parsing_results_type::occupied_arg);
+                    }
+                    break;
+                }
                 else
                 {
                     if(para->is_exist ? *para->is_exist : false)
                     {
-                        pr.emplace_back_unchecked(argv_str, nullptr, ::uwvm::cmdline::parameter_parsing_results_type::duplicate_parameter);
+                        pr.emplace_back_unchecked(argv_str, para, ::uwvm::cmdline::parameter_parsing_results_type::duplicate_parameter);
                     }
                     else
                     {
@@ -105,11 +146,11 @@ namespace uwvm
         {
             ::fast_io::u8native_io_observer buf_u8err{::uwvm::u8err};
 #if 0
-		constexpr auto ign_invpm{__builtin_addressof(::uwvm::parameter::ignore_invalid_parameters)};
+		    constexpr auto ign_invpm{__builtin_addressof(::uwvm::parameter::ignore_invalid_parameters)};
 
-		bool const ign_invpm_b{ign_invpm->is_exist ? *ign_invpm->is_exist : false};
+		    bool const ign_invpm_b{ign_invpm->is_exist ? *ign_invpm->is_exist : false};
 #else
-            const bool ign_invpm_b{false};
+            constexpr bool ign_invpm_b{false};
 #endif
             bool shouldreturn{};
 
@@ -260,7 +301,7 @@ namespace uwvm
 
         bool needexit{};
         bool needterminal{};
-        for(::size_t i{1}; i < pr.size(); i++)
+        for(::size_t i{1}; i < pr.size(); ++i)
         {
             if(pr[i].para == nullptr) { continue; }
 

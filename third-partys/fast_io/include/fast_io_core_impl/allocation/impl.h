@@ -34,7 +34,7 @@ namespace fast_io
 using native_global_allocator = generic_allocator_adapter<
 #if defined(FAST_IO_USE_CUSTOM_GLOBAL_ALLOCATOR)
 	custom_global_allocator
-#elif defined(FAST_IO_USE_MIMALLOC) && (!defined(_MSC_VER) || defined(__clang__))
+#elif defined(FAST_IO_USE_MIMALLOC)
 	mimalloc_allocator
 #elif (defined(__linux__) && defined(__KERNEL__)) || defined(FAST_IO_USE_LINUX_KERNEL_ALLOCATOR)
 	linux_kmalloc_allocator
@@ -45,7 +45,11 @@ using native_global_allocator = generic_allocator_adapter<
 #if defined(_DEBUG) && defined(_MSC_VER)
 	wincrt_malloc_dbg_allocator
 #else
-	win32_heapalloc_allocator
+#if defined(_WIN32_WINDOWS)
+    win32_heapalloc_allocator
+#else
+	nt_rtlallocateheap_allocator
+#endif
 #endif
 #else
 #if defined(_DEBUG) && defined(_MSC_VER)

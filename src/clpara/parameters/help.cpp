@@ -1,8 +1,11 @@
 ﻿#include "help.h"
 #include "../parameters.h"
 
-::uwvm::cmdline::parameter_return_type(
-    ::uwvm::parameter::details::help_callback)(::std::size_t, ::fast_io::vector<::uwvm::cmdline::parameter_parsing_results>&) noexcept
+#if __has_cpp_attribute(__gnu__::__cold__)
+[[__gnu__::__cold__]]
+#endif
+::uwvm::cmdline::parameter_return_type(::uwvm::parameter::details::help_callback)(::std::size_t,
+                                                                                  ::fast_io::vector<::uwvm::cmdline::parameter_parsing_results>&) noexcept
 {
     ::fast_io::u8native_io_observer buf_u8out{::uwvm::u8err};
     ::fast_io::io::perr(buf_u8out,
@@ -53,7 +56,8 @@
                                ,
                                p->describe);
     }
-    ::fast_io::io::perr(buf_u8out, u8"\033[0m");
+    ::fast_io::io::perr(buf_u8out, u8"\033[0m"
+		    u8"\n");
 
     return ::uwvm::cmdline::parameter_return_type::return_soon;
 }

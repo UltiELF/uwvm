@@ -21,7 +21,11 @@ using native_mutex =
 #ifdef __USING_MCFGTHREAD__
 	mcf_gthread_mutex
 #elif (defined(_WIN32) && !defined(__WINE__)) || defined(__CYGWIN__)
+#if !defined(__CYGWIN__) && !defined(__BIONIC__) && defined(_WIN32_WINDOWS)
 	win32_critical_section
+#else
+	rtl_critical_section
+#endif
 #elif defined(__SINGLE_THREAD__) || defined(__MSDOS__) || (defined(__NEWLIB__) && !defined(__CYGWIN__)) || \
 	defined(__wasi__) || !__has_include(<pthread.h>)
 	single_thread_noop_mutex

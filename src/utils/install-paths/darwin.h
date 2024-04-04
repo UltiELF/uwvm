@@ -1,10 +1,12 @@
-#pragma once
+﻿#pragma once
+
 #include <mach-o/dyld.h>
 #include <limits.h>
 #include <stdlib.h>
 #include <string.h>
 #include <dlfcn.h>
 #include <stdbool.h>
+
 #include <fast_io.h>
 #include <fast_io_device.h>
 

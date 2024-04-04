@@ -50,20 +50,64 @@ inline ::std::byte const *posix_write_bytes_impl(int fd, ::std::byte const *firs
 	return first + ret;
 }
 
-} // namespace details
+#ifdef __MSDOS__
 
-template <::std::integral char_type>
-inline ::std::byte *read_some_bytes_underflow_define(::fast_io::basic_posix_io_observer<char_type> piob,
-													 ::std::byte *first, ::std::byte *last)
+extern unsigned my_dos_read(int, void*, unsigned, unsigned*) noexcept __asm__("__dos_read");
+extern unsigned my_dos_write(int, const void*, unsigned, unsigned*) noexcept __asm__("__dos_write");
+
+inline ::std::byte *posix_dos_read_bytes_impl(int fd, ::std::byte *first, ::std::byte *last)
 {
-	return ::fast_io::details::posix_read_bytes_impl(piob.fd, first, last);
+	unsigned ret;
+	if (::fast_io::details::my_dos_read(fd, first, ::fast_io::details::read_write_bytes_compute<unsigned>(first, last), __builtin_addressof(ret)))
+	{
+		throw_posix_error();
+	}
+	return first + ret;
 }
 
-template <::std::integral char_type>
-inline ::std::byte const *write_some_bytes_overflow_define(::fast_io::basic_posix_io_observer<char_type> piob,
+inline ::std::byte *posix_dos_write_bytes_impl(int fd, ::std::byte *first, ::std::byte *last)
+{
+	unsigned ret;
+	if (::fast_io::details::my_dos_write(fd, first, ::fast_io::details::read_write_bytes_compute<unsigned>(first, last), __builtin_addressof(ret)))
+	{
+		throw_posix_error();
+	}
+	return first + ret;
+}
+#endif
+
+} // namespace details
+
+template <::fast_io::posix_family family, ::std::integral char_type>
+inline ::std::byte *read_some_bytes_underflow_define(::fast_io::basic_posix_family_io_observer<family, char_type> piob,
+													 ::std::byte *first, ::std::byte *last)
+{
+#ifdef __MSDOS__
+	if constexpr (family == ::fast_io::posix_family::dos)
+	{
+		return ::fast_io::details::posix_dos_read_bytes_impl(piob.fd, first, last);
+	}
+	else
+#endif
+	{
+		return ::fast_io::details::posix_read_bytes_impl(piob.fd, first, last);
+	}
+}
+
+template <::fast_io::posix_family family, ::std::integral char_type>
+inline ::std::byte const *write_some_bytes_overflow_define(::fast_io::basic_posix_family_io_observer<family, char_type> piob,
 														   ::std::byte const *first, ::std::byte const *last)
 {
-	return ::fast_io::details::posix_write_bytes_impl(piob.fd, first, last);
+#ifdef __MSDOS__
+	if constexpr (family == ::fast_io::posix_family::dos)
+	{
+		return ::fast_io::details::posix_dos_write_bytes_impl(piob.fd, first, last);
+	}
+	else
+#endif
+	{
+		return ::fast_io::details::posix_write_bytes_impl(piob.fd, first, last);
+	}
 }
 
 } // namespace fast_io

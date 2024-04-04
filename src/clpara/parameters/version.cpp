@@ -1,10 +1,14 @@
 ﻿#include "version.h"
 #include <version.h>
-#if !defined(__MSDOS__)
+#if !defined(__MSDOS__) && !defined(__wasm__)
     #include "../../path/install_path.h"
 #endif
-::uwvm::cmdline::parameter_return_type(
-    ::uwvm::parameter::details::version_callback)(::std::size_t, ::fast_io::vector<::uwvm::cmdline::parameter_parsing_results>&) noexcept
+
+#if __has_cpp_attribute(__gnu__::__cold__)
+[[__gnu__::__cold__]]
+#endif
+::uwvm::cmdline::parameter_return_type(::uwvm::parameter::details::version_callback)(::std::size_t,
+                                                                                     ::fast_io::vector<::uwvm::cmdline::parameter_parsing_results>&) noexcept
 {
     ::fast_io::io::perr(::uwvm::u8err,
                            u8"\033[0m"
@@ -24,7 +28,7 @@
                            // Copyright
                            u8"Copyright (C) 2024-present UltiELF Open Source Group"
                            // Install Path
-#if !defined(__MSDOS__)
+#if !defined(__MSDOS__) && !defined(__wasm__)
                            u8"\nInstall Path: ",
                            ::uwvm::path::module_install_path,
 #endif
@@ -68,14 +72,16 @@
 
                            // architecture
                            u8"\nArchitecture: "
-#if defined(__alpha__)
-                           u8"DEC Alpha",
+#if defined(__wasm__)
+                           u8"WASM"
+#elif defined(__alpha__)
+                           u8"DEC Alpha"
 #elif defined(__arm64__) || defined(__aarch64__) || defined(_M_ARM64)
-                          u8"AArch64"
+                           u8"AArch64"
 #elif defined(__arm__) || defined(_M_ARM)
-                          u8"ARM"
+                           u8"ARM"
 #elif defined(__x86_64__) || defined(_M_AMD64)
-                          u8"x86_64"
+                           u8"x86_64"
 #elif defined(__i386__) || defined(_M_IX86)
                           u8"i386"
 #elif defined(__BFIN__)
@@ -302,7 +308,9 @@
 #endif
                            // C Library
                            u8"\nC Library: "
-#if defined(__MINGW32__) && !defined(_UCRT) && !defined(__BIONIC__)
+#if defined(__wasi__)
+                           u8"WASI"
+#elif defined(__MINGW32__) && !defined(_UCRT) && !defined(__BIONIC__)
                            u8"MSVCRT"
 #elif(defined(_MSC_VER) || defined(_UCRT)) && !defined(__WINE__) && !defined(__CYGWIN__) && !defined(__BIONIC__)
                           u8"UCRT"
@@ -335,32 +343,42 @@
                           u8"MUSL"
 #elif defined(__serenity__)
                           u8"serenity"
+#elif defined(__DJGPP__)
+                          u8"djgpp"
 #elif defined(__BSD_VISIBLE) || (defined(__NEWLIB__) && !defined(__CUSTOM_FILE_IO__)) || defined(__MSDOS__)
                           u8"unix"
 #else
                           u8"Unknown"
 #endif
-                           u8"\nAllocator: "
+                          u8"\nAllocator: "
 #if defined(FAST_IO_USE_CUSTOM_GLOBAL_ALLOCATOR)
-                           u8"custom global allocator"
+	                    u8"custom global"
 #elif defined(FAST_IO_USE_MIMALLOC)
-                          u8"mimalloc"
+                        u8"mimalloc"
 #elif(defined(__linux__) && defined(__KERNEL__)) || defined(FAST_IO_USE_LINUX_KERNEL_ALLOCATOR)
-                          u8"linux kmalloc"
+                        u8"linux kmalloc"
 #elif((__STDC_HOSTED__ == 1 && (!defined(_GLIBCXX_HOSTED) || _GLIBCXX_HOSTED == 1) && !defined(_LIBCPP_FREESTANDING)) ||                                       \
       defined(FAST_IO_ENABLE_HOSTED_FEATURES))
     #if defined(_WIN32) && !defined(__CYGWIN__) && !defined(__WINE__) && !defined(FAST_IO_USE_C_MALLOC)
-        #if defined(_WIN32_WINDOWS) || true
-                          u8"win32 heapalloc"
+        #if defined(_DEBUG) && defined(_MSC_VER)
+                        u8"wincrt malloc dbg"
         #else
-                          u8"nt rtlallocateheap"
+            #if defined(_WIN32_WINDOWS)
+                        u8"win32 heapalloc"
+            #else
+                        u8"nt rtlallocateheap"
+            #endif
         #endif
     #else
-                          u8"c malloc"
+        #if defined(_DEBUG) && defined(_MSC_VER)
+                        u8"wincrt malloc dbg"
+        #else
+                        u8"c malloc"
+        #endif
     #endif
 #else
-                          u8"custom global allocator"
-#endif          
+                        u8"custom global"
+#endif
                           u8"\n\n" // endl
     );
 

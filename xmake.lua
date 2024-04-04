@@ -8,7 +8,7 @@ add_defines("UWVM_VERSION_Y=0")
 add_defines("UWVM_VERSION_Z=0")
 add_defines("UWVM_VERSION_S=0")
 
-set_allowedplats("windows", "mingw", "linux", "sun", "msdosdjgpp", "bsd", "freebsd", "dragonflybsd", "netbsd", "openbsd", "macosx", "iphoneos", "watchos", "cross")
+set_allowedplats("windows", "mingw", "linux", "sun", "msdosdjgpp", "bsd", "freebsd", "dragonflybsd", "netbsd", "openbsd", "macosx", "iphoneos", "watchos", "wasm-wasi" , "wasm-wasip1", "wasm-wasip2", "cross")
 
 add_rules("mode.debug", "mode.release", "mode.releasedbg")
 set_defaultmode("releasedbg")
@@ -18,13 +18,15 @@ set_encodings("utf-8")
 
 if is_plat("msdosdjgpp") then
 	set_allowedarchs("i386") -- x86 ms-dos not support (out of memory)
+elseif is_plat("wasm-wasi", "wasm-wasip1", "wasm-wasip2") then
+	set_allowedarchs("wasm32", "wasm64")
 end
 
 set_defaultarchs("msdosdjgpp|i386")
-
+set_defaultarchs("wasm-wasi|wasm32", "wasm-wasip1|wasm32", "wasm-wasip2|wasm32")
 
 option("native")
-	set_default(true)
+	set_default(false)
 	set_showmenu(true)
 	add_defines("UWVM_NATIVE")
 	if is_plat("windows") then
@@ -52,6 +54,18 @@ option("use-llvm")
 	set_showmenu(true)
 option_end()
 
+option("static")
+	set_default(true)
+	set_description("Static Linking")
+	set_showmenu(true)
+option_end()
+
+option("sysroot")
+	set_default("default")
+	set_showmenu(true)
+option_end()
+
+
 function defopt()
 	set_languages("c11", "cxx23")
 	if not is_plat("msdosdjgpp") then
@@ -60,21 +74,33 @@ function defopt()
 	set_exceptions("no-cxx")
 
 	local use_llvm_toolchain = get_config("use-llvm")
-	if use_llvm_toolchain then	
-		set_toolchains("clang")
-		add_ldflags("-fuse-ld=lld")
+	if is_plat("windows") then
+		if use_llvm_toolchain then	
+			set_toolchains("clang-cl")
+		end
+	elseif not is_plat("wasm-wasi", "wasm-wasip1", "wasm-wasip2") then 
+		if use_llvm_toolchain then	
+			set_toolchains("clang")
+			add_ldflags("-fuse-ld=lld")
+		end
 	end
 
-	if is_mode("release") then
+	if not is_plat("windows") then
+		local sysroot_para = get_config("sysroot")
+		if sysroot_para ~= "default" and sysroot_para then
+			local sysroot_cvt = "--sysroot=" .. sysroot_para
+			add_cxflags(sysroot_cvt)
+			add_ldflags(sysroot_cvt, {force = true})
+		end
+	end
+
+	if is_mode("release", "releasedbg") then
 		set_optimize("aggressive")
 		set_strip("all")
 
 		if is_kind("binary") then
 			set_policy("build.optimization.lto", true)
 		end
-	elseif is_mode("releasedbg") then
-		set_optimize("aggressive")
-		set_symbols("debug")
 	elseif is_mode("debug") then
 		set_optimize("none")
 		set_symbols("debug")
@@ -96,15 +122,29 @@ function defopt()
 			set_extension(".exe")
 		end
 
+		add_cxflags("-GR-")
+
 		if is_mode("debug") then
-			set_runtimes("MTd")
-			add_cxflags("-GR")
+			add_cxflags("-GS")
+			local static_link = get_config("static")
+			if static_link then	
+				set_runtimes("MTd")
+			else
+				set_runtimes("MDd")
+			end
 		else
-			add_cxflags("-GR-")
 			set_fpmodels("fast")
+
+			add_cxflags("-GS-")
 			add_cxflags("-GL")
 			add_ldflags("-LTCG")
-			set_runtimes("MT")
+
+			local static_link = get_config("static")
+			if static_link then	
+				set_runtimes("MT")
+			else
+				set_runtimes("MD")
+			end
 		end
 
 		local opt_name = get_config("min-win32-sys")
@@ -146,7 +186,7 @@ function defopt()
 		add_cxflags("-fno-rtti")
 		add_cxflags("-fno-unwind-tables")
 		add_cxflags("-fno-asynchronous-unwind-tables")
-		if is_mode("release") then
+		if is_mode("release", "releasedbg") then
 			add_cxflags("-fno-ident")
 		end
 
@@ -160,9 +200,12 @@ function defopt()
 			error("invalid name")
 		end
 
-		add_ldflags("-static-libstdc++")
-		add_ldflags("-static-libgcc")
-		add_ldflags("-static")
+		--add_ldflags("-static-libstdc++")
+		--add_ldflags("-static-libgcc")
+		local static_link = get_config("static")
+		if static_link then	
+			add_ldflags("-static")
+		end
 
 		add_syslinks("ntdll")
 
@@ -198,7 +241,7 @@ function defopt()
 		add_cxflags("-fno-rtti")
 		add_cxflags("-fno-unwind-tables")
 		add_cxflags("-fno-asynchronous-unwind-tables")
-		if is_mode("release") then
+		if is_mode("release", "releasedbg") then
 			add_cxflags("-fno-ident")
 		end
 		
@@ -212,9 +255,12 @@ function defopt()
 			error("invalid name")
 		end
 
-		add_ldflags("-static-libstdc++")
-		add_ldflags("-static-libgcc")
-		add_ldflags("-static")
+		--add_ldflags("-static-libstdc++")
+		--add_ldflags("-static-libgcc")
+		local static_link = get_config("static")
+		if static_link then	
+			add_ldflags("-static")
+		end
 
 		if is_arch("x86_64") then
 			-- none
@@ -228,7 +274,7 @@ function defopt()
 		add_cxflags("-fno-rtti")
 		add_cxflags("-fno-unwind-tables")
 		add_cxflags("-fno-asynchronous-unwind-tables")
-		if is_mode("release") then
+		if is_mode("release", "releasedbg") then
 			add_cxflags("-fno-ident")
 		end
 		
@@ -242,15 +288,18 @@ function defopt()
 			error("invalid name")
 		end
 
-		add_ldflags("-static-libstdc++")
-		add_ldflags("-static-libgcc")
-		add_ldflags("-static")
+		--add_ldflags("-static-libstdc++")
+		--add_ldflags("-static-libgcc")
+		local static_link = get_config("static")
+		if static_link then	
+			add_ldflags("-static")
+		end
 
 	elseif is_plat("bsd", "freebsd", "dragonflybsd", "netbsd", "openbsd") then
 		add_cxflags("-fno-rtti")
 		add_cxflags("-fno-unwind-tables")
 		add_cxflags("-fno-asynchronous-unwind-tables")
-		if is_mode("release") then
+		if is_mode("release", "releasedbg") then
 			add_cxflags("-fno-ident")
 		end
 	
@@ -264,15 +313,18 @@ function defopt()
 			error("invalid name")
 		end
 
-		add_ldflags("-static-libstdc++")
-		add_ldflags("-static-libgcc")
-		add_ldflags("-static")
+		--add_ldflags("-static-libstdc++")
+		--add_ldflags("-static-libgcc")
+		local static_link = get_config("static")
+		if static_link then	
+			add_ldflags("-static")
+		end
 
-	elseif is_plat("macosx", "iphoneos", "watchos") then
+	elseif is_plat("macosx", "iphoneos", "watchos") then -- unknown-apple-darwin
 		add_cxflags("-fno-rtti")
 		add_cxflags("-fno-unwind-tables")
 		add_cxflags("-fno-asynchronous-unwind-tables")
-		if is_mode("release") then
+		if is_mode("release", "releasedbg") then
 			add_cxflags("-fno-ident")
 		end
 
@@ -286,15 +338,71 @@ function defopt()
 			error("invalid name")
 		end
 
-		add_ldflags("-static-libstdc++")
-		add_ldflags("-static-libgcc")
-		add_ldflags("-static")
+		--add_ldflags("-static-libstdc++")
+		--add_ldflags("-static-libgcc")
+		local static_link = get_config("static")
+		if static_link then	
+			add_ldflags("-static")
+		end
+
+	elseif is_plat("wasm-wasi", "wasm-wasip1", "wasm-wasip2") then -- wasm-wasi is equivalent to wasm-wasip1
+		set_extension(".wasm")
+
+		add_cxflags("-fno-rtti")
+		add_cxflags("-fno-unwind-tables")
+		add_cxflags("-fno-asynchronous-unwind-tables")
+		if is_mode("release", "releasedbg") then
+			add_cxflags("-fno-ident")
+		end
+
+		local csl_name = get_config("cppstdlib")
+		if csl_name == "libstdc++" then
+			add_cxflags("-stdlib=libstdc++")
+		elseif csl_name == "libc++" then
+			add_cxflags("-stdlib=libc++")
+		elseif csl_name == "default" then
+		else
+			error("invalid name")
+		end
+
+		--add_ldflags("-static-libstdc++")
+		--add_ldflags("-static-libgcc")
+		local static_link = get_config("static")
+		if static_link then	
+			add_ldflags("-static")
+		end
+
+		set_toolchains("clang")
+		add_ldflags("-fuse-ld=lld")
+		if is_arch("wasm32") then
+			if is_plat("wasm-wasi") then
+				add_cxflags("--target=wasm32-wasi")
+				add_ldflags("--target=wasm32-wasi", {force = true})
+			elseif is_plat("wasm-wasip1") then
+				add_cxflags("--target=wasm32-wasip1")
+				add_ldflags("--target=wasm32-wasip1", {force = true})
+			else
+				add_cxflags("--target=wasm32-wasip2")
+				add_ldflags("--target=wasm32-wasip2", {force = true})
+			end
+		elseif is_arch("wasm64") then
+			if is_plat("wasm-wasi") then
+				add_cxflags("--target=wasm64-wasi")
+				add_ldflags("--target=wasm64-wasi", {force = true})
+			elseif is_plat("wasm-wasip1") then
+				add_cxflags("--target=wasm64-wasip1")
+				add_ldflags("--target=wasm64-wasip1", {force = true})
+			else
+				add_cxflags("--target=wasm64-wasip2")
+				add_ldflags("--target=wasm64-wasip2", {force = true})
+			end
+		end
 
 	elseif is_plat("cross") then
 		add_cxflags("-fno-rtti")
 		add_cxflags("-fno-unwind-tables")
 		add_cxflags("-fno-asynchronous-unwind-tables")
-		if is_mode("release") then
+		if is_mode("release", "releasedbg") then
 			add_cxflags("-fno-ident")
 		end
 	
@@ -308,9 +416,12 @@ function defopt()
 			error("invalid name")
 		end
 
-		add_ldflags("-static-libstdc++")
-		add_ldflags("-static-libgcc")
-		add_ldflags("-static")
+		--add_ldflags("-static-libstdc++")
+		--add_ldflags("-static-libgcc")
+		local static_link = get_config("static")
+		if static_link then	
+			add_ldflags("-static")
+		end
 
 	end
 
@@ -362,7 +473,11 @@ target("uwvm")
 	end
 
 	add_files("src/clpara/parameters/**.cpp")
-	add_files("src/main/main.cpp")
+	add_files("src/program/uwvm.cpp")
+
+	if is_plat("windows", "mingw") then 
+		add_files("src/program/uwvm.rc")
+	end
 target_end()
 
 

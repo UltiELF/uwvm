@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #if defined(__linux__) && defined(__NR_statx) && !defined(__statx_defined)
 #include <linux/stat.h>
