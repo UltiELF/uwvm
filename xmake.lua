@@ -8,7 +8,7 @@ add_defines("UWVM_VERSION_Y=0")
 add_defines("UWVM_VERSION_Z=0")
 add_defines("UWVM_VERSION_S=0")
 
-set_allowedplats("windows", "mingw", "linux", "sun", "msdosdjgpp", "bsd", "freebsd", "dragonflybsd", "netbsd", "openbsd", "macosx", "iphoneos", "watchos", "wasm-wasi" , "wasm-wasip1", "wasm-wasip2", "cross")
+set_allowedplats("windows", "mingw", "linux", "sun", "msdosdjgpp", "bsd", "freebsd", "dragonflybsd", "netbsd", "openbsd", "macosx", "iphoneos", "watchos", "wasm-wasi", "wasm-wasip1", "wasm-wasip2", "cross")
 
 add_rules("mode.debug", "mode.release", "mode.releasedbg")
 set_defaultmode("releasedbg")
