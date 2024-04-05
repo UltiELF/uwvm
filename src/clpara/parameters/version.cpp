@@ -10,6 +10,12 @@
 ::uwvm::cmdline::parameter_return_type(::uwvm::parameter::details::version_callback)(::std::size_t,
                                                                                      ::fast_io::vector<::uwvm::cmdline::parameter_parsing_results>&) noexcept
 {
+#if !defined(__MSDOS__) && !defined(__wasm__)
+   if (::uwvm::path::module_install_path_df.native_handle() == ::fast_io::dir_file{}.native_handle())
+    {
+        ::uwvm::path::init_install_path(::uwvm::path::argv0);
+    }
+#endif
     ::fast_io::io::perr(::uwvm::u8err,
                         u8"\033[0m"
 #ifdef __MSDOS__

@@ -13,7 +13,7 @@
 int main(int argc, char** argv)
 {
 #if !defined(__MSDOS__) && !defined(__wasm__)
-    ::uwvm::path::init_install_path(argc ? *argv : nullptr);
+    ::uwvm::path::argv0 = argc ? *argv : nullptr;
 #endif
 
     auto& parse_res{::uwvm::parsing_result};
