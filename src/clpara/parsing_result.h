@@ -280,7 +280,11 @@ namespace uwvm
                 }
             }
 
-            if(shouldreturn) { return -1; }
+            if(shouldreturn)
+            {
+                ::fast_io::io::perrln(buf_u8err);
+                return -1;
+            }
         }
 
         bool needexit{};
@@ -374,7 +378,11 @@ namespace uwvm
                     }
                 }
             }
-            if(shouldreturn) { return -1; }
+            if(shouldreturn)
+            {
+                ::fast_io::io::perrln(buf_u8err);
+                return -1;
+            }
         }
         return 0;
     }
