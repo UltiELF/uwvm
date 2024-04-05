@@ -14,6 +14,12 @@ namespace uwvm::path
     /*
      * for linux, cygwin and solaris
      */
+#if __has_cpp_attribute(__gnu__::__cold__)
+    [[__gnu__::__cold__]]
+#endif
+#if __has_cpp_attribute(__gnu__::__pure__)
+    [[__gnu__::__pure__]]
+#endif
     inline void get_module_install_path() noexcept
     {
         char buffer[PATH_MAX + 1];

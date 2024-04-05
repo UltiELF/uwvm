@@ -16,14 +16,14 @@ set_allowedmodes("release", "debug", "releasedbg")
 
 set_encodings("utf-8")
 
+set_defaultarchs("msdosdjgpp|i386")
+set_defaultarchs("wasm-wasi|wasm32", "wasm-wasip1|wasm32", "wasm-wasip2|wasm32")
+
 if is_plat("msdosdjgpp") then
 	set_allowedarchs("i386") -- x86 ms-dos not support (out of memory)
 elseif is_plat("wasm-wasi", "wasm-wasip1", "wasm-wasip2") then
 	set_allowedarchs("wasm32", "wasm64")
 end
-
-set_defaultarchs("msdosdjgpp|i386")
-set_defaultarchs("wasm-wasi|wasm32", "wasm-wasip1|wasm32", "wasm-wasip2|wasm32")
 
 option("native")
 	set_default(false)
