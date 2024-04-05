@@ -25,7 +25,8 @@ namespace uwvm::path
 #if __has_cpp_attribute(__gnu__::__pure__)
     [[__gnu__::__pure__]]
 #endif
-    inline void get_module_install_path() noexcept
+    inline void
+        get_module_install_path() noexcept
     {
         char buffer1[PATH_MAX + 1];
         char buffer2[PATH_MAX + 1];

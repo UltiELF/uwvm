@@ -16,7 +16,8 @@ namespace uwvm::path
 #if __has_cpp_attribute(__gnu__::__pure__)
     [[__gnu__::__pure__]]
 #endif
-    inline void get_module_install_path() noexcept
+    inline void
+        get_module_install_path() noexcept
     {
         char* pgmptr{};
         if(::fast_io::noexcept_call(::_get_pgmptr, __builtin_addressof(pgmptr))) { return; }

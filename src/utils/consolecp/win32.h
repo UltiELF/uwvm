@@ -19,6 +19,9 @@ namespace uwvm::consolecp
         ::std::uint_least32_t output{};
         ::std::uint_least32_t input{};
 
+#if __has_cpp_attribute(__gnu__::__cold__)
+        [[__gnu__::__cold__]]
+#endif
         set_win32_console_io_cp_to_utf8() noexcept
         {
             output = ::fast_io::win32::GetConsoleOutputCP();
@@ -27,6 +30,12 @@ namespace uwvm::consolecp
             if(input != utf8_coding) { ::fast_io::win32::SetConsoleCP(utf8_coding); }
         }
 
+#if __has_cpp_attribute(__gnu__::__cold__)
+        [[__gnu__::__cold__]]
+#endif
+#if __has_cpp_attribute(__gnu__::__pure__)
+        [[__gnu__::__pure__]]
+#endif
         ~set_win32_console_io_cp_to_utf8()
         {
             if(output != utf8_coding) { ::fast_io::win32::SetConsoleOutputCP(output); }
@@ -44,6 +53,9 @@ namespace uwvm::consolecp
         void* out_handle{};
         void* err_handle{};
 
+#if __has_cpp_attribute(__gnu__::__cold__)
+        [[__gnu__::__cold__]]
+#endif
         enable_win32_ansi() noexcept
         {
             out_handle = ::fast_io::win32::GetStdHandle(::fast_io::win32_stdout_number);
