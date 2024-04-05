@@ -32,7 +32,7 @@ Ultimate WebAssembly 虚拟机
 ### 多平台支持
 * (x86\_64, i386, aarch64, arm)-windows-(gnu, msvc) (支持UCRT和MSVCRT)
 * (x86\_64, i386, aarch64, arm, loongarch64, riscv64, mips64, powerpc64, etc.)-linux-(gnu, musl, llvm, mlibc, uclibc, avrlibc, etc.)
-* unknown-freebsd
+* (x86\_64, i386, aarch64, arm, powerpc, powerpc64, powerpc64le, powerpcspe, riscv64)-freebsd
 * unknown-dragonflybsd
 * unknown-netbsd
 * unknown-openbsd
@@ -53,10 +53,10 @@ $ xmake install -o OutputPath
 ```
 4. 构建参数
 ```bash
-$ xmake f -m [release|releasedbg|debug] -p [windows|mingw|macosx|linux|iphoneos ..] -a [x86_64|i386|arm|aarch64 ..] --cppstdlib=[default|libstdc++|libc++] ..
+$ xmake f -m [release|releasedbg|debug] -p [windows|mingw|linux|sun|msdosdjgpp|bsd|freebsd|dragonflybsd|netbsd|openbsd|macosx|iphoneos|watchos|wasm-wasip1|wasm-wasip2|cross ..] -a [x86_64|i386|arm|aarch64 ..] --cppstdlib=[default|libstdc++|libc++] ..
 ```
-* 目前只支持 msvc 14.3+，gcc 14+ 以及 llvm 18+。
-* 若要编译兼容win10 (默认) 以下系统，请添加参数
+* 目前只支持 msvc 14.3+ ，gcc 14+ 以及 llvm 18+。
+* 若要编译兼容 WIN10 (默认) 以下系统，请添加参数
 ```bash 
 --min-win32-sys=[WIN10|WINBLUE|WIN8|WIN7|WS08|VISTA|WS03|WINXP]
 ```
@@ -76,7 +76,7 @@ $ xmake f -m [release|releasedbg|debug] -p [windows|mingw|macosx|linux|iphoneos 
 ```bash 
 --sdk=ToolchainPath
 ```
-* 静态连接
+* 静态链接
 ```bash
 --static=y(default)|n
 ```

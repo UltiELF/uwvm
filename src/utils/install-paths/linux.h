@@ -23,22 +23,25 @@ namespace uwvm::path
         buffer[resolved] = '\0';
         ::uwvm::path::module_path = ::fast_io::u8concat(::fast_io::mnp::code_cvt(::fast_io::mnp::os_c_str_with_known_size(buffer, resolved)));
 #else
-        char* resolved{::fast_io::noexcept_call(::realpath,
+        char* resolved
+        {
+            ::fast_io::noexcept_call(::realpath,
     #if defined(__sun)
-                                                "/proc/self/path/a.out"
+                                     "/proc/self/path/a.out"
     #else
-                                                "/proc/self/exe"
+                                     "/proc/self/exe"
     #endif
-                                                ,
-                                                buffer)};
+                                     ,
+                                     buffer)
+        };
         if(!resolved) [[unlikely]] { return; }
         ::uwvm::path::module_path = ::fast_io::u8concat(::fast_io::mnp::code_cvt_os_c_str(resolved));
 #endif
-        const auto begin{strlike_begin(::fast_io::io_strlike_type<char8_t, ::fast_io::u8string>, ::uwvm::path::module_path)};
+        auto const begin{strlike_begin(::fast_io::io_strlike_type<char8_t, ::fast_io::u8string>, ::uwvm::path::module_path)};
         auto curr{strlike_curr(::fast_io::io_strlike_type<char8_t, ::fast_io::u8string>, ::uwvm::path::module_path)};
         for(; curr != begin; curr--)
         {
-            if(const auto c{*curr}; c == u8'/')
+            if(auto const c{*curr}; c == u8'/')
             {
                 curr++;
                 break;
@@ -46,6 +49,5 @@ namespace uwvm::path
         }
         ::uwvm::path::module_install_path = ::fast_io::u8string{begin, curr};
         ::uwvm::path::module_install_path_df = ::fast_io::dir_file{::uwvm::path::module_install_path};
-
     }
 }  // namespace uwvm::path

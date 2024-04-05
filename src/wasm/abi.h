@@ -9,9 +9,9 @@ namespace uwvm::wasm
         bare,
         emscripten,
         wasip1,
-	wasip2
+        wasip2
     };
 
     inline abi wasm_abi{};
 
-}
+}  // namespace uwvm::wasm

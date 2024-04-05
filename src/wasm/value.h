@@ -17,7 +17,7 @@ namespace uwvm::wasm
         funcref
     };
 
-    constexpr inline ::std::uint_least8_t get_type_byte_width(value_type type) noexcept
+    inline constexpr ::std::uint_least8_t get_type_byte_width(value_type type) noexcept
     {
         switch(type)
         {
@@ -31,4 +31,4 @@ namespace uwvm::wasm
             default: ::fast_io::unreachable();
         }
     }
-}  // namespace uwvm
+}  // namespace uwvm::wasm
