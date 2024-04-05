@@ -4,9 +4,6 @@
     #include "../../path/install_path.h"
 #endif
 
-#if __has_cpp_attribute(__gnu__::__pure__)
-        [[__gnu__::__pure__]]
-#endif
 #if __has_cpp_attribute(__gnu__::__cold__)
 [[__gnu__::__cold__]]
 #endif
