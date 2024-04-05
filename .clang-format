@@ -117,6 +117,6 @@ SpacesInSquareBrackets: false
 
 # Order
 QualifierAlignment: Custom
-QualifierOrder: ["constexpr", "const", "inline", "static", "type"]
+QualifierOrder: ["constexpr", "inline", "static", "type", "const"]
 SortIncludes: Never
 SortUsingDeclarations: LexicographicNumeric

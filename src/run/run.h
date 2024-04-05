@@ -8,7 +8,7 @@
 namespace uwvm
 {
     inline void run() noexcept
-    { 
+    {
         if(!::uwvm::wasm_file_name.size())
         {
             ::fast_io::io::perr(::uwvm::u8err,

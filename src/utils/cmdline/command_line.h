@@ -18,8 +18,8 @@ namespace uwvm
         constexpr inline ::std::size_t dp(::fast_io::basic_os_c_str_with_known_size<char_type> x,
                                           ::fast_io::basic_os_c_str_with_known_size<char_type> y) noexcept
         {
-            const ::std::size_t lena{x.size()};
-            const ::std::size_t lenb{y.size()};
+            ::std::size_t const lena{x.size()};
+            ::std::size_t const lenb{y.size()};
 
             ::std::size_t* d{};
             if constexpr(Len)
@@ -61,7 +61,7 @@ namespace uwvm
                 }
             }
 
-            const size_t ret{d[lenb]};
+            size_t const ret{d[lenb]};
 
             if constexpr(!Len)
             {

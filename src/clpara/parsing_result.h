@@ -17,9 +17,9 @@ namespace uwvm
 #endif
     constexpr inline int
         parsing(int argc,
-                const char* const* argv,
+                char const* const* argv,
                 ::fast_io::vector<::uwvm::cmdline::parameter_parsing_results>& pr,
-                const ::uwvm::cmdline::parameters_hash_table<hash_table_size, conflict_size>& ht) noexcept
+                ::uwvm::cmdline::parameters_hash_table<hash_table_size, conflict_size> const& ht) noexcept
     {
 
         if(argc == 0)
@@ -122,7 +122,7 @@ namespace uwvm
             }
             else { pr.emplace_back_unchecked(argv_str, nullptr, ::uwvm::cmdline::parameter_parsing_results_type::arg); }
         }
-        const auto ie{::uwvm::wasm_file_ppos ? pr.begin() + ::uwvm::wasm_file_ppos : pr.end()};
+        auto const ie{::uwvm::wasm_file_ppos ? pr.begin() + ::uwvm::wasm_file_ppos : pr.end()};
         {
             ::fast_io::u8native_io_observer buf_u8err{::uwvm::u8err};
 #if 0
@@ -185,18 +185,18 @@ namespace uwvm
                     {
                         ::fast_io::basic_os_c_str_with_known_size<char> f_test_str{};
 
-                        const ::std::size_t str_size{i.str.size()};
+                        ::std::size_t const str_size{i.str.size()};
 #if __has_cpp_attribute(assume)
                         constexpr ::std::size_t smax{::std::numeric_limits<::std::size_t>::max() / 4u};
                         [[assume(str_size <= smax)]];
 #endif
-                        const ::std::size_t test_size{str_size * 4u / 10u};
+                        ::std::size_t const test_size{str_size * 4u / 10u};
                         ::std::size_t f_test_size{test_size};
 
                         for(auto& j: ::uwvm::parameter_lookup_table)
                         {
                             if(j.str.size() < str_size - f_test_size || j.str.size() > str_size + f_test_size) { continue; }
-                            if(const auto dp_res{::uwvm::cmdline::dp<parameter_max_name_size + parameter_max_name_size * 4u / 10u + 1u>(i.str, j.str)};
+                            if(auto const dp_res{::uwvm::cmdline::dp<parameter_max_name_size + parameter_max_name_size * 4u / 10u + 1u>(i.str, j.str)};
                                dp_res <= test_size)
                             {
                                 f_test_str = j.str;
@@ -230,28 +230,27 @@ namespace uwvm
                     if(ign_invpm_b)
                     {
                         ::fast_io::io::perr(buf_u8err,
-                                              u8"\033[0m",
+                                            u8"\033[0m",
 #ifdef __MSDOS__
-                                              u8"\033[37m"
+                                            u8"\033[37m"
 #else
-                                              u8"\033[97m"
+                                            u8"\033[97m"
 #endif
-                                              u8"uwvm: "
+                                            u8"uwvm: "
 #ifdef __MSDOS__
-                                              u8"\033[31m"
+                                            u8"\033[31m"
 #else
-                                              u8"\033[91m"
+                                            u8"\033[91m"
 #endif
-                                              u8"[warning] "
+                                            u8"[warning] "
 #ifdef __MSDOS__
-                                              u8"\033[37m"
+                                            u8"\033[37m"
 #else
-                                              u8"\033[97m"
+                                            u8"\033[97m"
 #endif
-                                              u8"ignore duplicate parameter: " u8"\033[36m",
-                                              ::fast_io::mnp::code_cvt(i.str),
-                                              u8"\033[0m" 
-                                              u8"\n");
+                                            u8"ignore duplicate parameter: " u8"\033[36m",
+                                            ::fast_io::mnp::code_cvt(i.str),
+                                            u8"\033[0m" u8"\n");
                     }
                     else
                     {
@@ -290,14 +289,14 @@ namespace uwvm
         bool needexit{};
         bool needterminal{};
 
-        const auto ie_size{::uwvm::wasm_file_ppos ? ::uwvm::wasm_file_ppos : pr.size()};
+        auto const ie_size{::uwvm::wasm_file_ppos ? ::uwvm::wasm_file_ppos : pr.size()};
         for(::std::size_t i{1}; i != ie_size; ++i)
         {
             if(pr[i].para == nullptr) { continue; }
 
-            if(const auto cb{pr[i].para->callback}; cb != nullptr)
+            if(auto const cb{pr[i].para->callback}; cb != nullptr)
             {
-                const ::uwvm::cmdline::parameter_return_type res{cb(i, pr)};
+                ::uwvm::cmdline::parameter_return_type const res{cb(i, pr)};
                 switch(res)
                 {
                     case ::uwvm::cmdline::parameter_return_type::def: break;
@@ -318,7 +317,7 @@ namespace uwvm
 
 		    bool const ign_invpm_b{ign_invpm->is_exist ? *ign_invpm->is_exist : false};
 #else
-            const bool ign_invpm_b{false};
+            bool const ign_invpm_b{false};
 #endif
             bool shouldreturn{};
             ::fast_io::u8native_io_observer buf_u8err{::uwvm::u8err};
@@ -331,50 +330,48 @@ namespace uwvm
                     if(ign_invpm_b)
                     {
                         ::fast_io::io::perr(buf_u8err,
-                                              u8"\033[0m"
+                                            u8"\033[0m"
 #ifdef __MSDOS__
-                                              u8"\033[37m"
+                                            u8"\033[37m"
 #else
-                                              u8"\033[97m"
+                                            u8"\033[97m"
 #endif
-                                              u8"uwvm: "
+                                            u8"uwvm: "
 #ifdef __MSDOS__
-                                              u8"\033[31m"
+                                            u8"\033[31m"
 #else
-                                              u8"\033[91m"
+                                            u8"\033[91m"
 #endif
-                                              u8"[warning] "
+                                            u8"[warning] "
 #ifdef __MSDOS__
-                                              u8"\033[37m"
+                                            u8"\033[37m"
 #else
-                                              u8"\033[97m"
+                                            u8"\033[97m"
 #endif
-                                              u8"ignore invalid option: " u8"\033[36m",
-                                              ::fast_io::mnp::code_cvt(i.str),
-                                              u8"\033[0m" 
-                                              u8"\n");
+                                            u8"ignore invalid option: " u8"\033[36m",
+                                            ::fast_io::mnp::code_cvt(i.str),
+                                            u8"\033[0m" u8"\n");
                     }
                     else
                     {
                         shouldreturn = true;
                         ::fast_io::io::perr(buf_u8err,
-                                              u8"\033[0m"
+                                            u8"\033[0m"
 #ifdef __MSDOS__
-                                              u8"\033[37m"
+                                            u8"\033[37m"
 #else
-                                              u8"\033[97m"
+                                            u8"\033[97m"
 #endif
-                                              u8"uwvm: " u8"\033[31m",
-                                              u8"[error] "
+                                            u8"uwvm: " u8"\033[31m",
+                                            u8"[error] "
 #ifdef __MSDOS__
-                                              u8"\033[37m"
+                                            u8"\033[37m"
 #else
-                                              u8"\033[97m"
+                                            u8"\033[97m"
 #endif
-                                              u8"invalid option: " u8"\033[36m",
-                                              ::fast_io::mnp::code_cvt(i.str),
-                                              u8"\033[0m"
-                                              u8"\n");
+                                            u8"invalid option: " u8"\033[36m",
+                                            ::fast_io::mnp::code_cvt(i.str),
+                                            u8"\033[0m" u8"\n");
                     }
                 }
             }

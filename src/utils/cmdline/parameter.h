@@ -17,7 +17,7 @@ namespace fast_io
         if(a.n != b.n) { return false; }
         else
         {
-            for(const auto a_last{a.ptr + a.n}; a.ptr != a_last;)
+            for(auto const a_last{a.ptr + a.n}; a.ptr != a_last;)
             {
                 if(*a.ptr != *b.ptr) { return false; }
                 ++a.ptr;
@@ -30,8 +30,8 @@ namespace fast_io
     template <::std::integral char_type>
     constexpr inline ::std::strong_ordering operator<=> (basic_os_c_str_with_known_size<char_type> a, basic_os_c_str_with_known_size<char_type> b) noexcept
     {
-        const auto a_last{a.ptr + a.n};
-        const auto b_last{b.ptr + b.n};
+        auto const a_last{a.ptr + a.n};
+        auto const b_last{b.ptr + b.n};
         for(; (a.ptr != a_last) && (b.ptr != b_last);)
         {
             if(auto i{*a.ptr <=> *b.ptr}; i != ::std::strong_ordering::equal) { return i; }
@@ -40,7 +40,7 @@ namespace fast_io
         }
         return a.n <=> b.n;
     }
-}  // namespace fast_io::manipulators
+}  // namespace fast_io
 
 namespace uwvm
 {
@@ -65,7 +65,7 @@ namespace uwvm
         struct parameter_parsing_results
         {
             ::fast_io::basic_os_c_str_with_known_size<char> str{};
-            const parameter* para{};
+            parameter const* para{};
             parameter_parsing_results_type type{};
         };
 
@@ -82,24 +82,24 @@ namespace uwvm
 
         struct parameter
         {
-            const ::fast_io::basic_os_c_str_with_known_size<char> name{};
-            const ::fast_io::basic_os_c_str_with_known_size<char8_t> describe{};
+            ::fast_io::basic_os_c_str_with_known_size<char> const name{};
+            ::fast_io::basic_os_c_str_with_known_size<char8_t> const describe{};
             kns_str_scatter_t alias{};
             parameter_return_type (*callback)(::std::size_t argc, ::fast_io::vector<parameter_parsing_results>& vec) noexcept {};
             bool* is_exist{};
         };
 
         template <::std::size_t N>
-        inline consteval auto parameter_sort(const parameter* const (&punsort)[N]) noexcept
+        inline consteval auto parameter_sort(parameter const* const (&punsort)[N]) noexcept
         {
-            ::fast_io::freestanding::array<const parameter*, N> res{};
+            ::fast_io::freestanding::array<parameter const*, N> res{};
             for(::std::size_t i{}; i < N; i++) { res[i] = punsort[i]; }
-            ::std::ranges::sort(res, [](const parameter* const a, const parameter* const b) noexcept -> bool { return a->name < b->name; });
+            ::std::ranges::sort(res, [](parameter const* const a, parameter const* const b) noexcept -> bool { return a->name < b->name; });
             return res;
         }
 
         template <::std::size_t N>
-        constexpr inline void parameter_clean(::fast_io::freestanding::array<const parameter*, N>& punsort) noexcept
+        constexpr inline void parameter_clean(::fast_io::freestanding::array<parameter const*, N>& punsort) noexcept
         {
             for(auto i: punsort) { i.callback = nullptr; }
         }
@@ -107,11 +107,11 @@ namespace uwvm
         struct all_parameter
         {
             ::fast_io::basic_os_c_str_with_known_size<char> str{};
-            const parameter* para{};
+            parameter const* para{};
         };
 
         template <::std::size_t N>
-        inline consteval ::std::size_t calculate_all_parameters_size(const ::fast_io::freestanding::array<const parameter*, N>& punsort) noexcept
+        inline consteval ::std::size_t calculate_all_parameters_size(::fast_io::freestanding::array<parameter const*, N> const& punsort) noexcept
         {
             ::std::size_t res{};
             for(::std::size_t i{}; i < N; i++)
@@ -123,7 +123,7 @@ namespace uwvm
         }
 
         template <::std::size_t Nres, ::std::size_t N>
-        inline consteval auto expand_all_parameters_and_check(const ::fast_io::freestanding::array<const parameter*, N>& punsort) noexcept
+        inline consteval auto expand_all_parameters_and_check(::fast_io::freestanding::array<parameter const*, N> const& punsort) noexcept
         {
             ::fast_io::freestanding::array<all_parameter, Nres> res{};
             ::std::size_t res_pos{};
@@ -137,7 +137,7 @@ namespace uwvm
                 res[res_pos++] = {punsort[i]->name, punsort[i]};
                 for(::std::size_t j{}; j < punsort[i]->alias.len; j++) { res[res_pos++] = {punsort[i]->alias.base[j], punsort[i]}; }
             }
-            ::std::ranges::sort(res, [](const all_parameter& a, const all_parameter& b) noexcept -> bool { return a.str < b.str; });
+            ::std::ranges::sort(res, [](all_parameter const& a, all_parameter const& b) noexcept -> bool { return a.str < b.str; });
             ::fast_io::basic_os_c_str_with_known_size<char> check{};  // Empty strings will be sorted and placed first.
             for(auto& i: res)
             {
@@ -158,7 +158,7 @@ namespace uwvm
         }
 
         template <::std::size_t N>
-        inline consteval ::std::size_t calculate_max_para_size(const ::fast_io::freestanding::array<all_parameter, N>& punsort) noexcept
+        inline consteval ::std::size_t calculate_max_para_size(::fast_io::freestanding::array<all_parameter, N> const& punsort) noexcept
         {
             ::std::size_t max_size{};
             for(::std::size_t i{}; i < N; i++) { max_size = ::std::max(max_size, punsort[i].str.size()); }
@@ -175,7 +175,7 @@ namespace uwvm
         };
 
         template <::std::size_t N>
-        inline consteval calculate_hash_table_size_res calculate_hash_table_size(const ::fast_io::freestanding::array<all_parameter, N>& ord) noexcept
+        inline consteval calculate_hash_table_size_res calculate_hash_table_size(::fast_io::freestanding::array<all_parameter, N> const& ord) noexcept
         {
             constexpr auto sizet_d10{::std::numeric_limits<::std::size_t>::digits10};
 
@@ -188,13 +188,13 @@ namespace uwvm
                 ::std::size_t* const hash_size_array{new ::std::size_t[hash_size]{}};
                 for(auto& j: ord)
                 {
-                    const ::std::size_t j_str_size{j.str.n};
+                    ::std::size_t const j_str_size{j.str.n};
                     ::std::byte* const ptr{new ::std::byte[j_str_size]{}};
                     for(::std::size_t k{}; k < j_str_size; k++) { ptr[k] = static_cast<::std::byte>(j.str.ptr[k]); }
                     crc32c.reset();
                     crc32c.update(ptr, ptr + j_str_size);
                     delete[] ptr;
-                    const auto val{crc32c.digest_value() % hash_size};
+                    auto const val{crc32c.digest_value() % hash_size};
                     hash_size_array[val]++;
                     if(hash_size_array[val] == 2) { extra_size++; }
                     if(hash_size_array[val] > max_conflict_size) { c = true; }
@@ -209,7 +209,7 @@ namespace uwvm
         struct ht_para_cpos
         {
             ::fast_io::basic_os_c_str_with_known_size<char> str{};
-            const parameter* para{};
+            parameter const* para{};
         };
 
 #if 0
@@ -236,7 +236,7 @@ struct ct_para_str {
         };
 
         template <::std::size_t hash_table_size, ::std::size_t conflict_size, ::std::size_t N>
-        inline consteval auto generate_hash_table(const ::fast_io::freestanding::array<all_parameter, N>& ord) noexcept
+        inline consteval auto generate_hash_table(::fast_io::freestanding::array<all_parameter, N> const& ord) noexcept
         {
             parameters_hash_table<hash_table_size, conflict_size> res{};
 
@@ -245,13 +245,13 @@ struct ct_para_str {
 
             for(auto& j: ord)
             {
-                const ::std::size_t j_str_size{j.str.n};
+                ::std::size_t const j_str_size{j.str.n};
                 ::std::byte* const ptr{new ::std::byte[j_str_size]{}};
                 for(::std::size_t k{}; k < j_str_size; k++) { ptr[k] = static_cast<::std::byte>(j.str.ptr[k]); }
                 crc32c.reset();
                 crc32c.update(ptr, ptr + j_str_size);
                 delete[] ptr;
-                const auto val{crc32c.digest_value() % hash_table_size};
+                auto const val{crc32c.digest_value() % hash_table_size};
                 if constexpr(conflict_size)
                 {
                     if(res.ht[val].para == nullptr)
@@ -296,7 +296,7 @@ struct ct_para_str {
         }
 
         template <::std::size_t hash_table_size, ::std::size_t conflict_size>
-        constexpr const inline parameter* find_from_hash_table(const parameters_hash_table<hash_table_size, conflict_size>& ht,
+        constexpr inline parameter const* find_from_hash_table(parameters_hash_table<hash_table_size, conflict_size> const& ht,
                                                                ::fast_io::basic_os_c_str_with_known_size<char> str) noexcept
         {
             ::fast_io::crc32c_context crc32c{};
@@ -307,7 +307,7 @@ struct ct_para_str {
             if(__builtin_is_constant_evaluated())
 #endif
             {
-                const auto str_size{str.size()};
+                auto const str_size{str.size()};
                 ::std::byte* const ptr{new ::std::byte[str_size]{}};
                 for(::std::size_t k{}; k < str_size; k++) { ptr[k] = static_cast<::std::byte>(str.ptr[k]); }
                 crc32c.update(ptr, ptr + str_size);
@@ -315,11 +315,11 @@ struct ct_para_str {
             }
             else
             {
-                auto i{reinterpret_cast<const ::std::byte*>(str.data())};
+                auto i{reinterpret_cast<::std::byte const*>(str.data())};
                 crc32c.update(i, i + str.size());
             }
-            const auto val{crc32c.digest_value() % hash_table_size};
-            const auto htval{ht.ht[val]};
+            auto const val{crc32c.digest_value() % hash_table_size};
+            auto const htval{ht.ht[val]};
             if constexpr(conflict_size)
             {
                 if(htval.para == nullptr)

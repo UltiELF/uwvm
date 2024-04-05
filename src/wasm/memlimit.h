@@ -18,4 +18,4 @@ namespace uwvm::wasm
     constexpr inline ::std::uint_least64_t maxMemory64WASMPages{maxMemory64WASMBytes >> numBytesPerPageLog2};
     constexpr inline ::std::uint_least64_t maxMemory64WASMMask{maxMemory64WASMBytes - 1u};
 
-}
+}  // namespace uwvm::wasm

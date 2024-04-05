@@ -8,7 +8,7 @@
 namespace uwvm::path
 {
 
-    inline void init_install_path(const char* argv0) noexcept
+    inline void init_install_path(char const* argv0) noexcept
     {
         ::uwvm::path::get_module_install_path();
 

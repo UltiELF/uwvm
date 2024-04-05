@@ -13,7 +13,7 @@
 
 namespace uwvm::path
 {
-    inline void get_module_install_path_from_argv0(const char* argv0) noexcept
+    inline void get_module_install_path_from_argv0(char const* argv0) noexcept
     {
 #if !defined(_WIN32) && !defined(__MSDOS__) && !defined(__wasm__)
         if(!argv0) [[unlikely]] { return; }
@@ -34,11 +34,11 @@ namespace uwvm::path
             {
                 newpath[PATH_MAX - 1] = 0;
                 ::uwvm::path::module_path = ::fast_io::u8concat(::fast_io::mnp::code_cvt_os_c_str(newpath));
-                const auto begin2{strlike_begin(::fast_io::io_strlike_type<char8_t, ::fast_io::u8string>, ::uwvm::path::module_path)};
+                auto const begin2{strlike_begin(::fast_io::io_strlike_type<char8_t, ::fast_io::u8string>, ::uwvm::path::module_path)};
                 auto curr{strlike_curr(::fast_io::io_strlike_type<char8_t, ::fast_io::u8string>, ::uwvm::path::module_path)};
                 for(; curr != begin2; curr--)  // calculate dos path
                 {
-                    if(const auto c{*curr}; c == u8'/')
+                    if(auto const c{*curr}; c == u8'/')
                     {
                         curr++;
                         break;
@@ -61,11 +61,11 @@ namespace uwvm::path
             {
                 newpath[PATH_MAX - 1] = 0;
                 ::uwvm::path::module_path = ::fast_io::u8concat(::fast_io::mnp::code_cvt_os_c_str(newpath));
-                const auto begin2{strlike_begin(::fast_io::io_strlike_type<char8_t, ::fast_io::u8string>, ::uwvm::path::module_path)};
+                auto const begin2{strlike_begin(::fast_io::io_strlike_type<char8_t, ::fast_io::u8string>, ::uwvm::path::module_path)};
                 auto curr{strlike_curr(::fast_io::io_strlike_type<char8_t, ::fast_io::u8string>, ::uwvm::path::module_path)};
                 for(; curr != begin2; curr--)  // calculate dos path
                 {
-                    if(const auto c{*curr}; c == u8'/')
+                    if(auto const c{*curr}; c == u8'/')
                     {
                         curr++;
                         break;
@@ -83,8 +83,7 @@ namespace uwvm::path
             char* saveptr;
             char* pathitem;
             char* save_path{::getenv("PATH")};
-            for(pathitem = ::strtok_r(save_path, path_list_separator, &saveptr); pathitem;
-                pathitem = ::strtok_r(NULL, path_list_separator, &saveptr))
+            for(pathitem = ::strtok_r(save_path, path_list_separator, &saveptr); pathitem; pathitem = ::strtok_r(NULL, path_list_separator, &saveptr))
             {
                 strncpy(newpath2, pathitem, PATH_MAX + 256);
                 strncat(newpath2, path_separator_as_string, PATH_MAX + 256);
@@ -94,11 +93,11 @@ namespace uwvm::path
                 {
                     newpath[PATH_MAX - 1] = 0;
                     ::uwvm::path::module_path = ::fast_io::u8concat(::fast_io::mnp::code_cvt_os_c_str(newpath));
-                    const auto begin2{strlike_begin(::fast_io::io_strlike_type<char8_t, ::fast_io::u8string>, ::uwvm::path::module_path)};
+                    auto const begin2{strlike_begin(::fast_io::io_strlike_type<char8_t, ::fast_io::u8string>, ::uwvm::path::module_path)};
                     auto curr{strlike_curr(::fast_io::io_strlike_type<char8_t, ::fast_io::u8string>, ::uwvm::path::module_path)};
                     for(; curr != begin2; curr--)  // calculate dos path
                     {
-                        if(const auto c{*curr}; c == u8'/')
+                        if(auto const c{*curr}; c == u8'/')
                         {
                             curr++;
                             break;

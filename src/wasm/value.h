@@ -31,4 +31,4 @@ namespace uwvm::wasm
             default: ::fast_io::unreachable();
         }
     }
-}  // namespace uwvm
+}  // namespace uwvm::wasm

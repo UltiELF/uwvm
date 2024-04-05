@@ -25,19 +25,16 @@ namespace uwvm::path
     {
         char buffer[PATH_MAX + 1];
         ::std::uint_least32_t size{PATH_MAX};
-        if(::fast_io::noexcept_call(::_NSGetExecutablePath, buffer, &size) == -1)
-        { 
-            return;
-        }
+        if(::fast_io::noexcept_call(::_NSGetExecutablePath, buffer, &size) == -1) { return; }
         char buffer2[PATH_MAX + 1];
         char* resolved{::fast_io::noexcept_call(::realpath, buffer, buffer2)};
         if(!resolved) [[unlikely]] { return; }
         ::uwvm::path::module_path = ::fast_io::u8concat(::fast_io::mnp::code_cvt_os_c_str(resolved));
-        const auto begin{strlike_begin(::fast_io::io_strlike_type<char8_t, ::fast_io::u8string>, ::uwvm::path::module_path)};
+        auto const begin{strlike_begin(::fast_io::io_strlike_type<char8_t, ::fast_io::u8string>, ::uwvm::path::module_path)};
         auto curr{strlike_curr(::fast_io::io_strlike_type<char8_t, ::fast_io::u8string>, ::uwvm::path::module_path)};
-        for(; curr != begin; curr--) 
+        for(; curr != begin; curr--)
         {
-            if(const auto c{*curr}; c == u8'/')
+            if(auto const c{*curr}; c == u8'/')
             {
                 curr++;
                 break;

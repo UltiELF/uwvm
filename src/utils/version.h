@@ -71,13 +71,13 @@ namespace uwvm
 
     constexpr inline ::std::strong_ordering operator<=> (version v1, version v2) noexcept
     {
-        const auto cx{v1.x <=> v2.x};
+        auto const cx{v1.x <=> v2.x};
         if(cx == 0)
         {
-            const auto cy{v1.y <=> v2.y};
+            auto const cy{v1.y <=> v2.y};
             if(cy == 0)
             {
-                const auto cz{v1.z <=> v2.z};
+                auto const cz{v1.z <=> v2.z};
                 if(cz == 0) { return v1.state <=> v2.state; }
                 return cz;
             }

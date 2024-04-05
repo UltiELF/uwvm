@@ -41,11 +41,11 @@ namespace uwvm::path
         if(!resolved) { return; }
 
         ::uwvm::path::module_path = ::fast_io::u8concat(::fast_io::mnp::code_cvt_os_c_str(resolved));
-        const auto begin{strlike_begin(::fast_io::io_strlike_type<char8_t, ::fast_io::u8string>, ::uwvm::path::module_path)};
+        auto const begin{strlike_begin(::fast_io::io_strlike_type<char8_t, ::fast_io::u8string>, ::uwvm::path::module_path)};
         auto curr{strlike_curr(::fast_io::io_strlike_type<char8_t, ::fast_io::u8string>, ::uwvm::path::module_path)};
         for(; curr != begin; curr--)  // calculate nt or dos path
         {
-            if(const auto c{*curr}; c == u8'/')
+            if(auto const c{*curr}; c == u8'/')
             {
                 curr++;
                 break;

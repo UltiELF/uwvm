@@ -13,7 +13,7 @@ namespace uwvm
 
     namespace details
     {
-        constexpr const inline ::uwvm::cmdline::parameter* parameter_unsort[]{
+        constexpr inline ::uwvm::cmdline::parameter const* parameter_unsort[]{
 #include "parainc.h"
         };
     }  // namespace details
@@ -25,6 +25,5 @@ namespace uwvm
     constexpr inline ::std::size_t parameter_max_name_size{::uwvm::cmdline::calculate_max_para_size(parameter_lookup_table)};
 
     constexpr inline auto hash_table_size{::uwvm::cmdline::calculate_hash_table_size(parameter_lookup_table)};
-    constexpr inline auto hash_table{
-        ::uwvm::cmdline::generate_hash_table<hash_table_size.hash_table_size, hash_table_size.extra_size>(parameter_lookup_table)};
+    constexpr inline auto hash_table{::uwvm::cmdline::generate_hash_table<hash_table_size.hash_table_size, hash_table_size.extra_size>(parameter_lookup_table)};
 }  // namespace uwvm
