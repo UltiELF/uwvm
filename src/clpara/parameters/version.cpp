@@ -107,14 +107,14 @@
                         u8"LoongArch64"
 #elif defined(__loongarch__)
                         u8"LoongArch"
-#elif defined(__m68k__)
+#elif defined(__m68k__) || defined(__mc68000__)
                         u8"Motorola 68k"
 #elif defined(__MIPS64__) || defined(__mips64__)
 			u8"MIPS64"
 #if defined(_MIPS_ARCH_MIPS64R2)
 			u8"R2"
 #endif
-#elif defined(__MIPS__) || defined(__mips__)
+#elif defined(__MIPS__) || defined(__mips__) || defined(_MIPS_ARCH)
                         u8"MIPS"
 #elif defined(__HPPA__)
                         u8"HP/PA RISC"
@@ -146,15 +146,24 @@
                         u8"PTX"
 #elif defined(__sparc__)
                         u8"SPARC"
+#if defined(__sparcv8__)
+			u8"v8"
+#endif
 #elif defined(__sh__)
                         u8"SuperH"
 #elif defined(__SYSC_ZARCH__)
                         u8"z/Architecture"
+#elif defined(__AVR__)
+                        u8"AVR"
 #else
                         u8"Unknown Arch"
 #endif
 
     // ARM PROFILE
+#if defined(__ARM_ARCH)
+			u8" V",
+			__ARM_ARCH,
+#endif
 #if defined(__ARM_ARCH_PROFILE)
     #if __ARM_ARCH_PROFILE == 'A'
                         u8" (Cortex-A)"
@@ -173,7 +182,7 @@
 #endif
     // SIMD
 #if defined(__wasm_simd128__)
-                        u8"\nSIMD support: WebAssembly SIMD"
+                        u8"\nSIMD support: WebAssembly SIMD 128"
 #elif defined(__loongarch__) && defined(__loongarch_sx)
                         u8"\nSIMD support: LoongSX "
     #if defined(__loongarch_asx)
