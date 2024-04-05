@@ -51,28 +51,7 @@ namespace uwvm
         {
             pr.emplace_back_unchecked(::fast_io::mnp::os_c_str(*argv, __builtin_strlen(*argv)), nullptr, ::uwvm::cmdline::parameter_parsing_results_type::dir);
         }
-#if 0
-	if (argc > 1) {
-		if (argv[1] != nullptr) {
-			auto argv_str{::fast_io::mnp::os_c_str(argv[1], __builtin_strlen(argv[1]))};
 
-			if (argv_str.n != 0) {
-				if (argv_str.ptr[0] == '-') {
-					auto para{::uwvm::cmdline::find_from_hash_table<hash_table_size, conflict_size>(ht, argv_str)};
-					if (para == nullptr) {
-						pr.emplace_back_unchecked(argv_str, nullptr, ::uwvm::cmdline::parameter_parsing_results_type::invalid_parameter);
-					} else {
-						if (para->is_exist)
-							*para->is_exist = true;
-						pr.emplace_back_unchecked(argv_str, para, ::uwvm::cmdline::parameter_parsing_results_type::parameter);
-					}
-				} else {
-					pr.emplace_back_unchecked(argv_str, nullptr, ::uwvm::cmdline::parameter_parsing_results_type::arg);
-				}
-			}
-		}
-	}
-#endif
         for(int i{1}; i < argc; ++i)
         {
             if(argv[i] == nullptr) { continue; }
@@ -142,7 +121,7 @@ namespace uwvm
             }
             else { pr.emplace_back_unchecked(argv_str, nullptr, ::uwvm::cmdline::parameter_parsing_results_type::arg); }
         }
-
+        const auto ie{::uwvm::wasm_file_ppos ? pr.begin() + ::uwvm::wasm_file_ppos : pr.end()};
         {
             ::fast_io::u8native_io_observer buf_u8err{::uwvm::u8err};
 #if 0
@@ -154,8 +133,9 @@ namespace uwvm
 #endif
             bool shouldreturn{};
 
-            for(auto& i: pr)
+            for(auto ib{pr.begin() + 1}; ib != ie; ++ib)
             {
+                auto& i{*ib};
                 if(i.type == ::uwvm::cmdline::parameter_parsing_results_type::invalid_parameter)
                 {
                     if(ign_invpm_b)
@@ -301,7 +281,9 @@ namespace uwvm
 
         bool needexit{};
         bool needterminal{};
-        for(::size_t i{1}; i < pr.size(); ++i)
+
+        const auto ie_size{::uwvm::wasm_file_ppos ? ::uwvm::wasm_file_ppos : pr.size()};
+        for(::std::size_t i{1}; i != ie_size; ++i)
         {
             if(pr[i].para == nullptr) { continue; }
 
@@ -332,8 +314,10 @@ namespace uwvm
 #endif
             bool shouldreturn{};
             ::fast_io::u8native_io_observer buf_u8err{::uwvm::u8err};
-            for(auto& i: pr)
+
+            for(auto ib{pr.begin() + 1}; ib != ie; ++ib)
             {
+                auto& i{*ib};
                 if(i.type == ::uwvm::cmdline::parameter_parsing_results_type::arg)
                 {
                     if(ign_invpm_b)

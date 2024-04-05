@@ -27,7 +27,7 @@ namespace uwvm::path
                                   u8"\033[97m"
                                   u8"Cannot get module path.\n"
                                   u8"\033[0m"
-                                  u8"uwvm terminate.\n\n");
+                                  u8"Terminate.\n\n");
                 ::fast_io::fast_terminate();
             }
             ::fast_io::io::perr(::uwvm::u8err,
