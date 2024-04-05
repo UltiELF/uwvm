@@ -24,7 +24,7 @@ namespace uwvm
 
         if(argc == 0)
         {
-            ::fast_io::io::perrln(::uwvm::u8err,
+            ::fast_io::io::perr(::uwvm::u8err,
                                   u8"\033[0m"
 #ifdef __MSDOS__
                                   u8"\033[37m"
@@ -41,7 +41,8 @@ namespace uwvm
                                   u8"\033[97m"
 #endif
                                   u8"No Parameters."
-                                  u8"\033[0m");
+                                  u8"\033[0m"
+                                  u8"\n\n");
             return -1;
         }
 
@@ -179,7 +180,7 @@ namespace uwvm
 
                     ::fast_io::io::perr(buf_u8err, u8"invalid parameter: " u8"\033[36m", ::fast_io::mnp::code_cvt(i.str));
 
-                    if(ign_invpm_b) { ::fast_io::io::perrln(buf_u8err, u8"\033[0m"); }
+                    if(ign_invpm_b) { ::fast_io::io::perr(buf_u8err, u8"\033[0m" u8"\n"); }
                     else
                     {
                         ::fast_io::basic_os_c_str_with_known_size<char> f_test_str{};
@@ -203,10 +204,10 @@ namespace uwvm
                             }
                         }
 
-                        if(f_test_str.n == 0) { ::fast_io::io::perrln(buf_u8err, u8"\033[0m"); }
+                        if(f_test_str.n == 0) { ::fast_io::io::perr(buf_u8err, u8"\033[0m" u8"\n"); }
                         else
                         {
-                            ::fast_io::io::perrln(buf_u8err,
+                            ::fast_io::io::perr(buf_u8err,
 #ifdef __MSDOS__
                                                   u8"\033[37m"
 #else
@@ -219,7 +220,8 @@ namespace uwvm
 #else
                                                   u8"\033[97m"
 #endif
-                                                  u8")" u8"\033[0m");
+                                                  u8")" u8"\033[0m"
+                                                  u8"\n");
                         }
                     }
                 }
@@ -227,7 +229,7 @@ namespace uwvm
                 {
                     if(ign_invpm_b)
                     {
-                        ::fast_io::io::perrln(buf_u8err,
+                        ::fast_io::io::perr(buf_u8err,
                                               u8"\033[0m",
 #ifdef __MSDOS__
                                               u8"\033[37m"
@@ -248,12 +250,13 @@ namespace uwvm
 #endif
                                               u8"ignore duplicate parameter: " u8"\033[36m",
                                               ::fast_io::mnp::code_cvt(i.str),
-                                              u8"\033[0m");
+                                              u8"\033[0m" 
+                                              u8"\n");
                     }
                     else
                     {
                         shouldreturn = true;
-                        ::fast_io::io::perrln(buf_u8err,
+                        ::fast_io::io::perr(buf_u8err,
                                               u8"\033[0m"
 #ifdef __MSDOS__
                                               u8"\033[37m"
@@ -271,7 +274,8 @@ namespace uwvm
                                               u8"duplicate parameter: "
                                               u8"\033[36m",
                                               ::fast_io::mnp::code_cvt(i.str),
-                                              u8"\033[0m");
+                                              u8"\033[0m"
+                                              u8"\n");
                     }
                 }
             }
@@ -306,9 +310,9 @@ namespace uwvm
         if(needexit) { return -1; }
         {
 #if 0
-		constexpr auto ign_invpm{__builtin_addressof(::uwvm::parameter::ignore_invalid_parameters)};
+		    constexpr auto ign_invpm{__builtin_addressof(::uwvm::parameter::ignore_invalid_parameters)};
 
-		bool const ign_invpm_b{ign_invpm->is_exist ? *ign_invpm->is_exist : false};
+		    bool const ign_invpm_b{ign_invpm->is_exist ? *ign_invpm->is_exist : false};
 #else
             const bool ign_invpm_b{false};
 #endif
@@ -322,7 +326,7 @@ namespace uwvm
                 {
                     if(ign_invpm_b)
                     {
-                        ::fast_io::io::perrln(buf_u8err,
+                        ::fast_io::io::perr(buf_u8err,
                                               u8"\033[0m"
 #ifdef __MSDOS__
                                               u8"\033[37m"
@@ -343,12 +347,13 @@ namespace uwvm
 #endif
                                               u8"ignore invalid option: " u8"\033[36m",
                                               ::fast_io::mnp::code_cvt(i.str),
-                                              u8"\033[0m");
+                                              u8"\033[0m" 
+                                              u8"\n");
                     }
                     else
                     {
                         shouldreturn = true;
-                        ::fast_io::io::perrln(buf_u8err,
+                        ::fast_io::io::perr(buf_u8err,
                                               u8"\033[0m"
 #ifdef __MSDOS__
                                               u8"\033[37m"
@@ -364,7 +369,8 @@ namespace uwvm
 #endif
                                               u8"invalid option: " u8"\033[36m",
                                               ::fast_io::mnp::code_cvt(i.str),
-                                              u8"\033[0m");
+                                              u8"\033[0m"
+                                              u8"\n");
                     }
                 }
             }
