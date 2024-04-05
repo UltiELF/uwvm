@@ -42,10 +42,16 @@
                         ::uwvm::git_fetch_head,
                         // Compiler
                         u8"\nCompiler: "
-#ifdef __clang__
-                        u8"LLVM clang " __clang_version__
-#elif defined(__GNUC__) && defined(__VERSION__)
-                        u8"GCC " __VERSION__
+#if defined(__clang__)
+                        u8"LLVM clang " 
+#if defined(__clang_version__)
+			__clang_version__
+#endif
+#elif defined(__GNUC__)  
+			u8"GCC "
+#if defined(__VERSION__)
+			__VERSION__
+#endif
 #elif defined(_MSC_VER)
                         u8"Microsoft Visual C++ ",
                         _MSC_VER,
