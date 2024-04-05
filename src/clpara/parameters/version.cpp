@@ -382,5 +382,5 @@
                           u8"\n\n" // endl
     );
 
-    return ::uwvm::cmdline::parameter_return_type::return_soon;
+    return ::uwvm::cmdline::parameter_return_type::return_imme;
 }
