@@ -109,7 +109,12 @@
                         u8"LoongArch"
 #elif defined(__m68k__)
                         u8"Motorola 68k"
-#elif defined(__MIPS__)
+#elif defined(__MIPS64__) || defined(__mips64__)
+			u8"MIPS64"
+#if defined(_MIPS_ARCH_MIPS64R2)
+			u8"R2"
+#endif
+#elif defined(__MIPS__) || defined(__mips__)
                         u8"MIPS"
 #elif defined(__HPPA__)
                         u8"HP/PA RISC"
@@ -122,8 +127,19 @@
                         u8"System/370"
 #elif defined(__s390__) || defined(__s390x__)
                         u8"System/390"
-#elif defined(__powerpc64__) || defined(__ppc64__) || defined(__PPC64__)
+#elif defined(__powerpc64__) || defined(__ppc64__) || defined(__PPC64__) || defined(_ARCH_PPC64)
                         u8"PowerPC64"
+#if defined(_LITTLE_ENDIAN)
+                        u8"LE"
+#endif
+#elif defined(__powerpc__) || defined(__ppc__) || defined(__PPC__) || defined(_ARCH_PPC)
+                        u8"PowerPC"
+#if defined(_LITTLE_ENDIAN)
+                        u8"LE"
+#endif
+#if defined(__SPE__)
+			u8"SPE"
+#endif
 #elif defined(__THW_RS6000) || defined(_IBMR2) || defined(_POWER) || defined(_ARCH_PWR) || defined(_ARCH_PWR2)
                         u8"RS/6000"
 #elif defined(__CUDA_ARCH__)
