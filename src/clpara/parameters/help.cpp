@@ -4,6 +4,9 @@
 #if __has_cpp_attribute(__gnu__::__cold__)
 [[__gnu__::__cold__]]
 #endif
+#if __has_cpp_attribute(__gnu__::__pure__)
+[[__gnu__::__pure__]]
+#endif
 ::uwvm::cmdline::parameter_return_type(::uwvm::parameter::details::help_callback)(::std::size_t,
                                                                                   ::fast_io::vector<::uwvm::cmdline::parameter_parsing_results>&) noexcept
 {
@@ -16,7 +19,7 @@
                         u8"\033[97m"
 #endif
                         u8"Arguments:\n");
-    for(auto& p: ::uwvm::parameters)
+    for(auto const& p: ::uwvm::parameters)
     {
         ::fast_io::io::perr(buf_u8out,
                             u8"\t"

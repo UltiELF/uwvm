@@ -16,6 +16,7 @@
         ::uwvm::path::init_install_path(::uwvm::path::argv0);
     }
 #endif
+
     ::fast_io::io::perr(::uwvm::u8err,
                         u8"\033[0m"
 #ifdef __MSDOS__
