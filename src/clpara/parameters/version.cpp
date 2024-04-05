@@ -75,9 +75,9 @@
 #if defined(__wasm__)
                         u8"WASM"
     #if defined(__wasm32__)
-                        u8"32"
+                        u8" 32"
     #elif defined(__wasm64__)
-                        u8"64"
+                        u8" 64"
     #endif
 #elif defined(__alpha__)
                         u8"DEC Alpha"
@@ -108,10 +108,9 @@
 #elif defined(__HPPA__)
                         u8"HP/PA RISC"
 #elif defined(__riscv)
-    #if defined(__riscv_xlen) && __riscv_xlen == 64
-                        u8"RISC-V 64"
-    #else
                         u8"RISC-V"
+    #if defined(__riscv_xlen) && __riscv_xlen == 64
+                        u8" 64"          
     #endif
 #elif defined(__370__) || defined(__THW_370__)
                         u8"System/370"
