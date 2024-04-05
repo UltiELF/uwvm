@@ -15,7 +15,7 @@ namespace uwvm
 #if __has_cpp_attribute(__gnu__::__cold__)
     [[__gnu__::__cold__]]
 #endif
-    constexpr inline int
+    inline constexpr int
         parsing(int argc,
                 char const* const* argv,
                 ::fast_io::vector<::uwvm::cmdline::parameter_parsing_results>& pr,
@@ -25,24 +25,24 @@ namespace uwvm
         if(argc == 0)
         {
             ::fast_io::io::perr(::uwvm::u8err,
-                                  u8"\033[0m"
+                                u8"\033[0m"
 #ifdef __MSDOS__
-                                  u8"\033[37m"
+                                u8"\033[37m"
 #else
-                                  u8"\033[97m"
+                                u8"\033[97m"
 #endif
-                                  u8"uwvm: "
-                                  u8"\033[31m"
-                                  u8"[error] "
-                                  u8"\033[0m"
+                                u8"uwvm: "
+                                u8"\033[31m"
+                                u8"[error] "
+                                u8"\033[0m"
 #ifdef __MSDOS__
-                                  u8"\033[37m"
+                                u8"\033[37m"
 #else
-                                  u8"\033[97m"
+                                u8"\033[97m"
 #endif
-                                  u8"No Parameters."
-                                  u8"\033[0m"
-                                  u8"\n\n");
+                                u8"No Parameters."
+                                u8"\033[0m"
+                                u8"\n\n");
             return -1;
         }
 
@@ -72,27 +72,27 @@ namespace uwvm
                     if(++i == argc)
                     {
                         ::fast_io::io::perr(::uwvm::u8err,
-                              u8"\033[0m"
+                                            u8"\033[0m"
 #ifdef __MSDOS__
-                              u8"\033[37m"
+                                            u8"\033[37m"
 #else
-                              u8"\033[97m"
+                                            u8"\033[97m"
 #endif
-                              u8"uwvm: "
-                              u8"\033[31m"
-                              u8"[error] "
+                                            u8"uwvm: "
+                                            u8"\033[31m"
+                                            u8"[error] "
 #ifdef __MSDOS__
-                              u8"\033[37m"
+                                            u8"\033[37m"
 #else
-                              u8"\033[97m"
+                                            u8"\033[97m"
 #endif
-                              u8"Usage: " 
-                              u8"\033[36m"
-                              u8"[--run|-r] "
-                              u8"\033[32m" 
-                              "<file> <argv1> <argv2> ..."
-                              u8"\033[0m"
-			                  u8"\n\n");
+                                            u8"Usage: "
+                                            u8"\033[36m"
+                                            u8"[--run|-r] "
+                                            u8"\033[32m"
+                                            "<file> <argv1> <argv2> ..."
+                                            u8"\033[0m"
+                                            u8"\n\n");
 
                         return -1;
                     }
@@ -148,7 +148,8 @@ namespace uwvm
 #else
                                             u8"\033[97m"
 #endif
-                                            u8"uwvm: " u8"\033[91m",
+                                            u8"uwvm: "
+                                            u8"\033[91m",
                                             u8"[warning] "
 #ifdef __MSDOS__
                                             u8"\033[37m"
@@ -178,9 +179,17 @@ namespace uwvm
                         );
                     }
 
-                    ::fast_io::io::perr(buf_u8err, u8"invalid parameter: " u8"\033[36m", ::fast_io::mnp::code_cvt(i.str));
+                    ::fast_io::io::perr(buf_u8err,
+                                        u8"invalid parameter: "
+                                        u8"\033[36m",
+                                        ::fast_io::mnp::code_cvt(i.str));
 
-                    if(ign_invpm_b) { ::fast_io::io::perr(buf_u8err, u8"\033[0m" u8"\n"); }
+                    if(ign_invpm_b)
+                    {
+                        ::fast_io::io::perr(buf_u8err,
+                                            u8"\033[0m"
+                                            u8"\n");
+                    }
                     else
                     {
                         ::fast_io::basic_os_c_str_with_known_size<char> f_test_str{};
@@ -204,24 +213,31 @@ namespace uwvm
                             }
                         }
 
-                        if(f_test_str.n == 0) { ::fast_io::io::perr(buf_u8err, u8"\033[0m" u8"\n"); }
+                        if(f_test_str.n == 0)
+                        {
+                            ::fast_io::io::perr(buf_u8err,
+                                                u8"\033[0m"
+                                                u8"\n");
+                        }
                         else
                         {
                             ::fast_io::io::perr(buf_u8err,
 #ifdef __MSDOS__
-                                                  u8"\033[37m"
+                                                u8"\033[37m"
 #else
-                                                  u8"\033[97m"
+                                                u8"\033[97m"
 #endif
-                                                  u8" (did you mean: " u8"\033[32m",
-                                                  ::fast_io::mnp::code_cvt(f_test_str),
+                                                u8" (did you mean: "
+                                                u8"\033[32m",
+                                                ::fast_io::mnp::code_cvt(f_test_str),
 #ifdef __MSDOS__
-                                                  u8"\033[37m"
+                                                u8"\033[37m"
 #else
-                                                  u8"\033[97m"
+                                                u8"\033[97m"
 #endif
-                                                  u8")" u8"\033[0m"
-                                                  u8"\n");
+                                                u8")"
+                                                u8"\033[0m"
+                                                u8"\n");
                         }
                     }
                 }
@@ -248,33 +264,35 @@ namespace uwvm
 #else
                                             u8"\033[97m"
 #endif
-                                            u8"ignore duplicate parameter: " u8"\033[36m",
+                                            u8"ignore duplicate parameter: "
+                                            u8"\033[36m",
                                             ::fast_io::mnp::code_cvt(i.str),
-                                            u8"\033[0m" u8"\n");
+                                            u8"\033[0m"
+                                            u8"\n");
                     }
                     else
                     {
                         shouldreturn = true;
                         ::fast_io::io::perr(buf_u8err,
-                                              u8"\033[0m"
+                                            u8"\033[0m"
 #ifdef __MSDOS__
-                                              u8"\033[37m"
+                                            u8"\033[37m"
 #else
-                                              u8"\033[97m"
+                                            u8"\033[97m"
 #endif
-                                              u8"uwvm: "
-                                              u8"\033[31m"
-                                              u8"[error] "
+                                            u8"uwvm: "
+                                            u8"\033[31m"
+                                            u8"[error] "
 #ifdef __MSDOS__
-                                              u8"\033[37m"
+                                            u8"\033[37m"
 #else
-                                              u8"\033[97m"
+                                            u8"\033[97m"
 #endif
-                                              u8"duplicate parameter: "
-                                              u8"\033[36m",
-                                              ::fast_io::mnp::code_cvt(i.str),
-                                              u8"\033[0m"
-                                              u8"\n");
+                                            u8"duplicate parameter: "
+                                            u8"\033[36m",
+                                            ::fast_io::mnp::code_cvt(i.str),
+                                            u8"\033[0m"
+                                            u8"\n");
                     }
                 }
             }
@@ -348,9 +366,11 @@ namespace uwvm
 #else
                                             u8"\033[97m"
 #endif
-                                            u8"ignore invalid option: " u8"\033[36m",
+                                            u8"ignore invalid option: "
+                                            u8"\033[36m",
                                             ::fast_io::mnp::code_cvt(i.str),
-                                            u8"\033[0m" u8"\n");
+                                            u8"\033[0m"
+                                            u8"\n");
                     }
                     else
                     {
@@ -362,16 +382,19 @@ namespace uwvm
 #else
                                             u8"\033[97m"
 #endif
-                                            u8"uwvm: " u8"\033[31m",
+                                            u8"uwvm: "
+                                            u8"\033[31m",
                                             u8"[error] "
 #ifdef __MSDOS__
                                             u8"\033[37m"
 #else
                                             u8"\033[97m"
 #endif
-                                            u8"invalid option: " u8"\033[36m",
+                                            u8"invalid option: "
+                                            u8"\033[36m",
                                             ::fast_io::mnp::code_cvt(i.str),
-                                            u8"\033[0m" u8"\n");
+                                            u8"\033[0m"
+                                            u8"\n");
                     }
                 }
             }

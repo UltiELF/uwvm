@@ -15,7 +15,7 @@ namespace uwvm
     namespace cmdline
     {
         template <::std::size_t Len = 0, ::std::integral char_type>
-        constexpr inline ::std::size_t dp(::fast_io::basic_os_c_str_with_known_size<char_type> x,
+        inline constexpr ::std::size_t dp(::fast_io::basic_os_c_str_with_known_size<char_type> x,
                                           ::fast_io::basic_os_c_str_with_known_size<char_type> y) noexcept
         {
             ::std::size_t const lena{x.size()};

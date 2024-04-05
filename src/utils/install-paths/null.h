@@ -4,5 +4,5 @@
 
 namespace uwvm::path
 {
-    constexpr inline void get_module_install_path() noexcept {}
+    inline constexpr void get_module_install_path() noexcept {}
 }  // namespace uwvm::path

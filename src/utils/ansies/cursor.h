@@ -18,16 +18,16 @@ namespace uwvm
         struct tsc
         {
             // Control characters variables:
-            constexpr inline static decltype(auto) bell{u8"\x07"};  // Bell sound
-            constexpr inline static decltype(auto) bksp{u8"\x08"};  // Backspace
-            constexpr inline static decltype(auto) tab{u8"\x09"};   // Tab
-            constexpr inline static decltype(auto) lfd{u8"\x0A"};   // Line feed
-            constexpr inline static decltype(auto) ffd{u8"\x0C"};   // Form feed
-            constexpr inline static decltype(auto) crt{u8"\x0D"};   // Carriage return
+            inline static constexpr decltype(auto) bell{u8"\x07"};  // Bell sound
+            inline static constexpr decltype(auto) bksp{u8"\x08"};  // Backspace
+            inline static constexpr decltype(auto) tab{u8"\x09"};   // Tab
+            inline static constexpr decltype(auto) lfd{u8"\x0A"};   // Line feed
+            inline static constexpr decltype(auto) ffd{u8"\x0C"};   // Form feed
+            inline static constexpr decltype(auto) crt{u8"\x0D"};   // Carriage return
 
             // Control sequences variables:
-            constexpr inline static decltype(auto) hcrs{u8"\u001b[?25l"};  // Hide cursor
-            constexpr inline static decltype(auto) scrs{u8"\u001b[?25h"};  // Show cursor
+            inline static constexpr decltype(auto) hcrs{u8"\u001b[?25l"};  // Hide cursor
+            inline static constexpr decltype(auto) scrs{u8"\u001b[?25h"};  // Show cursor
         };
 
         /**
@@ -47,7 +47,7 @@ namespace uwvm
 
         template <::std::integral char_type>
             requires (sizeof(char_type) == sizeof(char8_t))
-        constexpr inline ::std::size_t print_reserve_size(::fast_io::io_reserve_type_t<char_type, crs>) noexcept
+        inline constexpr ::std::size_t print_reserve_size(::fast_io::io_reserve_type_t<char_type, crs>) noexcept
         {
             constexpr ::std::size_t real_size{print_reserve_size(::fast_io::io_reserve_type<char_type, ::std::uint_least32_t>)};
             constexpr ::std::size_t size{3 + real_size};
@@ -58,7 +58,7 @@ namespace uwvm
         {
             template <::std::integral char_type>
                 requires (sizeof(char_type) == sizeof(char8_t))
-            constexpr inline char_type* crs_print_reserve_impl(char_type* iter, crs::cursor_variables cv, ::std::uint_least32_t f) noexcept
+            inline constexpr char_type* crs_print_reserve_impl(char_type* iter, crs::cursor_variables cv, ::std::uint_least32_t f) noexcept
             {
                 ::fast_io::freestanding::my_memcpy(iter, u8"\u001b[", 2u);
                 char_type* curr_pos{iter + 2u};
@@ -70,7 +70,7 @@ namespace uwvm
 
         template <::std::integral char_type>
             requires (sizeof(char_type) == sizeof(char8_t))
-        constexpr inline char_type* print_reserve_define(::fast_io::io_reserve_type_t<char_type, crs>, char_type* iter, crs c) noexcept
+        inline constexpr char_type* print_reserve_define(::fast_io::io_reserve_type_t<char_type, crs>, char_type* iter, crs c) noexcept
         {
             return details::crs_print_reserve_impl(iter, c.cursor_var, c.feat);
         }
@@ -91,7 +91,7 @@ namespace uwvm
 
         template <::std::integral char_type>
             requires (sizeof(char_type) == sizeof(char8_t))
-        constexpr inline ::std::size_t print_reserve_size(::fast_io::io_reserve_type_t<char_type, tcsc>) noexcept
+        inline constexpr ::std::size_t print_reserve_size(::fast_io::io_reserve_type_t<char_type, tcsc>) noexcept
         {
             constexpr ::std::size_t real_size{print_reserve_size(::fast_io::io_reserve_type<char_type, ::std::uint_least32_t>)};
             constexpr ::std::size_t size{3 + real_size};
@@ -102,7 +102,7 @@ namespace uwvm
         {
             template <::std::integral char_type>
                 requires (sizeof(char_type) == sizeof(char8_t))
-            constexpr inline char_type* tcsc_print_reserve_impl(char_type* iter, tcsc::cursor_sequences_variables csv, ::std::uint_least32_t f) noexcept
+            inline constexpr char_type* tcsc_print_reserve_impl(char_type* iter, tcsc::cursor_sequences_variables csv, ::std::uint_least32_t f) noexcept
             {
                 ::fast_io::freestanding::my_memcpy(iter, u8"\u001b[", 2u);
                 char_type* curr_pos{iter + 2u};
@@ -114,7 +114,7 @@ namespace uwvm
 
         template <::std::integral char_type>
             requires (sizeof(char_type) == sizeof(char8_t))
-        constexpr inline char_type* print_reserve_define(::fast_io::io_reserve_type_t<char_type, tcsc>, char_type* iter, tcsc tc) noexcept
+        inline constexpr char_type* print_reserve_define(::fast_io::io_reserve_type_t<char_type, tcsc>, char_type* iter, tcsc tc) noexcept
         {
             return details::crs_print_reserve_impl(iter, tc.cursor_seq_var, tc.feat);
         }

@@ -23,14 +23,17 @@ namespace uwvm::path
         buffer[resolved] = '\0';
         ::uwvm::path::module_path = ::fast_io::u8concat(::fast_io::mnp::code_cvt(::fast_io::mnp::os_c_str_with_known_size(buffer, resolved)));
 #else
-        char* resolved{::fast_io::noexcept_call(::realpath,
+        char* resolved
+        {
+            ::fast_io::noexcept_call(::realpath,
     #if defined(__sun)
-                                                "/proc/self/path/a.out"
+                                     "/proc/self/path/a.out"
     #else
-                                                "/proc/self/exe"
+                                     "/proc/self/exe"
     #endif
-                                                ,
-                                                buffer)};
+                                     ,
+                                     buffer)
+        };
         if(!resolved) [[unlikely]] { return; }
         ::uwvm::path::module_path = ::fast_io::u8concat(::fast_io::mnp::code_cvt_os_c_str(resolved));
 #endif

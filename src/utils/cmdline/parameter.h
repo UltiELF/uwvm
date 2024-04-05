@@ -12,7 +12,7 @@
 namespace fast_io
 {
     template <::std::integral char_type>
-    constexpr inline bool operator== (basic_os_c_str_with_known_size<char_type> a, basic_os_c_str_with_known_size<char_type> b) noexcept
+    inline constexpr bool operator== (basic_os_c_str_with_known_size<char_type> a, basic_os_c_str_with_known_size<char_type> b) noexcept
     {
         if(a.n != b.n) { return false; }
         else
@@ -28,7 +28,7 @@ namespace fast_io
     }
 
     template <::std::integral char_type>
-    constexpr inline ::std::strong_ordering operator<=> (basic_os_c_str_with_known_size<char_type> a, basic_os_c_str_with_known_size<char_type> b) noexcept
+    inline constexpr ::std::strong_ordering operator<=> (basic_os_c_str_with_known_size<char_type> a, basic_os_c_str_with_known_size<char_type> b) noexcept
     {
         auto const a_last{a.ptr + a.n};
         auto const b_last{b.ptr + b.n};
@@ -99,7 +99,7 @@ namespace uwvm
         }
 
         template <::std::size_t N>
-        constexpr inline void parameter_clean(::fast_io::freestanding::array<parameter const*, N>& punsort) noexcept
+        inline constexpr void parameter_clean(::fast_io::freestanding::array<parameter const*, N>& punsort) noexcept
         {
             for(auto i: punsort) { i.callback = nullptr; }
         }
@@ -165,8 +165,8 @@ namespace uwvm
             return max_size;
         }
 
-        constexpr inline ::std::size_t hash_size_base{4u};
-        constexpr inline ::std::size_t max_conflict_size{8u};
+        inline constexpr ::std::size_t hash_size_base{4u};
+        inline constexpr ::std::size_t max_conflict_size{8u};
 
         struct calculate_hash_table_size_res
         {
@@ -296,7 +296,7 @@ struct ct_para_str {
         }
 
         template <::std::size_t hash_table_size, ::std::size_t conflict_size>
-        constexpr inline parameter const* find_from_hash_table(parameters_hash_table<hash_table_size, conflict_size> const& ht,
+        inline constexpr parameter const* find_from_hash_table(parameters_hash_table<hash_table_size, conflict_size> const& ht,
                                                                ::fast_io::basic_os_c_str_with_known_size<char> str) noexcept
         {
             ::fast_io::crc32c_context crc32c{};

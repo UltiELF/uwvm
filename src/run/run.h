@@ -12,16 +12,16 @@ namespace uwvm
         if(!::uwvm::wasm_file_name.size())
         {
             ::fast_io::io::perr(::uwvm::u8err,
-                                  u8"\033[0m"
-                                  u8"\033[97m"
-                                  u8"uwvm: "
-                                  u8"\033[31m"
-                                  u8"[fatal] "
-                                  u8"\033[0m"
-                                  u8"\033[97m"
-                                  u8"No input file.\n"
-                                  u8"\033[0m"
-                                  u8"Terminate.\n\n");
+                                u8"\033[0m"
+                                u8"\033[97m"
+                                u8"uwvm: "
+                                u8"\033[31m"
+                                u8"[fatal] "
+                                u8"\033[0m"
+                                u8"\033[97m"
+                                u8"No input file.\n"
+                                u8"\033[0m"
+                                u8"Terminate.\n\n");
             ::fast_io::fast_terminate();
         }
         ::uwvm::wasm_file_loader = ::fast_io::native_file_loader{::uwvm::wasm_file_name};

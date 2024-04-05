@@ -14,7 +14,7 @@ namespace uwvm::consolecp
 
     struct set_win32_console_io_cp_to_utf8
     {
-        constexpr inline static ::std::uint_least32_t utf8_coding{65001u};  // utf8
+        inline static constexpr ::std::uint_least32_t utf8_coding{65001u};  // utf8
 
         ::std::uint_least32_t output{};
         ::std::uint_least32_t input{};
@@ -36,7 +36,7 @@ namespace uwvm::consolecp
 
     struct enable_win32_ansi
     {
-        constexpr inline static ::std::uint_least32_t enable_virtual_terminal_processing{0x0004u};
+        inline static constexpr ::std::uint_least32_t enable_virtual_terminal_processing{0x0004u};
 
         ::std::uint_least32_t out_omode{};
         ::std::uint_least32_t err_omode{};

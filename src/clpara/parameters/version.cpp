@@ -11,39 +11,39 @@
                                                                                      ::fast_io::vector<::uwvm::cmdline::parameter_parsing_results>&) noexcept
 {
     ::fast_io::io::perr(::uwvm::u8err,
-                           u8"\033[0m"
+                        u8"\033[0m"
 #ifdef __MSDOS__
-                           u8"\033[35m"
+                        u8"\033[35m"
 #else
                         u8"\033[95m"
 #endif
-                           u8"Ultimate WebAssembly Virtual Machine\n"
+                        u8"Ultimate WebAssembly Virtual Machine\n"
 
     // Debug Mode
 #ifdef _DEBUG
-                           u8"\033[32m"
-                           u8"(Debug Mode)\n"
+                        u8"\033[32m"
+                        u8"(Debug Mode)\n"
 #endif
-                           u8"\033[0m"
-                           // Copyright
-                           u8"Copyright (C) 2024-present UltiELF Open Source Group"
+                        u8"\033[0m"
+                        // Copyright
+                        u8"Copyright (C) 2024-present UltiELF Open Source Group"
     // Install Path
 #if !defined(__MSDOS__) && !defined(__wasm__)
-                           u8"\nInstall Path: ",
-                           ::uwvm::path::module_install_path,
+                        u8"\nInstall Path: ",
+                        ::uwvm::path::module_install_path,
 #endif
-                           // Version
-                           u8"\nVersion: "
-                           u8"\033[32m",
-                           ::uwvm::uwvm_version,
-                           u8"\033[0m"
-                           // Git
-                           u8"\nFETCH_HEAD: ",
-                           ::uwvm::git_fetch_head,
-                           // Compiler
-                           u8"\nCompiler: "
+                        // Version
+                        u8"\nVersion: "
+                        u8"\033[32m",
+                        ::uwvm::uwvm_version,
+                        u8"\033[0m"
+                        // Git
+                        u8"\nFETCH_HEAD: ",
+                        ::uwvm::git_fetch_head,
+                        // Compiler
+                        u8"\nCompiler: "
 #ifdef __clang__
-                           u8"LLVM clang " __clang_version__
+                        u8"LLVM clang " __clang_version__
 #elif defined(__GNUC__) && defined(__VERSION__)
                         u8"GCC " __VERSION__
 #elif defined(_MSC_VER)
@@ -53,11 +53,11 @@
                         u8"Unknown C++ compiler"
 #endif
 
-                           // std Lib
-                           u8"\nC++ STD Library: "
+                        // std Lib
+                        u8"\nC++ STD Library: "
 #if defined(_LIBCPP_VERSION)
-                           u8"LLVM libc++ ",
-                           _LIBCPP_VERSION,
+                        u8"LLVM libc++ ",
+                        _LIBCPP_VERSION,
 #elif defined(__GLIBCXX__)
                         u8"GNU C++ Library ",
                         _GLIBCXX_RELEASE,
@@ -70,14 +70,14 @@
                         u8"Unknown C++ standard library",
 #endif
 
-                           // architecture
-                           u8"\nArchitecture: "
+                        // architecture
+                        u8"\nArchitecture: "
 #if defined(__wasm__)
-                           u8"WASM"
+                        u8"WASM"
     #if defined(__wasm32__)
-                           u8"32"
+                        u8"32"
     #elif defined(__wasm64__)
-                           u8"64"
+                        u8"64"
     #endif
 #elif defined(__alpha__)
                         u8"DEC Alpha"
@@ -136,23 +136,23 @@
     // ARM PROFILE
 #if defined(__ARM_ARCH_PROFILE)
     #if __ARM_ARCH_PROFILE == 'A'
-        u8" (Cortex-A)"
+                        u8" (Cortex-A)"
     #elif __ARM_ARCH_PROFILE == 'R'
-        u8" (Cortex-R)"
+                        u8" (Cortex-R)"
     #else
-        u8" (Cortex-M)"
+                        u8" (Cortex-M)"
     #endif
 #endif
 
     // Native
 #ifdef UWVM_NATIVE
-                           u8"\033[33m"
-                           u8" (Native Instructions Mode)"
-                           u8"\033[0m"
+                        u8"\033[33m"
+                        u8" (Native Instructions Mode)"
+                        u8"\033[0m"
 #endif
     // SIMD
 #if defined(__wasm_simd128__)
-                           u8"\nSIMD support: WebAssembly SIMD"
+                        u8"\nSIMD support: WebAssembly SIMD"
 #elif defined(__loongarch__) && defined(__loongarch_sx)
                         u8"\nSIMD support: LoongSX "
     #if defined(__loongarch_asx)
@@ -231,10 +231,10 @@
                         u8"\nSIMD support: PPC SIMD"
 #endif
 
-                           // OS
-                           u8"\nOS: "
+                        // OS
+                        u8"\nOS: "
 #if defined(__CYGWIN__)
-                           u8"Cygwin"
+                        u8"Cygwin"
 #elif defined(_WIN32) || defined(_WIN64) || defined(__WIN32__) || defined(__TOS_WIN__) || defined(__WINDOWS__) || defined(_WIN32_WINNT) ||                     \
     defined(_WIN32_WINDOWS)
                         u8"Microsoft Windows"
@@ -311,10 +311,10 @@
 #else
                         u8"Unknown OS"
 #endif
-                           // C Library
-                           u8"\nC Library: "
+                        // C Library
+                        u8"\nC Library: "
 #if defined(__wasi__)
-                           u8"WASI"
+                        u8"WASI"
 #elif defined(__MINGW32__) && !defined(_UCRT) && !defined(__BIONIC__)
                         u8"MSVCRT"
 #elif(defined(_MSC_VER) || defined(_UCRT)) && !defined(__WINE__) && !defined(__CYGWIN__) && !defined(__BIONIC__)
@@ -355,9 +355,9 @@
 #else
                         u8"Unknown"
 #endif
-                          u8"\nAllocator: "
+                        u8"\nAllocator: "
 #if defined(FAST_IO_USE_CUSTOM_GLOBAL_ALLOCATOR)
-	                    u8"custom global"
+                        u8"custom global"
 #elif defined(FAST_IO_USE_MIMALLOC)
                         u8"mimalloc"
 #elif(defined(__linux__) && defined(__KERNEL__)) || defined(FAST_IO_USE_LINUX_KERNEL_ALLOCATOR)
@@ -384,7 +384,7 @@
 #else
                         u8"custom global"
 #endif
-                          u8"\n\n" // endl
+                        u8"\n\n"  // endl
     );
 
     return ::uwvm::cmdline::parameter_return_type::return_imme;
