@@ -32,7 +32,7 @@ namespace uwvm::path
         char path_list_separator[8] = ":";  // could be ":; "
         if(argv0[0] == path_separator)
         {
-            ::realpath(argv0, newpath);
+            [[maybe_unused]] ::realpath(argv0, newpath);
             if(!access(newpath, F_OK))
             {
                 newpath[PATH_MAX - 1] = 0;
@@ -57,9 +57,9 @@ namespace uwvm::path
         else if(strchr(argv0, path_separator))
         {
             ::getcwd(newpath2, PATH_MAX);
-            strncat(newpath2, path_separator_as_string, PATH_MAX + 256);
-            strncat(newpath2, argv0, PATH_MAX + 256);
-            ::realpath(newpath2, newpath);
+            ::strncat(newpath2, path_separator_as_string, PATH_MAX + 256);
+            ::strncat(newpath2, argv0, PATH_MAX + 256);
+            [[maybe_unused]] ::realpath(newpath2, newpath);
             if(!access(newpath, F_OK))
             {
                 newpath[PATH_MAX - 1] = 0;
@@ -88,10 +88,10 @@ namespace uwvm::path
             char* save_path{::getenv("PATH")};
             for(pathitem = ::strtok_r(save_path, path_list_separator, &saveptr); pathitem; pathitem = ::strtok_r(NULL, path_list_separator, &saveptr))
             {
-                strncpy(newpath2, pathitem, PATH_MAX + 256);
-                strncat(newpath2, path_separator_as_string, PATH_MAX + 256);
-                strncat(newpath2, argv0, PATH_MAX + 256);
-                ::realpath(newpath2, newpath);
+                ::strncpy(newpath2, pathitem, PATH_MAX + 256);
+                ::strncat(newpath2, path_separator_as_string, PATH_MAX + 256);
+                ::strncat(newpath2, argv0, PATH_MAX + 256);
+                [[maybe_unused]] ::realpath(newpath2, newpath);
                 if(!access(newpath, F_OK))
                 {
                     newpath[PATH_MAX - 1] = 0;
