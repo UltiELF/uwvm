@@ -16,13 +16,9 @@ namespace uwvm::path
 #if __has_cpp_attribute(__gnu__::__cold__)
     [[__gnu__::__cold__]]
 #endif
-#if __has_cpp_attribute(__gnu__::__pure__)
-    [[__gnu__::__pure__]]
-#endif
     inline void
         get_module_install_path_from_argv0(char const* argv0) noexcept
     {
-#if !defined(_WIN32) && !defined(__MSDOS__) && !defined(__wasm__)
         if(!argv0) [[unlikely]] { return; }
 
         char newpath[PATH_MAX + 256 + 1];
@@ -118,7 +114,5 @@ namespace uwvm::path
             return;
 
         }  // end else
-
-#endif
     }
 }  // namespace uwvm::path

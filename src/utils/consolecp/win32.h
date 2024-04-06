@@ -33,9 +33,6 @@ namespace uwvm::consolecp
 #if __has_cpp_attribute(__gnu__::__cold__)
         [[__gnu__::__cold__]]
 #endif
-#if __has_cpp_attribute(__gnu__::__pure__)
-        [[__gnu__::__pure__]]
-#endif
         ~set_win32_console_io_cp_to_utf8()
         {
             if(output != utf8_coding) { ::fast_io::win32::SetConsoleOutputCP(output); }
