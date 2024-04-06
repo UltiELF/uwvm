@@ -27,7 +27,7 @@ namespace uwvm
             ::std::size_t* d{};
             if constexpr(Len)
             {
-                ::std::size_t temp[Len]{};
+                ::std::size_t temp[Len];
                 d = temp;
             }
             else
@@ -40,7 +40,7 @@ namespace uwvm
                 {
                     d = new ::std::size_t[lenb + 1];
                 }
-                else { d = ::fast_io::native_typed_global_allocator<::std::size_t>::allocate(lenb + 1); }
+                else { d = ::fast_io::native_typed_thread_local_allocator<::std::size_t>::allocate(lenb + 1); }
             }
 
             for(::std::size_t j{}; j <= lenb; j++) { d[j] = j; }
@@ -78,11 +78,11 @@ namespace uwvm
                 }
                 else
                 {
-                    if constexpr(::fast_io::details::has_deallocate_n_impl<::fast_io::native_global_allocator>)
+                    if constexpr(::fast_io::details::has_deallocate_n_impl<::fast_io::native_typed_thread_local_allocator<::std::size_t>>)
                     {
-                        ::fast_io::native_global_allocator::deallocate_n(d, lenb + 1);
+                        ::fast_io::native_typed_thread_local_allocator<::std::size_t>::deallocate_n(d, lenb + 1);
                     }
-                    else { ::fast_io::native_global_allocator::deallocate(d); }
+                    else { ::fast_io::native_typed_thread_local_allocator<::std::size_t>::deallocate(d); }
                 }
             }
 
