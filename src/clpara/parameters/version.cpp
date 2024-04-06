@@ -168,19 +168,18 @@
 
     // ARM PROFILE
 #if defined(__ARM_ARCH)
-			u8" V",
+			u8"-V",
 			__ARM_ARCH,
-#endif
 #if defined(__ARM_ARCH_PROFILE)
     #if __ARM_ARCH_PROFILE == 'A'
-                        u8" (Cortex-A)"
+                        u8"A"
     #elif __ARM_ARCH_PROFILE == 'R'
-                        u8" (Cortex-R)"
+                        u8"R"
     #else
-                        u8" (Cortex-M)"
+                        u8"M"
     #endif
 #endif
-
+#endif
     // Native
 #ifdef UWVM_NATIVE
                         u8"\033[33m"
