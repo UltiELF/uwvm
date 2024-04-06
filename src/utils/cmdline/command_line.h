@@ -15,6 +15,9 @@ namespace uwvm
     namespace cmdline
     {
         template <::std::size_t Len = 0, ::std::integral char_type>
+#if __has_cpp_attribute(__gnu__::__const__)
+        [[__gnu__::__const__]]
+#endif
         inline constexpr ::std::size_t dp(::fast_io::basic_os_c_str_with_known_size<char_type> x,
                                           ::fast_io::basic_os_c_str_with_known_size<char_type> y) noexcept
         {
@@ -61,7 +64,7 @@ namespace uwvm
                 }
             }
 
-            size_t const ret{d[lenb]};
+            ::std::size_t const ret{d[lenb]};
 
             if constexpr(!Len)
             {
