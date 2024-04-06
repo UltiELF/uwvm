@@ -72,6 +72,7 @@ namespace uwvm
         enum class parameter_return_type : ::std::uint_fast8_t
         {
             def = 0,
+            return_m1_imme,
             return_imme,
             return_soon,
             err_imme,
