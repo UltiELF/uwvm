@@ -53,7 +53,7 @@ namespace uwvm
         auto curr{reinterpret_cast<::std::byte*>(::uwvm::wasm_file_loader.begin())};
         auto end{reinterpret_cast<::std::byte const*>(::uwvm::wasm_file_loader.cend())};
 
-        if(static_cast<::std::size_t>(end - curr) < 16u) [[unlikely]]
+        if(static_cast<::std::size_t>(end - curr) < 58U) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -84,7 +84,7 @@ namespace uwvm
                                 u8"Terminate.\n\n");
             ::fast_io::fast_terminate();
         }
-        curr += 4u;
+        curr += 4U;
         ::uwvm::wasm_version = ::uwvm::detect_wasm_version_unchecked(curr);
 
 #if 1
