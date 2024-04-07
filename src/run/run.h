@@ -87,9 +87,6 @@ namespace uwvm
         curr += 4U;
         ::uwvm::wasm_version = ::uwvm::detect_wasm_version_unchecked(curr);
 
-#if 1
-        ::fast_io::io::perrln(::uwvm::u8err, u8"uwvm [debug] version: ", ::uwvm::wasm_version); // dbglog
-#endif  // 0
 
     }
 }  // namespace uwvm
