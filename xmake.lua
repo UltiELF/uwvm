@@ -108,13 +108,9 @@ function defopt()
 
 		if is_plat("windows") then
 			add_cxflags("/guard:cf")
-		else
-			--add_cxflags("-fsanitize=memory")
-			--add_cxflags("-fsanitize=thread")
-			--add_cxflags("-fsanitize=undefined")
-			--add_cxflags("-fsanitize=leak")
 		end
-		--add_cxflags("-fsanitize=address")
+		set_policy("build.sanitizer.address", true)
+		set_policy("build.sanitizer.leak", true)
 	end
 	
 	if is_plat("windows") then -- MSVC update is too slow. In 2024, it does not support CPP23. Currently, it is not supported.
