@@ -69,10 +69,10 @@ namespace uwvm
             ::fast_io::fast_terminate();
         }
 #endif
-        auto curr{reinterpret_cast<::std::byte const*>(::uwvm::wasm_file_loader.cbegin())};
-        auto end{reinterpret_cast<::std::byte const*>(::uwvm::wasm_file_loader.cend())};
+        auto const begin{reinterpret_cast<::std::byte const*>(::uwvm::wasm_file_loader.cbegin())};
+        auto const end{reinterpret_cast<::std::byte const*>(::uwvm::wasm_file_loader.cend())};
 
-        ::uwvm::detect_wasm_file(curr, end);
+        ::uwvm::scan_wasm_file(begin, end);
 
     }
 }  // namespace uwvm

@@ -6,20 +6,21 @@
 
 namespace uwvm
 {
-    inline constexpr bool is_wasm_file_unchecked(::std::byte const* fr) noexcept
+    inline constexpr bool is_wasm_file_unchecked(::std::byte const* curr) noexcept
     {
-        return ::fast_io::freestanding::my_memcmp(fr, u8"\0asm", 4u) == 0;
+        return ::fast_io::freestanding::my_memcmp(curr, u8"\0asm", 4u) == 0;
     }
 
-    inline constexpr ::std::uint_least32_t detect_wasm_version_unchecked(::std::byte const* fr) noexcept
+    inline constexpr ::std::uint_least32_t detect_wasm_version_unchecked(::std::byte const* curr) noexcept
     {
         ::std::uint_least32_t temp{};
-        ::fast_io::freestanding::my_memcpy(__builtin_addressof(temp), fr, sizeof(::std::uint_least32_t));
+        ::fast_io::freestanding::my_memcpy(__builtin_addressof(temp), curr, sizeof(::std::uint_least32_t));
         return ::fast_io::little_endian(temp);
     }
 
-    inline constexpr void detect_wasm_file(::std::byte const* curr, ::std::byte const* const end) noexcept
+    inline constexpr void scan_wasm_file(::std::byte const* begin, ::std::byte const* end) noexcept
     {
+        auto curr{begin};
         // min size of wasm file format = 4 + 4 + 1 + 1
 
         if(static_cast<::std::size_t>(end - curr) < 10U) [[unlikely]]
