@@ -9,6 +9,7 @@
 
 #include <fast_io.h>
 #include <fast_io_core.h>
+#include <fast_io_dsal/array.h>
 
 namespace uwvm
 {
@@ -25,10 +26,10 @@ namespace uwvm
             ::std::size_t const lenb{y.size()};
 
             ::std::size_t* d{};
+	    [[maybe_unused]] ::fast_io::array<::std::size_t, Len> storge;
             if constexpr(Len)
             {
-                ::std::size_t temp[Len];
-                d = temp;
+                d = storge.data();
             }
             else
             {
