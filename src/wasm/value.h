@@ -4,7 +4,7 @@
 
 namespace uwvm::wasm
 {
-    enum value_type : ::std::uint_least8_t
+    enum class value_type : ::std::uint_least8_t
     {
         none,
         any,
