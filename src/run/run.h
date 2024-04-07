@@ -70,7 +70,7 @@ namespace uwvm
         auto curr{reinterpret_cast<::std::byte*>(::uwvm::wasm_file_loader.begin())};
         auto end{reinterpret_cast<::std::byte const*>(::uwvm::wasm_file_loader.cend())};
 
-        if(static_cast<::std::size_t>(end - curr) < 28U) [[unlikely]]
+        if(static_cast<::std::size_t>(end - curr) < 10U) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
