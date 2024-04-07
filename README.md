@@ -84,3 +84,8 @@ $ xmake f -m [release|releasedbg|debug] -p [windows|mingw|macosx|linux|iphoneos 
 ```bash 
 --sysroot=<path>
 ```
+* Enable Sanitizer
+```bash 
+--policies=build.sanitizer.address --policies=build.sanitizer.leak
+```
+

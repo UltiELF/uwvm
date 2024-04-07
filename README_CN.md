@@ -84,3 +84,7 @@ $ xmake f -m [release|releasedbg|debug] -p [windows|mingw|linux|sun|msdosdjgpp|b
 ```bash
 --sysroot=<path>
 ```
+* 启用清洁器
+```bash
+--policies=build.sanitizer.address --policies=build.sanitizer.leak
+```
