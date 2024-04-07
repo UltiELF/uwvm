@@ -1,6 +1,7 @@
 ﻿#include "version.h"
 #include <version.h>
-#if !defined(__MSDOS__) && !defined(__wasm__)
+#include <install-paths/def.h>
+#if defined(UWVM_SUPPORT_INSTALL_PATH)
     #include "../../path/install_path.h"
 #endif
 
@@ -10,6 +11,13 @@
 ::uwvm::cmdline::parameter_return_type(::uwvm::parameter::details::version_callback)(::std::size_t,
                                                                                      ::fast_io::vector<::uwvm::cmdline::parameter_parsing_results>&) noexcept
 {
+#if defined(UWVM_SUPPORT_INSTALL_PATH)
+    if(::uwvm::path::module_install_path_df.native_handle() == ::fast_io::dir_file{}.native_handle()) [[unlikely]]
+    {
+        ::uwvm::path::init_install_path(::uwvm::path::argv0);
+    }
+#endif
+
     ::fast_io::io::perr(::uwvm::u8err,
                         u8"\033[0m"
 #ifdef __MSDOS__
@@ -28,7 +36,7 @@
                         // Copyright
                         u8"Copyright (C) 2024-present UltiELF Open Source Group"
     // Install Path
-#if !defined(__MSDOS__) && !defined(__wasm__)
+#if defined(UWVM_SUPPORT_INSTALL_PATH)
                         u8"\nInstall Path: ",
                         ::uwvm::path::module_install_path,
 #endif
@@ -42,10 +50,16 @@
                         ::uwvm::git_fetch_head,
                         // Compiler
                         u8"\nCompiler: "
-#ifdef __clang__
-                        u8"LLVM clang " __clang_version__
-#elif defined(__GNUC__) && defined(__VERSION__)
-                        u8"GCC " __VERSION__
+#if defined(__clang__)
+                        u8"LLVM clang "
+    #if defined(__clang_version__)
+			            __clang_version__
+    #endif
+#elif defined(__GNUC__)
+                        u8"GCC "
+    #if defined(__VERSION__)
+                        __VERSION__
+    #endif
 #elif defined(_MSC_VER)
                         u8"Microsoft Visual C++ ",
                         _MSC_VER,
@@ -101,48 +115,72 @@
                         u8"LoongArch64"
 #elif defined(__loongarch__)
                         u8"LoongArch"
-#elif defined(__m68k__)
+#elif defined(__m68k__) || defined(__mc68000__)
                         u8"Motorola 68k"
-#elif defined(__MIPS__)
+#elif defined(__MIPS64__) || defined(__mips64__)
+                        u8"MIPS64"
+    #if defined(_MIPS_ARCH_MIPS64R2)
+                        u8"R2"
+    #endif
+#elif defined(__MIPS__) || defined(__mips__) || defined(_MIPS_ARCH)
                         u8"MIPS"
 #elif defined(__HPPA__)
                         u8"HP/PA RISC"
 #elif defined(__riscv)
                         u8"RISC-V"
     #if defined(__riscv_xlen) && __riscv_xlen == 64
-                        u8" 64"          
+                        u8" 64"
     #endif
 #elif defined(__370__) || defined(__THW_370__)
                         u8"System/370"
 #elif defined(__s390__) || defined(__s390x__)
                         u8"System/390"
-#elif defined(__powerpc64__) || defined(__ppc64__) || defined(__PPC64__)
+#elif defined(__powerpc64__) || defined(__ppc64__) || defined(__PPC64__) || defined(_ARCH_PPC64)
                         u8"PowerPC64"
+    #if defined(_LITTLE_ENDIAN)
+                        u8"LE"
+    #endif
+#elif defined(__powerpc__) || defined(__ppc__) || defined(__PPC__) || defined(_ARCH_PPC)
+                        u8"PowerPC"
+    #if defined(_LITTLE_ENDIAN)
+                        u8"LE"
+    #endif
+    #if defined(__SPE__)
+                        u8"SPE"
+    #endif
 #elif defined(__THW_RS6000) || defined(_IBMR2) || defined(_POWER) || defined(_ARCH_PWR) || defined(_ARCH_PWR2)
                         u8"RS/6000"
 #elif defined(__CUDA_ARCH__)
                         u8"PTX"
 #elif defined(__sparc__)
                         u8"SPARC"
+    #if defined(__sparcv8__)
+                        u8"v8"
+    #endif
 #elif defined(__sh__)
                         u8"SuperH"
 #elif defined(__SYSC_ZARCH__)
                         u8"z/Architecture"
+#elif defined(__AVR__)
+                        u8"AVR"
 #else
                         u8"Unknown Arch"
 #endif
 
     // ARM PROFILE
-#if defined(__ARM_ARCH_PROFILE)
-    #if __ARM_ARCH_PROFILE == 'A'
-                        u8" (Cortex-A)"
-    #elif __ARM_ARCH_PROFILE == 'R'
-                        u8" (Cortex-R)"
-    #else
-                        u8" (Cortex-M)"
+#if defined(__ARM_ARCH)
+			u8"-V",
+			__ARM_ARCH,
+    #if defined(__ARM_ARCH_PROFILE)
+        #if __ARM_ARCH_PROFILE == 'A'
+                        u8"A"
+        #elif __ARM_ARCH_PROFILE == 'R'
+                        u8"R"
+        #else
+                        u8"M"
+        #endif
     #endif
 #endif
-
     // Native
 #ifdef UWVM_NATIVE
                         u8"\033[33m"
@@ -151,7 +189,7 @@
 #endif
     // SIMD
 #if defined(__wasm_simd128__)
-                        u8"\nSIMD support: WebAssembly SIMD"
+                        u8"\nSIMD support: WebAssembly SIMD 128"
 #elif defined(__loongarch__) && defined(__loongarch_sx)
                         u8"\nSIMD support: LoongSX "
     #if defined(__loongarch_asx)
@@ -336,8 +374,8 @@
 #elif defined(__LIBREL__)
                         u8"z/OS"
 #elif defined(__AVR__) || defined(_PICOLIBC__)
-                        u8"AVR"
-#elif defined(__LLVM_LIBC_TYPES_FILE_H__)
+                        u8"AVR LIBC"
+#elif defined(__LLVM_LIBC__) || defined(__LLVM_LIBC_TYPES_FILE_H__)
                         u8"LLVM LIBC "
 #elif defined(__MLIBC_O_CLOEXEC)
                         u8"MLIBC"

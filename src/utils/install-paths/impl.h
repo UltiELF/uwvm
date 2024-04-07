@@ -3,8 +3,15 @@
 #include <fast_io_device.h>
 #include "../io_device.h"
 
+#include "def.h"
+#include "storge_argv0.h"
 #include "storge.h"
-#include "argv0.h"
+
+#if defined(_WIN32)
+    #include "argv0_null.h"
+#else
+    #include "argv0.h"
+#endif
 
 #if(defined(__linux) || defined(__linux__) || defined(__gnu_linux__)) || defined(__CYGWIN__) || defined(__sun)
     #include "linux.h"

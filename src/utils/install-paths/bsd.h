@@ -19,8 +19,11 @@ namespace uwvm::path
     /*
      * for DragonFlyBSD ,FreeBSD, NetBSD
      */
-
-    inline void get_module_install_path() noexcept
+#if __has_cpp_attribute(__gnu__::__cold__)
+    [[__gnu__::__cold__]]
+#endif
+    inline void
+        get_module_install_path() noexcept
     {
         char buffer1[PATH_MAX + 1];
         char buffer2[PATH_MAX + 1];

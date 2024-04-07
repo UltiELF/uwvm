@@ -56,7 +56,7 @@ namespace uwvm
             duplicate_parameter,
             dir,
 #if 0
-	        file
+            file
 #endif
         };
 
@@ -72,6 +72,7 @@ namespace uwvm
         enum class parameter_return_type : ::std::uint_fast8_t
         {
             def = 0,
+            return_m1_imme,
             return_imme,
             return_soon,
             err_imme,
@@ -130,9 +131,8 @@ namespace uwvm
             for(::std::size_t i{}; i < N; i++)
             {
 #if 0
-		if (punsort[i]->is_exist == nullptr)
-			::fast_io::fast_terminate();
-
+                if (punsort[i]->is_exist == nullptr)
+                    ::fast_io::fast_terminate();
 #endif
                 res[res_pos++] = {punsort[i]->name, punsort[i]};
                 for(::std::size_t j{}; j < punsort[i]->alias.len; j++) { res[res_pos++] = {punsort[i]->alias.base[j], punsort[i]}; }
@@ -214,8 +214,8 @@ namespace uwvm
 
 #if 0
 struct ct_para_str {
-	::fast_io::basic_os_c_str_with_known_size<char> str{};
-	parameter const* para{};
+    ::fast_io::basic_os_c_str_with_known_size<char> str{};
+    parameter const* para{};
 };
 #else
         using ct_para_str = all_parameter;

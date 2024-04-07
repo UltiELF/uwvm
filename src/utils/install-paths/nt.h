@@ -7,7 +7,11 @@ namespace uwvm::path
     /*
      * for Windows NT
      */
-    inline void get_module_install_path() noexcept
+#if __has_cpp_attribute(__gnu__::__cold__)
+    [[__gnu__::__cold__]]
+#endif
+    inline void
+        get_module_install_path() noexcept
     {
         auto c_peb{::fast_io::win32::nt::nt_get_current_peb()};
         auto const& NtImagePath{c_peb->ProcessParameters->ImagePathName};

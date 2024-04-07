@@ -16,14 +16,14 @@ set_allowedmodes("release", "debug", "releasedbg")
 
 set_encodings("utf-8")
 
+set_defaultarchs("msdosdjgpp|i386")
+set_defaultarchs("wasm-wasi|wasm32", "wasm-wasip1|wasm32", "wasm-wasip2|wasm32")
+
 if is_plat("msdosdjgpp") then
 	set_allowedarchs("i386") -- x86 ms-dos not support (out of memory)
 elseif is_plat("wasm-wasi", "wasm-wasip1", "wasm-wasip2") then
 	set_allowedarchs("wasm32", "wasm64")
 end
-
-set_defaultarchs("msdosdjgpp|i386")
-set_defaultarchs("wasm-wasi|wasm32", "wasm-wasip1|wasm32", "wasm-wasip2|wasm32")
 
 option("native")
 	set_default(false)
@@ -77,6 +77,7 @@ function defopt()
 	if is_plat("windows") then
 		if use_llvm_toolchain then	
 			set_toolchains("clang-cl")
+			add_cxflags("-std:c++latest") --  argument unused during compilation: '-std:c++23'
 		end
 	elseif not is_plat("wasm-wasi", "wasm-wasip1", "wasm-wasip2") then 
 		if use_llvm_toolchain then	
@@ -108,13 +109,7 @@ function defopt()
 
 		if is_plat("windows") then
 			add_cxflags("/guard:cf")
-		else
-			--add_cxflags("-fsanitize=memory")
-			--add_cxflags("-fsanitize=thread")
-			--add_cxflags("-fsanitize=undefined")
-			--add_cxflags("-fsanitize=leak")
 		end
-		--add_cxflags("-fsanitize=address")
 	end
 	
 	if is_plat("windows") then -- MSVC update is too slow. In 2024, it does not support CPP23. Currently, it is not supported.
@@ -245,6 +240,11 @@ function defopt()
 			add_cxflags("-fno-ident")
 		end
 		
+		if is_mode("debug") and is_plat("linux") then
+			set_policy("build.sanitizer.address", true)
+			set_policy("build.sanitizer.leak", true)
+		end
+
 		local csl_name = get_config("cppstdlib")
 		if csl_name == "libstdc++" then
 			add_cxflags("-stdlib=libstdc++")

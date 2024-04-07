@@ -318,7 +318,8 @@ namespace uwvm
                 switch(res)
                 {
                     case ::uwvm::cmdline::parameter_return_type::def: break;
-                    case ::uwvm::cmdline::parameter_return_type::return_imme: return -1;
+                    case ::uwvm::cmdline::parameter_return_type::return_m1_imme: return -1;
+                    case ::uwvm::cmdline::parameter_return_type::return_imme: return 1;
                     case ::uwvm::cmdline::parameter_return_type::return_soon: needexit = true; break;
                     case ::uwvm::cmdline::parameter_return_type::err_imme: ::fast_io::fast_terminate(); ::std::unreachable();
                     case ::uwvm::cmdline::parameter_return_type::err_soon: needterminal = true; break;

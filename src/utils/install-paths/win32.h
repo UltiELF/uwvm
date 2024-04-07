@@ -10,7 +10,11 @@ namespace uwvm::path
     /*
      * for win9x
      */
-    inline void get_module_install_path() noexcept
+#if __has_cpp_attribute(__gnu__::__cold__)
+    [[__gnu__::__cold__]]
+#endif
+    inline void
+        get_module_install_path() noexcept
     {
         char* pgmptr{};
         if(::fast_io::noexcept_call(::_get_pgmptr, __builtin_addressof(pgmptr))) { return; }

@@ -9,12 +9,16 @@
 
 #include <fast_io.h>
 #include <fast_io_core.h>
+#include <fast_io_dsal/array.h>
 
 namespace uwvm
 {
     namespace cmdline
     {
         template <::std::size_t Len = 0, ::std::integral char_type>
+#if __has_cpp_attribute(__gnu__::__const__)
+        [[__gnu__::__const__]]
+#endif
         inline constexpr ::std::size_t dp(::fast_io::basic_os_c_str_with_known_size<char_type> x,
                                           ::fast_io::basic_os_c_str_with_known_size<char_type> y) noexcept
         {
@@ -22,10 +26,10 @@ namespace uwvm
             ::std::size_t const lenb{y.size()};
 
             ::std::size_t* d{};
+	    [[maybe_unused]] ::fast_io::array<::std::size_t, Len> storge;
             if constexpr(Len)
             {
-                ::std::size_t temp[Len]{};
-                d = temp;
+                d = storge.data();
             }
             else
             {
@@ -37,7 +41,7 @@ namespace uwvm
                 {
                     d = new ::std::size_t[lenb + 1];
                 }
-                else { d = ::fast_io::native_typed_global_allocator<::std::size_t>::allocate(lenb + 1); }
+                else { d = ::fast_io::native_typed_thread_local_allocator<::std::size_t>::allocate(lenb + 1); }
             }
 
             for(::std::size_t j{}; j <= lenb; j++) { d[j] = j; }
@@ -61,7 +65,7 @@ namespace uwvm
                 }
             }
 
-            size_t const ret{d[lenb]};
+            ::std::size_t const ret{d[lenb]};
 
             if constexpr(!Len)
             {
@@ -75,11 +79,11 @@ namespace uwvm
                 }
                 else
                 {
-                    if constexpr(::fast_io::details::has_deallocate_n_impl<::fast_io::native_global_allocator>)
+                    if constexpr(::fast_io::details::has_deallocate_n_impl<::fast_io::native_typed_thread_local_allocator<::std::size_t>>)
                     {
-                        ::fast_io::native_global_allocator::deallocate_n(d, lenb + 1);
+                        ::fast_io::native_typed_thread_local_allocator<::std::size_t>::deallocate_n(d, lenb + 1);
                     }
-                    else { ::fast_io::native_global_allocator::deallocate(d); }
+                    else { ::fast_io::native_typed_thread_local_allocator<::std::size_t>::deallocate(d); }
                 }
             }
 

@@ -32,7 +32,7 @@
                             "[bare|emscripten|wasip1|wasip2]"
                             u8"\033[0m"
                             u8"\n\n");
-        return ::uwvm::cmdline::parameter_return_type::return_imme;
+        return ::uwvm::cmdline::parameter_return_type::return_m1_imme;
     }
     auto& pres_sresp1{pres[sres + 1]};
     pres_sresp1.type = ::uwvm::cmdline::parameter_parsing_results_type::occupied_arg;
@@ -78,7 +78,7 @@
                             "[bare|emscripten|wasip1|wasip2]"
                             u8"\033[0m"
                             u8"\n\n");
-        return ::uwvm::cmdline::parameter_return_type::return_imme;
+        return ::uwvm::cmdline::parameter_return_type::return_m1_imme;
     }
     return ::uwvm::cmdline::parameter_return_type::def;
 }

@@ -53,7 +53,36 @@ inline void system_call_throw_error(I v)
 	{
 		if constexpr (always_terminate)
 		{
-			fast_terminate();
+    #if defined(__has_builtin)
+        #if __has_builtin(__builtin_fputs)
+                    __builtin_fputs
+        #else
+                    ::fputs
+        #endif
+    #else
+                    ::fputs
+    #endif
+                        (                           
+                            "\033[0m"
+    #ifdef __MSDOS__
+                            "\033[37m"
+    #else
+                            "\033[97m"
+    #endif
+                            "uwvm: "
+                            "\033[31m"
+                            "[fatal] "
+                            "\033[0m"
+    #ifdef __MSDOS__
+                            "\033[37m"
+    #else
+                            "\033[97m"
+    #endif
+                            "Trigger linux syscall error.\n"
+                            "\033[0m"
+                            "Terminate.\n\n",
+                            stderr);
+            fast_terminate();
 		}
 		else
 		{
@@ -65,6 +94,35 @@ inline void system_call_throw_error(I v)
 	{
 		if constexpr (always_terminate)
 		{
+    #if defined(__has_builtin)
+        #if __has_builtin(__builtin_fputs)
+                    __builtin_fputs
+        #else
+                    ::fputs
+        #endif
+    #else
+                    ::fputs
+    #endif
+                        (                           
+                            "\033[0m"
+    #ifdef __MSDOS__
+                            "\033[37m"
+    #else
+                            "\033[97m"
+    #endif
+                            "uwvm: "
+                            "\033[31m"
+                            "[fatal] "
+                            "\033[0m"
+    #ifdef __MSDOS__
+                            "\033[37m"
+    #else
+                            "\033[97m"
+    #endif
+                            "Trigger linux syscall error.\n"
+                            "\033[0m"
+                            "Terminate.\n\n",
+                            stderr);
 			fast_terminate();
 		}
 		else

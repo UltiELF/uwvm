@@ -21,7 +21,11 @@ namespace uwvm::path
      * https://developer.apple.com/library/archive/documentation/System/Conceptual/ManPages_iPhoneOS/man3/dyld.3.html
      * for Mac OS, IOS, watch os, ...
      */
-    inline void get_module_install_path() noexcept
+#if __has_cpp_attribute(__gnu__::__cold__)
+    [[__gnu__::__cold__]]
+#endif
+    inline void
+        get_module_install_path() noexcept
     {
         char buffer[PATH_MAX + 1];
         ::std::uint_least32_t size{PATH_MAX};

@@ -13,9 +13,12 @@
 
 namespace uwvm::path
 {
-    inline void get_module_install_path_from_argv0(char const* argv0) noexcept
+#if __has_cpp_attribute(__gnu__::__cold__)
+    [[__gnu__::__cold__]]
+#endif
+    inline void
+        get_module_install_path_from_argv0(char const* argv0) noexcept
     {
-#if !defined(_WIN32) && !defined(__MSDOS__) && !defined(__wasm__)
         if(!argv0) [[unlikely]] { return; }
 
         char newpath[PATH_MAX + 256 + 1];
@@ -54,8 +57,8 @@ namespace uwvm::path
         else if(strchr(argv0, path_separator))
         {
             ::getcwd(newpath2, PATH_MAX);
-            strncat(newpath2, path_separator_as_string, PATH_MAX + 256);
-            strncat(newpath2, argv0, PATH_MAX + 256);
+            ::strncat(newpath2, path_separator_as_string, PATH_MAX + 256);
+            ::strncat(newpath2, argv0, PATH_MAX + 256);
             ::realpath(newpath2, newpath);
             if(!access(newpath, F_OK))
             {
@@ -85,9 +88,9 @@ namespace uwvm::path
             char* save_path{::getenv("PATH")};
             for(pathitem = ::strtok_r(save_path, path_list_separator, &saveptr); pathitem; pathitem = ::strtok_r(NULL, path_list_separator, &saveptr))
             {
-                strncpy(newpath2, pathitem, PATH_MAX + 256);
-                strncat(newpath2, path_separator_as_string, PATH_MAX + 256);
-                strncat(newpath2, argv0, PATH_MAX + 256);
+                ::strncpy(newpath2, pathitem, PATH_MAX + 256);
+                ::strncat(newpath2, path_separator_as_string, PATH_MAX + 256);
+                ::strncat(newpath2, argv0, PATH_MAX + 256);
                 ::realpath(newpath2, newpath);
                 if(!access(newpath, F_OK))
                 {
@@ -111,7 +114,5 @@ namespace uwvm::path
             return;
 
         }  // end else
-
-#endif
     }
 }  // namespace uwvm::path

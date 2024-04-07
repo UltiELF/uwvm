@@ -8,5 +8,5 @@ namespace uwvm
     inline ::fast_io::basic_os_c_str_with_known_size<char> wasm_file_name{};
 
     inline ::fast_io::native_file_loader wasm_file_loader{};
-
+    inline ::std::uint_least32_t wasm_version{};
 }  // namespace uwvm

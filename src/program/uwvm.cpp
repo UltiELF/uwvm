@@ -4,22 +4,21 @@
 #include <io_device.h>
 #include "../clpara/impl.h"
 #include <version.h>
-#if !defined(__MSDOS__) && !defined(__wasm__)
-    #include "../path/install_path.h"
-#endif
-
+#include <install-paths/storge_argv0.h>
 #include "../run/run.h"
 
 int main(int argc, char** argv)
 {
-#if !defined(__MSDOS__) && !defined(__wasm__)
-    ::uwvm::path::init_install_path(argc ? *argv : nullptr);
-#endif
+    ::uwvm::path::argv0 = argc ? *argv : nullptr;
 
     auto& parse_res{::uwvm::parsing_result};
-    int pr{::uwvm::parsing(argc, argv, parse_res, ::uwvm::hash_table)};
-
-    if(pr != 0) { return 0; }
+    switch(int const pr{::uwvm::parsing(argc, argv, parse_res, ::uwvm::hash_table)}; pr)
+    {
+        case -1: return -1;
+        case 0: break;
+        case 1: return 0;
+        default: ::std::unreachable();
+    }
 
     ::uwvm::run();
 

@@ -16,7 +16,7 @@
                         u8"\033[97m"
 #endif
                         u8"Arguments:\n");
-    for(auto& p: ::uwvm::parameters)
+    for(auto const& p: ::uwvm::parameters)
     {
         ::fast_io::io::perr(buf_u8out,
                             u8"\t"

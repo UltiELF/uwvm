@@ -25,24 +25,140 @@ inline constexpr ::std::size_t posix_domain_value{domain_define(error_type<::fas
 {
 #ifdef __cpp_exceptions
 #if defined(_MSC_VER) && (!defined(_HAS_EXCEPTIONS) || _HAS_EXCEPTIONS == 0)
-	fast_terminate();
-#else
+        #if defined(__has_builtin)
+            #if __has_builtin(__builtin_fputs)
+    __builtin_fputs
+            #else
+    ::fputs
+            #endif
+        #else
+    ::fputs
+        #endif
+                        (                           
+                            "\033[0m"
+        #ifdef __MSDOS__
+                            "\033[37m"
+        #else
+                            "\033[97m"
+        #endif
+                            "uwvm: "
+                            "\033[31m"
+                            "[fatal] "
+                            "\033[0m"
+        #ifdef __MSDOS__
+                            "\033[37m"
+        #else
+                            "\033[97m"
+        #endif
+                            "Trigger posix error.\n"
+                            "\033[0m"
+                            "Terminate.\n\n",
+                            stderr);
+    fast_terminate();
+    #else
 	throw ::fast_io::error{posix_domain_value, static_cast<::std::size_t>(static_cast<unsigned>(errno))};
 #endif
 #else
-	fast_terminate();
+    #if defined(__has_builtin)
+        #if __has_builtin(__builtin_fputs)
+    __builtin_fputs
+        #else
+    ::fputs
+        #endif
+    #else
+    ::fputs
+    #endif
+                        (                           
+                            "\033[0m"
+    #ifdef __MSDOS__
+                            "\033[37m"
+    #else
+                            "\033[97m"
+    #endif
+                            "uwvm: "
+                            "\033[31m"
+                            "[fatal] "
+                            "\033[0m"
+    #ifdef __MSDOS__
+                            "\033[37m"
+    #else
+                            "\033[97m"
+    #endif
+                            "Trigger posix error.\n"
+                            "\033[0m"
+                            "Terminate.\n\n",
+                            stderr);
+    fast_terminate();
 #endif
 }
 [[noreturn]] inline void throw_posix_error([[maybe_unused]] int err)
 {
 #ifdef __cpp_exceptions
 #if defined(_MSC_VER) && (!defined(_HAS_EXCEPTIONS) || _HAS_EXCEPTIONS == 0)
-	fast_terminate();
-#else
+        #if defined(__has_builtin)
+            #if __has_builtin(__builtin_fputs)
+    __builtin_fputs
+            #else
+    ::fputs
+            #endif
+        #else
+    ::fputs
+        #endif
+                        (                           
+                            "\033[0m"
+        #ifdef __MSDOS__
+                            "\033[37m"
+        #else
+                            "\033[97m"
+        #endif
+                            "uwvm: "
+                            "\033[31m"
+                            "[fatal] "
+                            "\033[0m"
+        #ifdef __MSDOS__
+                            "\033[37m"
+        #else
+                            "\033[97m"
+        #endif
+                            "Trigger posix error.\n"
+                            "\033[0m"
+                            "Terminate.\n\n",
+                            stderr);
+    fast_terminate();
+    #else
 	throw ::fast_io::error{posix_domain_value, static_cast<::std::size_t>(static_cast<unsigned>(err))};
 #endif
 #else
-	fast_terminate();
+    #if defined(__has_builtin)
+        #if __has_builtin(__builtin_fputs)
+    __builtin_fputs
+        #else
+    ::fputs
+        #endif
+    #else
+    ::fputs
+    #endif
+                        (                           
+                            "\033[0m"
+    #ifdef __MSDOS__
+                            "\033[37m"
+    #else
+                            "\033[97m"
+    #endif
+                            "uwvm: "
+                            "\033[31m"
+                            "[fatal] "
+                            "\033[0m"
+    #ifdef __MSDOS__
+                            "\033[37m"
+    #else
+                            "\033[97m"
+    #endif
+                            "Trigger posix error.\n"
+                            "\033[0m"
+                            "Terminate.\n\n",
+                            stderr);
+    fast_terminate();
 #endif
 }
 
