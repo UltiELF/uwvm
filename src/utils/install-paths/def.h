@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #if(defined(__linux) || defined(__linux__) || defined(__gnu_linux__)) || defined(__CYGWIN__) || defined(__sun)
     #define UWVM_SUPPORT_INSTALL_PATH
