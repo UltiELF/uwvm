@@ -54,13 +54,13 @@ inline void system_call_throw_error(I v)
 		if constexpr (always_terminate)
 		{
     #if defined(__has_builtin)
-        #if __has_builtin(__builtin_perror)
-                    __builtin_perror
+        #if __has_builtin(__builtin_fputs)
+                    __builtin_fputs
         #else
-                    ::perror
+                    ::fputs
         #endif
     #else
-                    ::perror
+                    ::fputs
     #endif
                         (                           
                             "\033[0m"
@@ -80,8 +80,9 @@ inline void system_call_throw_error(I v)
     #endif
                             "Trigger linux syscall error.\n"
                             "\033[0m"
-                            "Terminate.\n\n");
-              fast_terminate();
+                            "Terminate.\n\n",
+                            stderr);
+            fast_terminate();
 		}
 		else
 		{
@@ -94,13 +95,13 @@ inline void system_call_throw_error(I v)
 		if constexpr (always_terminate)
 		{
     #if defined(__has_builtin)
-        #if __has_builtin(__builtin_perror)
-                    __builtin_perror
+        #if __has_builtin(__builtin_fputs)
+                    __builtin_fputs
         #else
-                    ::perror
+                    ::fputs
         #endif
     #else
-                    ::perror
+                    ::fputs
     #endif
                         (                           
                             "\033[0m"
@@ -120,7 +121,8 @@ inline void system_call_throw_error(I v)
     #endif
                             "Trigger linux syscall error.\n"
                             "\033[0m"
-                            "Terminate.\n\n");
+                            "Terminate.\n\n",
+                            stderr);
 			fast_terminate();
 		}
 		else

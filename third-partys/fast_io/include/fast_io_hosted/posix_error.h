@@ -26,13 +26,13 @@ inline constexpr ::std::size_t posix_domain_value{domain_define(error_type<::fas
 #ifdef __cpp_exceptions
 #if defined(_MSC_VER) && (!defined(_HAS_EXCEPTIONS) || _HAS_EXCEPTIONS == 0)
         #if defined(__has_builtin)
-            #if __has_builtin(__builtin_perror)
-    __builtin_perror
+            #if __has_builtin(__builtin_fputs)
+    __builtin_fputs
             #else
-    ::perror
+    ::fputs
             #endif
         #else
-    ::perror
+    ::fputs
         #endif
                         (                           
                             "\033[0m"
@@ -52,20 +52,21 @@ inline constexpr ::std::size_t posix_domain_value{domain_define(error_type<::fas
         #endif
                             "Trigger posix error.\n"
                             "\033[0m"
-                            "Terminate.\n\n");
-	fast_terminate();
-#else
+                            "Terminate.\n\n",
+                            stderr);
+    fast_terminate();
+    #else
 	throw ::fast_io::error{posix_domain_value, static_cast<::std::size_t>(static_cast<unsigned>(errno))};
 #endif
 #else
     #if defined(__has_builtin)
-        #if __has_builtin(__builtin_perror)
-    __builtin_perror
+        #if __has_builtin(__builtin_fputs)
+    __builtin_fputs
         #else
-    ::perror
+    ::fputs
         #endif
     #else
-    ::perror
+    ::fputs
     #endif
                         (                           
                             "\033[0m"
@@ -85,8 +86,9 @@ inline constexpr ::std::size_t posix_domain_value{domain_define(error_type<::fas
     #endif
                             "Trigger posix error.\n"
                             "\033[0m"
-                            "Terminate.\n\n");
-	fast_terminate();
+                            "Terminate.\n\n",
+                            stderr);
+    fast_terminate();
 #endif
 }
 [[noreturn]] inline void throw_posix_error([[maybe_unused]] int err)
@@ -94,13 +96,13 @@ inline constexpr ::std::size_t posix_domain_value{domain_define(error_type<::fas
 #ifdef __cpp_exceptions
 #if defined(_MSC_VER) && (!defined(_HAS_EXCEPTIONS) || _HAS_EXCEPTIONS == 0)
         #if defined(__has_builtin)
-            #if __has_builtin(__builtin_perror)
-    __builtin_perror
+            #if __has_builtin(__builtin_fputs)
+    __builtin_fputs
             #else
-    ::perror
+    ::fputs
             #endif
         #else
-    ::perror
+    ::fputs
         #endif
                         (                           
                             "\033[0m"
@@ -120,20 +122,21 @@ inline constexpr ::std::size_t posix_domain_value{domain_define(error_type<::fas
         #endif
                             "Trigger posix error.\n"
                             "\033[0m"
-                            "Terminate.\n\n");
-	fast_terminate();
-#else
+                            "Terminate.\n\n",
+                            stderr);
+    fast_terminate();
+    #else
 	throw ::fast_io::error{posix_domain_value, static_cast<::std::size_t>(static_cast<unsigned>(err))};
 #endif
 #else
     #if defined(__has_builtin)
-        #if __has_builtin(__builtin_perror)
-    __builtin_perror
+        #if __has_builtin(__builtin_fputs)
+    __builtin_fputs
         #else
-    ::perror
+    ::fputs
         #endif
     #else
-    ::perror
+    ::fputs
     #endif
                         (                           
                             "\033[0m"
@@ -153,8 +156,9 @@ inline constexpr ::std::size_t posix_domain_value{domain_define(error_type<::fas
     #endif
                             "Trigger posix error.\n"
                             "\033[0m"
-                            "Terminate.\n\n");
-	fast_terminate();
+                            "Terminate.\n\n",
+                            stderr);
+    fast_terminate();
 #endif
 }
 
