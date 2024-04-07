@@ -77,6 +77,7 @@ function defopt()
 	if is_plat("windows") then
 		if use_llvm_toolchain then	
 			set_toolchains("clang-cl")
+			add_cxflags("-std:c++latest") --  argument unused during compilation: '-std:c++23'
 		end
 	elseif not is_plat("wasm-wasi", "wasm-wasip1", "wasm-wasip2") then 
 		if use_llvm_toolchain then	

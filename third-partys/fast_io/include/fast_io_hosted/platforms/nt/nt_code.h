@@ -30,11 +30,67 @@ inline constexpr ::std::size_t nt_domain_value{domain_define(error_type<nt_code>
 {
 #ifdef __cpp_exceptions
 #if defined(_MSC_VER) && (!defined(_HAS_EXCEPTIONS) || _HAS_EXCEPTIONS == 0)
+        #if defined(__has_builtin)
+            #if __has_builtin(__builtin_perror)
+    __builtin_perror
+            #else
+    ::perror
+            #endif
+        #else
+    ::perror
+        #endif
+                        (                           
+                            "\033[0m"
+        #ifdef __MSDOS__
+                            "\033[37m"
+        #else
+                            "\033[97m"
+        #endif
+                            "uwvm: "
+                            "\033[31m"
+                            "[fatal] "
+                            "\033[0m"
+        #ifdef __MSDOS__
+                            "\033[37m"
+        #else
+                            "\033[97m"
+        #endif
+                            "Trigger nt error.\n"
+                            "\033[0m"
+                            "Terminate.\n\n");
 	fast_terminate();
 #else
 	throw ::fast_io::error{nt_domain_value, static_cast<::std::size_t>(err)};
 #endif
 #else
+    #if defined(__has_builtin)
+        #if __has_builtin(__builtin_perror)
+    __builtin_perror
+        #else
+    ::perror
+        #endif
+    #else
+    ::perror
+    #endif
+                        (                           
+                            "\033[0m"
+    #ifdef __MSDOS__
+                            "\033[37m"
+    #else
+                            "\033[97m"
+    #endif
+                            "uwvm: "
+                            "\033[31m"
+                            "[fatal] "
+                            "\033[0m"
+    #ifdef __MSDOS__
+                            "\033[37m"
+    #else
+                            "\033[97m"
+    #endif
+                            "Trigger nt error.\n"
+                            "\033[0m"
+                            "Terminate.\n\n");
 	fast_terminate();
 #endif
 }

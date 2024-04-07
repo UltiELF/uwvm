@@ -15,12 +15,20 @@ namespace uwvm
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
                                 u8"\033[97m"
+#endif
                                 u8"uwvm: "
                                 u8"\033[31m"
                                 u8"[fatal] "
                                 u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
                                 u8"\033[97m"
+#endif
                                 u8"No input file.\n"
                                 u8"\033[0m"
                                 u8"Terminate.\n\n");
@@ -37,12 +45,21 @@ namespace uwvm
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
+    #ifdef __MSDOS__
+                                u8"\033[37m"
+    #else
                                 u8"\033[97m"
+    #endif
                                 u8"uwvm: "
                                 u8"\033[31m"
                                 u8"[fatal] "
                                 u8"\033[0m"
-                                u8"\033[97m",
+    #ifdef __MSDOS__
+                                u8"\033[37m"
+    #else
+                                u8"\033[97m"
+    #endif
+                                  ,
                                 e,
                                 u8"\n"
                                 u8"\033[0m"
@@ -57,12 +74,20 @@ namespace uwvm
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
                                 u8"\033[97m"
+#endif
                                 u8"uwvm: "
                                 u8"\033[31m"
                                 u8"[fatal] "
                                 u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
                                 u8"\033[97m"
+#endif
                                 u8"Illegal WASM file format.\n"
                                 u8"\033[0m"
                                 u8"Terminate.\n\n");
@@ -73,12 +98,20 @@ namespace uwvm
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
                                 u8"\033[97m"
+#endif
                                 u8"uwvm: "
                                 u8"\033[31m"
                                 u8"[fatal] "
                                 u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
                                 u8"\033[97m"
+#endif
                                 u8"Illegal WASM file format.\n"
                                 u8"\033[0m"
                                 u8"Terminate.\n\n");
@@ -86,7 +119,6 @@ namespace uwvm
         }
         curr += 4U;
         ::uwvm::wasm_version = ::uwvm::detect_wasm_version_unchecked(curr);
-
 
     }
 }  // namespace uwvm
