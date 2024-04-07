@@ -374,8 +374,8 @@
 #elif defined(__LIBREL__)
                         u8"z/OS"
 #elif defined(__AVR__) || defined(_PICOLIBC__)
-                        u8"AVR"
-#elif defined(__LLVM_LIBC_TYPES_FILE_H__)
+                        u8"AVR LIBC"
+#elif defined(__LLVM_LIBC__) && defined(__LLVM_LIBC_TYPES_FILE_H__)
                         u8"LLVM LIBC "
 #elif defined(__MLIBC_O_CLOEXEC)
                         u8"MLIBC"
