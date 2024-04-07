@@ -109,8 +109,6 @@ function defopt()
 		if is_plat("windows") then
 			add_cxflags("/guard:cf")
 		end
-		set_policy("build.sanitizer.address", true)
-		set_policy("build.sanitizer.leak", true)
 	end
 	
 	if is_plat("windows") then -- MSVC update is too slow. In 2024, it does not support CPP23. Currently, it is not supported.
@@ -241,6 +239,11 @@ function defopt()
 			add_cxflags("-fno-ident")
 		end
 		
+		if is_mode("debug") and is_plat("linux") then
+		set_policy("build.sanitizer.address", true)
+		set_policy("build.sanitizer.leak", true)
+		end
+
 		local csl_name = get_config("cppstdlib")
 		if csl_name == "libstdc++" then
 			add_cxflags("-stdlib=libstdc++")
