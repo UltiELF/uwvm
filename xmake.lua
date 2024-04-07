@@ -240,8 +240,8 @@ function defopt()
 		end
 		
 		if is_mode("debug") and is_plat("linux") then
-		set_policy("build.sanitizer.address", true)
-		set_policy("build.sanitizer.leak", true)
+			set_policy("build.sanitizer.address", true)
+			set_policy("build.sanitizer.leak", true)
 		end
 
 		local csl_name = get_config("cppstdlib")
