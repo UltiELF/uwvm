@@ -109,13 +109,13 @@ namespace uwvm
             ::fast_io::string_view check{};  // Empty strings will be sorted and placed first.
             for(auto& i: res)
             {
-                if(i.str == check || i.str.ptr[0] != '-')
+                if(i.str == check || i.str.front() != '-')
                 {
                     ::fast_io::fast_terminate();  // The first character of the parameter must be '-'
                 }
                 else
                 {
-                    if(i.str.n == 1)
+                    if(i.str.size() == 1)
                     {
                         ::fast_io::fast_terminate();  // "-" is invalid
                     }
