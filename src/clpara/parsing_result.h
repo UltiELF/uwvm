@@ -29,7 +29,7 @@ namespace uwvm
                 ::uwvm::cmdline::parameters_hash_table<hash_table_size, conflict_size> const& ht) noexcept
     {
 
-        if(argc == 0)
+        if(argc == 0) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -62,13 +62,13 @@ namespace uwvm
 
         for(int i{1}; i < argc; ++i)
         {
-            if(argv[i] == nullptr) { continue; }
+            if(argv[i] == nullptr) [[unlikely]] { continue; }
 
             ::fast_io::string_view argv_str{argv[i], ::fast_io::cstr_len(argv[i])};
 
-            if(argv_str.empty()) { continue; }
+            if(argv_str.empty()) [[unlikely]] { continue; }
 
-            if(argv_str.cbegin() == '-')
+            if(argv_str.front_unchecked() == '-')
             {
                 constexpr auto run_para{__builtin_addressof(::uwvm::parameter::run)};
                 auto para{::uwvm::cmdline::find_from_hash_table<hash_table_size, conflict_size>(ht, argv_str)};
@@ -76,7 +76,7 @@ namespace uwvm
                 else if(para == run_para) [[unlikely]]
                 {
                     pr.emplace_back_unchecked(argv_str, run_para, ::uwvm::cmdline::parameter_parsing_results_type::parameter);
-                    if(++i == argc)
+                    if(++i == argc) [[unlikely]]
                     {
                         ::fast_io::io::perr(::uwvm::u8err,
                                             u8"\033[0m"
@@ -122,7 +122,7 @@ namespace uwvm
                     {
                         pr.emplace_back_unchecked(argv_str, para, ::uwvm::cmdline::parameter_parsing_results_type::duplicate_parameter);
                     }
-                    else
+                    else [[likely]]
                     {
                         if(para->is_exist) { *para->is_exist = true; }
                         pr.emplace_back_unchecked(argv_str, para, ::uwvm::cmdline::parameter_parsing_results_type::parameter);
@@ -305,9 +305,9 @@ namespace uwvm
 
         for(auto ib{pr.begin() + 1}; ib != ie; ++ib) 
         {
-            if(ib->para == nullptr) { continue; }
+            if(ib->para == nullptr) [[unlikely]] { continue; }
 
-            if(auto const cb{ib->para->callback}; cb != nullptr)
+            if(auto const cb{ib->para->callback}; cb != nullptr) [[likely]]
             {
                 ::uwvm::cmdline::parameter_return_type const res{cb(ib, pr)};
                 switch(res)
@@ -323,9 +323,9 @@ namespace uwvm
             }
         }
 
-        if(needterminal) { ::fast_io::fast_terminate(); }
+        if(needterminal) [[unlikely]] { ::fast_io::fast_terminate(); }
 
-        if(needexit) { return parsing_return_val::returnm1; }
+        if(needexit) [[unlikely]] { return parsing_return_val::returnm1; }
         {
 #if 0
             constexpr auto ign_invpm{__builtin_addressof(::uwvm::parameter::ignore_invalid_parameters)};
