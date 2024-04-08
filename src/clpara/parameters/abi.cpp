@@ -77,7 +77,7 @@
                             u8"\033[36m"
                             u8"[--abi|-a] "
                             u8"\033[32m"
-                            "[bare|emscripten|wasip1|wasip2]"
+                            u8"[bare|emscripten|wasip1|wasip2]"
                             u8"\033[0m"
                             u8"\n\n");
         return ::uwvm::cmdline::parameter_return_type::return_m1_imme;
