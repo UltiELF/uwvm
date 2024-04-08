@@ -8,7 +8,8 @@
 ::uwvm::cmdline::parameter_return_type(::uwvm::parameter::details::abi_callback)(::uwvm::cmdline::parameter_parsing_results* sres,
                                                                                  ::fast_io::vector<::uwvm::cmdline::parameter_parsing_results>& pres) noexcept
 {
-    if(pres.cend() - sres == 1 || (sres + 1)->type != ::uwvm::cmdline::parameter_parsing_results_type::arg) [[unlikely]]
+    auto sresp1{sres + 1};
+    if(sresp1 == pres.cend()  || (sres + 1)->type != ::uwvm::cmdline::parameter_parsing_results_type::arg) [[unlikely]]
     {
         ::fast_io::io::perr(::uwvm::u8err,
                             u8"\033[0m"
@@ -35,7 +36,7 @@
         return ::uwvm::cmdline::parameter_return_type::return_m1_imme;
     }
  
-    auto& pres_sresp1{*(sres + 1)};
+    auto& pres_sresp1{*sresp1};
     pres_sresp1.type = ::uwvm::cmdline::parameter_parsing_results_type::occupied_arg;
     if(auto s1s{pres_sresp1.str}; s1s == ::fast_io::string_view{"bare"}) { ::uwvm::wasm::wasm_abi = ::uwvm::wasm::abi::bare; }
     else if(s1s == ::fast_io::string_view{"emscripten"}) { ::uwvm::wasm::wasm_abi = ::uwvm::wasm::abi::emscripten; }
