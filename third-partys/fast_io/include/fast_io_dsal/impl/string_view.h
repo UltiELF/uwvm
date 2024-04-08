@@ -34,13 +34,13 @@ namespace fast_io::containers
 
         template <::std::contiguous_iterator Iter>
             requires ::std::same_as<::std::remove_cvref_t<::std::iter_value_t<Iter>>, char_type>
-        constexpr basic_string_view(Iter const& first, Iter const& last) noexcept : ptr(first), n(last - first)
+        constexpr basic_string_view(Iter const& first, Iter const& last) noexcept : ptr{first}, n{last - first}
         {
         }
 
         template <::std::ranges::contiguous_range rg>
             requires (::std::same_as<::std::ranges::range_value_t<rg>, char_type> && !::std::is_array_v<::std::remove_cvref_t<rg>>)
-        explicit constexpr basic_string_view(::fast_io::freestanding::from_range_t, rg const& r) noexcept : ptr(r.data()), n(r.size())
+        explicit constexpr basic_string_view(::fast_io::freestanding::from_range_t, rg const& r) noexcept : ptr{r.data()}, n{r.size()}
         {
         }
 
