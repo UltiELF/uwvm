@@ -22,6 +22,14 @@ namespace fast_io::containers
 
         constexpr basic_string_view(::std::nullptr_t) = delete;
 
+        template <::std::size_t N>
+        explicit constexpr basic_string_view(char_type const (&buffer)[N]) noexcept
+        {
+            constexpr ::std::size_t nm1{N - 1u};
+            ptr = buffer;
+            n = nm1;
+        }
+
         template <::std::contiguous_iterator Iter>
             requires ::std::same_as<::std::remove_cvref_t<::std::iter_value_t<Iter>>, char_type>
         constexpr basic_string_view(Iter const& first, Iter const& last) noexcept : ptr(first), n(last - first)
@@ -30,11 +38,11 @@ namespace fast_io::containers
 
         template <::std::ranges::contiguous_range rg>
             requires (::std::same_as<::std::ranges::range_value_t<rg>, char_type> && !::std::is_array_v<::std::remove_cvref_t<rg>>)
-        explicit constexpr basic_string_view(rg const&& r) noexcept : ptr(r.data()), n(r.size())
+        explicit constexpr basic_string_view(::fast_io::freestanding::from_range_t, rg const& r) noexcept : ptr(r.data()), n(r.size())
         {
         }
 
-        constexpr basic_string_view(fast_io::basic_os_c_str<char_type> os_c_str) noexcept : ptr(os_c_str.ptr), n(::fast_io::cstr_len(os_c_str.ptr)) {}
+        constexpr basic_string_view(::fast_io::basic_os_c_str<char_type> os_c_str) noexcept : ptr(os_c_str.ptr), n(::fast_io::cstr_len(os_c_str.ptr)) {}
 
         constexpr basic_string_view(basic_string_view const&) noexcept = default;
         constexpr basic_string_view& operator= (basic_string_view const&) noexcept = default;
@@ -42,13 +50,13 @@ namespace fast_io::containers
         const_pointer ptr{};
         ::std::size_t n{};
 
-        inline static constexpr bool is_empty() const noexcept { return n == 0; }
+        inline constexpr bool is_empty() const noexcept { return n == 0; }
 
-        inline static constexpr bool empty() const noexcept { return n == 0; }
+        inline constexpr bool empty() const noexcept { return n == 0; }
 
-        inline static constexpr size_type size() const noexcept { return n; }
+        inline constexpr size_type size() const noexcept { return n; }
 
-        inline static constexpr size_type max_size() const noexcept
+        inline static constexpr size_type max_size() noexcept
         {
             constexpr size_type n{SIZE_MAX / sizeof(value_type)};
             return n;
@@ -161,23 +169,26 @@ namespace fast_io::containers
     };
 
     template <::std::integral char_type>
-    constexpr void swap(::fast_io::containers::basic_string_view<char_type>& a, ::fast_io::containers::basic_string_view<char_type>& b) noexcept
+    constexpr void swap(basic_string_view<char_type>& a, basic_string_view<char_type>& b) noexcept
     {
         a.swap(b);
     }
 
     template <::std::integral char_type>
-    constexpr bool operator== (::fast_io::containers::basic_string_view<char_type> const& a,
-                               ::fast_io::containers::basic_string_view<char_type> const& b) noexcept
+    inline constexpr ::fast_io::basic_io_scatter_t<char_type> print_alias_define(io_alias_t, basic_string_view<char_type> str) noexcept
+    {
+        return {str.ptr, str.n};
+    }
+
+    template <::std::integral char_type>
+    constexpr bool operator== (basic_string_view<char_type> const& a, basic_string_view<char_type> const& b) noexcept
     {
         return ::std::equal(a.ptr, a.ptr + a.n, b.ptr, b.ptr + b.n);
     }
 
 #if __cpp_lib_three_way_comparison >= 201907L
-
     template <::std::integral char_type>
-    constexpr auto operator<=> (::fast_io::containers::basic_string_view<char_type> const& a,
-                                ::fast_io::containers::basic_string_view<char_type> const& b) noexcept
+    constexpr auto operator<=> (basic_string_view<char_type> const& a, basic_string_view<char_type> const& b) noexcept
     {
         return ::std::lexicographical_compare_three_way(a.ptr, a.ptr + a.n, b.ptr, b.ptr + b.n, ::std::compare_three_way{});
     }

@@ -14,11 +14,11 @@ int main(int argc, char** argv)
     ::uwvm::path::argv0 = argc ? *argv : nullptr;
 
     auto& parse_res{::uwvm::parsing_result};
-    switch(int const pr{::uwvm::parsing(argc, argv, parse_res, ::uwvm::hash_table)}; pr)
+    switch(::uwvm::parsing_return_val const pr{::uwvm::parsing(argc, argv, parse_res, ::uwvm::hash_table)}; pr)
     {
-        case -1: return -1;
-        case 0: break;
-        case 1: return 0;
+        case ::uwvm::parsing_return_val::def: break;
+        case ::uwvm::parsing_return_val::return0: return 0;
+        case ::uwvm::parsing_return_val::returnm1: return -1;
         default: ::std::unreachable();
     }
 

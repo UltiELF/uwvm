@@ -9,13 +9,20 @@
 
 namespace uwvm
 {
+    enum class parsing_return_val: ::std::uint_fast8_t
+    {
+        def,
+        return0,
+        returnm1
+    };
+
     inline ::fast_io::vector<::uwvm::cmdline::parameter_parsing_results> parsing_result{};
 
     template <::std::size_t hash_table_size, ::std::size_t conflict_size>
 #if __has_cpp_attribute(__gnu__::__cold__)
     [[__gnu__::__cold__]]
 #endif
-    inline constexpr int
+    inline constexpr parsing_return_val
         parsing(int argc,
                 char const* const* argv,
                 ::fast_io::vector<::uwvm::cmdline::parameter_parsing_results>& pr,
@@ -43,7 +50,7 @@ namespace uwvm
                                 u8"No Parameters."
                                 u8"\033[0m"
                                 u8"\n\n");
-            return -1;
+            return parsing_return_val::returnm1;
         }
 
         pr.reserve(static_cast<::std::size_t>(argc));
@@ -94,7 +101,7 @@ namespace uwvm
                                             u8"\033[0m"
                                             u8"\n\n");
 
-                        return -1;
+                        return parsing_return_val::returnm1;
                     }
                     ::uwvm::wasm_file_ppos = i;
                     ::uwvm::wasm_file_name = ::fast_io::mnp::os_c_str(argv[i], __builtin_strlen(argv[i]));
@@ -126,9 +133,9 @@ namespace uwvm
         {
             ::fast_io::u8native_io_observer buf_u8err{::uwvm::u8err};
 #if 0
-		    constexpr auto ign_invpm{__builtin_addressof(::uwvm::parameter::ignore_invalid_parameters)};
+            constexpr auto ign_invpm{__builtin_addressof(::uwvm::parameter::ignore_invalid_parameters)};
 
-		    bool const ign_invpm_b{ign_invpm->is_exist ? *ign_invpm->is_exist : false};
+            bool const ign_invpm_b{ign_invpm->is_exist ? *ign_invpm->is_exist : false};
 #else
             constexpr bool ign_invpm_b{false};
 #endif
@@ -300,7 +307,7 @@ namespace uwvm
             if(shouldreturn)
             {
                 ::fast_io::io::perrln(buf_u8err);
-                return -1;
+                return parsing_return_val::returnm1;
             }
         }
 
@@ -318,8 +325,8 @@ namespace uwvm
                 switch(res)
                 {
                     case ::uwvm::cmdline::parameter_return_type::def: break;
-                    case ::uwvm::cmdline::parameter_return_type::return_m1_imme: return -1;
-                    case ::uwvm::cmdline::parameter_return_type::return_imme: return 1;
+                    case ::uwvm::cmdline::parameter_return_type::return_m1_imme: return parsing_return_val::returnm1;
+                    case ::uwvm::cmdline::parameter_return_type::return_imme: return parsing_return_val::return0;
                     case ::uwvm::cmdline::parameter_return_type::return_soon: needexit = true; break;
                     case ::uwvm::cmdline::parameter_return_type::err_imme: ::fast_io::fast_terminate(); ::std::unreachable();
                     case ::uwvm::cmdline::parameter_return_type::err_soon: needterminal = true; break;
@@ -329,12 +336,12 @@ namespace uwvm
         }
         if(needterminal) { ::fast_io::fast_terminate(); }
 
-        if(needexit) { return -1; }
+        if(needexit) { return parsing_return_val::returnm1; }
         {
 #if 0
-		    constexpr auto ign_invpm{__builtin_addressof(::uwvm::parameter::ignore_invalid_parameters)};
+            constexpr auto ign_invpm{__builtin_addressof(::uwvm::parameter::ignore_invalid_parameters)};
 
-		    bool const ign_invpm_b{ign_invpm->is_exist ? *ign_invpm->is_exist : false};
+            bool const ign_invpm_b{ign_invpm->is_exist ? *ign_invpm->is_exist : false};
 #else
             bool const ign_invpm_b{false};
 #endif
@@ -402,9 +409,9 @@ namespace uwvm
             if(shouldreturn)
             {
                 ::fast_io::io::perrln(buf_u8err);
-                return -1;
+                return parsing_return_val::returnm1;
             }
         }
-        return 0;
+        return parsing_return_val::def;
     }
 }  // namespace uwvm

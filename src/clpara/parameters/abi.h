@@ -12,14 +12,14 @@ namespace uwvm::parameter
     namespace details
     {
         inline bool abi_is_exist{};
-        inline constexpr ::fast_io::string_view abi_alias{::fast_io::mnp::os_c_str_arr("-a")};
+        inline constexpr ::fast_io::string_view abi_alias{"-a"};
         extern ::uwvm::cmdline::parameter_return_type abi_callback(::uwvm::cmdline::parameter_parsing_results*,
                                                                    ::fast_io::vector<::uwvm::cmdline::parameter_parsing_results>&) noexcept;
     }  // namespace details
 
     inline constexpr ::uwvm::cmdline::parameter abi{
-        .name{::fast_io::mnp::os_c_str_arr("--abi")},
-        .describe{::fast_io::mnp::os_c_str_arr(u8"Specifies the ABI used by the WASM module. Usage: [--abi|-a] [bare|emscripten|wasip1|wasip2]")},
+        .name{::fast_io::string_view{"--abi"}},
+        .describe{::fast_io::u8string_view{u8"Specifies the ABI used by the WASM module. Usage: [--abi|-a] [bare|emscripten|wasip1|wasip2]"}},
         .alias{::uwvm::cmdline::kns_str_scatter_t{__builtin_addressof(details::abi_alias), 1}},
         .callback{__builtin_addressof(details::abi_callback)},
         .is_exist{__builtin_addressof(details::abi_is_exist)},
