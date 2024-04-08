@@ -183,14 +183,14 @@ namespace fast_io::containers
     }
 
     template <::std::integral char_type>
-    constexpr bool operator== (basic_string_view<char_type> const& a, basic_string_view<char_type> const& b) noexcept
+    constexpr bool operator== (basic_string_view<char_type> a, basic_string_view<char_type> b) noexcept
     {
         return ::std::equal(a.ptr, a.ptr + a.n, b.ptr, b.ptr + b.n);
     }
 
 #if __cpp_lib_three_way_comparison >= 201907L
     template <::std::integral char_type>
-    constexpr auto operator<=> (basic_string_view<char_type> const& a, basic_string_view<char_type> const& b) noexcept
+    constexpr auto operator<=> (basic_string_view<char_type> a, basic_string_view<char_type> b) noexcept
     {
         return ::std::lexicographical_compare_three_way(a.ptr, a.ptr + a.n, b.ptr, b.ptr + b.n, ::std::compare_three_way{});
     }
