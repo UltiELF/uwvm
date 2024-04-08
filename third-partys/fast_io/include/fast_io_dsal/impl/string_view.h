@@ -42,13 +42,13 @@ namespace fast_io::containers
         const_pointer ptr{};
         ::std::size_t n{};
 
-        inline static constexpr bool is_empty() const noexcept { return n == 0; }
+        inline constexpr bool is_empty() const noexcept { return n == 0; }
 
-        inline static constexpr bool empty() const noexcept { return n == 0; }
+        inline constexpr bool empty() const noexcept { return n == 0; }
 
-        inline static constexpr size_type size() const noexcept { return n; }
+        inline constexpr size_type size() const noexcept { return n; }
 
-        inline static constexpr size_type max_size() const noexcept
+        inline static constexpr size_type max_size() noexcept
         {
             constexpr size_type n{SIZE_MAX / sizeof(value_type)};
             return n;
