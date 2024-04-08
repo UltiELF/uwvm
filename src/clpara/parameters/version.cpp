@@ -12,7 +12,7 @@
                                                                                      ::fast_io::vector<::uwvm::cmdline::parameter_parsing_results>&) noexcept
 {
 #if defined(UWVM_SUPPORT_INSTALL_PATH)
-    if(::uwvm::path::module_install_path_df.native_handle() == ::fast_io::dir_file{}.native_handle()) [[unlikely]]
+    if(::uwvm::path::module_install_path_df == ::fast_io::dir_file{}) [[unlikely]]
     {
         ::uwvm::path::init_install_path(::uwvm::path::argv0);
     }
