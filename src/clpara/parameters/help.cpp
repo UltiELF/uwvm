@@ -4,7 +4,7 @@
 #if __has_cpp_attribute(__gnu__::__cold__)
 [[__gnu__::__cold__]]
 #endif
-::uwvm::cmdline::parameter_return_type(::uwvm::parameter::details::help_callback)(::std::size_t,
+::uwvm::cmdline::parameter_return_type(::uwvm::parameter::details::help_callback)(::uwvm::cmdline::parameter_parsing_results*,
                                                                                   ::fast_io::vector<::uwvm::cmdline::parameter_parsing_results>&) noexcept
 {
     ::fast_io::u8native_io_observer buf_u8out{::uwvm::u8err};

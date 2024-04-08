@@ -10,7 +10,7 @@ namespace uwvm::parameter
 {
     namespace details
     {
-        inline constexpr ::fast_io::basic_os_c_str_with_known_size<char> run_alias{::fast_io::mnp::os_c_str_arr("-r")};
+        inline constexpr ::fast_io::string_view run_alias{::fast_io::mnp::os_c_str_arr("-r")};
     }  // namespace details
 
     inline constexpr ::uwvm::cmdline::parameter run{

@@ -12,8 +12,9 @@ namespace uwvm::parameter
     namespace details
     {
         inline bool abi_is_exist{};
-        inline constexpr ::fast_io::basic_os_c_str_with_known_size<char> abi_alias{::fast_io::mnp::os_c_str_arr("-a")};
-        extern ::uwvm::cmdline::parameter_return_type abi_callback(::std::size_t, ::fast_io::vector<::uwvm::cmdline::parameter_parsing_results>&) noexcept;
+        inline constexpr ::fast_io::string_view abi_alias{::fast_io::mnp::os_c_str_arr("-a")};
+        extern ::uwvm::cmdline::parameter_return_type abi_callback(::uwvm::cmdline::parameter_parsing_results*,
+                                                                   ::fast_io::vector<::uwvm::cmdline::parameter_parsing_results>&) noexcept;
     }  // namespace details
 
     inline constexpr ::uwvm::cmdline::parameter abi{

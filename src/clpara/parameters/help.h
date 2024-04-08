@@ -12,9 +12,10 @@ namespace uwvm::parameter
     namespace details
     {
         inline bool help_is_exist{};
-        inline constexpr ::fast_io::freestanding::array<::fast_io::basic_os_c_str_with_known_size<char>, 2> help_alias{::fast_io::mnp::os_c_str_arr("-h"),
+        inline constexpr ::fast_io::freestanding::array<::fast_io::string_veiw, 2> help_alias{::fast_io::mnp::os_c_str_arr("-h"),
                                                                                                                        ::fast_io::mnp::os_c_str_arr("-?")};
-        extern ::uwvm::cmdline::parameter_return_type help_callback(::std::size_t, ::fast_io::vector<::uwvm::cmdline::parameter_parsing_results>&) noexcept;
+        extern ::uwvm::cmdline::parameter_return_type help_callback(::uwvm::cmdline::parameter_parsing_results*,
+                                                                    ::fast_io::vector<::uwvm::cmdline::parameter_parsing_results>&) noexcept;
     }  // namespace details
 
     inline constexpr ::uwvm::cmdline::parameter help{

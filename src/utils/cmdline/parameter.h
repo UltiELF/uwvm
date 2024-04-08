@@ -6,41 +6,9 @@
 #include <algorithm>
 
 #include <fast_io.h>
-#include <fast_io_dsal/vector.h>
 #include <fast_io_crypto.h>
-
-namespace fast_io
-{
-    template <::std::integral char_type>
-    inline constexpr bool operator== (basic_os_c_str_with_known_size<char_type> a, basic_os_c_str_with_known_size<char_type> b) noexcept
-    {
-        if(a.n != b.n) { return false; }
-        else
-        {
-            for(auto const a_last{a.ptr + a.n}; a.ptr != a_last;)
-            {
-                if(*a.ptr != *b.ptr) { return false; }
-                ++a.ptr;
-                ++b.ptr;
-            }
-            return true;
-        }
-    }
-
-    template <::std::integral char_type>
-    inline constexpr ::std::strong_ordering operator<=> (basic_os_c_str_with_known_size<char_type> a, basic_os_c_str_with_known_size<char_type> b) noexcept
-    {
-        auto const a_last{a.ptr + a.n};
-        auto const b_last{b.ptr + b.n};
-        for(; (a.ptr != a_last) && (b.ptr != b_last);)
-        {
-            if(auto i{*a.ptr <=> *b.ptr}; i != ::std::strong_ordering::equal) { return i; }
-            ++a.ptr;
-            ++b.ptr;
-        }
-        return a.n <=> b.n;
-    }
-}  // namespace fast_io
+#include <fast_io_dsal/vector.h>
+#include <fast_io_dsal/string_view.h>
 
 namespace uwvm
 {
@@ -64,7 +32,7 @@ namespace uwvm
 
         struct parameter_parsing_results
         {
-            ::fast_io::basic_os_c_str_with_known_size<char> str{};
+            ::fast_io::string_view str{};
             parameter const* para{};
             parameter_parsing_results_type type{};
         };
@@ -79,14 +47,14 @@ namespace uwvm
             err_soon
         };
 
-        using kns_str_scatter_t = ::fast_io::basic_io_scatter_t<::fast_io::basic_os_c_str_with_known_size<char>>;
+        using kns_str_scatter_t = ::fast_io::basic_io_scatter_t<::fast_io::string_view>;
 
         struct parameter
         {
-            ::fast_io::basic_os_c_str_with_known_size<char> const name{};
-            ::fast_io::basic_os_c_str_with_known_size<char8_t> const describe{};
+            ::fast_io::string_view const name{};
+            ::fast_io::u8string_view const describe{};
             kns_str_scatter_t alias{};
-            parameter_return_type (*callback)(::std::size_t argc, ::fast_io::vector<parameter_parsing_results>& vec) noexcept {};
+            parameter_return_type (*callback)(parameter_parsing_results* para, ::fast_io::vector<parameter_parsing_results>& vec) noexcept {};
             bool* is_exist{};
         };
 
@@ -107,7 +75,7 @@ namespace uwvm
 
         struct all_parameter
         {
-            ::fast_io::basic_os_c_str_with_known_size<char> str{};
+            ::fast_io::string_view str{};
             parameter const* para{};
         };
 
@@ -138,7 +106,7 @@ namespace uwvm
                 for(::std::size_t j{}; j < punsort[i]->alias.len; j++) { res[res_pos++] = {punsort[i]->alias.base[j], punsort[i]}; }
             }
             ::std::ranges::sort(res, [](all_parameter const& a, all_parameter const& b) noexcept -> bool { return a.str < b.str; });
-            ::fast_io::basic_os_c_str_with_known_size<char> check{};  // Empty strings will be sorted and placed first.
+            ::fast_io::string_view check{};  // Empty strings will be sorted and placed first.
             for(auto& i: res)
             {
                 if(i.str == check || i.str.ptr[0] != '-')
@@ -208,13 +176,13 @@ namespace uwvm
 
         struct ht_para_cpos
         {
-            ::fast_io::basic_os_c_str_with_known_size<char> str{};
+            ::fast_io::string_view str{};
             parameter const* para{};
         };
 
 #if 0
 struct ct_para_str {
-    ::fast_io::basic_os_c_str_with_known_size<char> str{};
+    ::fast_io::string_view str{};
     parameter const* para{};
 };
 #else
@@ -297,7 +265,7 @@ struct ct_para_str {
 
         template <::std::size_t hash_table_size, ::std::size_t conflict_size>
         inline constexpr parameter const* find_from_hash_table(parameters_hash_table<hash_table_size, conflict_size> const& ht,
-                                                               ::fast_io::basic_os_c_str_with_known_size<char> str) noexcept
+                                                               ::fast_io::string_view str) noexcept
         {
             ::fast_io::crc32c_context crc32c{};
 

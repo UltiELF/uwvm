@@ -11,8 +11,9 @@ namespace uwvm::parameter
     namespace details
     {
         inline bool version_is_exist{};
-        inline constexpr ::fast_io::basic_os_c_str_with_known_size<char> version_alias{::fast_io::mnp::os_c_str_arr("-v")};
-        extern ::uwvm::cmdline::parameter_return_type version_callback(::std::size_t, ::fast_io::vector<::uwvm::cmdline::parameter_parsing_results>&) noexcept;
+        inline constexpr ::fast_io::string_view version_alias{::fast_io::mnp::os_c_str_arr("-v")};
+        extern ::uwvm::cmdline::parameter_return_type version_callback(::uwvm::cmdline::parameter_parsing_results*,
+                                                                       ::fast_io::vector<::uwvm::cmdline::parameter_parsing_results>&) noexcept;
     }  // namespace details
 
     inline constexpr ::uwvm::cmdline::parameter version{
