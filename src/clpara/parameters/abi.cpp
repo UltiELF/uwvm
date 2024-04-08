@@ -9,7 +9,7 @@
                                                                                  ::fast_io::vector<::uwvm::cmdline::parameter_parsing_results>& pres) noexcept
 {
     auto sresp1{sres + 1};
-    if(sresp1 == pres.cend()  || (sres + 1)->type != ::uwvm::cmdline::parameter_parsing_results_type::arg) [[unlikely]]
+    if(sresp1 == pres.cend() || sresp1->type != ::uwvm::cmdline::parameter_parsing_results_type::arg) [[unlikely]]
     {
         ::fast_io::io::perr(::uwvm::u8err,
                             u8"\033[0m"
