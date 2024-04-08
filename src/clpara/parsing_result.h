@@ -64,13 +64,11 @@ namespace uwvm
         {
             if(argv[i] == nullptr) { continue; }
 
-            auto argv_str{
-                ::fast_io::string_view{argv[i], ::fast_io::cstr_len(argv[i])}
-            };
+            ::fast_io::string_view argv_str{argv[i], ::fast_io::cstr_len(argv[i])};
 
-            if(argv_str.n == 0) { continue; }
+            if(argv_str.empty()) { continue; }
 
-            if(argv_str.ptr[0] == '-')
+            if(argv_str.cbegin() == '-')
             {
                 constexpr auto run_para{__builtin_addressof(::uwvm::parameter::run)};
                 auto para{::uwvm::cmdline::find_from_hash_table<hash_table_size, conflict_size>(ht, argv_str)};
@@ -199,7 +197,7 @@ namespace uwvm
                         ::std::size_t const str_size{i.str.size()};
 #if __has_cpp_attribute(assume)
                         constexpr ::std::size_t smax{::std::numeric_limits<::std::size_t>::max() / 4u};
-                        [[assume(str_size <= smax)]];
+                        [[assume(str_size < smax)]];
 #endif
                         ::std::size_t const test_size{str_size * 4u / 10u};
                         ::std::size_t f_test_size{test_size};
@@ -218,7 +216,7 @@ namespace uwvm
                             }
                         }
 
-                        if(f_test_str.n == 0) { ::fast_io::io::perr(buf_u8err, u8"\033[0m" u8"\n"); }
+                        if(f_test_str.empty()) { ::fast_io::io::perr(buf_u8err, u8"\033[0m" u8"\n"); }
                         else
                         {
                             ::fast_io::io::perr(buf_u8err,
