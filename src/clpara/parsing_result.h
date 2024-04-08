@@ -55,12 +55,12 @@ namespace uwvm
 
         pr.reserve(static_cast<::std::size_t>(argc));
 
-        if(*argv != nullptr)
+        if(*argv != nullptr) [[likely]]
         {
             pr.emplace_back_unchecked(::fast_io::string_view{*argv, ::fast_io::cstr_len(*argv)}, nullptr, ::uwvm::cmdline::parameter_parsing_results_type::dir);
         }
 
-        for(int i{1}; i < argc; ++i)
+        for(int i{1}; i != argc; ++i)
         {
             if(argv[i] == nullptr) [[unlikely]] { continue; }
 

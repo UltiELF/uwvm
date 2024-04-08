@@ -6,10 +6,7 @@
 
 namespace uwvm
 {
-    inline constexpr bool is_wasm_file_unchecked(::std::byte const* curr) noexcept
-    {
-        return ::fast_io::freestanding::my_memcmp(curr, u8"\0asm", 4u) == 0;
-    }
+    inline constexpr bool is_wasm_file_unchecked(::std::byte const* curr) noexcept { return ::fast_io::freestanding::my_memcmp(curr, u8"\0asm", 4u) == 0; }
 
     inline constexpr ::std::uint_least32_t detect_wasm_version_unchecked(::std::byte const* curr) noexcept
     {
@@ -20,6 +17,18 @@ namespace uwvm
 
     inline constexpr void scan_wasm_file(::std::byte const* begin, ::std::byte const* end) noexcept
     {
+        // alias
+        using char8_t_may_alias_ptr
+#if __has_cpp_attribute(__gnu__::__may_alias__)
+            [[__gnu__::__may_alias__]]
+#endif
+            = char8_t*;
+        using char8_t_const_may_alias_ptr
+#if __has_cpp_attribute(__gnu__::__may_alias__)
+            [[__gnu__::__may_alias__]]
+#endif
+            = char8_t const*;
+        // curr
         auto curr{begin};
         // min size of wasm file format = 4 + 4 + 1 + 1
 
@@ -80,6 +89,5 @@ namespace uwvm
 
         // get first sectino
         ++curr;
-
     }
 }  // namespace uwvm
