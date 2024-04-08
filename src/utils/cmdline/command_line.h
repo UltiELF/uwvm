@@ -19,18 +19,12 @@ namespace uwvm
 #if __has_cpp_attribute(__gnu__::__const__)
         [[__gnu__::__const__]]
 #endif
-        inline constexpr ::std::size_t dp(::fast_io::basic_os_c_str_with_known_size<char_type> x,
-                                          ::fast_io::basic_os_c_str_with_known_size<char_type> y) noexcept
+        inline constexpr ::std::size_t
+            dp(char_type const* x, ::std::size_t lena, char_type const* y, ::std::size_t lenb) noexcept
         {
-            ::std::size_t const lena{x.size()};
-            ::std::size_t const lenb{y.size()};
-
             ::std::size_t* d{};
-	    [[maybe_unused]] ::fast_io::array<::std::size_t, Len> storge;
-            if constexpr(Len)
-            {
-                d = storge.data();
-            }
+            [[maybe_unused]] ::fast_io::array<::std::size_t, Len> storge;
+            if constexpr(Len) { d = storge.data(); }
             else
             {
 #if __cpp_if_consteval >= 202106L
@@ -53,7 +47,7 @@ namespace uwvm
                 for(::std::size_t j{1}; j <= lenb; j++)
                 {
                     ::std::size_t temp{d[j]};
-                    if(x.ptr[i - 1] == y.ptr[j - 1]) { d[j] = old; }
+                    if(x[i - 1] == y[j - 1]) { d[j] = old; }
                     else
                     {
                         size_t min = d[j] + 1;

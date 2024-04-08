@@ -22,6 +22,8 @@ namespace fast_io::containers
 
         constexpr basic_string_view(::std::nullptr_t) = delete;
 
+        constexpr basic_string_view(const_pointer p, size_type s) noexcept : ptr{p}, n{s} {}
+
         template <::std::size_t N>
         explicit constexpr basic_string_view(char_type const (&buffer)[N]) noexcept
         {
@@ -89,7 +91,7 @@ namespace fast_io::containers
             return ptr;
         }
 
-        constexpr void swap(array& other) noexcept
+        constexpr void swap(basic_string_view& other) noexcept
         {
             basic_string_view const tmp{other};
             other = *this;
