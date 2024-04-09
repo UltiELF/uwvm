@@ -56,7 +56,7 @@ $ xmake install -o OutputPath
 $ xmake f -m [release|releasedbg|debug] -p [windows|mingw|linux|sun|msdosdjgpp|bsd|freebsd|dragonflybsd|netbsd|openbsd|macosx|iphoneos|watchos|wasm-wasip1|wasm-wasip2|cross ..] -a [x86_64|i386|arm|aarch64 ..] --cppstdlib=[default|libstdc++|libc++] ..
 ```
 * 目前只支持 msvc 14.30+ ，gcc 14+ 以及 llvm 18+。
-* 暂不支持libcxx[\*](https://github.com/llvm/llvm-project/blob/main/libcxx%2Finclude%2Fversion)
+* 暂不支持 libcxx[\*](https://github.com/llvm/llvm-project/blob/main/libcxx%2Finclude%2Fversion)
 * 若要编译兼容 WIN10 (默认) 以下系统，请添加参数
 ```bash 
 --min-win32-sys=[WIN10|WINBLUE|WIN8|WIN7|WS08|VISTA|WS03|WINXP]
