@@ -1,6 +1,5 @@
 ﻿#pragma once
 #include <cstdint>
-#include <fast_io_core_impl/terminate.h>
 
 namespace uwvm::wasm
 {
@@ -22,4 +21,9 @@ namespace uwvm::wasm
     };
 
     inline constexpr ::std::uint_least8_t get_section_value(section_type sectype) noexcept { return static_cast<::std::uint_least8_t>(sectype); }
+
+    inline constexpr bool is_valid_section(section_type sectype) noexcept
+    {
+        return static_cast<::std::uint_least8_t>(sectype) <= static_cast<::std::uint_least8_t>(section_type::data_count_sec);
+    }
 }  // namespace uwvm::wasm

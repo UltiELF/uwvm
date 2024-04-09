@@ -1,5 +1,5 @@
 ﻿#include "abi.h"
-#include "../../wasm/abi.h"
+#include ".././run/wasm_file.h"
 #include <io_device.h>
 
 #if __has_cpp_attribute(__gnu__::__cold__)
@@ -38,10 +38,10 @@
  
     auto& pres_sresp1{*sresp1};
     pres_sresp1.type = ::uwvm::cmdline::parameter_parsing_results_type::occupied_arg;
-    if(auto s1s{pres_sresp1.str}; s1s == ::fast_io::string_view{"bare"}) { ::uwvm::wasm::wasm_abi = ::uwvm::wasm::abi::bare; }
-    else if(s1s == ::fast_io::string_view{"emscripten"}) { ::uwvm::wasm::wasm_abi = ::uwvm::wasm::abi::emscripten; }
-    else if(s1s == ::fast_io::string_view{"wasip1"}) { ::uwvm::wasm::wasm_abi = ::uwvm::wasm::abi::wasip1; }
-    else if(s1s == ::fast_io::string_view{"wasip2"}) { ::uwvm::wasm::wasm_abi = ::uwvm::wasm::abi::wasip2; }
+    if(auto s1s{pres_sresp1.str}; s1s == ::fast_io::string_view{"bare"}) { ::uwvm::wasm_abi = ::uwvm::wasm::abi::bare; }
+    else if(s1s == ::fast_io::string_view{"emscripten"}) { ::uwvm::wasm_abi = ::uwvm::wasm::abi::emscripten; }
+    else if(s1s == ::fast_io::string_view{"wasip1"}) { ::uwvm::wasm_abi = ::uwvm::wasm::abi::wasip1; }
+    else if(s1s == ::fast_io::string_view{"wasip2"}) { ::uwvm::wasm_abi = ::uwvm::wasm::abi::wasip2; }
     else
     {
         ::fast_io::io::perr(::uwvm::u8err,

@@ -12,6 +12,4 @@ namespace uwvm::wasm
         wasip2
     };
 
-    inline abi wasm_abi{};
-
 }  // namespace uwvm::wasm
