@@ -89,9 +89,9 @@
 #if defined(__wasm__)
                         u8"WASM"
     #if defined(__wasm32__)
-                        u8" 32"
+                        u8"32"
     #elif defined(__wasm64__)
-                        u8" 64"
+                        u8"64"
     #endif
 #elif defined(__alpha__)
                         u8"DEC Alpha"

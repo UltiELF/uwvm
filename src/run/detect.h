@@ -6,16 +6,40 @@
 
 namespace uwvm
 {
-    inline constexpr bool is_wasm_file_unchecked(::std::byte const* curr) noexcept { return ::fast_io::freestanding::my_memcmp(curr, u8"\0asm", 4u) == 0; }
+    inline 
+#if defined(__has_builtin)
+    #if __has_builtin(__builtin_memcmp)
+	    constexpr
+    #endif
+#endif
+        bool
+        is_wasm_file_unchecked(::std::byte const* curr) noexcept
+    {
+        return ::fast_io::freestanding::my_memcmp(curr, u8"\0asm", 4u) == 0;
+    }
 
-    inline constexpr ::std::uint_least32_t detect_wasm_version_unchecked(::std::byte const* curr) noexcept
+    inline 
+#if defined(__has_builtin)
+    #if __has_builtin(__builtin_memcpy)
+	    constexpr
+    #endif
+#endif
+        ::std::uint_least32_t
+        detect_wasm_version_unchecked(::std::byte const* curr) noexcept
     {
         ::std::uint_least32_t temp{};
         ::fast_io::freestanding::my_memcpy(__builtin_addressof(temp), curr, sizeof(::std::uint_least32_t));
         return ::fast_io::little_endian(temp);
     }
 
-    inline constexpr void scan_wasm_file(::std::byte const* begin, ::std::byte const* end) noexcept
+    inline 
+#if defined(__has_builtin)
+    #if __has_builtin(__builtin_memcmp) && __has_builtin(__builtin_memcpy)
+	    constexpr
+    #endif
+#endif
+        void 
+        scan_wasm_file(::std::byte const* begin, ::std::byte const* end) noexcept
     {
         // alias
         using char8_t_may_alias_ptr
@@ -83,11 +107,10 @@ namespace uwvm
         }
 
         // get wasm version
-
         curr += 4U;
         ::uwvm::wasm_version = ::uwvm::detect_wasm_version_unchecked(curr);
 
-        // get first sectino
+        // get first section
         ++curr;
     }
 }  // namespace uwvm
