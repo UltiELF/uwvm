@@ -1,5 +1,5 @@
 ﻿#include "abi.h"
-#include ".././run/wasm_file.h"
+#include "../../run/wasm_file.h"
 #include <io_device.h>
 
 #if __has_cpp_attribute(__gnu__::__cold__)
