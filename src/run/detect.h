@@ -41,7 +41,7 @@ namespace uwvm
         void 
         scan_wasm_file(::std::byte const* begin, ::std::byte const* end) noexcept
     {
-        // alias
+        // alias def
         using char8_t_may_alias_ptr
 #if __has_cpp_attribute(__gnu__::__may_alias__)
             [[__gnu__::__may_alias__]]
@@ -52,11 +52,12 @@ namespace uwvm
             [[__gnu__::__may_alias__]]
 #endif
             = char8_t const*;
+
         // curr
         auto curr{begin};
-        // min size of wasm file format = 4 + 4 + 1 + 1
 
-        if(static_cast<::std::size_t>(end - curr) < 10U) [[unlikely]]
+        // min size of wasm file format = 4 + 4
+        if(static_cast<::std::size_t>(end - curr) < 8U) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -81,7 +82,6 @@ namespace uwvm
         }
 
         // check wasm magic number
-
         if(!::uwvm::is_wasm_file_unchecked(curr)) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
@@ -111,6 +111,31 @@ namespace uwvm
         ::uwvm::wasm_version = ::uwvm::detect_wasm_version_unchecked(curr);
 
         // get first section
-        ++curr;
+        curr += 4U;
+
+        if(end - curr < 2) [[unlikely]]
+        {
+            ::fast_io::io::perr(::uwvm::u8err,
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"uwvm: "
+                                u8"\033[31m"
+                                u8"[fatal] "
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"No WASM modules found.\n"
+                                u8"\033[0m"
+                                u8"Terminate.\n\n");
+            ::fast_io::fast_terminate();
+        }
+
     }
 }  // namespace uwvm

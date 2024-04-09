@@ -4,20 +4,21 @@
 
 namespace uwvm::wasm
 {
-    enum class value_type : ::std::uint_least8_t
+    enum class value_type : ::std::uint_fast8_t
     {
-        none,
-        any,
-        i32,
-        i64,
-        f32,
-        f64,
-        v128,
-        externref,
-        funcref
+        none = 0x00,
+        i32 = 0x7F,
+        i64 = 0x7E,
+        f32 = 0x7D,
+        f64 = 0x7C,
+        v128 = 0x7B,
+        funcref = 0x70,
+        externref = 0x6F,
+        functype = 0x60,
+        resulttype = 0x40,
     };
 
-    inline constexpr ::std::uint_least8_t get_type_byte_width(value_type type) noexcept
+    inline constexpr ::std::uint_fast8_t get_type_byte_width(value_type type) noexcept
     {
         switch(type)
         {
@@ -28,7 +29,7 @@ namespace uwvm::wasm
             case value_type::v128: return 16;
             case value_type::externref: [[fallthrough]];
             case value_type::funcref: return sizeof(void*);
-            default: ::fast_io::unreachable();
+            default: return 0;
         }
     }
 }  // namespace uwvm::wasm

@@ -3,7 +3,7 @@
 
 namespace uwvm::wasm
 {
-    enum class abi : ::std::uint_least32_t
+    enum class abi : ::std::uint_fast32_t
     {
         detect,
         bare,

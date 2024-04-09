@@ -3,7 +3,7 @@
 
 namespace uwvm::wasm
 {
-    enum class section_type : ::std::uint_least8_t
+    enum class section_type : ::std::uint_fast8_t
     {
         custom_sec = 0U,
         type_sec,
@@ -20,10 +20,10 @@ namespace uwvm::wasm
         data_count_sec
     };
 
-    inline constexpr ::std::uint_least8_t get_section_value(section_type sectype) noexcept { return static_cast<::std::uint_least8_t>(sectype); }
+    inline constexpr ::std::uint_fast8_t get_section_value(section_type sectype) noexcept { return static_cast<::std::uint_fast8_t>(sectype); }
 
     inline constexpr bool is_valid_section(section_type sectype) noexcept
     {
-        return static_cast<::std::uint_least8_t>(sectype) <= static_cast<::std::uint_least8_t>(section_type::data_count_sec);
+        return static_cast<::std::uint_fast8_t>(sectype) <= static_cast<::std::uint_fast8_t>(section_type::data_count_sec);
     }
 }  // namespace uwvm::wasm
