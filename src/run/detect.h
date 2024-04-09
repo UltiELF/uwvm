@@ -9,7 +9,7 @@ namespace uwvm
     inline 
 #if defined(__has_builtin)
     #if __has_builtin(__builtin_memcmp)
-	    constexpr
+        constexpr
     #endif
 #endif
         bool
@@ -21,7 +21,7 @@ namespace uwvm
     inline 
 #if defined(__has_builtin)
     #if __has_builtin(__builtin_memcpy)
-	    constexpr
+        constexpr
     #endif
 #endif
         ::std::uint_least32_t
@@ -35,7 +35,7 @@ namespace uwvm
     inline 
 #if defined(__has_builtin)
     #if __has_builtin(__builtin_memcmp) && __has_builtin(__builtin_memcpy)
-	    constexpr
+        constexpr
     #endif
 #endif
         void 
