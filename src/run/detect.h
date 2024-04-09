@@ -112,7 +112,8 @@ namespace uwvm
 
         // get first section
         curr += 4U;
-
+        
+	// check 1st section
         if(end - curr < 2) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
@@ -131,7 +132,7 @@ namespace uwvm
 #else
                                 u8"\033[97m"
 #endif
-                                u8"No WASM modules found.\n"
+                                u8"No WASM sections found.\n"
                                 u8"\033[0m"
                                 u8"Terminate.\n\n");
             ::fast_io::fast_terminate();
