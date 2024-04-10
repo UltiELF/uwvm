@@ -473,13 +473,13 @@ public:
 	}
 };
 
-#ifdef __cpp_lib_three_way_comparison
-
 template <::fast_io::posix_family family, ::std::integral ch_type>
 inline constexpr bool operator==(basic_posix_family_io_observer<family, ch_type> a, basic_posix_family_io_observer<family, ch_type> b) noexcept
 {
 	return a.fd == b.fd;
 }
+
+#if __cpp_lib_three_way_comparison >= 201907L
 
 template <::fast_io::posix_family family, ::std::integral ch_type>
 inline constexpr auto operator<=>(basic_posix_family_io_observer<family, ch_type> a, basic_posix_family_io_observer<family, ch_type> b) noexcept

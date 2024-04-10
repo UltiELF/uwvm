@@ -855,8 +855,6 @@ inline ::fast_io::intfpos_t io_stream_seek_bytes_define(basic_c_family_io_observ
 	return details::my_c_io_seek_impl<family>(cfhd.fp, offset, s);
 }
 
-#if __cpp_lib_three_way_comparison >= 201907L
-
 template <c_family family, ::std::integral ch_type>
 inline constexpr bool operator==(basic_c_family_io_observer<family, ch_type> a,
 								 basic_c_family_io_observer<family, ch_type> b) noexcept
@@ -864,6 +862,7 @@ inline constexpr bool operator==(basic_c_family_io_observer<family, ch_type> a,
 	return a.fp == b.fp;
 }
 
+#if __cpp_lib_three_way_comparison >= 201907L
 template <c_family family, ::std::integral ch_type>
 inline constexpr auto operator<=>(basic_c_family_io_observer<family, ch_type> a,
 								  basic_c_family_io_observer<family, ch_type> b) noexcept
@@ -1124,7 +1123,7 @@ struct is_zero_default_constructible<basic_c_family_file<fm, char_type>>
 #include "avrlibc.h"
 #include "macros_general.h"
 #else
-#if defined(__LLVM_LIBC_TYPES_FILE_H__)
+#if defined(__LLVM_LIBC__) || defined(__LLVM_LIBC_TYPES_FILE_H__)
 #include "llvm.h"
 #elif defined(__UCLIBC__)
 #if defined(__STDIO_BUFFERS)
