@@ -125,10 +125,11 @@ namespace uwvm
             
             // get section length
             ++curr;
-            ::std::size_t sec_len{};
+            ::std::size_t sec_len_le{};
             auto [next, err]{::fast_io::parse_by_scan(reinterpret_cast<char8_t_const_may_alias_ptr>(curr),
                                                       reinterpret_cast<char8_t_const_may_alias_ptr>(end),
-                                                      ::fast_io::mnp::leb128_get(sec_len))};
+                                                      ::fast_io::mnp::leb128_get(sec_len_le))};
+            auto const sec_len{::fast_io::little_endian(sec_len_le)};
             switch(err)
             {
                 case ::fast_io::parse_code::ok: break;
