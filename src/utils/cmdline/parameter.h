@@ -63,7 +63,15 @@ namespace uwvm
         {
             ::fast_io::freestanding::array<parameter const*, N> res{};
             for(::std::size_t i{}; i < N; i++) { res[i] = punsort[i]; }
-            ::std::ranges::sort(res, [](parameter const* const a, parameter const* const b) noexcept -> bool { return a->name < b->name; });
+            ::std::ranges::sort(res,
+                                [](parameter const* const a, parameter const* const b) noexcept -> bool
+                                {
+#if __cpp_lib_three_way_comparison >= 201907L
+                                    return a->name < b->name;
+#else
+                                    return ::std::lexicographical_compare(a->name.data(), a->name.size(), b->name.data(), b->name.size());
+#endif
+                                });
             return res;
         }
 
@@ -105,7 +113,15 @@ namespace uwvm
                 res[res_pos++] = {punsort[i]->name, punsort[i]};
                 for(::std::size_t j{}; j < punsort[i]->alias.len; j++) { res[res_pos++] = {punsort[i]->alias.base[j], punsort[i]}; }
             }
-            ::std::ranges::sort(res, [](all_parameter const& a, all_parameter const& b) noexcept -> bool { return a.str < b.str; });
+            ::std::ranges::sort(res,
+                                [](all_parameter const& a, all_parameter const& b) noexcept -> bool
+                                {
+#if __cpp_lib_three_way_comparison >= 201907L
+                                    return a->str < b->str;
+#else
+                                    return ::std::lexicographical_compare(a->str.data(), a->str.size(), b->str.data(), b->str.size());
+#endif
+                                });
             ::fast_io::string_view check{};  // Empty strings will be sorted and placed first.
             for(auto& i: res)
             {
