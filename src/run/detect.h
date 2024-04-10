@@ -117,7 +117,7 @@ namespace uwvm
         }
 
         // objdump
-        for(;;) 
+        for(; curr < end;) 
         {
             // get section type
             ::std::uint_fast8_t sec_num{};
@@ -236,7 +236,8 @@ namespace uwvm
                 }
             }
 
+            // set curr
+            curr += sec_len; 
         }
-
     }
 }  // namespace uwvm
