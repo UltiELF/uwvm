@@ -69,7 +69,7 @@ namespace uwvm
 #if __cpp_lib_three_way_comparison >= 201907L
                                     return a->name < b->name;
 #else
-                                    return ::std::lexicographical_compare(a->name.data(), a->name.size(), b->name.data(), b->name.size());
+                                    return ::std::lexicographical_compare(a->name.cbegin(), a->name.cend(), b->name.cbegin(), b->name.cend());
 #endif
                                 });
             return res;
@@ -119,7 +119,7 @@ namespace uwvm
 #if __cpp_lib_three_way_comparison >= 201907L
                                     return a->str < b->str;
 #else
-                                    return ::std::lexicographical_compare(a->str.data(), a->str.size(), b->str.data(), b->str.size());
+                                    return ::std::lexicographical_compare(a.str.cbegin(), a.str.cend(), b.str.cbegin(), b.str.cend());
 #endif
                                 });
             ::fast_io::string_view check{};  // Empty strings will be sorted and placed first.
