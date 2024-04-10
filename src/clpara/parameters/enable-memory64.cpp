@@ -1,4 +1,4 @@
-#include <cstddef>
+﻿#include <cstddef>
 #include "enable-memory64.h"
 
 #if __has_cpp_attribute(__gnu__::__cold__)
