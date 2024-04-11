@@ -71,7 +71,7 @@ namespace uwvm::wasm
     {
         switch(valtype)
         {
-            case uwvm::wasm::value_type::none: return ::fast_io::u8string_view{u8"nil"};
+            case uwvm::wasm::value_type::none: return ::fast_io::u8string_view{u8"none"};
             case uwvm::wasm::value_type::i32: return ::fast_io::u8string_view{u8"i32"};
             case uwvm::wasm::value_type::i64: return ::fast_io::u8string_view{u8"i64"};
             case uwvm::wasm::value_type::f32: return ::fast_io::u8string_view{u8"f32"};
