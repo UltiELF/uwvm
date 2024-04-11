@@ -9,6 +9,6 @@ namespace uwvm::section
         ::std::byte const* sec_begin{};
         ::std::byte const* sec_end{};
 
-        ::std::size_t type_size{};
+        ::std::size_t count{};
     };
 }  // namespace uwvm::section

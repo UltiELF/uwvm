@@ -63,10 +63,10 @@ namespace uwvm
         auto curr{begin};
 
         // get type size
-        ::std::size_t type_size{};
+        ::std::size_t type_count{};
         auto [next, err]{::fast_io::parse_by_scan(reinterpret_cast<char8_t_const_may_alias_ptr>(curr),
                                                   reinterpret_cast<char8_t_const_may_alias_ptr>(end),
-                                                  ::fast_io::mnp::leb128_get(type_size))};
+                                                  ::fast_io::mnp::leb128_get(type_count))};
         switch(err)
         {
             case ::fast_io::parse_code::ok: break;
@@ -102,7 +102,7 @@ namespace uwvm
         {
             auto const has_enable_memory64_alias{::uwvm::parameter::details::enable_memory64_is_exist};
             constexpr auto u32max{static_cast<::std::size_t>(::std::numeric_limits<::std::uint_least32_t>::max())};
-            if(!has_enable_memory64_alias && type_size > u32max) [[unlikely]]
+            if(!has_enable_memory64_alias && type_count > u32max) [[unlikely]]
             {
                 ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -128,10 +128,10 @@ namespace uwvm
             }
         }
 
-        global_type_section.type_size = type_size;
+        global_type_section.count = type_count;
 
 #ifdef _DEBUG
-        ::fast_io::io::perrln(::uwvm::u8err ,type_size);
+        ::fast_io::io::perrln(::uwvm::u8err, type_count);
 #endif
     }
 }
