@@ -5,7 +5,7 @@
 
 namespace uwvm
 {
-    inline constexpr void check_index(::std::size_t s) noexcept
+    inline void check_index(::std::size_t s) noexcept
     {
 #if defined(__SIZEOF_SIZE_T__) && __SIZEOF_SIZE_T__ == 8
         auto const has_enable_memory64_alias{::uwvm::parameter::details::enable_memory64_is_exist};
