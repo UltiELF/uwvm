@@ -10,14 +10,7 @@ namespace uwvm
 {
     inline ::uwvm::section::type_section global_type_section{};
 
-	inline 
-#if defined(__has_builtin)
-    #if __has_builtin(__builtin_memcmp) && __has_builtin(__builtin_memcpy)
-        constexpr
-    #endif
-#endif
-        void
-        detect_type_section(::std::byte const* begin, ::std::byte const* end) noexcept
+	inline void detect_type_section(::std::byte const* begin, ::std::byte const* end) noexcept
     {
         // alias def
         using char8_t_may_alias_ptr
