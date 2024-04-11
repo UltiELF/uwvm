@@ -2,6 +2,7 @@
 #include <cstddef>
 #include <fast_io.h>
 #include "../wasm/abi.h"
+#include "mode.h"
 
 namespace uwvm
 {
@@ -12,4 +13,6 @@ namespace uwvm
 
     inline ::uwvm::wasm::abi wasm_abi{};
     inline ::std::uint_least32_t wasm_version{};
+
+    inline ::uwvm::mode running_mode{::uwvm::mode::objdump};
 }  // namespace uwvm

@@ -5,6 +5,7 @@
 #include "wasm_file.h"
 #include "../clpara/parsing_result.h"
 #include "detect.h"
+#include "objdump/objdump.h"
 
 namespace uwvm
 {
@@ -74,5 +75,14 @@ namespace uwvm
 
         ::uwvm::scan_wasm_file(begin, end);
 
+        switch(::uwvm::running_mode)
+        {
+            case ::uwvm::mode::objdump:
+            {
+                ::uwvm::u8objdump();
+                break;
+            }
+            default: ::std::unreachable();
+        }
     }
 }  // namespace uwvm

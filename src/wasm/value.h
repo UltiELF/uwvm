@@ -32,4 +32,41 @@ namespace uwvm::wasm
             default: return 0;
         }
     }
+
+    inline constexpr bool is_valid_value_type(value_type type) noexcept
+    {
+        switch(type)
+        {
+            case uwvm::wasm::value_type::none: [[fall_through]];
+            case uwvm::wasm::value_type::i32: [[fall_through]];
+            case uwvm::wasm::value_type::i64: [[fall_through]];
+            case uwvm::wasm::value_type::f32: [[fall_through]];
+            case uwvm::wasm::value_type::f64: [[fall_through]];
+            case uwvm::wasm::value_type::v128: [[fall_through]];
+            case uwvm::wasm::value_type::funcref: [[fall_through]];
+            case uwvm::wasm::value_type::externref: [[fall_through]];
+            case uwvm::wasm::value_type::functype: [[fall_through]];
+            case uwvm::wasm::value_type::resulttype: return true;
+            default: return false;
+        }
+    }
+
+    inline constexpr ::fast_io::u8string_view get_value_u8name(value_type valtype) noexcept
+    {
+        switch(valtype)
+        {
+            case uwvm::wasm::value_type::none: ::fast_io::u8string_view{u8"nil"};
+            case uwvm::wasm::value_type::i32: ::fast_io::u8string_view{u8"i32"};
+            case uwvm::wasm::value_type::i64: ::fast_io::u8string_view{u8"i64"};
+            case uwvm::wasm::value_type::f32: ::fast_io::u8string_view{u8"f32"};
+            case uwvm::wasm::value_type::f64: ::fast_io::u8string_view{u8"f64"};
+            case uwvm::wasm::value_type::v128: ::fast_io::u8string_view{u8"v128"};
+            case uwvm::wasm::value_type::funcref: ::fast_io::u8string_view{u8"funcref"};
+            case uwvm::wasm::value_type::externref: ::fast_io::u8string_view{u8"externref"};
+            case uwvm::wasm::value_type::functype: ::fast_io::u8string_view{u8"functype"};
+            case uwvm::wasm::value_type::resulttype: ::fast_io::u8string_view{u8"resulttype"};
+            default: return {};
+        }
+    }
+
 }  // namespace uwvm::wasm
