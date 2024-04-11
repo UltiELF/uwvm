@@ -218,7 +218,7 @@ namespace uwvm
             
             // jump to para2
             ++curr;
-            for(; curr < end; ++curr)
+            for(; curr < end;)
             {
                 ::uwvm::wasm::value_type vt{};
                 ::fast_io::freestanding::my_memcpy(__builtin_addressof(vt), curr, sizeof(::uwvm::wasm::value_type));
@@ -290,7 +290,7 @@ namespace uwvm
                     auto [next_para2, err_para2]{::fast_io::parse_by_scan(reinterpret_cast<char8_t_const_may_alias_ptr>(curr),
                                                                         reinterpret_cast<char8_t_const_may_alias_ptr>(end),
                                                                         ::fast_io::mnp::leb128_get(func_count))};
-                    switch(err_para1)
+                    switch(err_para2)
                     {
                         case ::fast_io::parse_code::ok: break;
                         default:
@@ -319,8 +319,9 @@ namespace uwvm
                                 ::fast_io::fast_terminate();
                             }
                     }
-
-                    tmp_ft.parameter_begin = reinterpret_cast<value_type_const_may_alias_ptr>(curr + 1);
+                    // jump to para1
+                    curr = reinterpret_cast<::std::byte const*>(next_para2);
+                    tmp_ft.parameter_begin = reinterpret_cast<value_type_const_may_alias_ptr>(curr);
                 }
                 else
                 {
@@ -349,6 +350,7 @@ namespace uwvm
                                 u8"Terminate.\n\n");
                         ::fast_io::fast_terminate();
                     }
+                    ++curr;
                 }
             }
 
