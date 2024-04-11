@@ -5,6 +5,7 @@
 #include "wasm_file.h"
 
 #include "../wasm/section.h"
+#include "wasm/section.h"
 
 namespace uwvm
 {
@@ -90,7 +91,7 @@ namespace uwvm
 
         // get first section
         curr += 4U;
-        
+
         // check 1st section
         if(end - curr < 2) [[unlikely]]
         {
@@ -117,12 +118,12 @@ namespace uwvm
         }
 
         // objdump
-        for(;;) 
+        for(;;)
         {
             // get section type
             ::std::uint_fast8_t sec_num{};
             ::fast_io::freestanding::my_memcpy(__builtin_addressof(sec_num), curr, sizeof(::std::uint_fast8_t));
-            
+
             // get section length
             ++curr;
             ::std::size_t sec_len{};
@@ -132,9 +133,10 @@ namespace uwvm
             switch(err)
             {
                 case ::fast_io::parse_code::ok: break;
-                default: [[unlikely]]
-                {
-                    ::fast_io::io::perr(::uwvm::u8err,
+                default:
+                    [[unlikely]]
+                    {
+                        ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
 #ifdef __MSDOS__
                                 u8"\033[37m"
@@ -154,14 +156,14 @@ namespace uwvm
                                 u8"\n"
                                 u8"\033[0m"
                                 u8"Terminate.\n\n");
-                    ::fast_io::fast_terminate();
-                }
+                        ::fast_io::fast_terminate();
+                    }
             }
 
             // check 64-bit indexes
-            if constexpr(sizeof(::std::size_t) == 8) 
-            { 
-                auto const has_enable_memory64_alias{::uwvm::parameter::details::enable_memory64_is_exist}; 
+            if constexpr(sizeof(::std::size_t) == 8)
+            {
+                auto const has_enable_memory64_alias{::uwvm::parameter::details::enable_memory64_is_exist};
                 constexpr auto u32max{static_cast<::std::size_t>(::std::numeric_limits<::std::uint_least32_t>::max())};
                 if(!has_enable_memory64_alias && sec_len > u32max) [[unlikely]]
                 {
@@ -192,8 +194,8 @@ namespace uwvm
             // set curr to next
             curr = reinterpret_cast<::std::byte const*>(next);
 
-            //check length
-            if (end - curr < sec_len) [[unlikely]]
+            // check length
+            if(end - curr < sec_len) [[unlikely]]
             {
                 ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -218,12 +220,19 @@ namespace uwvm
                 ::fast_io::fast_terminate();
             }
 
+            // sec end
+            auto const sec_end{curr + sec_len};
+
             // check
             auto const sec_type{static_cast<::uwvm::wasm::section_type>(sec_num)};
             switch(sec_type)
             {
                 case ::uwvm::wasm::section_type::custom_sec: break;
-                case ::uwvm::wasm::section_type::type_sec: break;
+                case ::uwvm::wasm::section_type::type_sec:
+                {
+                    ::uwvm::detect_type_section(curr, sec_end);
+                    break;
+                }
                 case ::uwvm::wasm::section_type::import_sec: break;
                 case ::uwvm::wasm::section_type::function_sec: break;
                 case ::uwvm::wasm::section_type::table_sec: break;
@@ -235,9 +244,10 @@ namespace uwvm
                 case ::uwvm::wasm::section_type::code_sec: break;
                 case ::uwvm::wasm::section_type::data_sec: break;
                 case ::uwvm::wasm::section_type::data_count_sec: break;
-                default: [[unlikely]]
-                {
-                    ::fast_io::io::perr(::uwvm::u8err,
+                default:
+                    [[unlikely]]
+                    {
+                        ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
 #ifdef __MSDOS__
                                 u8"\033[37m"
@@ -258,16 +268,16 @@ namespace uwvm
                                 u8"\n"
                                 u8"\033[0m"
                                 u8"Terminate.\n\n");
-                    ::fast_io::fast_terminate();
-                }
+                        ::fast_io::fast_terminate();
+                    }
             }
 
             // set curr
-            curr += sec_len;
-            
+            curr = sec_end;
+
             // check next section
-            if (auto const dif{end - curr}; dif == 0U){ break; }
-            else if (dif < 2U) [[unlikely]]
+            if(auto const dif{end - curr}; dif == 0U) { break; }
+            else if(dif < 2U) [[unlikely]]
             {
                 ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -289,7 +299,7 @@ namespace uwvm
                                 u8"\n"
                                 u8"\033[0m"
                                 u8"Terminate.\n\n");
-              ::fast_io::fast_terminate();
+                ::fast_io::fast_terminate();
             }
         }
     }
