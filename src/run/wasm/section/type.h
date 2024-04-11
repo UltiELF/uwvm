@@ -123,8 +123,5 @@ namespace uwvm
 
         global_type_section.count = type_count;
 
-#ifdef _DEBUG
-        ::fast_io::io::perrln(::uwvm::u8err, type_count);
-#endif
     }
 }

@@ -117,7 +117,7 @@ namespace uwvm
                                 [](all_parameter const& a, all_parameter const& b) noexcept -> bool
                                 {
 #if __cpp_lib_three_way_comparison >= 201907L
-                                    return a->str < b->str;
+                                    return a.str < b.str;
 #else
                                     return ::std::lexicographical_compare(a.str.cbegin(), a.str.cend(), b.str.cbegin(), b.str.cend());
 #endif
