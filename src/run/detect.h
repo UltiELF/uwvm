@@ -117,7 +117,7 @@ namespace uwvm
         }
 
         // objdump
-        for(; curr < end;) 
+        for(;;) 
         {
             // get section type
             ::std::uint_fast8_t sec_num{};
@@ -192,6 +192,32 @@ namespace uwvm
             // set curr to next
             curr = reinterpret_cast<::std::byte const*>(next);
 
+            //check length
+            if (end - curr < sec_len) [[unlikely]]
+            {
+                ::fast_io::io::perr(::uwvm::u8err,
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"uwvm: "
+                                u8"\033[31m"
+                                u8"[fatal] "
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"Invalid section length."
+                                u8"\n"
+                                u8"\033[0m"
+                                u8"Terminate.\n\n");
+                ::fast_io::fast_terminate();
+            }
+
             // check
             auto const sec_type{static_cast<::uwvm::wasm::section_type>(sec_num)};
             switch(sec_type)
@@ -237,7 +263,34 @@ namespace uwvm
             }
 
             // set curr
-            curr += sec_len; 
+            curr += sec_len;
+            
+            // check next section
+            if (auto const dif{end - curr}; dif == 0U){ break; }
+            else if (dif < 2U) [[unlikely]]
+            {
+                ::fast_io::io::perr(::uwvm::u8err,
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"uwvm: "
+                                u8"\033[31m"
+                                u8"[fatal] "
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"Unable to read leb128."
+                                u8"\n"
+                                u8"\033[0m"
+                                u8"Terminate.\n\n");
+              ::fast_io::fast_terminate();
+            }
         }
     }
 }  // namespace uwvm
