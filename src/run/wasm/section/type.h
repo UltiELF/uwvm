@@ -173,13 +173,51 @@ namespace uwvm
         else if constexpr(simd_n == 16U) {}
         else
 #endif
-        {  // count 0x60
-            ::std::size_t func_count{};
-
-            // jump to curr + 1
+        {  
+            // count functions
+            ::std::size_t func_count{1U};
+            ::std::size_t temp_para_size{};
+            // jump to leb128
             ++curr;
-            func_count = 1U;
+            auto [next_para1, err_para1]{::fast_io::parse_by_scan(reinterpret_cast<char8_t_const_may_alias_ptr>(curr),
+                                                      reinterpret_cast<char8_t_const_may_alias_ptr>(end),
+                                                      ::fast_io::mnp::leb128_get(func_count))};
+            switch(err_para1)
+            {
+                case ::fast_io::parse_code::ok: break;
+                default:
+                    [[unlikely]]
+                    {
+                        ::fast_io::io::perr(::uwvm::u8err,
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"uwvm: "
+                                u8"\033[31m"
+                                u8"[fatal] "
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"Invalid parameter length."
+                                u8"\n"
+                                u8"\033[0m"
+                                u8"Terminate.\n\n");
+                        ::fast_io::fast_terminate();
+                    }
+            }
+
+            // jump to para1
+            curr = reinterpret_cast<::std::byte const*>(next_para1);
             ::uwvm::wasm::section::function_type tmp_ft{.parameter_begin{reinterpret_cast<value_type_const_may_alias_ptr>(curr)}};
+            
+            // jump to para2
+            ++curr;
             for(; curr < end; ++curr)
             {
                 ::uwvm::wasm::value_type vt{};
@@ -216,7 +254,7 @@ namespace uwvm
                     tmp_ft.parameter_end = reinterpret_cast<value_type_const_may_alias_ptr>(curr - 2);
 
                     // check
-                    if(tmp_ft.parameter_begin > tmp_ft.parameter_end) [[unlikely]]
+                    if(static_cast<::std::size_t>(tmp_ft.parameter_begin - tmp_ft.parameter_end) != temp_para_size) [[unlikely]]
                     {
                         ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -245,8 +283,42 @@ namespace uwvm
                     ::uwvm::wasm::value_type rt{};
                     ::fast_io::freestanding::my_memcpy(__builtin_addressof(rt), curr - 1, sizeof(::uwvm::wasm::value_type));
                     tmp_ft.result_type = rt;
-
                     global_type_section.types.push_back_unchecked(tmp_ft);
+
+                    // jump to leb128
+                    ++curr;
+                    auto [next_para2, err_para2]{::fast_io::parse_by_scan(reinterpret_cast<char8_t_const_may_alias_ptr>(curr),
+                                                                        reinterpret_cast<char8_t_const_may_alias_ptr>(end),
+                                                                        ::fast_io::mnp::leb128_get(func_count))};
+                    switch(err_para1)
+                    {
+                        case ::fast_io::parse_code::ok: break;
+                        default:
+                            [[unlikely]]
+                            {
+                                ::fast_io::io::perr(::uwvm::u8err,
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"uwvm: "
+                                u8"\033[31m"
+                                u8"[fatal] "
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"Invalid parameter length."
+                                u8"\n"
+                                u8"\033[0m"
+                                u8"Terminate.\n\n");
+                                ::fast_io::fast_terminate();
+                            }
+                    }
 
                     tmp_ft.parameter_begin = reinterpret_cast<value_type_const_may_alias_ptr>(curr + 1);
                 }
