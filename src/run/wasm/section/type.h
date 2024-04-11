@@ -111,6 +111,7 @@ namespace uwvm
         // jump to functype(0x60)
         curr = reinterpret_cast<::std::byte const*>(next);
 
+        ::std::size_t func_counter{};
         ::uwvm::wasm::section::function_type ft{};
         for(; curr < end;)
         {
@@ -141,6 +142,33 @@ namespace uwvm
                                 u8"Terminate.\n\n");
                 ::fast_io::fast_terminate();
             }
+
+            // check func counter
+            if (++func_counter > type_count) [[unlikely]]
+            {
+                ::fast_io::io::perr(::uwvm::u8err,
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"uwvm: "
+                                u8"\033[31m"
+                                u8"[fatal] "
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"The number of types resolved does not match the actual number."
+                                u8"\n"
+                                u8"\033[0m"
+                                u8"Terminate.\n\n");
+                ::fast_io::fast_terminate();
+            }
+
             // jump to para leb128
             ++curr;
 
@@ -336,6 +364,32 @@ namespace uwvm
                 }
             }
             global_type_section.types.push_back_unchecked(ft);
+        }
+        
+        // check func counter
+        if (func_counter != type_count) [[unlikely]]
+        {
+            ::fast_io::io::perr(::uwvm::u8err,
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"uwvm: "
+                                u8"\033[31m"
+                                u8"[fatal] "
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"The number of types resolved does not match the actual number."
+                                u8"\n"
+                                u8"\033[0m"
+                                u8"Terminate.\n\n");
+            ::fast_io::fast_terminate();
         }
     }
 }  // namespace uwvm
