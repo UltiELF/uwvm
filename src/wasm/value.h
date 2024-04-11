@@ -51,6 +51,22 @@ namespace uwvm::wasm
         }
     }
 
+    inline constexpr bool is_valid_value_type_without_functype_and_resulttype(value_type type) noexcept
+    {
+        switch(type)
+        {
+            case uwvm::wasm::value_type::none: [[fall_through]];
+            case uwvm::wasm::value_type::i32: [[fall_through]];
+            case uwvm::wasm::value_type::i64: [[fall_through]];
+            case uwvm::wasm::value_type::f32: [[fall_through]];
+            case uwvm::wasm::value_type::f64: [[fall_through]];
+            case uwvm::wasm::value_type::v128: [[fall_through]];
+            case uwvm::wasm::value_type::funcref: [[fall_through]];
+            case uwvm::wasm::value_type::externref: return true;
+            default: return false;
+        }
+    }
+
     inline constexpr ::fast_io::u8string_view get_value_u8name(value_type valtype) noexcept
     {
         switch(valtype)

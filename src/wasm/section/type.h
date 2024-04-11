@@ -12,7 +12,8 @@ namespace uwvm::wasm::section
         ::uwvm::wasm::value_type const* parameter_begin{};
         ::uwvm::wasm::value_type const* parameter_end{};
 
-        ::uwvm::wasm::value_type result_type{};
+        ::uwvm::wasm::value_type const* result_begin{};
+        ::uwvm::wasm::value_type const* result_end{};
     };
 
     struct type_section
@@ -23,4 +24,4 @@ namespace uwvm::wasm::section
         ::std::size_t type_count{};
         ::fast_io::vector<function_type> types{};
     };
-}  // namespace uwvm::section
+}  // namespace uwvm::wasm::section
