@@ -198,7 +198,11 @@ namespace uwvm
                     ::uwvm::detect_type_section(curr, sec_end);
                     break;
                 }
-                case ::uwvm::wasm::section_type::import_sec: break;
+                case ::uwvm::wasm::section_type::import_sec:
+                {
+                    ::uwvm::detect_import_section(curr, sec_end);
+                    break;
+                }
                 case ::uwvm::wasm::section_type::function_sec: break;
                 case ::uwvm::wasm::section_type::table_sec: break;
                 case ::uwvm::wasm::section_type::memory_sec: break;
