@@ -73,7 +73,7 @@ namespace uwvm
                                                                 u8"[",
                                                                 count++,
                                                                 u8"] sig = ",
-                                                                t->func_type - func_type_table_base,
+                                                                t->func_index - func_type_table_base,
                                                                 u8" <__imported_",
                                                                 ::fast_io::mnp::strvw(t->module_begin, t->module_end),
                                                                 u8"_",

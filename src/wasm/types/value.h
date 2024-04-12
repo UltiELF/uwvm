@@ -37,16 +37,16 @@ namespace uwvm::wasm
     {
         switch(type)
         {
-            case uwvm::wasm::value_type::none: [[fallthrough]];
-            case uwvm::wasm::value_type::i32: [[fallthrough]];
-            case uwvm::wasm::value_type::i64: [[fallthrough]];
-            case uwvm::wasm::value_type::f32: [[fallthrough]];
-            case uwvm::wasm::value_type::f64: [[fallthrough]];
-            case uwvm::wasm::value_type::v128: [[fallthrough]];
-            case uwvm::wasm::value_type::funcref: [[fallthrough]];
-            case uwvm::wasm::value_type::externref: [[fallthrough]];
-            case uwvm::wasm::value_type::functype: [[fallthrough]];
-            case uwvm::wasm::value_type::resulttype: return true;
+            case value_type::none: [[fallthrough]];
+            case value_type::i32: [[fallthrough]];
+            case value_type::i64: [[fallthrough]];
+            case value_type::f32: [[fallthrough]];
+            case value_type::f64: [[fallthrough]];
+            case value_type::v128: [[fallthrough]];
+            case value_type::funcref: [[fallthrough]];
+            case value_type::externref: [[fallthrough]];
+            case value_type::functype: [[fallthrough]];
+            case value_type::resulttype: return true;
             default: return false;
         }
     }
@@ -55,12 +55,12 @@ namespace uwvm::wasm
     {
         switch(type)
         {
-            case uwvm::wasm::value_type::none: [[fallthrough]];
-            case uwvm::wasm::value_type::i32: [[fallthrough]];
-            case uwvm::wasm::value_type::i64: [[fallthrough]];
-            case uwvm::wasm::value_type::f32: [[fallthrough]];
-            case uwvm::wasm::value_type::f64: [[fallthrough]];
-            case uwvm::wasm::value_type::v128: return true;
+            case value_type::none: [[fallthrough]];
+            case value_type::i32: [[fallthrough]];
+            case value_type::i64: [[fallthrough]];
+            case value_type::f32: [[fallthrough]];
+            case value_type::f64: [[fallthrough]];
+            case value_type::v128: return true;
             default: return false;
         }
     }
@@ -69,8 +69,8 @@ namespace uwvm::wasm
     {
         switch(type)
         {
-            case uwvm::wasm::value_type::funcref: [[fallthrough]];
-            case uwvm::wasm::value_type::externref: return true;
+            case value_type::funcref: [[fallthrough]];
+            case value_type::externref: return true;
             default: return false;
         }
     }
@@ -79,16 +79,16 @@ namespace uwvm::wasm
     {
         switch(valtype)
         {
-            case uwvm::wasm::value_type::none: return ::fast_io::u8string_view{u8"none"};
-            case uwvm::wasm::value_type::i32: return ::fast_io::u8string_view{u8"i32"};
-            case uwvm::wasm::value_type::i64: return ::fast_io::u8string_view{u8"i64"};
-            case uwvm::wasm::value_type::f32: return ::fast_io::u8string_view{u8"f32"};
-            case uwvm::wasm::value_type::f64: return ::fast_io::u8string_view{u8"f64"};
-            case uwvm::wasm::value_type::v128: return ::fast_io::u8string_view{u8"v128"};
-            case uwvm::wasm::value_type::funcref: return ::fast_io::u8string_view{u8"funcref"};
-            case uwvm::wasm::value_type::externref: return ::fast_io::u8string_view{u8"externref"};
-            case uwvm::wasm::value_type::functype: return ::fast_io::u8string_view{u8"functype"};
-            case uwvm::wasm::value_type::resulttype: return ::fast_io::u8string_view{u8"resulttype"};
+            case value_type::none: return ::fast_io::u8string_view{u8"none"};
+            case value_type::i32: return ::fast_io::u8string_view{u8"i32"};
+            case value_type::i64: return ::fast_io::u8string_view{u8"i64"};
+            case value_type::f32: return ::fast_io::u8string_view{u8"f32"};
+            case value_type::f64: return ::fast_io::u8string_view{u8"f64"};
+            case value_type::v128: return ::fast_io::u8string_view{u8"v128"};
+            case value_type::funcref: return ::fast_io::u8string_view{u8"funcref"};
+            case value_type::externref: return ::fast_io::u8string_view{u8"externref"};
+            case value_type::functype: return ::fast_io::u8string_view{u8"functype"};
+            case value_type::resulttype: return ::fast_io::u8string_view{u8"resulttype"};
             default: return {};
         }
     }

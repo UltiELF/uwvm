@@ -133,6 +133,7 @@ namespace uwvm
         ::std::size_t import_table_counter{};
         ::std::size_t import_memory_counter{};
         ::std::size_t import_global_counter{};
+        ::std::size_t import_tag_counter{};
 
         for(auto const type_count{::uwvm::global_type_section.type_count}; curr < end;)
         {
@@ -304,9 +305,9 @@ namespace uwvm
                 ::fast_io::fast_terminate();
             }
 
-            ::uwvm::wasm::section::import_basic_type ibt{};
-            ::fast_io::freestanding::my_memcpy(__builtin_addressof(ibt), curr, sizeof(::uwvm::wasm::section::import_basic_type));
-            if(!::uwvm::wasm::section::is_valid_import_basic_type(ibt)) [[unlikely]]
+            ::uwvm::wasm::extern_kind ek{};
+            ::fast_io::freestanding::my_memcpy(__builtin_addressof(ek), curr, sizeof(::uwvm::wasm::extern_kind));
+            if(!::uwvm::wasm::is_valid_extern_kind_type(ek)) [[unlikely]]
             {
                 ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -325,18 +326,18 @@ namespace uwvm
                                 u8"\033[97m"
 #endif
                                 u8"Invalid Type: ",
-                                ::fast_io::mnp::hex0x<true>(static_cast<::std::uint_fast8_t>(ibt)),
+                                ::fast_io::mnp::hex0x<true>(static_cast<::std::uint_fast8_t>(ek)),
                                 u8"\n"
                                 u8"\033[0m"
                                 u8"Terminate.\n\n");
                 ::fast_io::fast_terminate();
             }
 
-            it.type = ibt;
+            it.extern_type.type = ek;
 
-            switch(ibt)
+            switch(ek)
             {
-                case uwvm::wasm::section::import_basic_type::func:
+                case ::uwvm::wasm::extern_kind::func:
                 {
                     ++import_func_counter;
 
@@ -404,7 +405,7 @@ namespace uwvm
                         ::fast_io::fast_terminate();
                     }
 
-                    it.func_type = __builtin_addressof(global_type_section.types.index_unchecked(type_index));
+                    it.extern_type.function = __builtin_addressof(global_type_section.types.index_unchecked(type_index));
 
                     global_import_section.types.push_back_unchecked(it);
 
@@ -413,23 +414,30 @@ namespace uwvm
 
                     break;
                 }
-                case uwvm::wasm::section::import_basic_type::table:
+                case ::uwvm::wasm::extern_kind::table:
                 {
                     ++import_table_counter;
 
                     ::fast_io::fast_terminate();  // todo
                     break;
                 }
-                case uwvm::wasm::section::import_basic_type::memory:
+                case ::uwvm::wasm::extern_kind::memory:
                 {
                     ++import_memory_counter;
 
                     ::fast_io::fast_terminate();  // todo
                     break;
                 }
-                case uwvm::wasm::section::import_basic_type::global:
+                case ::uwvm::wasm::extern_kind::global:
                 {
                     ++import_global_counter;
+
+                    ::fast_io::fast_terminate();  // todo
+                    break;
+                }
+                case ::uwvm::wasm::extern_kind::tag:
+                {
+                    ++import_tag_counter;
 
                     ::fast_io::fast_terminate();  // todo
                     break;
@@ -469,29 +477,35 @@ namespace uwvm
         global_import_section.table_types.reserve(import_table_counter);
         global_import_section.memory_types.reserve(import_memory_counter);
         global_import_section.global_types.reserve(import_global_counter);
+        global_import_section.tag_types.reserve(import_tag_counter);
 
         for(auto const& i: global_import_section.types)
         {
-            switch(i.type)
+            switch(i.extern_type.type)
             {
-                case uwvm::wasm::section::import_basic_type::func:
+                case ::uwvm::wasm::extern_kind::func:
                 {
                     global_import_section.func_types.push_back_unchecked(__builtin_addressof(i));
                     break;
                 }
-                case uwvm::wasm::section::import_basic_type::table:
+                case ::uwvm::wasm::extern_kind::table:
                 {
                     global_import_section.table_types.push_back_unchecked(__builtin_addressof(i));
                     break;
                 }
-                case uwvm::wasm::section::import_basic_type::memory:
+                case ::uwvm::wasm::extern_kind::memory:
                 {
                     global_import_section.memory_types.push_back_unchecked(__builtin_addressof(i));
                     break;
                 }
-                case uwvm::wasm::section::import_basic_type::global:
+                case ::uwvm::wasm::extern_kind::global:
                 {
                     global_import_section.global_types.push_back_unchecked(__builtin_addressof(i));
+                    break;
+                }
+                case ::uwvm::wasm::extern_kind::tag:
+                {
+                    global_import_section.tag_types.push_back_unchecked(__builtin_addressof(i));
                     break;
                 }
                 default: ::fast_io::unreachable();
