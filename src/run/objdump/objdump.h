@@ -107,7 +107,7 @@ namespace uwvm
                 }
 
                 ::fast_io::operations::print_freestanding<true>(::std::forward<s>(stm),
-                                                                u8" ",
+                                                                u8" <- ",
                                                                 ::fast_io::mnp::strvw(t->module_begin, t->module_end),
                                                                 u8".",
                                                                 ::fast_io::mnp::strvw(t->name_begin, t->name_end));
