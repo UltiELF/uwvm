@@ -37,15 +37,15 @@ namespace uwvm::wasm
     {
         switch(type)
         {
-            case uwvm::wasm::value_type::none: [[fall_through]];
-            case uwvm::wasm::value_type::i32: [[fall_through]];
-            case uwvm::wasm::value_type::i64: [[fall_through]];
-            case uwvm::wasm::value_type::f32: [[fall_through]];
-            case uwvm::wasm::value_type::f64: [[fall_through]];
-            case uwvm::wasm::value_type::v128: [[fall_through]];
-            case uwvm::wasm::value_type::funcref: [[fall_through]];
-            case uwvm::wasm::value_type::externref: [[fall_through]];
-            case uwvm::wasm::value_type::functype: [[fall_through]];
+            case uwvm::wasm::value_type::none: [[fallthrough]];
+            case uwvm::wasm::value_type::i32: [[fallthrough]];
+            case uwvm::wasm::value_type::i64: [[fallthrough]];
+            case uwvm::wasm::value_type::f32: [[fallthrough]];
+            case uwvm::wasm::value_type::f64: [[fallthrough]];
+            case uwvm::wasm::value_type::v128: [[fallthrough]];
+            case uwvm::wasm::value_type::funcref: [[fallthrough]];
+            case uwvm::wasm::value_type::externref: [[fallthrough]];
+            case uwvm::wasm::value_type::functype: [[fallthrough]];
             case uwvm::wasm::value_type::resulttype: return true;
             default: return false;
         }
@@ -55,13 +55,13 @@ namespace uwvm::wasm
     {
         switch(type)
         {
-            case uwvm::wasm::value_type::none: [[fall_through]];
-            case uwvm::wasm::value_type::i32: [[fall_through]];
-            case uwvm::wasm::value_type::i64: [[fall_through]];
-            case uwvm::wasm::value_type::f32: [[fall_through]];
-            case uwvm::wasm::value_type::f64: [[fall_through]];
-            case uwvm::wasm::value_type::v128: [[fall_through]];
-            case uwvm::wasm::value_type::funcref: [[fall_through]];
+            case uwvm::wasm::value_type::none: [[fallthrough]];
+            case uwvm::wasm::value_type::i32: [[fallthrough]];
+            case uwvm::wasm::value_type::i64: [[fallthrough]];
+            case uwvm::wasm::value_type::f32: [[fallthrough]];
+            case uwvm::wasm::value_type::f64: [[fallthrough]];
+            case uwvm::wasm::value_type::v128: [[fallthrough]];
+            case uwvm::wasm::value_type::funcref: [[fallthrough]];
             case uwvm::wasm::value_type::externref: return true;
             default: return false;
         }

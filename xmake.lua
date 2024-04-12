@@ -465,7 +465,7 @@ target("uwvm")
 	set_kind("binary")
 	defopt()
 
-	add_includedirs("third-partys/fast_io/include/")
+	add_includedirs("third-parties/fast_io/include/")
 	add_includedirs("src/utils/")
 
 	if is_plat("windows", "mingw") then
