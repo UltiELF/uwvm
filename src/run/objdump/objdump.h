@@ -64,16 +64,16 @@ namespace uwvm
             ::fast_io::operations::print_freestanding<false>(::std::forward<s>(stm), u8"\n" u8"Import[", ::uwvm::global_import_section.import_count, u8"]:\n");
 
             // func
-            auto const func_type_table_base{__builtin_addressof(::uwvm::global_type_section.types.front_unchecked())};
+            auto const func_type_table_base{::uwvm::global_type_section.types.cbegin()};
             for(::std::size_t count{}; const auto t: ::uwvm::global_import_section.func_types)
             {
                 ::fast_io::operations::print_freestanding<true>(::std::forward<s>(stm),
-                                                                u8" - ",
-                                                                ::uwvm::wasm::section::get_import_basic_u8name(t->type),
+                                                                u8" - "
+                                                                u8"func"
                                                                 u8"[",
                                                                 count++,
                                                                 u8"] sig = ",
-                                                                t->func_index - func_type_table_base,
+                                                                t->extern_type.function - func_type_table_base,
                                                                 u8" <__imported_",
                                                                 ::fast_io::mnp::strvw(t->module_begin, t->module_end),
                                                                 u8"_",

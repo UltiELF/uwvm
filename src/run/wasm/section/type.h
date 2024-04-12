@@ -305,7 +305,7 @@ namespace uwvm
 #else
                                 u8"\033[97m"
 #endif
-                                u8"Invalid type length."
+                                u8"Invalid return count."
                                 u8"\n"
                                 u8"\033[0m"
                                 u8"Terminate.\n\n");
