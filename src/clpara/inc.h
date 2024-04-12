@@ -6,3 +6,5 @@
 #include "parameters/run.h"
 #include "parameters/enable-memory64.h"
 #include "parameters/mode.h"
+#include "parameters/enable-multivalue.h"
+#include "parameters/enable-relaxedsimd.h"

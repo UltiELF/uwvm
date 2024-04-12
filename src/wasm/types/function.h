@@ -8,6 +8,8 @@ namespace uwvm::wasm
         ::uwvm::wasm::value_type const* parameter_begin{};
         ::uwvm::wasm::value_type const* parameter_end{};
 
-        ::uwvm::wasm::value_type result{};
+        ::uwvm::wasm::value_type const* result_begin{};
+        ::uwvm::wasm::value_type const* result_end{};
+
     };
 }  // namespace uwvm::wasm

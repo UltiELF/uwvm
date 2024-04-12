@@ -48,7 +48,21 @@ namespace uwvm
                         ::fast_io::operations::print_freestanding<false>(::std::forward<s>(stm), u8", ", ::uwvm::wasm::get_value_u8name(*curr_para));
                     }
                 }
-                ::fast_io::operations::print_freestanding<true>(::std::forward<s>(stm), u8") -> ", ::uwvm::wasm::get_value_u8name(t.result));
+
+                if(t.result_begin == t.result_end) { ::fast_io::operations::print_freestanding<true>(::std::forward<s>(stm), u8") -> nil"); }
+                else if(t.result_end - t.result_begin == 1)
+                {
+                    ::fast_io::operations::print_freestanding<true>(::std::forward<s>(stm), u8") -> ", ::uwvm::wasm::get_value_u8name(*t.result_begin));
+                }
+                else
+                {
+                    ::fast_io::operations::print_freestanding<false>(::std::forward<s>(stm), u8") -> (", ::uwvm::wasm::get_value_u8name(*t.result_begin));
+                    for(auto curr_res{t.result_begin + 1}; curr_res < t.result_end; ++curr_res)
+                    {
+                        ::fast_io::operations::print_freestanding<false>(::std::forward<s>(stm), u8", ", ::uwvm::wasm::get_value_u8name(*curr_res));
+                    }
+                    ::fast_io::operations::print_freestanding<false>(::std::forward<s>(stm), u8")\n");
+                }
             }
 
             // Import
@@ -91,7 +105,12 @@ namespace uwvm
                 {
                     ::fast_io::operations::print_freestanding<false>(::std::forward<s>(stm), u8" max=", t->extern_type.table.limit.max);
                 }
-                ::fast_io::operations::print_freestanding<true>(::std::forward<s>(stm));
+
+                ::fast_io::operations::print_freestanding<true>(::std::forward<s>(stm),
+                                                                u8" ",
+                                                                ::fast_io::mnp::strvw(t->module_begin, t->module_end),
+                                                                u8".",
+                                                                ::fast_io::mnp::strvw(t->name_begin, t->name_end));
             }
             // todo
 
