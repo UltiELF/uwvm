@@ -254,8 +254,9 @@ namespace uwvm
 
                     if(res_len == 0)
                     {
-                        ++curr;
                         ft.result = ::uwvm::wasm::value_type::none;
+                       
+                        ++curr;
                     }
                     else if(res_len == 1)
                     {

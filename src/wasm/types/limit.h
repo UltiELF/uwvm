@@ -8,5 +8,6 @@ namespace uwvm::wasm
     {
         ::std::size_t min{};
         ::std::size_t max{};
+        bool present_max{};
     };
 }  // namespace uwvm::wasm::section
