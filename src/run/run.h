@@ -73,8 +73,7 @@ namespace uwvm
         auto const begin{reinterpret_cast<::std::byte const*>(::uwvm::wasm_file_loader.cbegin())};
         auto const end{reinterpret_cast<::std::byte const*>(::uwvm::wasm_file_loader.cend())};
 
-        if(::uwvm::parameter::details::scan_unchecked_is_exist) { ::uwvm::scan_wasm_file<false>(begin, end); }
-        else { ::uwvm::scan_wasm_file<true>(begin, end); }
+       ::uwvm::scan_wasm_file(begin, end);
 
         switch(::uwvm::running_mode)
         {

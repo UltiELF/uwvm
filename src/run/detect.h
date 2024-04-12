@@ -36,7 +36,6 @@ namespace uwvm
         return ::fast_io::little_endian(temp);
     }
 
-    template <bool checked = true>
     inline void scan_wasm_file(::std::byte const* begin, ::std::byte const* end) noexcept
     {
         // alias def
@@ -56,7 +55,6 @@ namespace uwvm
 
         // min size of wasm file format = 4 + 4
         // check wasm magic number
-        // always check
         if(static_cast<::std::size_t>(end - curr) < 8U || !::uwvm::is_wasm_file_unchecked(curr)) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
@@ -88,12 +86,9 @@ namespace uwvm
         // get first section
         curr += 4U;
 
-        // check 1st section
-        if constexpr(checked)
+        if(end - curr < 2) [[unlikely]]
         {
-            if(end - curr < 2) [[unlikely]]
-            {
-                ::fast_io::io::perr(::uwvm::u8err,
+            ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
 #ifdef __MSDOS__
                                 u8"\033[37m"
@@ -112,8 +107,7 @@ namespace uwvm
                                 u8"No WASM sections found.\n"
                                 u8"\033[0m"
                                 u8"Terminate.\n\n");
-                ::fast_io::fast_terminate();
-            }
+            ::fast_io::fast_terminate();
         }
 
         // objdump
@@ -129,15 +123,13 @@ namespace uwvm
             auto [next, err]{::fast_io::parse_by_scan(reinterpret_cast<char8_t_const_may_alias_ptr>(curr),
                                                       reinterpret_cast<char8_t_const_may_alias_ptr>(end),
                                                       ::fast_io::mnp::leb128_get(sec_len))};
-            if constexpr(checked)
+            switch(err)
             {
-                switch(err)
-                {
-                    case ::fast_io::parse_code::ok: break;
-                    default:
-                        [[unlikely]]
-                        {
-                            ::fast_io::io::perr(::uwvm::u8err,
+                case ::fast_io::parse_code::ok: break;
+                default:
+                    [[unlikely]]
+                    {
+                        ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
 #ifdef __MSDOS__
                                 u8"\033[37m"
@@ -157,23 +149,20 @@ namespace uwvm
                                 u8"\n"
                                 u8"\033[0m"
                                 u8"Terminate.\n\n");
-                            ::fast_io::fast_terminate();
-                        }
-                }
-
-                // check 64-bit indexes
-                ::uwvm ::check_index(sec_len);
+                        ::fast_io::fast_terminate();
+                    }
             }
+
+            // check 64-bit indexes
+            ::uwvm ::check_index(sec_len);
 
             // set curr to next
             curr = reinterpret_cast<::std::byte const*>(next);
 
             // check length
-            if constexpr(checked)
+            if(end - curr < sec_len) [[unlikely]]
             {
-                if(end - curr < sec_len) [[unlikely]]
-                {
-                    ::fast_io::io::perr(::uwvm::u8err,
+                ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
 #ifdef __MSDOS__
                                 u8"\033[37m"
@@ -193,8 +182,7 @@ namespace uwvm
                                 u8"\n"
                                 u8"\033[0m"
                                 u8"Terminate.\n\n");
-                    ::fast_io::fast_terminate();
-                }
+                ::fast_io::fast_terminate();
             }
 
             // sec end
@@ -207,7 +195,7 @@ namespace uwvm
                 case ::uwvm::wasm::section_type::custom_sec: break;
                 case ::uwvm::wasm::section_type::type_sec:
                 {
-                    ::uwvm::detect_type_section<checked>(curr, sec_end);
+                    ::uwvm::detect_type_section(curr, sec_end);
                     break;
                 }
                 case ::uwvm::wasm::section_type::import_sec: break;
@@ -224,9 +212,7 @@ namespace uwvm
                 default:
                     [[unlikely]]
                     {
-                        if constexpr(checked)
-                        {
-                            ::fast_io::io::perr(::uwvm::u8err,
+                        ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
 #ifdef __MSDOS__
                                 u8"\033[37m"
@@ -247,9 +233,7 @@ namespace uwvm
                                 u8"\n"
                                 u8"\033[0m"
                                 u8"Terminate.\n\n");
-                            ::fast_io::fast_terminate();
-                        }
-                        else { ::fast_io::unreachable(); }
+                        ::fast_io::fast_terminate();
                     }
             }
 
@@ -260,9 +244,7 @@ namespace uwvm
             if(auto const dif{end - curr}; dif == 0U) { break; }
             else if(dif < 2U) [[unlikely]]
             {
-                if constexpr(checked)
-                {
-                    ::fast_io::io::perr(::uwvm::u8err,
+                ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
 #ifdef __MSDOS__
                                 u8"\033[37m"
@@ -282,9 +264,7 @@ namespace uwvm
                                 u8"\n"
                                 u8"\033[0m"
                                 u8"Terminate.\n\n");
-                    ::fast_io::fast_terminate();
-                }
-                else { ::fast_io::unreachable(); }
+                ::fast_io::fast_terminate();
             }
         }
     }
