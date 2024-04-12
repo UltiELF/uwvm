@@ -37,7 +37,7 @@ namespace uwvm
                                                              ::uwvm::global_type_section.type_count,
                                                              u8"]:\n");
             // Type
-            for(::std::size_t count{}; const auto& t: ::uwvm::global_type_section.types)
+            for(::std::size_t count{}; auto const& t: ::uwvm::global_type_section.types)
             {
                 ::fast_io::operations::print_freestanding<false>(::std::forward<s>(stm), u8" - type[", count++, u8"] (");
                 if(t.parameter_begin != t.parameter_end)
@@ -56,14 +56,14 @@ namespace uwvm
 
             // func
             auto const func_type_table_base{::uwvm::global_type_section.types.cbegin()};
-            for(::std::size_t count{}; const auto t: ::uwvm::global_import_section.func_types)
+            for(::std::size_t count{}; auto const t: ::uwvm::global_import_section.func_types)
             {
                 ::fast_io::operations::print_freestanding<true>(::std::forward<s>(stm),
                                                                 u8" - "
                                                                 u8"func"
                                                                 u8"[",
                                                                 count++,
-                                                                u8"] sig = ",
+                                                                u8"] sig=",
                                                                 t->extern_type.function - func_type_table_base,
                                                                 u8" <__imported_",
                                                                 ::fast_io::mnp::strvw(t->module_begin, t->module_end),
@@ -74,9 +74,27 @@ namespace uwvm
                                                                 u8".",
                                                                 ::fast_io::mnp::strvw(t->name_begin, t->name_end));
             }
-            // table 
+
+            // table
+            for(::std::size_t count{}; auto const t: ::uwvm::global_import_section.table_types)
+            {
+                ::fast_io::operations::print_freestanding<false>(::std::forward<s>(stm),
+                                                                u8" - "
+                                                                u8"table"
+                                                                u8"[",
+                                                                count++,
+                                                                u8"] type=",
+                                                                ::uwvm::wasm::get_value_u8name(t->extern_type.table.elem_type),
+                                                                u8" initial=",
+                                                                t->extern_type.table.limit.min);
+                if(t->extern_type.table.limit.present_max)
+                {
+                    ::fast_io::operations::print_freestanding<false>(::std::forward<s>(stm), u8" max=", t->extern_type.table.limit.max);
+                }
+                ::fast_io::operations::print_freestanding<true>(::std::forward<s>(stm));
+            }
             // todo
-            
+
             ::fast_io::operations::print_freestanding<true>(::std::forward<s>(stm));
         }
     }  // namespace details
