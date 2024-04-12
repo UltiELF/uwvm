@@ -283,8 +283,35 @@ namespace uwvm
                             }
                     }
 
+#if 0
                     // check 64-bit indexes
                     ::uwvm::check_index(res_len);
+#else
+                    if (res_len > 1) [[unlikely]]
+                    {
+                        ::fast_io::io::perr(::uwvm::u8err,
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"uwvm: "
+                                u8"\033[31m"
+                                u8"[fatal] "
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"Invalid type length."
+                                u8"\n"
+                                u8"\033[0m"
+                                u8"Terminate.\n\n");
+                        ::fast_io::fast_terminate();
+                    }
+#endif
 
                     // jump to res1
                     curr = reinterpret_cast<::std::byte const*>(next_res);
