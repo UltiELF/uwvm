@@ -48,15 +48,7 @@ namespace uwvm
                         ::fast_io::operations::print_freestanding<false>(::std::forward<s>(stm), u8", ", ::uwvm::wasm::get_value_u8name(*curr_para));
                     }
                 }
-                if(t.result_begin != t.result_end)
-                {
-                    ::fast_io::operations::print_freestanding<false>(::std::forward<s>(stm), u8") -> ", ::uwvm::wasm::get_value_u8name(*t.result_begin));
-                    for(auto curr_res{t.result_begin + 1}; curr_res < t.result_end; ++curr_res)
-                    {
-                        ::fast_io::operations::print_freestanding<false>(::std::forward<s>(stm), u8", ", ::uwvm::wasm::get_value_u8name(*curr_res));
-                    }
-                }
-                else {::fast_io::operations::print_freestanding<false>(::std::forward<s>(stm), u8") -> nil"); }
+                ::fast_io::operations::print_freestanding<false>(::std::forward<s>(stm), u8") -> ", ::uwvm::wasm::get_value_u8name(t.result));
                 ::fast_io::operations::print_freestanding<true>(::std::forward<s>(stm));
             }
 

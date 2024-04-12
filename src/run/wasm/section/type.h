@@ -250,16 +250,22 @@ namespace uwvm
 
                     // get res len
                     ::std::uint_fast8_t res_len{};
-                    auto [next_res, err_res]{::fast_io::parse_by_scan(reinterpret_cast<char8_t_const_may_alias_ptr>(curr),
-                                                                      reinterpret_cast<char8_t_const_may_alias_ptr>(end),
-                                                                      ::fast_io::mnp::leb128_get(res_len))};
-                    switch(err_res)
+                    ::fast_io::freestanding::my_memcpy(__builtin_addressof(res_len), curr, sizeof(::std::uint_fast8_t));
+
+                    if(res_len == 0)
                     {
-                        case ::fast_io::parse_code::ok: break;
-                        default:
-                            [[unlikely]]
-                            {
-                                ::fast_io::io::perr(::uwvm::u8err,
+                        ++curr;
+                        ft.result = ::uwvm::wasm::value_type::none;
+                    }
+                    else if(res_len == 1)
+                    {
+                        ++curr;
+                        ::uwvm::wasm::value_type vt2{};
+                        ::fast_io::freestanding::my_memcpy(__builtin_addressof(vt2), curr, sizeof(::uwvm::wasm::value_type));
+                        
+                        if(!::uwvm::wasm::is_valid_value_type_value(vt2)) [[unlikely]]
+                        {
+                            ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
 #ifdef __MSDOS__
                                 u8"\033[37m"
@@ -275,15 +281,19 @@ namespace uwvm
 #else
                                 u8"\033[97m"
 #endif
-                                u8"Invalid type length."
+                                u8"Invalid Type: ",
+                                ::fast_io::mnp::hex0x<true>(static_cast<::std::uint_fast8_t>(vt2)),
                                 u8"\n"
                                 u8"\033[0m"
                                 u8"Terminate.\n\n");
-                                ::fast_io::fast_terminate();
-                            }
-                    }
+                            ::fast_io::fast_terminate();
+                        }
 
-                    if (res_len > 1) [[unlikely]]
+                        ft.result = vt2;
+                        
+                        ++curr;
+                    }
+                    else [[unlikely]]
                     {
                         ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -306,68 +316,6 @@ namespace uwvm
                                 u8"\033[0m"
                                 u8"Terminate.\n\n");
                         ::fast_io::fast_terminate();
-                    }
-
-                    // jump to res1
-                    curr = reinterpret_cast<::std::byte const*>(next_res);
-
-                    if(end - curr < static_cast<::std::ptrdiff_t>(res_len)) [[unlikely]]
-                    {
-                        ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"Invalid result length."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
-                        ::fast_io::fast_terminate();
-                    }
-
-                    // set 1st para
-                    ft.result_begin = reinterpret_cast<value_type_const_may_alias_ptr>(curr);
-                    curr += res_len;
-                    ft.result_end = reinterpret_cast<value_type_const_may_alias_ptr>(curr);
-
-                    for(auto res_curr{ft.result_begin}; res_curr != ft.result_end; ++res_curr)
-                    {
-                        if(!::uwvm::wasm::is_valid_value_type_value(*res_curr)) [[unlikely]]
-                        {
-                            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"Invalid Type: ",
-                                ::fast_io::mnp::hex0x<true>(static_cast<::std::uint_fast8_t>(*res_curr)),
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
-                            ::fast_io::fast_terminate();
-                        }
                     }
 
                     global_type_section.types.push_back_unchecked(ft);
