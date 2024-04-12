@@ -84,7 +84,7 @@ namespace uwvm
                                                                 ::fast_io::mnp::strvw(t->name_begin, t->name_end));
             }
             // table 
-            ::fast_io::fast_terminate(); // todo
+            // todo
             
             ::fast_io::operations::print_freestanding<true>(::std::forward<s>(stm));
         }
