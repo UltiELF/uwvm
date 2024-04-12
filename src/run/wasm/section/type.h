@@ -12,6 +12,7 @@ namespace uwvm
 {
     inline ::uwvm::wasm::section::type_section global_type_section{};
 
+    template <bool checked = true>
     inline void detect_type_section(::std::byte const* begin, ::std::byte const* end) noexcept
     {
         // alias def
@@ -37,6 +38,7 @@ namespace uwvm
             = ::uwvm::wasm::value_type const*;
 
         // check is exist
+        // always check
         if(global_type_section.sec_begin) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
@@ -72,13 +74,15 @@ namespace uwvm
         auto [next, err]{::fast_io::parse_by_scan(reinterpret_cast<char8_t_const_may_alias_ptr>(curr),
                                                   reinterpret_cast<char8_t_const_may_alias_ptr>(end),
                                                   ::fast_io::mnp::leb128_get(type_count))};
-        switch(err)
+        if constexpr(checked)
         {
-            case ::fast_io::parse_code::ok: break;
-            default:
-                [[unlikely]]
-                {
-                    ::fast_io::io::perr(::uwvm::u8err,
+            switch(err)
+            {
+                case ::fast_io::parse_code::ok: break;
+                default:
+                    [[unlikely]]
+                    {
+                        ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
 #ifdef __MSDOS__
                                 u8"\033[37m"
@@ -98,10 +102,10 @@ namespace uwvm
                                 u8"\n"
                                 u8"\033[0m"
                                 u8"Terminate.\n\n");
-                    ::fast_io::fast_terminate();
-                }
+                        ::fast_io::fast_terminate();
+                    }
+            }
         }
-
         // check 64-bit indexes
         ::uwvm::check_index(type_count);
 
@@ -117,9 +121,11 @@ namespace uwvm
         {
             ::uwvm::wasm::value_type vt{};
             ::fast_io::freestanding::my_memcpy(__builtin_addressof(vt), curr, sizeof(::uwvm::wasm::value_type));
-            if(vt != ::uwvm::wasm::value_type::functype)
+            if constexpr(checked)
             {
-                ::fast_io::io::perr(::uwvm::u8err,
+                if(vt != ::uwvm::wasm::value_type::functype)
+                {
+                    ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
 #ifdef __MSDOS__
                                 u8"\033[37m"
@@ -140,13 +146,16 @@ namespace uwvm
                                 u8"\n"
                                 u8"\033[0m"
                                 u8"Terminate.\n\n");
-                ::fast_io::fast_terminate();
+                    ::fast_io::fast_terminate();
+                }
             }
 
             // check func counter
-            if (++func_counter > type_count) [[unlikely]]
+            if constexpr(checked)
             {
-                ::fast_io::io::perr(::uwvm::u8err,
+                if(++func_counter > type_count) [[unlikely]]
+                {
+                    ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
 #ifdef __MSDOS__
                                 u8"\033[37m"
@@ -166,7 +175,8 @@ namespace uwvm
                                 u8"\n"
                                 u8"\033[0m"
                                 u8"Terminate.\n\n");
-                ::fast_io::fast_terminate();
+                    ::fast_io::fast_terminate();
+                }
             }
 
             // jump to para leb128
@@ -177,13 +187,15 @@ namespace uwvm
             auto [next_para, err_para]{::fast_io::parse_by_scan(reinterpret_cast<char8_t_const_may_alias_ptr>(curr),
                                                                 reinterpret_cast<char8_t_const_may_alias_ptr>(end),
                                                                 ::fast_io::mnp::leb128_get(para_len))};
-            switch(err_para)
+            if constexpr(checked)
             {
-                case ::fast_io::parse_code::ok: break;
-                default:
-                    [[unlikely]]
-                    {
-                        ::fast_io::io::perr(::uwvm::u8err,
+                switch(err_para)
+                {
+                    case ::fast_io::parse_code::ok: break;
+                    default:
+                        [[unlikely]]
+                        {
+                            ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
 #ifdef __MSDOS__
                                 u8"\033[37m"
@@ -203,17 +215,21 @@ namespace uwvm
                                 u8"\n"
                                 u8"\033[0m"
                                 u8"Terminate.\n\n");
-                        ::fast_io::fast_terminate();
-                    }
+                            ::fast_io::fast_terminate();
+                        }
+                }
+
+                // check 64-bit indexes
+                ::uwvm::check_index(para_len);
             }
-            // check 64-bit indexes
-            ::uwvm::check_index(para_len);
 
             // jump to para1
             curr = reinterpret_cast<::std::byte const*>(next_para);
-            if(end - curr < static_cast<::std::ptrdiff_t>(para_len + 1)) [[unlikely]]
+            if constexpr(checked)
             {
-                ::fast_io::io::perr(::uwvm::u8err,
+                if(end - curr < static_cast<::std::ptrdiff_t>(para_len + 1)) [[unlikely]]
+                {
+                    ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
 #ifdef __MSDOS__
                                 u8"\033[37m"
@@ -233,17 +249,21 @@ namespace uwvm
                                 u8"\n"
                                 u8"\033[0m"
                                 u8"Terminate.\n\n");
-                ::fast_io::fast_terminate();
+                    ::fast_io::fast_terminate();
+                }
             }
+
             // set 1st para
             ft.parameter_begin = reinterpret_cast<value_type_const_may_alias_ptr>(curr);
             curr += para_len;
             ft.parameter_end = reinterpret_cast<value_type_const_may_alias_ptr>(curr);
-            for(auto para_curr{ft.parameter_begin}; para_curr != ft.parameter_end; ++para_curr)
+            if constexpr(checked)
             {
-                if(!::uwvm::wasm::is_valid_value_type_without_functype_and_resulttype(*para_curr)) [[unlikely]]
+                for(auto para_curr{ft.parameter_begin}; para_curr != ft.parameter_end; ++para_curr)
                 {
-                    ::fast_io::io::perr(::uwvm::u8err,
+                    if(!::uwvm::wasm::is_valid_value_type_without_functype_and_resulttype(*para_curr)) [[unlikely]]
+                    {
+                        ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
 #ifdef __MSDOS__
                                 u8"\033[37m"
@@ -264,7 +284,8 @@ namespace uwvm
                                 u8"\n"
                                 u8"\033[0m"
                                 u8"Terminate.\n\n");
-                    ::fast_io::fast_terminate();
+                        ::fast_io::fast_terminate();
+                    }
                 }
             }
 
@@ -273,13 +294,15 @@ namespace uwvm
             auto [next_res, err_res]{::fast_io::parse_by_scan(reinterpret_cast<char8_t_const_may_alias_ptr>(curr),
                                                               reinterpret_cast<char8_t_const_may_alias_ptr>(end),
                                                               ::fast_io::mnp::leb128_get(res_len))};
-            switch(err_res)
+            if constexpr(checked)
             {
-                case ::fast_io::parse_code::ok: break;
-                default:
-                    [[unlikely]]
-                    {
-                        ::fast_io::io::perr(::uwvm::u8err,
+                switch(err_res)
+                {
+                    case ::fast_io::parse_code::ok: break;
+                    default:
+                        [[unlikely]]
+                        {
+                            ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
 #ifdef __MSDOS__
                                 u8"\033[37m"
@@ -299,17 +322,22 @@ namespace uwvm
                                 u8"\n"
                                 u8"\033[0m"
                                 u8"Terminate.\n\n");
-                        ::fast_io::fast_terminate();
-                    }
+                            ::fast_io::fast_terminate();
+                        }
+                }
+
+                // check 64-bit indexes
+                ::uwvm::check_index(res_len);
             }
-            // check 64-bit indexes
-            ::uwvm::check_index(res_len);
 
             // jump to res1
             curr = reinterpret_cast<::std::byte const*>(next_res);
-            if(end - curr < static_cast<::std::ptrdiff_t>(res_len)) [[unlikely]]
+
+            if constexpr(checked)
             {
-                ::fast_io::io::perr(::uwvm::u8err,
+                if(end - curr < static_cast<::std::ptrdiff_t>(res_len)) [[unlikely]]
+                {
+                    ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
 #ifdef __MSDOS__
                                 u8"\033[37m"
@@ -329,17 +357,22 @@ namespace uwvm
                                 u8"\n"
                                 u8"\033[0m"
                                 u8"Terminate.\n\n");
-                ::fast_io::fast_terminate();
+                    ::fast_io::fast_terminate();
+                }
             }
+
             // set 1st para
             ft.result_begin = reinterpret_cast<value_type_const_may_alias_ptr>(curr);
             curr += res_len;
             ft.result_end = reinterpret_cast<value_type_const_may_alias_ptr>(curr);
-            for(auto res_curr{ft.result_begin}; res_curr != ft.result_end; ++res_curr)
+
+            if constexpr(checked)
             {
-                if(!::uwvm::wasm::is_valid_value_type_without_functype_and_resulttype(*res_curr)) [[unlikely]]
+                for(auto res_curr{ft.result_begin}; res_curr != ft.result_end; ++res_curr)
                 {
-                    ::fast_io::io::perr(::uwvm::u8err,
+                    if(!::uwvm::wasm::is_valid_value_type_without_functype_and_resulttype(*res_curr)) [[unlikely]]
+                    {
+                        ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
 #ifdef __MSDOS__
                                 u8"\033[37m"
@@ -360,16 +393,20 @@ namespace uwvm
                                 u8"\n"
                                 u8"\033[0m"
                                 u8"Terminate.\n\n");
-                    ::fast_io::fast_terminate();
+                        ::fast_io::fast_terminate();
+                    }
                 }
             }
+
             global_type_section.types.push_back_unchecked(ft);
         }
         
         // check func counter
-        if (func_counter != type_count) [[unlikely]]
+        if constexpr(checked)
         {
-            ::fast_io::io::perr(::uwvm::u8err,
+            if(func_counter != type_count) [[unlikely]]
+            {
+                ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
 #ifdef __MSDOS__
                                 u8"\033[37m"
@@ -389,7 +426,8 @@ namespace uwvm
                                 u8"\n"
                                 u8"\033[0m"
                                 u8"Terminate.\n\n");
-            ::fast_io::fast_terminate();
+                ::fast_io::fast_terminate();
+            }
         }
     }
 }  // namespace uwvm

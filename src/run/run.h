@@ -73,7 +73,8 @@ namespace uwvm
         auto const begin{reinterpret_cast<::std::byte const*>(::uwvm::wasm_file_loader.cbegin())};
         auto const end{reinterpret_cast<::std::byte const*>(::uwvm::wasm_file_loader.cend())};
 
-        ::uwvm::scan_wasm_file(begin, end);
+        if(::uwvm::parameter::details::scan_unchecked_is_exist) { ::uwvm::scan_wasm_file<false>(begin, end); }
+        else { ::uwvm::scan_wasm_file<true>(begin, end); }
 
         switch(::uwvm::running_mode)
         {
@@ -82,7 +83,7 @@ namespace uwvm
                 ::uwvm::u8objdump();
                 break;
             }
-            default: ::std::unreachable();
+            default: ::fast_io::unreachable();
         }
     }
 }  // namespace uwvm

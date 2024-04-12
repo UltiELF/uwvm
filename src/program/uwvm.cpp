@@ -19,7 +19,7 @@ int main(int argc, char** argv)
         case ::uwvm::parsing_return_val::def: break;
         case ::uwvm::parsing_return_val::return0: return 0;
         case ::uwvm::parsing_return_val::returnm1: return -1;
-        default: ::std::unreachable();
+        default: ::fast_io::unreachable();
     }
 
     ::uwvm::run();

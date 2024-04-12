@@ -316,9 +316,9 @@ namespace uwvm
                     case ::uwvm::cmdline::parameter_return_type::return_m1_imme: return parsing_return_val::returnm1;
                     case ::uwvm::cmdline::parameter_return_type::return_imme: return parsing_return_val::return0;
                     case ::uwvm::cmdline::parameter_return_type::return_soon: needexit = true; break;
-                    case ::uwvm::cmdline::parameter_return_type::err_imme: ::fast_io::fast_terminate(); ::std::unreachable();
+                    case ::uwvm::cmdline::parameter_return_type::err_imme: ::fast_io::fast_terminate(); ::fast_io::unreachable();
                     case ::uwvm::cmdline::parameter_return_type::err_soon: needterminal = true; break;
-                    default: ::std::unreachable();
+                    default: ::fast_io::unreachable();
                 }
             }
         }
