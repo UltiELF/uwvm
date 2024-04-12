@@ -46,7 +46,11 @@ namespace uwvm::wasm::section
         char8_t const* name_begin{};
         char8_t const* name_end{};
 
-        ::uwvm::wasm::section::function_type const* func_type{};
+        union
+        {
+            ::uwvm::wasm::function_type const* func_type{};
+            // to do
+        };
         import_basic_type type{};
     };
 

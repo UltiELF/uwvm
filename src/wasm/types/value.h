@@ -51,7 +51,7 @@ namespace uwvm::wasm
         }
     }
 
-    inline constexpr bool is_valid_value_type_without_functype_and_resulttype(value_type type) noexcept
+    inline constexpr bool is_valid_value_type_value(value_type type) noexcept
     {
         switch(type)
         {
@@ -60,7 +60,15 @@ namespace uwvm::wasm
             case uwvm::wasm::value_type::i64: [[fallthrough]];
             case uwvm::wasm::value_type::f32: [[fallthrough]];
             case uwvm::wasm::value_type::f64: [[fallthrough]];
-            case uwvm::wasm::value_type::v128: [[fallthrough]];
+            case uwvm::wasm::value_type::v128: return true;
+            default: return false;
+        }
+    }
+
+    inline constexpr bool is_valid_value_type_ref(value_type type) noexcept
+    {
+        switch(type)
+        {
             case uwvm::wasm::value_type::funcref: [[fallthrough]];
             case uwvm::wasm::value_type::externref: return true;
             default: return false;

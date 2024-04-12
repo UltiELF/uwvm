@@ -113,7 +113,7 @@ namespace uwvm
         curr = reinterpret_cast<::std::byte const*>(next);
 
         ::std::size_t func_counter{};
-        ::uwvm::wasm::section::function_type ft{};
+        ::uwvm::wasm::function_type ft{};
         for(; curr < end;)
         {
             ::uwvm::wasm::value_type vt{};
@@ -244,7 +244,7 @@ namespace uwvm
             ft.parameter_end = reinterpret_cast<value_type_const_may_alias_ptr>(curr);
             for(auto para_curr{ft.parameter_begin}; para_curr != ft.parameter_end; ++para_curr)
             {
-                if(!::uwvm::wasm::is_valid_value_type_without_functype_and_resulttype(*para_curr)) [[unlikely]]
+                if(!::uwvm::wasm::is_valid_value_type_value(*para_curr)) [[unlikely]]
                 {
                     ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -344,7 +344,7 @@ namespace uwvm
 
             for(auto res_curr{ft.result_begin}; res_curr != ft.result_end; ++res_curr)
             {
-                if(!::uwvm::wasm::is_valid_value_type_without_functype_and_resulttype(*res_curr)) [[unlikely]]
+                if(!::uwvm::wasm::is_valid_value_type_value(*res_curr)) [[unlikely]]
                 {
                     ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"

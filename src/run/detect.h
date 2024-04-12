@@ -3,7 +3,7 @@
 #include <fast_io.h>
 #include <io_device.h>
 #include "wasm_file.h"
-#include "../wasm/section.h"
+#include "../wasm/types.h"
 
 #include "check_index.h"
 #include "wasm/section.h"

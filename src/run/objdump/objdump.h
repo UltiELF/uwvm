@@ -63,25 +63,29 @@ namespace uwvm
             // Import
             ::fast_io::operations::print_freestanding<false>(::std::forward<s>(stm), u8"\n" u8"Import[", ::uwvm::global_import_section.import_count, u8"]:\n");
 
+            // func
             auto const func_type_table_base{__builtin_addressof(::uwvm::global_type_section.types.front_unchecked())};
-            for(::std::size_t count{}; const auto& t: ::uwvm::global_import_section.types)
+            for(::std::size_t count{}; const auto t: ::uwvm::global_import_section.func_types)
             {
                 ::fast_io::operations::print_freestanding<true>(::std::forward<s>(stm),
                                                                 u8" - ",
-                                                                ::uwvm::wasm::section::get_import_basic_u8name(t.type),
+                                                                ::uwvm::wasm::section::get_import_basic_u8name(t->type),
                                                                 u8"[",
                                                                 count++,
                                                                 u8"] sig = ",
-                                                                t.func_type - func_type_table_base,
+                                                                t->func_type - func_type_table_base,
                                                                 u8" <__imported_",
-                                                                ::fast_io::mnp::strvw(t.module_begin, t.module_end),
+                                                                ::fast_io::mnp::strvw(t->module_begin, t->module_end),
                                                                 u8"_",
-                                                                ::fast_io::mnp::strvw(t.name_begin, t.name_end),
+                                                                ::fast_io::mnp::strvw(t->name_begin, t->name_end),
                                                                 u8"> <- ",
-                                                                ::fast_io::mnp::strvw(t.module_begin, t.module_end),
+                                                                ::fast_io::mnp::strvw(t->module_begin, t->module_end),
                                                                 u8".",
-                                                                ::fast_io::mnp::strvw(t.name_begin, t.name_end));
+                                                                ::fast_io::mnp::strvw(t->name_begin, t->name_end));
             }
+            // table 
+            ::fast_io::fast_terminate(); // todo
+            
             ::fast_io::operations::print_freestanding<true>(::std::forward<s>(stm));
         }
     }  // namespace details

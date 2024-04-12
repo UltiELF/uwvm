@@ -339,39 +339,47 @@ namespace uwvm
                 case uwvm::wasm::section::import_basic_type::func:
                 {
                     ++import_func_counter;
-                    break;
-                }
-                case uwvm::wasm::section::import_basic_type::table:
-                {
-                    ++import_table_counter;
-                    break;
-                }
-                case uwvm::wasm::section::import_basic_type::memory:
-                {
-                    ++import_memory_counter;
-                    break;
-                }
-                case uwvm::wasm::section::import_basic_type::global:
-                {
-                    ++import_global_counter;
-                    break;
-                }
-                default: ::fast_io::unreachable();
-            }
 
-            // set curr to leb128
-            ++curr;
+                    // set curr to leb128
+                    ++curr;
 
-            // get type index
-            ::std::size_t type_index{};
-            auto [next_ti, err_ti]{::fast_io::parse_by_scan(reinterpret_cast<char8_t_const_may_alias_ptr>(curr),
-                                                            reinterpret_cast<char8_t_const_may_alias_ptr>(end),
-                                                            ::fast_io::mnp::leb128_get(type_index))};
-            switch(err_ti)
-            {
-                case ::fast_io::parse_code::ok: break;
-                default:
-                    [[unlikely]]
+                    // get type index
+                    ::std::size_t type_index{};
+                    auto [next_ti, err_ti]{::fast_io::parse_by_scan(reinterpret_cast<char8_t_const_may_alias_ptr>(curr),
+                                                                    reinterpret_cast<char8_t_const_may_alias_ptr>(end),
+                                                                    ::fast_io::mnp::leb128_get(type_index))};
+                    switch(err_ti)
+                    {
+                        case ::fast_io::parse_code::ok: break;
+                        default:
+                            [[unlikely]]
+                            {
+                                ::fast_io::io::perr(::uwvm::u8err,
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"uwvm: "
+                                u8"\033[31m"
+                                u8"[fatal] "
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"Invalid type length."
+                                u8"\n"
+                                u8"\033[0m"
+                                u8"Terminate.\n\n");
+                                ::fast_io::fast_terminate();
+                            }
+                    }
+
+                    // check
+                    if(type_index >= type_count) [[unlikely]]
                     {
                         ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -395,40 +403,39 @@ namespace uwvm
                                 u8"Terminate.\n\n");
                         ::fast_io::fast_terminate();
                     }
+
+                    it.func_type = __builtin_addressof(global_type_section.types.index_unchecked(type_index));
+
+                    global_import_section.types.push_back_unchecked(it);
+
+                    // set curr
+                    curr = reinterpret_cast<::std::byte const*>(next_ti);
+
+                    break;
+                }
+                case uwvm::wasm::section::import_basic_type::table:
+                {
+                    ++import_table_counter;
+
+                    ::fast_io::fast_terminate();  // todo
+                    break;
+                }
+                case uwvm::wasm::section::import_basic_type::memory:
+                {
+                    ++import_memory_counter;
+
+                    ::fast_io::fast_terminate();  // todo
+                    break;
+                }
+                case uwvm::wasm::section::import_basic_type::global:
+                {
+                    ++import_global_counter;
+
+                    ::fast_io::fast_terminate();  // todo
+                    break;
+                }
+                default: ::fast_io::unreachable();
             }
-
-            // check
-            if(type_index >= type_count) [[unlikely]]
-            {
-                ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"Invalid type length."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
-                ::fast_io::fast_terminate();
-            }
-
-            it.func_type = __builtin_addressof(global_type_section.types.index_unchecked(type_index));
-
-            global_import_section.types.push_back_unchecked(it);
-
-            // set curr
-            curr = reinterpret_cast<::std::byte const*>(next_ti);
         }
 
         // check import counter
