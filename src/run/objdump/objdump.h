@@ -100,7 +100,7 @@ namespace uwvm
                 u8" end=",
                 ::fast_io::mnp::hex0x<true>(::uwvm::global_import_section.sec_end - wasm_file_begin),
                 u8" size=",
-                ::fast_io::mnp::hex0x(::uwvm::global_import_section.sec_end - ::uwvm::global_import_section.sec_begin),
+                ::fast_io::mnp::hex0x<true>(::uwvm::global_import_section.sec_end - ::uwvm::global_import_section.sec_begin),
                 u8"):\n");
 
             // func

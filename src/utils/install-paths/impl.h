@@ -1,6 +1,7 @@
 ﻿#pragma once
 #include <fast_io.h>
 #include <fast_io_device.h>
+#include <fast_io_dsal/string.h>
 #include "../io_device.h"
 
 #include "def.h"
