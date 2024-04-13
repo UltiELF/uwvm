@@ -9,6 +9,7 @@
 #include <fast_io_crypto.h>
 #include <fast_io_dsal/vector.h>
 #include <fast_io_dsal/string_view.h>
+#include <fast_io_dsal/cstring_view.h>
 
 namespace uwvm
 {
@@ -32,7 +33,7 @@ namespace uwvm
 
         struct parameter_parsing_results
         {
-            ::fast_io::string_view str{};
+            ::fast_io::cstring_view str{};
             parameter const* para{};
             parameter_parsing_results_type type{};
         };

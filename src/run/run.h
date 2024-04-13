@@ -14,7 +14,7 @@ namespace uwvm
 
         // no input file
 
-        if(!::uwvm::wasm_file_name.size()) [[unlikely]]
+        if(::uwvm::wasm_file_name.empty()) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"

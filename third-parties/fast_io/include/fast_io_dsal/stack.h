@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 #include "deque.h"
 #include "impl/stack.h"
 

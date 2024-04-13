@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 #include "vector.h"
 #include "impl/priority_queue.h"
 

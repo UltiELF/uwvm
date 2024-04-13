@@ -57,14 +57,16 @@ namespace uwvm
 
         if(*argv != nullptr) [[likely]]
         {
-            pr.emplace_back_unchecked(::fast_io::string_view{*argv, ::fast_io::cstr_len(*argv)}, nullptr, ::uwvm::cmdline::parameter_parsing_results_type::dir);
+            pr.emplace_back_unchecked(::fast_io::cstring_view{::fast_io::containers::null_terminated, *argv, ::fast_io::cstr_len(*argv)},
+                                      nullptr,
+                                      ::uwvm::cmdline::parameter_parsing_results_type::dir);
         }
 
         for(int i{1}; i != argc; ++i)
         {
             if(argv[i] == nullptr) [[unlikely]] { continue; }
 
-            ::fast_io::string_view argv_str{argv[i], ::fast_io::cstr_len(argv[i])};
+            ::fast_io::cstring_view argv_str{::fast_io::containers::null_terminated, argv[i], ::fast_io::cstr_len(argv[i])};
 
             if(argv_str.empty()) [[unlikely]] { continue; }
 
@@ -104,13 +106,11 @@ namespace uwvm
                         return parsing_return_val::returnm1;
                     }
                     ::uwvm::wasm_file_ppos = i;
-                    ::uwvm::wasm_file_name = ::fast_io::mnp::os_c_str(argv[i], ::fast_io::cstr_len(argv[i]));
-                    pr.emplace_back_unchecked(::fast_io::string_view{::uwvm::wasm_file_name.ptr, ::uwvm::wasm_file_name.n},
-                                              nullptr,
-                                              ::uwvm::cmdline::parameter_parsing_results_type::occupied_arg);
+                    ::uwvm::wasm_file_name = ::fast_io::cstring_view{::fast_io::containers::null_terminated, argv[i], ::fast_io::cstr_len(argv[i])};
+                    pr.emplace_back_unchecked(::uwvm::wasm_file_name, nullptr, ::uwvm::cmdline::parameter_parsing_results_type::occupied_arg);
                     for(++i; i < argc; ++i)
                     {
-                        pr.emplace_back_unchecked(::fast_io::string_view{argv[i], ::fast_io::cstr_len(argv[i])},
+                        pr.emplace_back_unchecked(::fast_io::cstring_view{::fast_io::containers::null_terminated, argv[i], ::fast_io::cstr_len(argv[i])},
                                                   nullptr,
                                                   ::uwvm::cmdline::parameter_parsing_results_type::occupied_arg);
                     }
@@ -303,7 +303,7 @@ namespace uwvm
         bool needexit{};
         bool needterminal{};
 
-        for(auto ib{pr.begin() + 1}; ib != ie; ++ib) 
+        for(auto ib{pr.begin() + 1}; ib != ie; ++ib)
         {
             if(ib->para == nullptr) [[unlikely]] { continue; }
 

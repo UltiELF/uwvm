@@ -18,6 +18,23 @@ namespace uwvm
         template <typename s>
         inline constexpr void print_define(::fast_io::io_reserve_type_t<char8_t, objdump>, s&& stm, objdump) noexcept
         {
+            // alias def
+            using char8_t_may_alias_ptr
+#if __has_cpp_attribute(__gnu__::__may_alias__)
+                [[__gnu__::__may_alias__]]
+#endif
+                = char8_t*;
+            using char8_t_const_may_alias_ptr
+#if __has_cpp_attribute(__gnu__::__may_alias__)
+                [[__gnu__::__may_alias__]]
+#endif
+                = char8_t const*;
+
+            // wasm file
+            auto const wasm_file_begin{reinterpret_cast<::std::byte const*>(::uwvm::wasm_file_loader.cbegin())};
+            auto const wasm_file_end{reinterpret_cast<::std::byte const*>(::uwvm::wasm_file_loader.cend())};
+
+            // objdump
             ::fast_io::operations::print_freestanding<false>(::std::forward<s>(stm),
                                                              // L0
                                                              u8"\n",
@@ -35,7 +52,13 @@ namespace uwvm
                                                              // L6
                                                              u8"Type[",
                                                              ::uwvm::global_type_section.type_count,
-                                                             u8"]:\n");
+                                                             u8"] (start=",
+                                                             ::fast_io::mnp::hex0x(::uwvm::global_type_section.sec_begin - wasm_file_begin),
+                                                             u8" end=",
+                                                             ::fast_io::mnp::hex0x(::uwvm::global_type_section.sec_end - wasm_file_begin),
+                                                             u8" size=",
+                                                             ::fast_io::mnp::hex0x(::uwvm::global_type_section.sec_end - ::uwvm::global_type_section.sec_begin),
+                                                             u8"):\n");
             // Type
             for(::std::size_t count{}; auto const& t: ::uwvm::global_type_section.types)
             {
@@ -66,7 +89,17 @@ namespace uwvm
             }
 
             // Import
-            ::fast_io::operations::print_freestanding<false>(::std::forward<s>(stm), u8"\n" u8"Import[", ::uwvm::global_import_section.import_count, u8"]:\n");
+            ::fast_io::operations::print_freestanding<false>(
+                ::std::forward<s>(stm),
+                u8"\n" u8"Import[",
+                ::uwvm::global_import_section.import_count,
+                u8"] (start=",
+                ::fast_io::mnp::hex0x(::uwvm::global_import_section.sec_begin - wasm_file_begin),
+                u8" end=",
+                ::fast_io::mnp::hex0x(::uwvm::global_import_section.sec_end - wasm_file_begin),
+                u8" size=",
+                ::fast_io::mnp::hex0x(::uwvm::global_import_section.sec_end - ::uwvm::global_import_section.sec_begin),
+                u8"):\n");
 
             // func
             auto const func_type_table_base{::uwvm::global_type_section.types.cbegin()};
@@ -112,6 +145,8 @@ namespace uwvm
                                                                 u8".",
                                                                 ::fast_io::mnp::strvw(t->name_begin, t->name_end));
             }
+            // memory
+            // globcl
             // todo
 
             ::fast_io::operations::print_freestanding<true>(::std::forward<s>(stm));

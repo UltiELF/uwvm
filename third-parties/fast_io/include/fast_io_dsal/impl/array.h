@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 namespace fast_io::containers
 {
@@ -494,7 +494,7 @@ constexpr bool operator==(::fast_io::containers::array<T, N1> const &a, ::fast_i
 	}
 }
 
-#if __cpp_lib_three_way_comparison >= 201907L
+#if defined(__cpp_lib_three_way_comparison)
 
 template <typename T, ::std::size_t N1, ::std::size_t N2>
 	requires ::std::three_way_comparable<T>

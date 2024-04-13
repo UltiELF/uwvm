@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #undef min
 #undef max
 
@@ -23,26 +23,7 @@
 #include <cstring>
 #endif
 
-#include "../fast_io_core.h"
-#include "impl/array.h"
-
-namespace fast_io
-{
-
-template <typename T, ::std::size_t N>
-using array = ::fast_io::containers::array<T, N>;
-
-namespace tlc
-{
-template <typename T, ::std::size_t N>
-using array = ::fast_io::containers::array<T, N>;
-
-using ::fast_io::containers::to_array;
-} // namespace tlc
-
-using ::fast_io::containers::to_array;
-
-} // namespace fast_io
+#include "string_view.h"
 
 #if defined(_MSC_VER) && !defined(__clang__)
 #pragma warning(pop)
