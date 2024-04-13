@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include "types/exception.h"
 #include "types/extern.h"

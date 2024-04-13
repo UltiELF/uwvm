@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include <fast_io.h>
 #include <io_device.h>
 #include "../clpara/parameters/enable-memory64.h"

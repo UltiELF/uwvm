@@ -1,4 +1,4 @@
-#include "mode.h"
+﻿#include "mode.h"
 #include "../../run/wasm_file.h"
 #include <io_device.h>
 
