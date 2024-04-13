@@ -776,12 +776,6 @@ namespace uwvm
                         // check 64-bit indexes
                         ::uwvm::check_index(limit_max);
 
-                        if constexpr(sizeof(::std::size_t) == 8)
-                        {
-                            constexpr auto u32max{static_cast<::std::size_t>(::std::numeric_limits<::std::uint_least32_t>::max())};
-                            if(limit_max > u32max) { it.extern_type.memory.is_index64 = true; }
-                        }
-
                         if(limit_min > limit_max) [[unlikely]]
                         {
                             ::fast_io::io::perr(::uwvm::u8err,
