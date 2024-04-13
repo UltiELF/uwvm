@@ -12,7 +12,7 @@ namespace uwvm
 {
     inline ::uwvm::wasm::section::type_section global_type_section{};
 
-    inline void detect_type_section(::std::byte const* begin, ::std::byte const* end) noexcept
+    inline void scan_type_section(::std::byte const* begin, ::std::byte const* end) noexcept
     {
         // alias def
         using char8_t_may_alias_ptr
@@ -221,31 +221,6 @@ namespace uwvm
                     ft.parameter_end = reinterpret_cast<value_type_const_may_alias_ptr>(curr);
                     for(auto para_curr{ft.parameter_begin}; para_curr != ft.parameter_end; ++para_curr)
                     {
-                        if(!::uwvm::parameter::details::enable_relaxedsimd_is_exist && *para_curr == ::uwvm::wasm::value_type::v128) [[unlikely]]
-                        {
-                            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"Enter parameter --enable-relaxedsimd to enable wasm relaxed simd."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
-                            ::fast_io::fast_terminate();
-                        }
-
                         if(!::uwvm::wasm::is_valid_value_type_value_with_v128(*para_curr)) [[unlikely]]
                         {
                             ::fast_io::io::perr(::uwvm::u8err,
@@ -271,6 +246,31 @@ namespace uwvm
                                 u8"Terminate.\n\n");
                             ::fast_io::fast_terminate();
                         }
+                        if(!::uwvm::parameter::details::enable_relaxedsimd_is_exist && *para_curr == ::uwvm::wasm::value_type::v128) [[unlikely]]
+                        {
+                            ::fast_io::io::perr(::uwvm::u8err,
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"uwvm: "
+                                u8"\033[31m"
+                                u8"[fatal] "
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"Enter parameter --enable-relaxedsimd to enable wasm relaxed simd."
+                                u8"\n"
+                                u8"\033[0m"
+                                u8"Terminate.\n\n");
+                            ::fast_io::fast_terminate();
+                        }
+
                     }
 
                     // get res len
@@ -368,31 +368,6 @@ namespace uwvm
                     ft.result_end = reinterpret_cast<value_type_const_may_alias_ptr>(curr);
                     for(auto res_curr{ft.result_begin}; res_curr != ft.result_end; ++res_curr)
                     {
-                        if(!::uwvm::parameter::details::enable_relaxedsimd_is_exist && *res_curr == ::uwvm::wasm::value_type::v128) [[unlikely]]
-                        {
-                            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"Enter parameter --enable-relaxedsimd to enable wasm relaxed simd."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
-                            ::fast_io::fast_terminate();
-                        }
-
                         if(!::uwvm::wasm::is_valid_value_type_value_with_v128(*res_curr)) [[unlikely]]
                         {
                             ::fast_io::io::perr(::uwvm::u8err,
@@ -413,6 +388,31 @@ namespace uwvm
 #endif
                                 u8"Invalid Type: ",
                                 ::fast_io::mnp::hex0x<true>(static_cast<::std::uint_fast8_t>(*res_curr)),
+                                u8"\n"
+                                u8"\033[0m"
+                                u8"Terminate.\n\n");
+                            ::fast_io::fast_terminate();
+                        }
+
+                        if(!::uwvm::parameter::details::enable_relaxedsimd_is_exist && *res_curr == ::uwvm::wasm::value_type::v128) [[unlikely]]
+                        {
+                            ::fast_io::io::perr(::uwvm::u8err,
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"uwvm: "
+                                u8"\033[31m"
+                                u8"[fatal] "
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"Enter parameter --enable-relaxedsimd to enable wasm relaxed simd."
                                 u8"\n"
                                 u8"\033[0m"
                                 u8"Terminate.\n\n");

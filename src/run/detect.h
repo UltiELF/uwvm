@@ -195,12 +195,12 @@ namespace uwvm
                 case ::uwvm::wasm::section_type::custom_sec: break;
                 case ::uwvm::wasm::section_type::type_sec:
                 {
-                    ::uwvm::detect_type_section(curr, sec_end);
+                    ::uwvm::scan_type_section(curr, sec_end);
                     break;
                 }
                 case ::uwvm::wasm::section_type::import_sec:
                 {
-                    ::uwvm::detect_import_section(curr, sec_end);
+                    ::uwvm::scan_import_section(curr, sec_end);
                     break;
                 }
                 case ::uwvm::wasm::section_type::function_sec: break;

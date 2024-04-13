@@ -171,7 +171,41 @@ namespace uwvm
             }
 
             // global
+            for(::std::size_t count{}; auto const t: ::uwvm::global_import_section.global_types)
+            {
+                ::fast_io::operations::print_freestanding<true>(::std::forward<s>(stm),
+                                                                u8" - "
+                                                                u8"global"
+                                                                u8"[",
+                                                                count++,
+                                                                u8"] ",
+                                                                ::uwvm::wasm::get_value_u8name(t->extern_type.global.type)
+                                                                u8" mutable=",
+                                                                t->extern_type.global.is_mutable,
+                                                                u8" <- ",
+                                                                ::fast_io::mnp::strvw(t->module_begin, t->module_end),
+                                                                u8".",
+                                                                ::fast_io::mnp::strvw(t->name_begin, t->name_end));
+            }
+
             // tag
+            for(::std::size_t count{}; auto const t: ::uwvm::global_import_section.tag_types)
+            {
+                ::fast_io::operations::print_freestanding<true>(::std::forward<s>(stm),
+                                                                u8" - "
+                                                                u8"tag"
+                                                                u8"[",
+                                                                count++,
+                                                                u8"] attribute=",
+                                                                ::fast_io::mnp::hex0x<true>(t->extern_type.exception.attribute),
+                                                                u8" type=",
+                                                                t->extern_type.exception.type - func_type_table_base,
+                                                                u8" <- ",
+                                                                ::fast_io::mnp::strvw(t->module_begin, t->module_end),
+                                                                u8".",
+                                                                ::fast_io::mnp::strvw(t->name_begin, t->name_end));
+            }
+
             // todo
 
             ::fast_io::operations::print_freestanding<true>(::std::forward<s>(stm));
