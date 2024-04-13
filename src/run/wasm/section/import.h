@@ -401,7 +401,7 @@ namespace uwvm
 #else
                                 u8"\033[97m"
 #endif
-                                u8"Invalid type length."
+                                u8"Invalid type index."
                                 u8"\n"
                                 u8"\033[0m"
                                 u8"Terminate.\n\n");
@@ -866,7 +866,7 @@ namespace uwvm
                         ::fast_io::fast_terminate();
                     }
 
-                    if(!::uwvm::parameter::details::enable_relaxedsimd_is_exist && vt == ::uwvm::wasm::value_type::v128) [[unlikely]]
+                    if(!::uwvm::parameter::details::enable_relaxed_simd_is_exist && vt == ::uwvm::wasm::value_type::v128) [[unlikely]]
                     {
                         ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"

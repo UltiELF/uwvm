@@ -203,7 +203,11 @@ namespace uwvm
                     ::uwvm::scan_import_section(curr, sec_end);
                     break;
                 }
-                case ::uwvm::wasm::section_type::function_sec: break;
+                case ::uwvm::wasm::section_type::function_sec:
+                {
+                    ::uwvm::scan_function_section(curr, sec_end);
+                    break;
+                }
                 case ::uwvm::wasm::section_type::table_sec: break;
                 case ::uwvm::wasm::section_type::memory_sec: break;
                 case ::uwvm::wasm::section_type::global_sec: break;

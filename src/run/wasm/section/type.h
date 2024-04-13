@@ -246,7 +246,7 @@ namespace uwvm
                                 u8"Terminate.\n\n");
                             ::fast_io::fast_terminate();
                         }
-                        if(!::uwvm::parameter::details::enable_relaxedsimd_is_exist && *para_curr == ::uwvm::wasm::value_type::v128) [[unlikely]]
+                        if(!::uwvm::parameter::details::enable_relaxed_simd_is_exist && *para_curr == ::uwvm::wasm::value_type::v128) [[unlikely]]
                         {
                             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -308,7 +308,7 @@ namespace uwvm
                             }
                     }
 
-                    if(!::uwvm::parameter::details::enable_multivalue_is_exist && res_len > 1) [[unlikely]]
+                    if(!::uwvm::parameter::details::enable_multi_value_is_exist && res_len > 1) [[unlikely]]
                     {
                         ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -394,7 +394,7 @@ namespace uwvm
                             ::fast_io::fast_terminate();
                         }
 
-                        if(!::uwvm::parameter::details::enable_relaxedsimd_is_exist && *res_curr == ::uwvm::wasm::value_type::v128) [[unlikely]]
+                        if(!::uwvm::parameter::details::enable_relaxed_simd_is_exist && *res_curr == ::uwvm::wasm::value_type::v128) [[unlikely]]
                         {
                             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"

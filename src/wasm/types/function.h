@@ -10,6 +10,14 @@ namespace uwvm::wasm
 
         ::uwvm::wasm::value_type const* result_begin{};
         ::uwvm::wasm::value_type const* result_end{};
+    };
 
+    struct local_function_type
+    {
+        ::uwvm::wasm::function_type const* func_type{};
+        ::std::byte const* code_begin{};
+        ::std::byte const* code_end{};
+        char8_t const* name_begin{};
+        char8_t const* name_end{};
     };
 }  // namespace uwvm::wasm

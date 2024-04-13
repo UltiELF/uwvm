@@ -206,7 +206,32 @@ namespace uwvm
                                                                 ::fast_io::mnp::strvw(t->name_begin, t->name_end));
             }
 
-            // todo
+            // Function
+            ::fast_io::operations::print_freestanding<false>(
+                ::std::forward<s>(stm),
+                u8"\n" u8"Function[",
+                ::uwvm::global_function_section.function_count,
+                u8"] (start=",
+                ::fast_io::mnp::hex0x<true>(::uwvm::global_function_section.sec_begin - wasm_file_begin),
+                u8" end=",
+                ::fast_io::mnp::hex0x<true>(::uwvm::global_function_section.sec_end - wasm_file_begin),
+                u8" size=",
+                ::fast_io::mnp::hex0x<true>(::uwvm::global_function_section.sec_end - ::uwvm::global_function_section.sec_begin),
+                u8"):\n");
+
+            for(::std::size_t count{::uwvm::global_import_section.func_types.size()}; auto const& t: ::uwvm::global_function_section.types)
+            {
+                ::fast_io::operations::print_freestanding<false>(::std::forward<s>(stm),
+                                                                u8" - "
+                                                                u8"func"
+                                                                u8"[",
+                                                                count++,
+                                                                u8"] sig=",
+                                                                t.func_type - func_type_table_base,
+                                                                u8" <",
+                                                                ::fast_io::mnp::strvw(t.name_begin, t.name_end),
+                                                                u8">\n");
+            }
 
             ::fast_io::operations::print_freestanding<true>(::std::forward<s>(stm));
         }
