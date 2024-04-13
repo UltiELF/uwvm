@@ -179,7 +179,7 @@ namespace uwvm
                                                                 u8"[",
                                                                 count++,
                                                                 u8"] ",
-                                                                ::uwvm::wasm::get_value_u8name(t->extern_type.global.type)
+                                                                ::uwvm::wasm::get_value_u8name(t->extern_type.global.type),
                                                                 u8" mutable=",
                                                                 t->extern_type.global.is_mutable,
                                                                 u8" <- ",
