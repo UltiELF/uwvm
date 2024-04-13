@@ -25,7 +25,7 @@ namespace uwvm::path
         auto resolved{::fast_io::system_call<__NR_readlink, int>("/proc/self/exe", buffer, PATH_MAX)};
         if(resolved == -1) [[unlikely]] { return; }
         buffer[resolved] = '\0';
-        ::uwvm::path::module_path = ::fast_io::u8concat(::fast_io::mnp::code_cvt(::fast_io::mnp::os_c_str_with_known_size(buffer, resolved)));
+        ::uwvm::path::module_path = ::fast_io::u8concat_fast_io(::fast_io::mnp::code_cvt(::fast_io::mnp::os_c_str_with_known_size(buffer, resolved)));
 #else
         char* resolved
         {
@@ -39,7 +39,7 @@ namespace uwvm::path
                                      buffer)
         };
         if(!resolved) [[unlikely]] { return; }
-        ::uwvm::path::module_path = ::fast_io::u8concat(::fast_io::mnp::code_cvt_os_c_str(resolved));
+        ::uwvm::path::module_path = ::fast_io::u8concat_fast_io(::fast_io::mnp::code_cvt_os_c_str(resolved));
 #endif
         auto const begin{strlike_begin(::fast_io::io_strlike_type<char8_t, ::fast_io::u8string>, ::uwvm::path::module_path)};
         auto curr{strlike_curr(::fast_io::io_strlike_type<char8_t, ::fast_io::u8string>, ::uwvm::path::module_path)};

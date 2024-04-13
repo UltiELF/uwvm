@@ -33,7 +33,7 @@ namespace uwvm::path
         char buffer2[PATH_MAX + 1];
         char* resolved{::fast_io::noexcept_call(::realpath, buffer, buffer2)};
         if(!resolved) [[unlikely]] { return; }
-        ::uwvm::path::module_path = ::fast_io::u8concat(::fast_io::mnp::code_cvt_os_c_str(resolved));
+        ::uwvm::path::module_path = ::fast_io::u8concat_fast_io(::fast_io::mnp::code_cvt_os_c_str(resolved));
         auto const begin{strlike_begin(::fast_io::io_strlike_type<char8_t, ::fast_io::u8string>, ::uwvm::path::module_path)};
         auto curr{strlike_curr(::fast_io::io_strlike_type<char8_t, ::fast_io::u8string>, ::uwvm::path::module_path)};
         for(; curr != begin; curr--)

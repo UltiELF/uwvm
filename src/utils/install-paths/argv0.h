@@ -36,7 +36,7 @@ namespace uwvm::path
             if(!access(newpath, F_OK))
             {
                 newpath[PATH_MAX - 1] = 0;
-                ::uwvm::path::module_path = ::fast_io::u8concat(::fast_io::mnp::code_cvt_os_c_str(newpath));
+                ::uwvm::path::module_path = ::fast_io::u8concat_fast_io(::fast_io::mnp::code_cvt_os_c_str(newpath));
                 auto const begin2{strlike_begin(::fast_io::io_strlike_type<char8_t, ::fast_io::u8string>, ::uwvm::path::module_path)};
                 auto curr{strlike_curr(::fast_io::io_strlike_type<char8_t, ::fast_io::u8string>, ::uwvm::path::module_path)};
                 for(; curr != begin2; curr--)  // calculate dos path
@@ -63,7 +63,7 @@ namespace uwvm::path
             if(!access(newpath, F_OK))
             {
                 newpath[PATH_MAX - 1] = 0;
-                ::uwvm::path::module_path = ::fast_io::u8concat(::fast_io::mnp::code_cvt_os_c_str(newpath));
+                ::uwvm::path::module_path = ::fast_io::u8concat_fast_io(::fast_io::mnp::code_cvt_os_c_str(newpath));
                 auto const begin2{strlike_begin(::fast_io::io_strlike_type<char8_t, ::fast_io::u8string>, ::uwvm::path::module_path)};
                 auto curr{strlike_curr(::fast_io::io_strlike_type<char8_t, ::fast_io::u8string>, ::uwvm::path::module_path)};
                 for(; curr != begin2; curr--)  // calculate dos path
@@ -95,7 +95,7 @@ namespace uwvm::path
                 if(!access(newpath, F_OK))
                 {
                     newpath[PATH_MAX - 1] = 0;
-                    ::uwvm::path::module_path = ::fast_io::u8concat(::fast_io::mnp::code_cvt_os_c_str(newpath));
+                    ::uwvm::path::module_path = ::fast_io::u8concat_fast_io(::fast_io::mnp::code_cvt_os_c_str(newpath));
                     auto const begin2{strlike_begin(::fast_io::io_strlike_type<char8_t, ::fast_io::u8string>, ::uwvm::path::module_path)};
                     auto curr{strlike_curr(::fast_io::io_strlike_type<char8_t, ::fast_io::u8string>, ::uwvm::path::module_path)};
                     for(; curr != begin2; curr--)  // calculate dos path

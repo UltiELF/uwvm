@@ -17,7 +17,7 @@ namespace uwvm::path
         auto const& NtImagePath{c_peb->ProcessParameters->ImagePathName};
         if(!NtImagePath.Buffer) [[unlikely]] { return; }
         ::uwvm::path::module_path =
-            ::fast_io::u8concat(::fast_io::mnp::code_cvt(::fast_io::mnp::os_c_str_with_known_size(NtImagePath.Buffer, NtImagePath.Length / sizeof(char16_t))));
+            ::fast_io::u8concat_fast_io(::fast_io::mnp::code_cvt(::fast_io::mnp::os_c_str_with_known_size(NtImagePath.Buffer, NtImagePath.Length / sizeof(char16_t))));
         auto const begin{strlike_begin(::fast_io::io_strlike_type<char8_t, ::fast_io::u8string>, ::uwvm::path::module_path)};
         auto curr{strlike_curr(::fast_io::io_strlike_type<char8_t, ::fast_io::u8string>, ::uwvm::path::module_path)};
         for(; curr != begin; curr--)  // calculate nt, dos or (nt) device path
