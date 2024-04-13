@@ -35,30 +35,32 @@ namespace uwvm
             auto const wasm_file_end{reinterpret_cast<::std::byte const*>(::uwvm::wasm_file_loader.cend())};
 
             // objdump
-            ::fast_io::operations::print_freestanding<false>(::std::forward<s>(stm),
-                                                             // L0
-                                                             u8"\n",
-                                                             // L1
-                                                             ::fast_io::mnp::code_cvt(::uwvm::wasm_file_name),
-                                                             u8":\n"
-                                                             // L2
-                                                             u8"file format wasm ",
-                                                             ::fast_io::mnp::hex0x(::uwvm::wasm_version),
-                                                             u8"\n"
-                                                             // L3
-                                                             u8"Section Details:"
-                                                             // L4 - L5
-                                                             u8"\n\n"
-                                                             // L6
-                                                             u8"Type[",
-                                                             ::uwvm::global_type_section.type_count,
-                                                             u8"] (start=",
-                                                             ::fast_io::mnp::hex0x(::uwvm::global_type_section.sec_begin - wasm_file_begin),
-                                                             u8" end=",
-                                                             ::fast_io::mnp::hex0x(::uwvm::global_type_section.sec_end - wasm_file_begin),
-                                                             u8" size=",
-                                                             ::fast_io::mnp::hex0x(::uwvm::global_type_section.sec_end - ::uwvm::global_type_section.sec_begin),
-                                                             u8"):\n");
+            ::fast_io::operations::print_freestanding<false>(
+                ::std::forward<s>(stm),
+                // L0
+                u8"\n",
+                // L1
+                ::fast_io::mnp::code_cvt(::uwvm::wasm_file_name),
+                u8":\n"
+                // L2
+                u8"file format wasm ",
+                ::fast_io::mnp::hex0x(::uwvm::wasm_version),
+                u8"\n"
+                // L3
+                u8"Section Details:"
+                // L4 - L5
+                u8"\n\n"
+                // L6
+                u8"Type[",
+                ::uwvm::global_type_section.type_count,
+                u8"] (start=",
+                ::fast_io::mnp::hex0x<true>(::uwvm::global_type_section.sec_begin - wasm_file_begin),
+                u8" end=",
+                ::fast_io::mnp::hex0x<true>(::uwvm::global_type_section.sec_end - wasm_file_begin),
+                u8" size=",
+                ::fast_io::mnp::hex0x<true>(::uwvm::global_type_section.sec_end - ::uwvm::global_type_section.sec_begin),
+                u8"):\n");
+
             // Type
             for(::std::size_t count{}; auto const& t: ::uwvm::global_type_section.types)
             {
@@ -94,9 +96,9 @@ namespace uwvm
                 u8"\n" u8"Import[",
                 ::uwvm::global_import_section.import_count,
                 u8"] (start=",
-                ::fast_io::mnp::hex0x(::uwvm::global_import_section.sec_begin - wasm_file_begin),
+                ::fast_io::mnp::hex0x<true>(::uwvm::global_import_section.sec_begin - wasm_file_begin),
                 u8" end=",
-                ::fast_io::mnp::hex0x(::uwvm::global_import_section.sec_end - wasm_file_begin),
+                ::fast_io::mnp::hex0x<true>(::uwvm::global_import_section.sec_end - wasm_file_begin),
                 u8" size=",
                 ::fast_io::mnp::hex0x(::uwvm::global_import_section.sec_end - ::uwvm::global_import_section.sec_begin),
                 u8"):\n");
@@ -145,8 +147,31 @@ namespace uwvm
                                                                 u8".",
                                                                 ::fast_io::mnp::strvw(t->name_begin, t->name_end));
             }
+
             // memory
-            // globcl
+            for(::std::size_t count{}; auto const t: ::uwvm::global_import_section.memory_types)
+            {
+                ::fast_io::operations::print_freestanding<false>(::std::forward<s>(stm),
+                                                                u8" - "
+                                                                u8"memory"
+                                                                u8"[",
+                                                                count++,
+                                                                u8"] initial=",
+                                                                t->extern_type.memory.mem_limit.min);
+                if(t->extern_type.memory.mem_limit.present_max)
+                {
+                    ::fast_io::operations::print_freestanding<false>(::std::forward<s>(stm), u8" max=", t->extern_type.memory.mem_limit.max);
+                }
+
+                ::fast_io::operations::print_freestanding<true>(::std::forward<s>(stm),
+                                                                u8" <- ",
+                                                                ::fast_io::mnp::strvw(t->module_begin, t->module_end),
+                                                                u8".",
+                                                                ::fast_io::mnp::strvw(t->name_begin, t->name_end));
+            }
+
+            // global
+            // tag
             // todo
 
             ::fast_io::operations::print_freestanding<true>(::std::forward<s>(stm));

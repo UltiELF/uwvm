@@ -7,5 +7,6 @@ namespace uwvm::wasm
     {
         ::uwvm::wasm::value_type type;
         bool is_mutable;
+        bool is_shared{};  // export
     };
 }  // namespace uwvm::wasm

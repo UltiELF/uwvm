@@ -10,6 +10,6 @@ namespace uwvm::wasm
     {
         ::uwvm::wasm::limit limit{};
         ::uwvm::wasm::value_type elem_type{}; // ref
-        bool is_shared{};
+        bool is_shared{}; // export
     };
 }

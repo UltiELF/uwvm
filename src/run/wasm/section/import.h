@@ -543,9 +543,6 @@ namespace uwvm
                                 }
                         }
 
-                        // check 64-bit indexes
-                        ::uwvm::check_index(limit_min);
-
                         it.extern_type.table.limit.min = limit_min;
 
                         curr = reinterpret_cast<::std::byte const*>(next_lmin);
@@ -587,6 +584,31 @@ namespace uwvm
                         // check 64-bit indexes
                         ::uwvm::check_index(limit_max);
 
+                        if(limit_min > limit_max) [[unlikely]]
+                        {
+                            ::fast_io::io::perr(::uwvm::u8err,
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"uwvm: "
+                                u8"\033[31m"
+                                u8"[fatal] "
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"Initial > Maximum."
+                                u8"\n"
+                                u8"\033[0m"
+                                u8"Termaxate.\n\n");
+                            ::fast_io::fast_terminate();
+                        }
+
                         it.extern_type.table.limit.max = limit_max;
 
                         curr = reinterpret_cast<::std::byte const*>(next_lmax);
@@ -621,7 +643,198 @@ namespace uwvm
                 {
                     ++import_memory_counter;
 
-                    ::fast_io::fast_terminate();  // todo
+                    // get flags
+                    ::std::uint_fast8_t flags{};
+                    ::fast_io::freestanding::my_memcpy(__builtin_addressof(flags), curr, sizeof(::std::uint_fast8_t));
+
+                    if(flags == 0)
+                    {
+                        it.extern_type.memory.mem_limit.present_max = flags;
+
+                        ++curr;
+
+                        // get type index
+                        ::std::size_t limit_min{};
+                        auto [next_lmin, err_lmin]{::fast_io::parse_by_scan(reinterpret_cast<char8_t_const_may_alias_ptr>(curr),
+                                                                            reinterpret_cast<char8_t_const_may_alias_ptr>(end),
+                                                                            ::fast_io::mnp::leb128_get(limit_min))};
+                        switch(err_lmin)
+                        {
+                            case ::fast_io::parse_code::ok: break;
+                            default:
+                                [[unlikely]]
+                                {
+                                    ::fast_io::io::perr(::uwvm::u8err,
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"uwvm: "
+                                u8"\033[31m"
+                                u8"[fatal] "
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"Invalid limit length."
+                                u8"\n"
+                                u8"\033[0m"
+                                u8"Terminate.\n\n");
+                                    ::fast_io::fast_terminate();
+                                }
+                        }
+
+                        // check 64-bit indexes
+                        ::uwvm::check_index(limit_min);
+                        it.extern_type.memory.mem_limit.min = limit_min;
+
+                        curr = reinterpret_cast<::std::byte const*>(next_lmin);
+                    }
+                    else if(flags == 1)
+                    {
+                        it.extern_type.memory.mem_limit.present_max = flags;
+
+                        ++curr;
+
+                        // get type index
+                        ::std::size_t limit_min{};
+                        auto [next_lmin, err_lmin]{::fast_io::parse_by_scan(reinterpret_cast<char8_t_const_may_alias_ptr>(curr),
+                                                                            reinterpret_cast<char8_t_const_may_alias_ptr>(end),
+                                                                            ::fast_io::mnp::leb128_get(limit_min))};
+                        switch(err_lmin)
+                        {
+                            case ::fast_io::parse_code::ok: break;
+                            default:
+                                [[unlikely]]
+                                {
+                                    ::fast_io::io::perr(::uwvm::u8err,
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"uwvm: "
+                                u8"\033[31m"
+                                u8"[fatal] "
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"Invalid limit length."
+                                u8"\n"
+                                u8"\033[0m"
+                                u8"Terminate.\n\n");
+                                    ::fast_io::fast_terminate();
+                                }
+                        }
+
+                        it.extern_type.memory.mem_limit.min = limit_min;
+
+                        curr = reinterpret_cast<::std::byte const*>(next_lmin);
+
+                        ::std::size_t limit_max{};
+                        auto [next_lmax, err_lmax]{::fast_io::parse_by_scan(reinterpret_cast<char8_t_const_may_alias_ptr>(curr),
+                                                                            reinterpret_cast<char8_t_const_may_alias_ptr>(end),
+                                                                            ::fast_io::mnp::leb128_get(limit_max))};
+                        switch(err_lmax)
+                        {
+                            case ::fast_io::parse_code::ok: break;
+                            default:
+                                [[unlikely]]
+                                {
+                                    ::fast_io::io::perr(::uwvm::u8err,
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"uwvm: "
+                                u8"\033[31m"
+                                u8"[fatal] "
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"Invalid limit length."
+                                u8"\n"
+                                u8"\033[0m"
+                                u8"Termaxate.\n\n");
+                                    ::fast_io::fast_terminate();
+                                }
+                        }
+
+                        // check 64-bit indexes
+                        ::uwvm::check_index(limit_max);
+
+                        if constexpr(sizeof(::std::size_t) == 8)
+                        {
+                            constexpr auto u32max{static_cast<::std::size_t>(::std::numeric_limits<::std::uint_least32_t>::max())};
+                            if(limit_max > u32max) { it.extern_type.memory.is_index64 = true; }
+                        }
+
+                        if(limit_min > limit_max) [[unlikely]]
+                        {
+                            ::fast_io::io::perr(::uwvm::u8err,
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"uwvm: "
+                                u8"\033[31m"
+                                u8"[fatal] "
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"Initial > Maximum."
+                                u8"\n"
+                                u8"\033[0m"
+                                u8"Termaxate.\n\n");
+                            ::fast_io::fast_terminate();
+                        }
+
+                        it.extern_type.memory.mem_limit.max = limit_max;
+
+                        curr = reinterpret_cast<::std::byte const*>(next_lmax);
+                    }
+                    else [[unlikely]]
+                    {
+                        ::fast_io::io::perr(::uwvm::u8err,
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"uwvm: "
+                                u8"\033[31m"
+                                u8"[fatal] "
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"Invalid flags."
+                                u8"\n"
+                                u8"\033[0m"
+                                u8"Terminate.\n\n");
+                        ::fast_io::fast_terminate();
+                    }
                     break;
                 }
                 case ::uwvm::wasm::extern_kind::global:
