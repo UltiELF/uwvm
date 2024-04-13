@@ -420,7 +420,7 @@ namespace uwvm
                     ::uwvm::wasm::value_type vt{};
                     ::fast_io::freestanding::my_memcpy(__builtin_addressof(vt), curr, sizeof(::uwvm::wasm::value_type));
 
-                    if(!::uwvm::wasm::is_valid_value_type(vt)) [[unlikely]]
+                    if(!::uwvm::wasm::is_valid_value_type_ref(vt)) [[unlikely]]
                     {
                         ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -438,7 +438,7 @@ namespace uwvm
 #else
                                 u8"\033[97m"
 #endif
-                                u8"Invalid Type: ",
+                                u8"Invalid Elem Type: ",
                                 ::fast_io::mnp::hex0x<true>(static_cast<::std::uint_fast8_t>(vt)),
                                 u8"\n"
                                 u8"\033[0m"
