@@ -52,9 +52,11 @@ namespace uwvm
                                                              u8"Section Details:"
                                                              // L4 - L5
                                                              u8"\n\n");
+
             if(::uwvm::global_type_section.sec_begin) [[likely]]
             {
                 ::fast_io::operations::print_freestanding<false>(
+                    ::std::forward<s>(stm),
                     u8"Type[",
                     ::uwvm::global_type_section.type_count,
                     u8"] (start=",
@@ -95,6 +97,8 @@ namespace uwvm
                 }
             }
 
+            auto const func_type_table_base{::uwvm::global_type_section.types.cbegin()};
+
             if(::uwvm::global_import_section.sec_begin) [[likely]]
             {
                 // Import
@@ -111,7 +115,6 @@ namespace uwvm
                     u8"):\n");
 
                 // func
-                auto const func_type_table_base{::uwvm::global_type_section.types.cbegin()};
                 for(::std::size_t count{}; auto const t: ::uwvm::global_import_section.func_types)
                 {
                     ::fast_io::operations::print_freestanding<true>(::std::forward<s>(stm),
