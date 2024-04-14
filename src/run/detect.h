@@ -42,7 +42,7 @@ namespace uwvm
     inline void scan_wasm_file(::std::byte const* begin, ::std::byte const* end) noexcept
     {
 #ifdef UWVM_TIMER
-        ::fast_io::timer scan_timer{u8"scan"};
+        ::fast_io::timer scan_timer{u8"uwvm: [timer] scan"};
 #endif
         // alias def
         using char8_t_may_alias_ptr

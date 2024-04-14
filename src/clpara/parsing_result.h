@@ -32,7 +32,7 @@ namespace uwvm
                 ::uwvm::cmdline::parameters_hash_table<hash_table_size, conflict_size> const& ht) noexcept
     {
 #ifdef UWVM_TIMER
-        ::fast_io::timer parsing_timer{u8"parsing"};
+        ::fast_io::timer parsing_timer{u8"uwvm: [timer] parsing"};
 #endif
         if(argc == 0) [[unlikely]]
         {
