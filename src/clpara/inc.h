@@ -9,3 +9,4 @@
 #include "parameters/enable-multi-value.h"
 #include "parameters/enable-relaxed-simd.h"
 #include "parameters/enable-exception-handling.h"
+#include "parameters/enable-multi-memory.h"
