@@ -270,7 +270,7 @@ namespace uwvm
                                                                 ::uwvm::wasm::get_value_u8name(t.elem_type),
                                                                 u8" initial=",
                                                                 t.limit.min);
-                    if(t.limit.present_max) { ::fast_io::operations::print_freestanding<false>(::std::forward<s>(stm), u8" max=", tlimit.max); }
+                    if(t.limit.present_max) { ::fast_io::operations::print_freestanding<false>(::std::forward<s>(stm), u8" max=", t.limit.max); }
                     ::fast_io::operations::print_freestanding<true>(::std::forward<s>(stm));
                 }
             }
