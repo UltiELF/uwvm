@@ -3,6 +3,9 @@
 #include <utility>
 
 #include <fast_io.h>
+#ifdef UWVM_TIMER
+    #include <fast_io_driver/timer.h>
+#endif
 #include <cmdline/impl.h>
 #include <io_device.h>
 #include "../run/wasm_file.h"
@@ -28,7 +31,9 @@ namespace uwvm
                 ::fast_io::vector<::uwvm::cmdline::parameter_parsing_results>& pr,
                 ::uwvm::cmdline::parameters_hash_table<hash_table_size, conflict_size> const& ht) noexcept
     {
-
+#ifdef UWVM_TIMER
+        ::fast_io::timer parsing_timer{u8"parsing"};
+#endif
         if(argc == 0) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,

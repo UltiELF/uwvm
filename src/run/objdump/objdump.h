@@ -2,6 +2,9 @@
 #include <cstddef>
 #include <limits>
 #include <fast_io.h>
+#ifdef UWVM_TIMER
+    #include <fast_io_driver/timer.h>
+#endif
 #include <io_device.h>
 
 #include "../wasm/section.h"
@@ -11,12 +14,12 @@ namespace uwvm
 {
     namespace details
     {
-        struct objdump
+        struct objdump_printer
         {
         };
 
         template <typename s>
-        inline constexpr void print_define(::fast_io::io_reserve_type_t<char8_t, objdump>, s&& stm, objdump) noexcept
+        inline constexpr void print_define(::fast_io::io_reserve_type_t<char8_t, objdump_printer>, s&& stm, objdump_printer) noexcept
         {
             // alias def
             using char8_t_may_alias_ptr
@@ -240,6 +243,9 @@ namespace uwvm
     inline void u8objdump() noexcept
     {
         ::fast_io::basic_obuf<decltype(::uwvm::u8out)> u8outbuf{::uwvm::u8out};
-        ::fast_io::print(u8outbuf, details::objdump{});
+#ifdef UWVM_TIMER
+        ::fast_io::timer objdump_timer{u8"objdump"};
+#endif
+        ::fast_io::print(u8outbuf, details::objdump_printer{});
     }
 }  // namespace uwvm

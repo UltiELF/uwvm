@@ -65,12 +65,20 @@ option("sysroot")
 	set_showmenu(true)
 option_end()
 
+option("timer")
+	set_default(false)
+	set_showmenu(true)
+	add_defines("UWVM_TIMER")
+option_end()
 
 function defopt()
 	set_languages("c11", "cxx23")
+
 	if not is_plat("msdosdjgpp") then
 		add_options("native")
 	end
+	add_options("timer")
+
 	set_exceptions("no-cxx")
 
 	local use_llvm_toolchain = get_config("use-llvm")

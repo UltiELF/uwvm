@@ -1,6 +1,9 @@
 ﻿#pragma once
 #include <cstddef>
 #include <fast_io.h>
+#ifdef UWVM_TIMER
+    #include <fast_io_driver/timer.h>
+#endif
 #include <io_device.h>
 #include "wasm_file.h"
 #include "../wasm/types.h"
@@ -38,6 +41,9 @@ namespace uwvm
 
     inline void scan_wasm_file(::std::byte const* begin, ::std::byte const* end) noexcept
     {
+#ifdef UWVM_TIMER
+        ::fast_io::timer scan_timer{u8"scan"};
+#endif
         // alias def
         using char8_t_may_alias_ptr
 #if __has_cpp_attribute(__gnu__::__may_alias__)

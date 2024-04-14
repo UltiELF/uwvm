@@ -2,6 +2,9 @@
 #include <cstddef>
 #include <limits>
 #include <fast_io.h>
+#ifdef UWVM_TIMER
+    #include <fast_io_driver/timer.h>
+#endif
 #include <io_device.h>
 #include "../../check_index.h"
 
@@ -14,6 +17,9 @@ namespace uwvm
 
     inline void scan_type_section(::std::byte const* begin, ::std::byte const* end) noexcept
     {
+#ifdef UWVM_TIMER
+        ::fast_io::timer scan_type_section_timer{"scan type section"};
+#endif
         // alias def
         using char8_t_may_alias_ptr
 #if __has_cpp_attribute(__gnu__::__may_alias__)
