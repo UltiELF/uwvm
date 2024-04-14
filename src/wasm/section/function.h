@@ -8,8 +8,6 @@
 namespace uwvm::wasm::section
 {
 
-
-
     struct function_section
     {
         ::std::byte const* sec_begin{};

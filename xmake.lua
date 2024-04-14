@@ -90,7 +90,7 @@ function defopt()
 		local sysroot_para = get_config("sysroot")
 		if sysroot_para ~= "default" and sysroot_para then
 			local sysroot_cvt = "--sysroot=" .. sysroot_para
-			add_cxflags(sysroot_cvt)
+			add_cxflags(sysroot_cvt, {force = true})
 			add_ldflags(sysroot_cvt, {force = true})
 		end
 	end
@@ -376,24 +376,24 @@ function defopt()
 		add_ldflags("-fuse-ld=lld")
 		if is_arch("wasm32") then
 			if is_plat("wasm-wasi") then
-				add_cxflags("--target=wasm32-wasi")
+				add_cxflags("--target=wasm32-wasi", {force = true})
 				add_ldflags("--target=wasm32-wasi", {force = true})
 			elseif is_plat("wasm-wasip1") then
-				add_cxflags("--target=wasm32-wasip1")
+				add_cxflags("--target=wasm32-wasip1", {force = true})
 				add_ldflags("--target=wasm32-wasip1", {force = true})
 			else
-				add_cxflags("--target=wasm32-wasip2")
+				add_cxflags("--target=wasm32-wasip2", {force = true})
 				add_ldflags("--target=wasm32-wasip2", {force = true})
 			end
 		elseif is_arch("wasm64") then
 			if is_plat("wasm-wasi") then
-				add_cxflags("--target=wasm64-wasi")
+				add_cxflags("--target=wasm64-wasi", {force = true})
 				add_ldflags("--target=wasm64-wasi", {force = true})
 			elseif is_plat("wasm-wasip1") then
-				add_cxflags("--target=wasm64-wasip1")
+				add_cxflags("--target=wasm64-wasip1", {force = true})
 				add_ldflags("--target=wasm64-wasip1", {force = true})
 			else
-				add_cxflags("--target=wasm64-wasip2")
+				add_cxflags("--target=wasm64-wasip2", {force = true})
 				add_ldflags("--target=wasm64-wasip2", {force = true})
 			end
 		end

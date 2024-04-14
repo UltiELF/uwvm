@@ -10,7 +10,8 @@ namespace uwvm::path
 #if __has_cpp_attribute(__gnu__::__cold__)
     [[__gnu__::__cold__]]
 #endif
-    inline void init_install_path(char const* argv0) noexcept
+    inline void
+        init_install_path(char const* argv0) noexcept
     {
         ::uwvm::path::get_module_install_path();
 
@@ -21,12 +22,20 @@ namespace uwvm::path
             {
                 ::fast_io::io::perr(::uwvm::u8err,
                                     u8"\033[0m"
+#ifdef __MSDOS__
+                                    u8"\033[37m"
+#else
                                     u8"\033[97m"
+#endif
                                     u8"uwvm: "
                                     u8"\033[31m"
                                     u8"[fatal] "
                                     u8"\033[0m"
+#ifdef __MSDOS__
+                                    u8"\033[37m"
+#else
                                     u8"\033[97m"
+#endif
                                     u8"Cannot get module path.\n"
                                     u8"\033[0m"
                                     u8"Terminate.\n\n");
@@ -34,11 +43,19 @@ namespace uwvm::path
             }
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
                                 u8"\033[97m"
+#endif
                                 u8"uwvm: "
                                 u8"\033[91m"
                                 u8"[warning] "
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
                                 u8"\033[97m"
+#endif
                                 u8"Attempting to obtain installation path through argv0, argv0 parameter may be modified by the user, resulting in inaccuracy."
                                 u8"\033[0m"
                                 u8"\n");
