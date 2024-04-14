@@ -6,19 +6,18 @@
     #include <fast_io_driver/timer.h>
 #endif
 #include <io_device.h>
+#include "storge.h"
+
 #include "../../check_index.h"
 #include "../../../wasm/section/function.h"
 #include "../../../clpara/parameters/enable-memory64.h"
-#include "type.h"
 
 namespace uwvm
 {
-    inline ::uwvm::wasm::section::function_section global_function_section{};
-
     inline void scan_function_section(::std::byte const* begin, ::std::byte const* end) noexcept
     {
 #ifdef UWVM_TIMER
-        ::fast_io::timer scan_type_section_timer{u8"uwvm: [timer] scan function section"};
+        ::fast_io::timer scan_function_section_timer{u8"uwvm: [timer] scan function section"};
 #endif
         // alias def
         using char8_t_may_alias_ptr
@@ -32,9 +31,33 @@ namespace uwvm
 #endif
             = char8_t const*;
 
+        if(!::uwvm::global_type_section.sec_begin) [[unlikely]]
+        {
+            ::fast_io::io::perr(::uwvm::u8err,
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"uwvm: "
+                                u8"\033[31m"
+                                u8"[fatal] "
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"The type section must appear before function section."
+                                u8"\n"
+                                u8"\033[0m"
+                                u8"Terminate.\n\n");
+            ::fast_io::fast_terminate();
+        }
+
         // check is exist
-        // always check
-        if(global_function_section.sec_begin) [[unlikely]]
+        if(::uwvm::global_function_section.sec_begin) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -58,8 +81,8 @@ namespace uwvm
                                 u8"Terminate.\n\n");
             ::fast_io::fast_terminate();
         }
-        global_function_section.sec_begin = begin;
-        global_function_section.sec_end = end;
+        ::uwvm::global_function_section.sec_begin = begin;
+        ::uwvm::global_function_section.sec_end = end;
 
         // curr
         auto curr{begin};
@@ -102,10 +125,10 @@ namespace uwvm
         // check 64-bit indexes
         ::uwvm::check_index(function_count);
 
-        global_function_section.function_count = function_count;
-        global_function_section.types.reserve(function_count);
+        ::uwvm::global_function_section.function_count = function_count;
+        ::uwvm::global_function_section.types.reserve(function_count);
 
-        // jump to functype
+        // jump to func type
         curr = reinterpret_cast<::std::byte const*>(next);
 
         auto const type_table_basic_index{::uwvm::global_type_section.types.cbegin()};
@@ -199,7 +222,7 @@ namespace uwvm
                 ::fast_io::fast_terminate();
             }
 
-            global_function_section.types.emplace_back_unchecked(type_table_basic_index + type_index_len);
+            ::uwvm::global_function_section.types.emplace_back_unchecked(type_table_basic_index + type_index_len);
             // jump to para1
             curr = reinterpret_cast<::std::byte const*>(next_type_index);
         }

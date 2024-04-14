@@ -236,6 +236,35 @@ namespace uwvm
                                                                 u8">\n");
             }
 
+            // Table
+            ::fast_io::operations::print_freestanding<false>(
+                ::std::forward<s>(stm),
+                u8"\n" u8"table[",
+                ::uwvm::global_table_section.table_count,
+                u8"] (start=",
+                ::fast_io::mnp::hex0x<true>(::uwvm::global_table_section.sec_begin - wasm_file_begin),
+                u8" end=",
+                ::fast_io::mnp::hex0x<true>(::uwvm::global_table_section.sec_end - wasm_file_begin),
+                u8" size=",
+                ::fast_io::mnp::hex0x<true>(::uwvm::global_table_section.sec_end - ::uwvm::global_table_section.sec_begin),
+                u8"):\n");
+
+            for(::std::size_t count{}; auto const& t: ::uwvm::global_table_section.types)
+            {
+                ::fast_io::operations::print_freestanding<false>(::std::forward<s>(stm),
+                                                                u8" - "
+                                                                u8"table"
+                                                                u8"[",
+                                                                count++,
+                                                                u8"] type=",
+                                                                ::uwvm::wasm::get_value_u8name(t.elem_type),
+                                                                u8" initial=",
+                                                                t.limit.min);
+                if(t.limit.present_max) { ::fast_io::operations::print_freestanding<false>(::std::forward<s>(stm), u8" max=", tlimit.max); }
+                ::fast_io::operations::print_freestanding<true>(::std::forward<s>(stm));
+            }
+
+            // ln
             ::fast_io::operations::print_freestanding<true>(::std::forward<s>(stm));
         }
     }  // namespace details
