@@ -1,6 +1,9 @@
 ﻿#pragma once
 #include <cstddef>
 #include <fast_io.h>
+#ifdef UWVM_TIMER
+    #include <fast_io_driver/timer.h>
+#endif
 #include <io_device.h>
 #include "wasm_file.h"
 #include "../clpara/parsing_result.h"
@@ -39,11 +42,14 @@ namespace uwvm
         }
 #ifdef __cpp_exceptions
         try
+#endif
         {
+#ifdef UWVM_TIMER
+            ::fast_io::timer file_loader_timer{u8"uwvm: [timer] file loader"};
 #endif
             ::uwvm::wasm_file_loader = ::fast_io::native_file_loader{::uwvm::wasm_file_name};
-#ifdef __cpp_exceptions
         }
+#ifdef __cpp_exceptions
         catch(::fast_io::error e)
         {
             ::fast_io::io::perr(::uwvm::u8err,
