@@ -18,7 +18,7 @@ namespace uwvm
     inline void scan_import_section(::std::byte const* begin, ::std::byte const* end) noexcept
     {
 #ifdef UWVM_TIMER
-        ::fast_io::timer scan_import_section_timer{"scan import section"};
+        ::fast_io::timer scan_import_section_timer{u8"scan import section"};
 #endif
         // alias def
         using char8_t_may_alias_ptr

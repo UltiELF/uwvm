@@ -18,7 +18,7 @@ namespace uwvm
     inline void scan_type_section(::std::byte const* begin, ::std::byte const* end) noexcept
     {
 #ifdef UWVM_TIMER
-        ::fast_io::timer scan_type_section_timer{"scan type section"};
+        ::fast_io::timer scan_type_section_timer{u8"scan type section"};
 #endif
         // alias def
         using char8_t_may_alias_ptr
