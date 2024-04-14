@@ -84,6 +84,10 @@ $ xmake f -m [release|releasedbg|debug] -p [windows|mingw|macosx|linux|iphoneos 
 ```bash 
 --sysroot=<path>
 ```
+* Record the time of each step
+```bash 
+--timer=y|n(default)
+```
 * Enable Sanitizer
 ```bash 
 --policies=build.sanitizer.address --policies=build.sanitizer.leak

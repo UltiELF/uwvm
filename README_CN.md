@@ -84,6 +84,10 @@ $ xmake f -m [release|releasedbg|debug] -p [windows|mingw|linux|sun|msdosdjgpp|b
 ```bash
 --sysroot=<path>
 ```
+* 记录每一步消耗的时间
+```bash 
+--timer=y|n(default)
+```
 * 启用清洁器
 ```bash
 --policies=build.sanitizer.address --policies=build.sanitizer.leak
