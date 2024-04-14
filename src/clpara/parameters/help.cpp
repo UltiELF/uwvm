@@ -67,7 +67,7 @@ namespace uwvm::parameter::details
 ::uwvm::cmdline::parameter_return_type(::uwvm::parameter::details::help_callback)(::uwvm::cmdline::parameter_parsing_results*,
                                                                                   ::fast_io::vector<::uwvm::cmdline::parameter_parsing_results>&) noexcept
 {
-    ::fast_io::basic_obuf<decltype(::uwvm::u8out)> u8outbuf{::uwvm::u8err};
-    ::fast_io::io::perr(u8outbuf, ::uwvm::parameter::details::help_printer{});
+    ::fast_io::basic_obuf<decltype(::uwvm::u8err)> u8errbuf{::uwvm::u8err};
+    ::fast_io::io::perr(u8errbuf, ::uwvm::parameter::details::help_printer{});
     return ::uwvm::cmdline::parameter_return_type::return_imme;
 }
