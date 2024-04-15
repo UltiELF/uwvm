@@ -14,3 +14,18 @@ namespace uwvm::wasm
         ::uwvm::wasm::section::table_section tablesec{};
     };
 }  // namespace uwvm::wasm
+
+namespace fast_io::freestanding
+{
+
+    struct is_trivially_relocatable<::uwvm::wasm::wasm_module>
+    {
+        inline static constexpr bool value = true;
+    };
+
+    struct is_zero_default_constructible<::uwvm::wasm::wasm_module>
+    {
+        inline static constexpr bool value = true;
+    };
+
+}  // namespace fast_io::freestanding

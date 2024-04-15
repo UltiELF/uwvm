@@ -32,3 +32,18 @@ namespace uwvm::wasm::section
         ::fast_io::vector<import_type const*> tag_types{};
     };
 }  // namespace uwvm::wasm::section
+
+namespace fast_io::freestanding
+{
+
+    struct is_trivially_relocatable<::uwvm::wasm::section::import_section>
+    {
+        inline static constexpr bool value = true;
+    };
+
+    struct is_zero_default_constructible<::uwvm::wasm::section::import_section>
+    {
+        inline static constexpr bool value = true;
+    };
+
+}  // namespace fast_io::freestanding

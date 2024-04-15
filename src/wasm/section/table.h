@@ -16,3 +16,18 @@ namespace uwvm::wasm::section
         ::fast_io::vector<table_type> types{};
     };
 }  // namespace uwvm::wasm::section
+
+namespace fast_io::freestanding
+{
+
+    struct is_trivially_relocatable<::uwvm::wasm::section::table_section>
+    {
+        inline static constexpr bool value = true;
+    };
+
+    struct is_zero_default_constructible<::uwvm::wasm::section::table_section>
+    {
+        inline static constexpr bool value = true;
+    };
+
+}  // namespace fast_io::freestanding
