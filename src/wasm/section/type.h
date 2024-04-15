@@ -19,12 +19,13 @@ namespace uwvm::wasm::section
 
 namespace fast_io::freestanding
 {
-
+    template <>
     struct is_trivially_relocatable<::uwvm::wasm::section::type_section>
     {
         inline static constexpr bool value = true;
     };
 
+    template <>
     struct is_zero_default_constructible<::uwvm::wasm::section::type_section>
     {
         inline static constexpr bool value = true;

@@ -17,12 +17,13 @@ namespace uwvm::wasm
 
 namespace fast_io::freestanding
 {
-
+    template <>
     struct is_trivially_relocatable<::uwvm::wasm::wasm_module>
     {
         inline static constexpr bool value = true;
     };
 
+    template <>
     struct is_zero_default_constructible<::uwvm::wasm::wasm_module>
     {
         inline static constexpr bool value = true;
