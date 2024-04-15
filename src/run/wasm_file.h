@@ -3,6 +3,7 @@
 #include <fast_io.h>
 #include <fast_io_dsal/cstring_view.h>
 #include "../wasm/abi.h"
+#include "../wasm/module.h"
 #include "mode.h"
 
 namespace uwvm
@@ -12,8 +13,9 @@ namespace uwvm
 
     inline ::fast_io::native_file_loader wasm_file_loader{};
 
-    inline ::uwvm::wasm::abi wasm_abi{};
-    inline ::std::uint_least32_t wasm_version{};
-
     inline ::uwvm::mode running_mode{::uwvm::mode::objdump};
+
+    inline ::uwvm::wasm::abi wasm_abi{};
+    inline ::uwvm::wasm::wasm_module global_wasm_module{};
+
 }  // namespace uwvm

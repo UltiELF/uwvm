@@ -6,7 +6,8 @@
     #include <fast_io_driver/timer.h>
 #endif
 #include <io_device.h>
-#include "storge.h"
+
+#include "../../wasm_file.h"
 
 #include "../../check_index.h"
 #include "../../../wasm/section/type.h"
@@ -43,7 +44,7 @@ namespace uwvm
 
         // check is exist
         // always check
-        if(::uwvm::global_type_section.sec_begin) [[unlikely]]
+        if(::uwvm::global_wasm_module.typesec.sec_begin) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -67,8 +68,8 @@ namespace uwvm
                                 u8"Terminate.\n\n");
             ::fast_io::fast_terminate();
         }
-        ::uwvm::global_type_section.sec_begin = begin;
-        ::uwvm::global_type_section.sec_end = end;
+        ::uwvm::global_wasm_module.typesec.sec_begin = begin;
+        ::uwvm::global_wasm_module.typesec.sec_end = end;
 
         // curr
         auto curr{begin};
@@ -111,8 +112,8 @@ namespace uwvm
         // check 64-bit indexes
         ::uwvm::check_index(type_count);
 
-        ::uwvm::global_type_section.type_count = type_count;
-        ::uwvm::global_type_section.types.reserve(type_count);
+        ::uwvm::global_wasm_module.typesec.type_count = type_count;
+        ::uwvm::global_wasm_module.typesec.types.reserve(type_count);
 
         // jump to functype(0x60)
         curr = reinterpret_cast<::std::byte const*>(next);
@@ -425,7 +426,7 @@ namespace uwvm
                         }
                     }
 
-                    ::uwvm::global_type_section.types.push_back_unchecked(ft);
+                    ::uwvm::global_wasm_module.typesec.types.push_back_unchecked(ft);
                     break;
                 }
 #if 0 // future🦄

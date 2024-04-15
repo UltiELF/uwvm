@@ -22,7 +22,7 @@ namespace uwvm
         bool
         is_wasm_file_unchecked(::std::byte const* curr) noexcept
     {
-        return ::fast_io::freestanding::my_memcmp(curr, u8"\0asm", 4u) == 0;
+        return ::fast_io::freestanding::my_memcmp(curr, u8"\0asm", 4u * sizeof(char8_t)) == 0;
     }
 
     inline 
@@ -87,7 +87,7 @@ namespace uwvm
 
         // get wasm version
         curr += 4U;
-        ::uwvm::wasm_version = ::uwvm::detect_wasm_version_unchecked(curr);
+        ::uwvm::global_wasm_module.wasm_version = ::uwvm::detect_wasm_version_unchecked(curr);
 
         // get first section
         curr += 4U;

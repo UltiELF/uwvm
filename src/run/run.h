@@ -92,3 +92,9 @@ namespace uwvm
         }
     }
 }  // namespace uwvm
+
+void teset()
+{
+    // s
+    constexpr auto i = ::fast_io::freestanding::is_trivially_relocatable_v<::uwvm::wasm::function_type>;
+}

@@ -6,7 +6,8 @@
     #include <fast_io_driver/timer.h>
 #endif
 #include <io_device.h>
-#include "storge.h"
+
+#include "../../wasm_file.h"
 
 #include "../../check_index.h"
 #include "../../../wasm/section/import.h"
@@ -31,7 +32,7 @@ namespace uwvm
 #endif
             = char8_t const*;
 
-        if(!::uwvm::global_type_section.sec_begin) [[unlikely]]
+        if(!::uwvm::global_wasm_module.typesec.sec_begin) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -57,7 +58,7 @@ namespace uwvm
         }
 
         // check is exist
-        if(::uwvm::global_import_section.sec_begin) [[unlikely]]
+        if(::uwvm::global_wasm_module.importsec.sec_begin) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -81,8 +82,8 @@ namespace uwvm
                                 u8"Terminate.\n\n");
             ::fast_io::fast_terminate();
         }
-        ::uwvm::global_import_section.sec_begin = begin;
-        ::uwvm::global_import_section.sec_end = end;
+        ::uwvm::global_wasm_module.importsec.sec_begin = begin;
+        ::uwvm::global_wasm_module.importsec.sec_end = end;
 
         // curr
         auto curr{begin};
@@ -125,8 +126,8 @@ namespace uwvm
         // check 64-bit indexes
         ::uwvm::check_index(import_count);
 
-        ::uwvm::global_import_section.import_count = import_count;
-        ::uwvm::global_import_section.types.reserve(import_count);
+        ::uwvm::global_wasm_module.importsec.import_count = import_count;
+        ::uwvm::global_wasm_module.importsec.types.reserve(import_count);
 
         // jump to 1st import leb128
         curr = reinterpret_cast<::std::byte const*>(next);
@@ -139,8 +140,8 @@ namespace uwvm
         ::std::size_t import_global_counter{};
         ::std::size_t import_tag_counter{};
 
-        auto const type_section_cbegin{global_type_section.types.cbegin()};
-        auto const type_section_count{::uwvm::global_type_section.type_count};
+        auto const type_section_cbegin{global_wasm_module.typesec.types.cbegin()};
+        auto const type_section_count{::uwvm::global_wasm_module.typesec.type_count};
         for(; curr < end;)
         {
             ::uwvm::wasm::section::import_type it{};  // has union
@@ -1007,7 +1008,7 @@ namespace uwvm
                 default: ::fast_io::unreachable();
             }
 
-            ::uwvm::global_import_section.types.push_back_unchecked(::std::move(it));
+            ::uwvm::global_wasm_module.importsec.types.push_back_unchecked(::std::move(it));
         }
 
         // check import counter
@@ -1037,39 +1038,39 @@ namespace uwvm
         }
 
         // reserve
-        ::uwvm::global_import_section.func_types.reserve(import_func_counter);
-        ::uwvm::global_import_section.table_types.reserve(import_table_counter);
-        ::uwvm::global_import_section.memory_types.reserve(import_memory_counter);
-        ::uwvm::global_import_section.global_types.reserve(import_global_counter);
-        ::uwvm::global_import_section.tag_types.reserve(import_tag_counter);
+        ::uwvm::global_wasm_module.importsec.func_types.reserve(import_func_counter);
+        ::uwvm::global_wasm_module.importsec.table_types.reserve(import_table_counter);
+        ::uwvm::global_wasm_module.importsec.memory_types.reserve(import_memory_counter);
+        ::uwvm::global_wasm_module.importsec.global_types.reserve(import_global_counter);
+        ::uwvm::global_wasm_module.importsec.tag_types.reserve(import_tag_counter);
 
-        for(auto const& i: ::uwvm::global_import_section.types)
+        for(auto const& i: ::uwvm::global_wasm_module.importsec.types)
         {
             switch(i.extern_type.type)
             {
                 case ::uwvm::wasm::extern_kind::func:
                 {
-                    ::uwvm::global_import_section.func_types.push_back_unchecked(__builtin_addressof(i));
+                    ::uwvm::global_wasm_module.importsec.func_types.push_back_unchecked(__builtin_addressof(i));
                     break;
                 }
                 case ::uwvm::wasm::extern_kind::table:
                 {
-                    ::uwvm::global_import_section.table_types.push_back_unchecked(__builtin_addressof(i));
+                    ::uwvm::global_wasm_module.importsec.table_types.push_back_unchecked(__builtin_addressof(i));
                     break;
                 }
                 case ::uwvm::wasm::extern_kind::memory:
                 {
-                    ::uwvm::global_import_section.memory_types.push_back_unchecked(__builtin_addressof(i));
+                    ::uwvm::global_wasm_module.importsec.memory_types.push_back_unchecked(__builtin_addressof(i));
                     break;
                 }
                 case ::uwvm::wasm::extern_kind::global:
                 {
-                    ::uwvm::global_import_section.global_types.push_back_unchecked(__builtin_addressof(i));
+                    ::uwvm::global_wasm_module.importsec.global_types.push_back_unchecked(__builtin_addressof(i));
                     break;
                 }
                 case ::uwvm::wasm::extern_kind::tag:
                 {
-                    ::uwvm::global_import_section.tag_types.push_back_unchecked(__builtin_addressof(i));
+                    ::uwvm::global_wasm_module.importsec.tag_types.push_back_unchecked(__builtin_addressof(i));
                     break;
                 }
                 default: ::fast_io::unreachable();

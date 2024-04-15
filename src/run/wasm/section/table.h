@@ -6,7 +6,8 @@
     #include <fast_io_driver/timer.h>
 #endif
 #include <io_device.h>
-#include "storge.h"
+
+#include "../../wasm_file.h"
 
 #include "../../check_index.h"
 #include "../../../wasm/section/table.h"
@@ -42,7 +43,7 @@ namespace uwvm
             = ::uwvm::wasm::value_type const*;
 
         // check is exist
-        if(::uwvm::global_table_section.sec_begin) [[unlikely]]
+        if(::uwvm::global_wasm_module.tablesec.sec_begin) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -66,8 +67,8 @@ namespace uwvm
                                 u8"Terminate.\n\n");
             ::fast_io::fast_terminate();
         }
-        ::uwvm::global_table_section.sec_begin = begin;
-        ::uwvm::global_table_section.sec_end = end;
+        ::uwvm::global_wasm_module.tablesec.sec_begin = begin;
+        ::uwvm::global_wasm_module.tablesec.sec_end = end;
 
         // curr
         auto curr{begin};
@@ -135,8 +136,8 @@ namespace uwvm
             ::fast_io::fast_terminate();
         }
 #endif
-        ::uwvm::global_table_section.table_count = table_count;
-        ::uwvm::global_table_section.types.reserve(table_count);
+        ::uwvm::global_wasm_module.tablesec.table_count = table_count;
+        ::uwvm::global_wasm_module.tablesec.types.reserve(table_count);
 
         // jump to table type
         curr = reinterpret_cast<::std::byte const*>(next);
@@ -388,7 +389,7 @@ namespace uwvm
                                 u8"Terminate.\n\n");
                 ::fast_io::fast_terminate();
             }
-            ::uwvm::global_table_section.types.emplace_back_unchecked(tt);
+            ::uwvm::global_wasm_module.tablesec.types.emplace_back_unchecked(tt);
         }
 
         if(table_counter != table_count) [[unlikely]]
