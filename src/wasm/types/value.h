@@ -104,7 +104,7 @@ namespace uwvm::wasm
                 case value_type::externref: return ::fast_io::string_view{"externref"};
                 case value_type::functype: return ::fast_io::string_view{"functype"};
                 case value_type::resulttype: return ::fast_io::string_view{"resulttype"};
-                default: return {};
+                default: return ::fast_io::string_view{};
             }
         }
         else if constexpr(::std::same_as<char_type, wchar_t>)
@@ -121,7 +121,7 @@ namespace uwvm::wasm
                 case value_type::externref: return ::fast_io::wstring_view{L"externref"};
                 case value_type::functype: return ::fast_io::wstring_view{L"functype"};
                 case value_type::resulttype: return ::fast_io::wstring_view{L"resulttype"};
-                default: return {};
+                default: return ::fast_io::wstring_view{};
             }
         }
         else if constexpr(::std::same_as<char_type, char8_t>)
@@ -138,7 +138,7 @@ namespace uwvm::wasm
                 case value_type::externref: return ::fast_io::u8string_view{u8"externref"};
                 case value_type::functype: return ::fast_io::u8string_view{u8"functype"};
                 case value_type::resulttype: return ::fast_io::u8string_view{u8"resulttype"};
-                default: return {};
+                default: return ::fast_io::u8string_view{};
             }
         }
         else if constexpr(::std::same_as<char_type, char16_t>)
@@ -155,7 +155,7 @@ namespace uwvm::wasm
                 case value_type::externref: return ::fast_io::u16string_view{u"externref"};
                 case value_type::functype: return ::fast_io::u16string_view{u"functype"};
                 case value_type::resulttype: return ::fast_io::u16string_view{u"resulttype"};
-                default: return {};
+                default: return ::fast_io::u16string_view{};
             }
         }
         else if constexpr(::std::same_as<char_type, char32_t>)
@@ -172,7 +172,7 @@ namespace uwvm::wasm
                 case value_type::externref: return ::fast_io::u32string_view{U"externref"};
                 case value_type::functype: return ::fast_io::u32string_view{U"functype"};
                 case value_type::resulttype: return ::fast_io::u32string_view{U"resulttype"};
-                default: return {};
+                default: return ::fast_io::u32string_view{};
             }
         }
     }

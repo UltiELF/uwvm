@@ -50,7 +50,7 @@ namespace uwvm::wasm
                 case section_type::data_sec: return ::fast_io::string_view{"Data"};
                 case section_type::data_count_sec: return ::fast_io::string_view{"Data Count"};
                 case section_type::tag_sec: return ::fast_io::string_view{"Tag"};
-                default: return {};
+                default: return ::fast_io::string_view{};
             }
         }
         else if constexpr(::std::same_as<char_type, wchar_t>)
@@ -71,7 +71,7 @@ namespace uwvm::wasm
                 case section_type::data_sec: return ::fast_io::wstring_view{L"Data"};
                 case section_type::data_count_sec: return ::fast_io::wstring_view{L"Data Count"};
                 case section_type::tag_sec: return ::fast_io::wstring_view{L"Tag"};
-                default: return {};
+                default: return ::fast_io::wstring_view{};
             }
         }
         else if constexpr(::std::same_as<char_type, char8_t>)
@@ -92,7 +92,7 @@ namespace uwvm::wasm
                 case section_type::data_sec: return ::fast_io::u8string_view{u8"Data"};
                 case section_type::data_count_sec: return ::fast_io::u8string_view{u8"Data Count"};
                 case section_type::tag_sec: return ::fast_io::u8string_view{u8"Tag"};
-                default: return {};
+                default: return ::fast_io::u8string_view{};
             }
         }
         else if constexpr(::std::same_as<char_type, char16_t>)
@@ -113,7 +113,7 @@ namespace uwvm::wasm
                 case section_type::data_sec: return ::fast_io::u16string_view{u"Data"};
                 case section_type::data_count_sec: return ::fast_io::u16string_view{u"Data Count"};
                 case section_type::tag_sec: return ::fast_io::u16string_view{u"Tag"};
-                default: return {};
+                default: return ::fast_io::u16string_view{};
             }
         }
         else if constexpr(::std::same_as<char_type, char32_t>)
@@ -134,7 +134,7 @@ namespace uwvm::wasm
                 case section_type::data_sec: return ::fast_io::u32string_view{U"Data"};
                 case section_type::data_count_sec: return ::fast_io::u32string_view{U"Data Count"};
                 case section_type::tag_sec: return ::fast_io::u32string_view{U"Tag"};
-                default: return {};
+                default: return ::fast_io::u32string_view{};
             }
         }
     }

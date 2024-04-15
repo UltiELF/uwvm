@@ -58,7 +58,7 @@ namespace uwvm::wasm
                 case extern_kind::memory: return ::fast_io::string_view{"memory"};
                 case extern_kind::global: return ::fast_io::string_view{"global"};
                 case extern_kind::tag: return ::fast_io::string_view{"tag"};
-                default: return {};
+                default: return ::fast_io::string_view{};
             }
         }
         else if constexpr(::std::same_as<char_type, wchar_t>)
@@ -70,7 +70,7 @@ namespace uwvm::wasm
                 case extern_kind::memory: return ::fast_io::wstring_view{L"memory"};
                 case extern_kind::global: return ::fast_io::wstring_view{L"global"};
                 case extern_kind::tag: return ::fast_io::wstring_view{L"tag"};
-                default: return {};
+                default: return ::fast_io::wstring_view{};
             }
         }
         else if constexpr(::std::same_as<char_type, char8_t>)
@@ -82,7 +82,7 @@ namespace uwvm::wasm
                 case extern_kind::memory: return ::fast_io::u8string_view{u8"memory"};
                 case extern_kind::global: return ::fast_io::u8string_view{u8"global"};
                 case extern_kind::tag: return ::fast_io::u8string_view{u8"tag"};
-                default: return {};
+                default: return ::fast_io::u8string_view{};
             }
         }
         else if constexpr(::std::same_as<char_type, char16_t>)
@@ -94,7 +94,7 @@ namespace uwvm::wasm
                 case extern_kind::memory: return ::fast_io::u16string_view{u"memory"};
                 case extern_kind::global: return ::fast_io::u16string_view{u"global"};
                 case extern_kind::tag: return ::fast_io::u16string_view{u"tag"};
-                default: return {};
+                default: return ::fast_io::u16string_view{};
             }
         }
         else if constexpr(::std::same_as<char_type, char32_t>)
@@ -106,7 +106,7 @@ namespace uwvm::wasm
                 case extern_kind::memory: return ::fast_io::u32string_view{U"memory"};
                 case extern_kind::global: return ::fast_io::u32string_view{U"global"};
                 case extern_kind::tag: return ::fast_io::u32string_view{U"tag"};
-                default: return {};
+                default: return ::fast_io::u32string_view{};
             }
         }
     }
