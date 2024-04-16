@@ -1,4 +1,6 @@
 #pragma once
+#include <fast_io_dsal/cstring_view.h>
+
 #include "types.h"
 #include "section.h"
 
@@ -6,6 +8,10 @@ namespace uwvm::wasm
 {
     struct wasm_module
     {
+        ::std::byte const* module_begin{};
+        ::std::byte const* module_end{};
+
+        ::fast_io::u8cstring_view module_name{};
         ::std::uint_least32_t wasm_version{};
 
         ::uwvm::wasm::section::type_section typesec{};

@@ -7,15 +7,13 @@
 #endif
 #include <io_device.h>
 
-#include "../../wasm_file.h"
-
 #include "../../check_index.h"
-#include "../../../wasm/section/table.h"
+#include "../../module.h"
 #include "../../../clpara/parameters/enable-memory64.h"
 
-namespace uwvm
+namespace uwvm::wasm
 {
-    inline void scan_table_section(::std::byte const* begin, ::std::byte const* end) noexcept
+    inline void scan_table_section(::uwvm::wasm::wasm_module& wasmmod, ::std::byte const* begin, ::std::byte const* end) noexcept
     {
 #ifdef UWVM_TIMER
         ::fast_io::timer scan_table_section_timer{u8"uwvm: [timer] scan table section"};
@@ -43,7 +41,7 @@ namespace uwvm
             = ::uwvm::wasm::value_type const*;
 
         // check is exist
-        if(::uwvm::global_wasm_module.tablesec.sec_begin) [[unlikely]]
+        if(wasmmod.tablesec.sec_begin) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -67,8 +65,8 @@ namespace uwvm
                                 u8"Terminate.\n\n");
             ::fast_io::fast_terminate();
         }
-        ::uwvm::global_wasm_module.tablesec.sec_begin = begin;
-        ::uwvm::global_wasm_module.tablesec.sec_end = end;
+        wasmmod.tablesec.sec_begin = begin;
+        wasmmod.tablesec.sec_end = end;
 
         // curr
         auto curr{begin};
@@ -136,8 +134,8 @@ namespace uwvm
             ::fast_io::fast_terminate();
         }
 #endif
-        ::uwvm::global_wasm_module.tablesec.table_count = table_count;
-        ::uwvm::global_wasm_module.tablesec.types.reserve(table_count);
+        wasmmod.tablesec.table_count = table_count;
+        wasmmod.tablesec.types.reserve(table_count);
 
         // jump to table type
         curr = reinterpret_cast<::std::byte const*>(next);
@@ -249,7 +247,7 @@ namespace uwvm
                 }
 
                 // check 64-bit indexes
-                ::uwvm::check_index(limit_min);
+                ::uwvm::wasm::check_index(limit_min);
                 tt.limit.min = limit_min;
 
                 curr = reinterpret_cast<::std::byte const*>(next_lmin);
@@ -334,7 +332,7 @@ namespace uwvm
                 }
 
                 // check 64-bit indexes
-                ::uwvm::check_index(limit_max);
+                ::uwvm::wasm::check_index(limit_max);
 
                 if(limit_min > limit_max) [[unlikely]]
                 {
@@ -389,7 +387,7 @@ namespace uwvm
                                 u8"Terminate.\n\n");
                 ::fast_io::fast_terminate();
             }
-            ::uwvm::global_wasm_module.tablesec.types.emplace_back_unchecked(tt);
+            wasmmod.tablesec.types.emplace_back_unchecked(tt);
         }
 
         if(table_counter != table_count) [[unlikely]]
@@ -417,4 +415,4 @@ namespace uwvm
             ::fast_io::fast_terminate();
         }
     }
-}  // namespace uwvm
+}  // namespace uwvm::wasm

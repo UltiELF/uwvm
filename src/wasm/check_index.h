@@ -3,7 +3,7 @@
 #include <io_device.h>
 #include "../clpara/parameters/enable-memory64.h"
 
-namespace uwvm
+namespace uwvm::wasm
 {
     inline void check_index(::std::size_t s) noexcept
     {

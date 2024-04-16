@@ -108,8 +108,9 @@ namespace uwvm
                         return parsing_return_val::returnm1;
                     }
                     ::uwvm::wasm_file_ppos = i;
-                    ::uwvm::wasm_file_name = ::fast_io::cstring_view{::fast_io::containers::null_terminated, argv[i], ::fast_io::cstr_len(argv[i])};
-                    pr.emplace_back_unchecked(::uwvm::wasm_file_name, nullptr, ::uwvm::cmdline::parameter_parsing_results_type::occupied_arg);
+                    ::fast_io::cstring_view const tempargv_cstrvw{::fast_io::containers::null_terminated, argv[i], ::fast_io::cstr_len(argv[i])};
+                    ::uwvm::global_wasm_module_name_storge = ::fast_io::u8concat_fast_io(::fast_io::mnp::code_cvt(tempargv_cstrvw));
+                    pr.emplace_back_unchecked(tempargv_cstrvw, nullptr, ::uwvm::cmdline::parameter_parsing_results_type::occupied_arg);
                     for(++i; i < argc; ++i)
                     {
                         pr.emplace_back_unchecked(::fast_io::cstring_view{::fast_io::containers::null_terminated, argv[i], ::fast_io::cstr_len(argv[i])},

@@ -7,17 +7,16 @@
 #include <io_device.h>
 #include "wasm_file.h"
 #include "../clpara/parsing_result.h"
-#include "detect.h"
-#include "objdump/objdump.h"
+#include "../wasm/scan.h"
+#include "objdump.h"
 
 namespace uwvm
 {
     inline void run() noexcept
     {
-
         // no input file
 
-        if(::uwvm::wasm_file_name.empty()) [[unlikely]]
+        if(::uwvm::global_wasm_module_name_storge.empty()) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -47,7 +46,7 @@ namespace uwvm
 #ifdef UWVM_TIMER
             ::fast_io::timer file_loader_timer{u8"uwvm: [timer] file loader"};
 #endif
-            ::uwvm::wasm_file_loader = ::fast_io::native_file_loader{::uwvm::wasm_file_name};
+            ::uwvm::wasm_file_loader = ::fast_io::native_file_loader{::uwvm::global_wasm_module_name_storge};
         }
 #ifdef __cpp_exceptions
         catch(::fast_io::error e)
@@ -79,7 +78,11 @@ namespace uwvm
         auto const begin{reinterpret_cast<::std::byte const*>(::uwvm::wasm_file_loader.cbegin())};
         auto const end{reinterpret_cast<::std::byte const*>(::uwvm::wasm_file_loader.cend())};
 
-       ::uwvm::scan_wasm_file(begin, end);
+        ::uwvm::wasm::scan_wasm_module(
+            ::uwvm::global_wasm_module,
+            ::fast_io::u8cstring_view{::fast_io::containers::null_terminated, ::uwvm::global_wasm_module_name_storge.c_str(), ::uwvm::global_wasm_module_name_storge.size()},
+            begin,
+            end);
 
         switch(::uwvm::running_mode)
         {

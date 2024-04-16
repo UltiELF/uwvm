@@ -1,19 +1,19 @@
-﻿#pragma once
+#pragma once
 #include <cstddef>
 #include <fast_io.h>
+#include <fast_io_dsal/cstring_view.h>
 #ifdef UWVM_TIMER
     #include <fast_io_driver/timer.h>
 #endif
 #include <io_device.h>
-#include "wasm_file.h"
-#include "../wasm/types.h"
 
-#include "check_index.h"
-#include "wasm/section.h"
+#include "../check_index.h"
+#include "../module.h"
+#include "scan_section.h"
 
-namespace uwvm
+namespace uwvm::wasm
 {
-    inline 
+    inline
 #if defined(__has_builtin)
     #if __has_builtin(__builtin_memcmp)
         constexpr
@@ -25,7 +25,7 @@ namespace uwvm
         return ::fast_io::freestanding::my_memcmp(curr, u8"\0asm", 4u * sizeof(char8_t)) == 0;
     }
 
-    inline 
+    inline
 #if defined(__has_builtin)
     #if __has_builtin(__builtin_memcpy)
         constexpr
@@ -39,10 +39,10 @@ namespace uwvm
         return ::fast_io::little_endian(temp);
     }
 
-    inline void scan_wasm_file(::std::byte const* begin, ::std::byte const* end) noexcept
+    inline void scan_wasm_module(::uwvm::wasm::wasm_module& wasmmod, ::fast_io::u8cstring_view name, ::std::byte const* begin, ::std::byte const* end) noexcept
     {
 #ifdef UWVM_TIMER
-        ::fast_io::timer scan_timer{u8"uwvm: [timer] scan"};
+        ::fast_io::timer scan_timer{u8"uwvm: [timer] scan module"};
 #endif
         // alias def
         using char8_t_may_alias_ptr
@@ -56,12 +56,17 @@ namespace uwvm
 #endif
             = char8_t const*;
 
+        // wasm information
+        wasmmod.module_begin = begin;
+        wasmmod.module_end = end;
+        wasmmod.module_name = name;
+
         // curr
         auto curr{begin};
 
         // min size of wasm file format = 4 + 4
         // check wasm magic number
-        if(static_cast<::std::size_t>(end - curr) < 8U || !::uwvm::is_wasm_file_unchecked(curr)) [[unlikely]]
+        if(static_cast<::std::size_t>(end - curr) < 8U || !is_wasm_file_unchecked(curr)) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -87,7 +92,7 @@ namespace uwvm
 
         // get wasm version
         curr += 4U;
-        ::uwvm::global_wasm_module.wasm_version = ::uwvm::detect_wasm_version_unchecked(curr);
+        wasmmod.wasm_version = detect_wasm_version_unchecked(curr);
 
         // get first section
         curr += 4U;
@@ -160,7 +165,7 @@ namespace uwvm
             }
 
             // check 64-bit indexes
-            ::uwvm ::check_index(sec_len);
+            ::uwvm::wasm::check_index(sec_len);
 
             // set curr to next
             curr = reinterpret_cast<::std::byte const*>(next);
@@ -201,22 +206,22 @@ namespace uwvm
                 case ::uwvm::wasm::section_type::custom_sec: break;
                 case ::uwvm::wasm::section_type::type_sec:
                 {
-                    ::uwvm::scan_type_section(curr, sec_end);
+                    ::uwvm::wasm::scan_type_section(wasmmod, curr, sec_end);
                     break;
                 }
                 case ::uwvm::wasm::section_type::import_sec:
                 {
-                    ::uwvm::scan_import_section(curr, sec_end);
+                    ::uwvm::wasm::scan_import_section(wasmmod, curr, sec_end);
                     break;
                 }
                 case ::uwvm::wasm::section_type::function_sec:
                 {
-                    ::uwvm::scan_function_section(curr, sec_end);
+                    ::uwvm::wasm::scan_function_section(wasmmod, curr, sec_end);
                     break;
                 }
                 case ::uwvm::wasm::section_type::table_sec:
                 {
-                    ::uwvm::scan_table_section(curr, sec_end);
+                    ::uwvm::wasm::scan_table_section(wasmmod, curr, sec_end);
                     break;
                 }
                 case ::uwvm::wasm::section_type::memory_sec: break;

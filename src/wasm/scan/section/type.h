@@ -7,15 +7,14 @@
 #endif
 #include <io_device.h>
 
-#include "../../wasm_file.h"
-
 #include "../../check_index.h"
-#include "../../../wasm/section/type.h"
+#include "../../module.h"
 #include "../../../clpara/parameters/enable-memory64.h"
+#include "../../../clpara/parameters/enable-multi-value.h"
 
-namespace uwvm
+namespace uwvm::wasm
 {
-    inline void scan_type_section(::std::byte const* begin, ::std::byte const* end) noexcept
+    inline void scan_type_section(::uwvm::wasm::wasm_module& wasmmod, ::std::byte const* begin, ::std::byte const* end) noexcept
     {
 #ifdef UWVM_TIMER
         ::fast_io::timer scan_type_section_timer{u8"uwvm: [timer] scan type section"};
@@ -44,7 +43,7 @@ namespace uwvm
 
         // check is exist
         // always check
-        if(::uwvm::global_wasm_module.typesec.sec_begin) [[unlikely]]
+        if(wasmmod.typesec.sec_begin) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -68,8 +67,8 @@ namespace uwvm
                                 u8"Terminate.\n\n");
             ::fast_io::fast_terminate();
         }
-        ::uwvm::global_wasm_module.typesec.sec_begin = begin;
-        ::uwvm::global_wasm_module.typesec.sec_end = end;
+        wasmmod.typesec.sec_begin = begin;
+        wasmmod.typesec.sec_end = end;
 
         // curr
         auto curr{begin};
@@ -110,10 +109,10 @@ namespace uwvm
         }
 
         // check 64-bit indexes
-        ::uwvm::check_index(type_count);
+        ::uwvm::wasm::check_index(type_count);
 
-        ::uwvm::global_wasm_module.typesec.type_count = type_count;
-        ::uwvm::global_wasm_module.typesec.types.reserve(type_count);
+        wasmmod.typesec.type_count = type_count;
+        wasmmod.typesec.types.reserve(type_count);
 
         // jump to functype(0x60)
         curr = reinterpret_cast<::std::byte const*>(next);
@@ -192,7 +191,7 @@ namespace uwvm
                     }
 
                     // check 64-bit indexes
-                    ::uwvm::check_index(para_len);
+                    ::uwvm::wasm::check_index(para_len);
 
                     // jump to para1
                     curr = reinterpret_cast<::std::byte const*>(next_para);
@@ -340,7 +339,7 @@ namespace uwvm
                     }
 
                     // check 64-bit indexes
-                    ::uwvm::check_index(res_len);
+                    ::uwvm::wasm::check_index(res_len);
 
                     // jump to res1
                     curr = reinterpret_cast<::std::byte const*>(next_res);
@@ -426,7 +425,7 @@ namespace uwvm
                         }
                     }
 
-                    ::uwvm::global_wasm_module.typesec.types.push_back_unchecked(ft);
+                    wasmmod.typesec.types.push_back_unchecked(ft);
                     break;
                 }
 #if 0 // future🦄

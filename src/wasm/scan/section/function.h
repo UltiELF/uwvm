@@ -7,15 +7,13 @@
 #endif
 #include <io_device.h>
 
-#include "../../wasm_file.h"
-
 #include "../../check_index.h"
-#include "../../../wasm/section/function.h"
+#include "../../module.h"
 #include "../../../clpara/parameters/enable-memory64.h"
 
-namespace uwvm
+namespace uwvm::wasm
 {
-    inline void scan_function_section(::std::byte const* begin, ::std::byte const* end) noexcept
+    inline void scan_function_section(::uwvm::wasm::wasm_module& wasmmod, ::std::byte const* begin, ::std::byte const* end) noexcept
     {
 #ifdef UWVM_TIMER
         ::fast_io::timer scan_function_section_timer{u8"uwvm: [timer] scan function section"};
@@ -32,7 +30,7 @@ namespace uwvm
 #endif
             = char8_t const*;
 
-        if(!::uwvm::global_wasm_module.typesec.sec_begin) [[unlikely]]
+        if(!wasmmod.typesec.sec_begin) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -58,7 +56,7 @@ namespace uwvm
         }
 
         // check is exist
-        if(::uwvm::global_wasm_module.functionsec.sec_begin) [[unlikely]]
+        if(wasmmod.functionsec.sec_begin) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -82,8 +80,8 @@ namespace uwvm
                                 u8"Terminate.\n\n");
             ::fast_io::fast_terminate();
         }
-        ::uwvm::global_wasm_module.functionsec.sec_begin = begin;
-        ::uwvm::global_wasm_module.functionsec.sec_end = end;
+        wasmmod.functionsec.sec_begin = begin;
+        wasmmod.functionsec.sec_end = end;
 
         // curr
         auto curr{begin};
@@ -124,16 +122,16 @@ namespace uwvm
         }
 
         // check 64-bit indexes
-        ::uwvm::check_index(function_count);
+        ::uwvm::wasm::check_index(function_count);
 
-        ::uwvm::global_wasm_module.functionsec.function_count = function_count;
-        ::uwvm::global_wasm_module.functionsec.types.reserve(function_count);
+        wasmmod.functionsec.function_count = function_count;
+        wasmmod.functionsec.types.reserve(function_count);
 
         // jump to func type
         curr = reinterpret_cast<::std::byte const*>(next);
 
-        auto const type_table_basic_index{::uwvm::global_wasm_module.typesec.types.cbegin()};
-        auto const type_table_size{::uwvm::global_wasm_module.typesec.types.size()};
+        auto const type_table_basic_index{wasmmod.typesec.types.cbegin()};
+        auto const type_table_size{wasmmod.typesec.types.size()};
 
         ::std::size_t function_counter{};
         for(; curr < end;)
@@ -223,7 +221,7 @@ namespace uwvm
                 ::fast_io::fast_terminate();
             }
 
-            ::uwvm::global_wasm_module.functionsec.types.emplace_back_unchecked(type_table_basic_index + type_index_len);
+            wasmmod.functionsec.types.emplace_back_unchecked(type_table_basic_index + type_index_len);
             // jump to para1
             curr = reinterpret_cast<::std::byte const*>(next_type_index);
         }
@@ -254,5 +252,5 @@ namespace uwvm
         }
     }
 
-}  // namespace uwvm
+}  // namespace uwvm::wasm
 

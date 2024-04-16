@@ -7,15 +7,14 @@
 #endif
 #include <io_device.h>
 
-#include "../../wasm_file.h"
-
 #include "../../check_index.h"
-#include "../../../wasm/section/import.h"
+#include "../../module.h"
 #include "../../../clpara/parameters/enable-memory64.h"
+#include "../../../clpara/parameters/enable-relaxed-simd.h"
 
-namespace uwvm
+namespace uwvm::wasm
 {
-    inline void scan_import_section(::std::byte const* begin, ::std::byte const* end) noexcept
+    inline void scan_import_section(::uwvm::wasm::wasm_module& wasmmod, ::std::byte const* begin, ::std::byte const* end) noexcept
     {
 #ifdef UWVM_TIMER
         ::fast_io::timer scan_import_section_timer{u8"uwvm: [timer] scan import section"};
@@ -32,7 +31,7 @@ namespace uwvm
 #endif
             = char8_t const*;
 
-        if(!::uwvm::global_wasm_module.typesec.sec_begin) [[unlikely]]
+        if(!wasmmod.typesec.sec_begin) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -58,7 +57,7 @@ namespace uwvm
         }
 
         // check is exist
-        if(::uwvm::global_wasm_module.importsec.sec_begin) [[unlikely]]
+        if(wasmmod.importsec.sec_begin) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -82,8 +81,8 @@ namespace uwvm
                                 u8"Terminate.\n\n");
             ::fast_io::fast_terminate();
         }
-        ::uwvm::global_wasm_module.importsec.sec_begin = begin;
-        ::uwvm::global_wasm_module.importsec.sec_end = end;
+        wasmmod.importsec.sec_begin = begin;
+        wasmmod.importsec.sec_end = end;
 
         // curr
         auto curr{begin};
@@ -124,10 +123,10 @@ namespace uwvm
         }
 
         // check 64-bit indexes
-        ::uwvm::check_index(import_count);
+        ::uwvm::wasm::check_index(import_count);
 
-        ::uwvm::global_wasm_module.importsec.import_count = import_count;
-        ::uwvm::global_wasm_module.importsec.types.reserve(import_count);
+        wasmmod.importsec.import_count = import_count;
+        wasmmod.importsec.types.reserve(import_count);
 
         // jump to 1st import leb128
         curr = reinterpret_cast<::std::byte const*>(next);
@@ -140,8 +139,8 @@ namespace uwvm
         ::std::size_t import_global_counter{};
         ::std::size_t import_tag_counter{};
 
-        auto const type_section_cbegin{global_wasm_module.typesec.types.cbegin()};
-        auto const type_section_count{::uwvm::global_wasm_module.typesec.type_count};
+        auto const type_section_cbegin{wasmmod.typesec.types.cbegin()};
+        auto const type_section_count{wasmmod.typesec.type_count};
         for(; curr < end;)
         {
             ::uwvm::wasm::section::import_type it{};  // has union
@@ -208,7 +207,7 @@ namespace uwvm
             }
 
             // check 64-bit indexes
-            ::uwvm::check_index(module_len);
+            ::uwvm::wasm::check_index(module_len);
 
             // set module
             it.module_begin = next_module;
@@ -279,7 +278,7 @@ namespace uwvm
             }
 
             // check 64-bit indexes
-            ::uwvm::check_index(name_len);
+            ::uwvm::wasm::check_index(name_len);
 
             // set name
             it.name_begin = next_name;
@@ -505,7 +504,7 @@ namespace uwvm
                         }
 
                         // check 64-bit indexes
-                        ::uwvm::check_index(limit_min);
+                        ::uwvm::wasm::check_index(limit_min);
                         it.extern_type.table.limit.min = limit_min;
 
                         curr = reinterpret_cast<::std::byte const*>(next_lmin);
@@ -590,7 +589,7 @@ namespace uwvm
                         }
 
                         // check 64-bit indexes
-                        ::uwvm::check_index(limit_max);
+                        ::uwvm::wasm::check_index(limit_max);
 
                         if(limit_min > limit_max) [[unlikely]]
                         {
@@ -697,7 +696,7 @@ namespace uwvm
                         }
 
                         // check 64-bit indexes
-                        ::uwvm::check_index(limit_min);
+                        ::uwvm::wasm::check_index(limit_min);
                         it.extern_type.memory.mem_limit.min = limit_min;
 
                         curr = reinterpret_cast<::std::byte const*>(next_lmin);
@@ -782,7 +781,7 @@ namespace uwvm
                         }
 
                         // check 64-bit indexes
-                        ::uwvm::check_index(limit_max);
+                        ::uwvm::wasm::check_index(limit_max);
 
                         if(limit_min > limit_max) [[unlikely]]
                         {
@@ -1008,7 +1007,7 @@ namespace uwvm
                 default: ::fast_io::unreachable();
             }
 
-            ::uwvm::global_wasm_module.importsec.types.push_back_unchecked(::std::move(it));
+            wasmmod.importsec.types.push_back_unchecked(::std::move(it));
         }
 
         // check import counter
@@ -1038,43 +1037,43 @@ namespace uwvm
         }
 
         // reserve
-        ::uwvm::global_wasm_module.importsec.func_types.reserve(import_func_counter);
-        ::uwvm::global_wasm_module.importsec.table_types.reserve(import_table_counter);
-        ::uwvm::global_wasm_module.importsec.memory_types.reserve(import_memory_counter);
-        ::uwvm::global_wasm_module.importsec.global_types.reserve(import_global_counter);
-        ::uwvm::global_wasm_module.importsec.tag_types.reserve(import_tag_counter);
+        wasmmod.importsec.func_types.reserve(import_func_counter);
+        wasmmod.importsec.table_types.reserve(import_table_counter);
+        wasmmod.importsec.memory_types.reserve(import_memory_counter);
+        wasmmod.importsec.global_types.reserve(import_global_counter);
+        wasmmod.importsec.tag_types.reserve(import_tag_counter);
 
-        for(auto const& i: ::uwvm::global_wasm_module.importsec.types)
+        for(auto const& i: wasmmod.importsec.types)
         {
             switch(i.extern_type.type)
             {
                 case ::uwvm::wasm::extern_kind::func:
                 {
-                    ::uwvm::global_wasm_module.importsec.func_types.push_back_unchecked(__builtin_addressof(i));
+                    wasmmod.importsec.func_types.push_back_unchecked(__builtin_addressof(i));
                     break;
                 }
                 case ::uwvm::wasm::extern_kind::table:
                 {
-                    ::uwvm::global_wasm_module.importsec.table_types.push_back_unchecked(__builtin_addressof(i));
+                    wasmmod.importsec.table_types.push_back_unchecked(__builtin_addressof(i));
                     break;
                 }
                 case ::uwvm::wasm::extern_kind::memory:
                 {
-                    ::uwvm::global_wasm_module.importsec.memory_types.push_back_unchecked(__builtin_addressof(i));
+                    wasmmod.importsec.memory_types.push_back_unchecked(__builtin_addressof(i));
                     break;
                 }
                 case ::uwvm::wasm::extern_kind::global:
                 {
-                    ::uwvm::global_wasm_module.importsec.global_types.push_back_unchecked(__builtin_addressof(i));
+                    wasmmod.importsec.global_types.push_back_unchecked(__builtin_addressof(i));
                     break;
                 }
                 case ::uwvm::wasm::extern_kind::tag:
                 {
-                    ::uwvm::global_wasm_module.importsec.tag_types.push_back_unchecked(__builtin_addressof(i));
+                    wasmmod.importsec.tag_types.push_back_unchecked(__builtin_addressof(i));
                     break;
                 }
                 default: ::fast_io::unreachable();
             }
         }
     }
-}  // namespace uwvm
+}  // namespace uwvm::wasm
