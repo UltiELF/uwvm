@@ -22,9 +22,6 @@ namespace uwvm
     inline ::fast_io::vector<::uwvm::cmdline::parameter_parsing_results> parsing_result{};
 
     template <::std::size_t hash_table_size, ::std::size_t conflict_size>
-#if __has_cpp_attribute(__gnu__::__cold__)
-    [[__gnu__::__cold__]]
-#endif
     inline constexpr parsing_return_val
         parsing(int argc,
                 char const* const* argv,
