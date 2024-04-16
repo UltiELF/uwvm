@@ -154,10 +154,10 @@ namespace uwvm::wasm
                                                                 u8"[",
                                                                 count++,
                                                                 u8"] initial=",
-                                                                t->extern_type.memory.mem_limit.min);
-                    if(t->extern_type.memory.mem_limit.present_max)
+                                                                t->extern_type.memory.limits.min);
+                    if(t->extern_type.memory.limits.present_max)
                     {
-                        ::fast_io::operations::print_freestanding<false>(::std::forward<s>(stm), u8" max=", t->extern_type.memory.mem_limit.max);
+                        ::fast_io::operations::print_freestanding<false>(::std::forward<s>(stm), u8" max=", t->extern_type.memory.limits.max);
                     }
 
                     ::fast_io::operations::print_freestanding<true>(::std::forward<s>(stm),
@@ -270,7 +270,7 @@ namespace uwvm::wasm
                 // Table
                 ::fast_io::operations::print_freestanding<false>(::std::forward<s>(stm),
                                                                  u8"\n" u8"memory[",
-                                                                 wasmmod.memorysec.table_count,
+                                                                 wasmmod.memorysec.memory_count,
                                                                  u8"] (start=",
                                                                  ::fast_io::mnp::hex0x<true>(wasmmod.memorysec.sec_begin - wasm_file_begin),
                                                                  u8" end=",
