@@ -304,20 +304,31 @@ namespace uwvm::wasm
 
     namespace details
     {
-        struct objdump_printer
+        struct objdump_printer_lv
         {
             ::uwvm::wasm::wasm_module const& wasmmod_cref;
         };
 
         template <::std::integral char_type, typename s>
-        inline constexpr void print_define(::fast_io::io_reserve_type_t<char_type, objdump_printer>, s&& stm, objdump_printer op) noexcept
+        inline constexpr void print_define(::fast_io::io_reserve_type_t<char_type, objdump_printer_lv>, s&& stm, objdump_printer_lv op) noexcept
+        {
+            print_wasm_module<char_type>(::std::forward<s>(stm), op.wasmmod_cref);
+        }
+
+        struct objdump_printer_rv
+        {
+            ::uwvm::wasm::wasm_module wasmmod_cref;
+        };
+
+        template <::std::integral char_type, typename s>
+        inline constexpr void print_define(::fast_io::io_reserve_type_t<char_type, objdump_printer_rv>, s&& stm, objdump_printer_rv const& op) noexcept
         {
             print_wasm_module<char_type>(::std::forward<s>(stm), op.wasmmod_cref);
         }
     }  // namespace details
 
-    inline constexpr details::objdump_printer objdump(::uwvm::wasm::wasm_module const& wasmmod) noexcept { return details::objdump_printer{wasmmod}; }
+    inline constexpr details::objdump_printer_lv objdump(::uwvm::wasm::wasm_module const& wasmmod) noexcept { return details::objdump_printer_lv{wasmmod}; }
 
-    inline constexpr details::objdump_printer objdump(::uwvm::wasm::wasm_module&& wasmmod) noexcept { return details::objdump_printer{wasmmod}; }
+    inline constexpr details::objdump_printer_rv objdump(::uwvm::wasm::wasm_module&& wasmmod) noexcept { return details::objdump_printer_rv{::std::move(wasmmod)}; }
 
 }  // namespace uwvm
