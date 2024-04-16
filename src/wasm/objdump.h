@@ -270,16 +270,16 @@ namespace uwvm::wasm
                 // Table
                 ::fast_io::operations::print_freestanding<false>(::std::forward<s>(stm),
                                                                  u8"\n" u8"memory[",
-                                                                 wasmmod.tablesec.table_count,
+                                                                 wasmmod.memorysec.table_count,
                                                                  u8"] (start=",
-                                                                 ::fast_io::mnp::hex0x<true>(wasmmod.tablesec.sec_begin - wasm_file_begin),
+                                                                 ::fast_io::mnp::hex0x<true>(wasmmod.memorysec.sec_begin - wasm_file_begin),
                                                                  u8" end=",
-                                                                 ::fast_io::mnp::hex0x<true>(wasmmod.tablesec.sec_end - wasm_file_begin),
+                                                                 ::fast_io::mnp::hex0x<true>(wasmmod.memorysec.sec_end - wasm_file_begin),
                                                                  u8" size=",
-                                                                 ::fast_io::mnp::hex0x<true>(wasmmod.tablesec.sec_end - wasmmod.tablesec.sec_begin),
+                                                                 ::fast_io::mnp::hex0x<true>(wasmmod.memorysec.sec_end - wasmmod.memorysec.sec_begin),
                                                                  u8"):\n");
 
-                for(::std::size_t count{}; auto const& t: wasmmod.tablesec.types)
+                for(::std::size_t count{}; auto const& t: wasmmod.memorysec.types)
                 {
                     ::fast_io::operations::print_freestanding<false>(::std::forward<s>(stm),
                                                                 u8" - "
