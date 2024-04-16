@@ -132,10 +132,10 @@ namespace uwvm::wasm
                                                                 u8"] type=",
                                                                 t->extern_type.table.elem_type,
                                                                 u8" initial=",
-                                                                t->extern_type.table.limit.min);
-                    if(t->extern_type.table.limit.present_max)
+                                                                t->extern_type.table.limits.min);
+                    if(t->extern_type.table.limits.present_max)
                     {
-                        ::fast_io::operations::print_freestanding<false>(::std::forward<s>(stm), u8" max=", t->extern_type.table.limit.max);
+                        ::fast_io::operations::print_freestanding<false>(::std::forward<s>(stm), u8" max=", t->extern_type.table.limits.max);
                     }
 
                     ::fast_io::operations::print_freestanding<true>(::std::forward<s>(stm),
@@ -259,11 +259,40 @@ namespace uwvm::wasm
                                                                 u8"] type=",
                                                                 t.elem_type,
                                                                 u8" initial=",
-                                                                t.limit.min);
-                    if(t.limit.present_max) { ::fast_io::operations::print_freestanding<false>(::std::forward<s>(stm), u8" max=", t.limit.max); }
+                                                                t.limits.min);
+                    if(t.limits.present_max) { ::fast_io::operations::print_freestanding<false>(::std::forward<s>(stm), u8" max=", t.limits.max); }
                     ::fast_io::operations::print_freestanding<true>(::std::forward<s>(stm));
                 }
             }
+
+            if(wasmmod.memorysec.sec_begin) [[likely]]
+            {
+                // Table
+                ::fast_io::operations::print_freestanding<false>(::std::forward<s>(stm),
+                                                                 u8"\n" u8"memory[",
+                                                                 wasmmod.tablesec.table_count,
+                                                                 u8"] (start=",
+                                                                 ::fast_io::mnp::hex0x<true>(wasmmod.tablesec.sec_begin - wasm_file_begin),
+                                                                 u8" end=",
+                                                                 ::fast_io::mnp::hex0x<true>(wasmmod.tablesec.sec_end - wasm_file_begin),
+                                                                 u8" size=",
+                                                                 ::fast_io::mnp::hex0x<true>(wasmmod.tablesec.sec_end - wasmmod.tablesec.sec_begin),
+                                                                 u8"):\n");
+
+                for(::std::size_t count{}; auto const& t: wasmmod.tablesec.types)
+                {
+                    ::fast_io::operations::print_freestanding<false>(::std::forward<s>(stm),
+                                                                u8" - "
+                                                                u8"memory"
+                                                                u8"[",
+                                                                count++,
+                                                                u8"] initial=",
+                                                                t.limits.min);
+                    if(t.limits.present_max) { ::fast_io::operations::print_freestanding<false>(::std::forward<s>(stm), u8" max=", t.limits.max); }
+                    ::fast_io::operations::print_freestanding<true>(::std::forward<s>(stm));
+                }
+            }
+
         }
         else if constexpr(::std::same_as<char_type, char16_t>) {}
         else if constexpr(::std::same_as<char_type, char32_t>) {}

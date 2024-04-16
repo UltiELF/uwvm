@@ -4,7 +4,7 @@
 
 namespace uwvm::wasm
 {
-    struct limit
+    struct limits
     {
         ::std::size_t min{};
         ::std::size_t max{};

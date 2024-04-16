@@ -18,6 +18,7 @@ namespace uwvm::wasm
         ::uwvm::wasm::section::function_section functionsec{};
         ::uwvm::wasm::section::import_section importsec{};
         ::uwvm::wasm::section::table_section tablesec{};
+        ::uwvm::wasm::section::memory_section memorysec{};
     };
 }  // namespace uwvm::wasm
 

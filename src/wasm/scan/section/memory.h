@@ -13,10 +13,10 @@
 
 namespace uwvm::wasm
 {
-    inline void scan_table_section(::uwvm::wasm::wasm_module& wasmmod, ::std::byte const* begin, ::std::byte const* end) noexcept
+    inline void scan_memory_section(::uwvm::wasm::wasm_module& wasmmod, ::std::byte const* begin, ::std::byte const* end) noexcept
     {
 #ifdef UWVM_TIMER
-        ::fast_io::timer scan_table_section_timer{u8"uwvm: [timer] scan table section"};
+        ::fast_io::timer scan_memory_section_timer{u8"uwvm: [timer] scan memory section"};
 #endif
         // alias def
         using char8_t_may_alias_ptr
@@ -41,7 +41,7 @@ namespace uwvm::wasm
             = ::uwvm::wasm::value_type const*;
 
         // check is exist
-        if(wasmmod.tablesec.sec_begin) [[unlikely]]
+        if(wasmmod.memorysec.sec_begin) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -59,23 +59,24 @@ namespace uwvm::wasm
 #else
                                 u8"\033[97m"
 #endif
-                                u8"Duplicate WASM Section: Table."
+                                u8"Duplicate WASM Section: Memory."
                                 u8"\n"
                                 u8"\033[0m"
                                 u8"Terminate.\n\n");
             ::fast_io::fast_terminate();
         }
-        wasmmod.tablesec.sec_begin = begin;
-        wasmmod.tablesec.sec_end = end;
+
+        wasmmod.memorysec.sec_begin = begin;
+        wasmmod.memorysec.sec_end = end;
 
         // curr
         auto curr{begin};
 
         // get function size
-        ::std::size_t table_count{};
+        ::std::size_t mem_count{};
         auto [next, err]{::fast_io::parse_by_scan(reinterpret_cast<char8_t_const_may_alias_ptr>(curr),
                                                   reinterpret_cast<char8_t_const_may_alias_ptr>(end),
-                                                  ::fast_io::mnp::leb128_get(table_count))};
+                                                  ::fast_io::mnp::leb128_get(mem_count))};
         switch(err)
         {
             case ::fast_io::parse_code::ok: break;
@@ -109,7 +110,7 @@ namespace uwvm::wasm
        // check 64-bit indexes
         ::uwvm::check_index(table_count);
 #else
-        if(table_count > 1) [[unlikely]]
+        if(mem_count > 1) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -127,23 +128,23 @@ namespace uwvm::wasm
     #else
                                 u8"\033[97m"
     #endif
-                                u8"In the MVP, the number of tables must be no more than 1."
+                                u8"In the MVP, the number of memories must be no more than 1."
                                 u8"\n"
                                 u8"\033[0m"
                                 u8"Terminate.\n\n");
             ::fast_io::fast_terminate();
         }
 #endif
-        wasmmod.tablesec.table_count = table_count;
-        wasmmod.tablesec.types.reserve(table_count);
+        wasmmod.memorysec.memory_count = mem_count;
+        wasmmod.memorysec.types.reserve(mem_count);
 
-        // jump to table type
+        // jump to memory type
         curr = reinterpret_cast<::std::byte const*>(next);
-        ::std::size_t table_counter{};
+        ::std::size_t mem_counter{};
 
-        for(::uwvm::wasm::table_type tt{}; curr < end;)
+        for(::uwvm::wasm::memory_type mt{}; curr < end;)
         {
-            if(++table_counter > table_count) [[unlikely]]
+            if(++mem_counter > mem_count) [[unlikely]]
             {
                 ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -161,45 +162,12 @@ namespace uwvm::wasm
 #else
                                 u8"\033[97m"
 #endif
-                                u8"The number of tables resolved does not match the actual number."
+                                u8"The number of memories resolved does not match the actual number."
                                 u8"\n"
                                 u8"\033[0m"
                                 u8"Terminate.\n\n");
                 ::fast_io::fast_terminate();
             }
-
-            ::uwvm::wasm::value_type et{};
-            ::fast_io::freestanding::my_memcpy(__builtin_addressof(et), curr, sizeof(::uwvm::wasm::value_type));
-
-            if(!::uwvm::wasm::is_valid_value_type_ref(et)) [[unlikely]]
-            {
-                ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"Invalid Elem Type: ",
-                                ::fast_io::mnp::hex0x<true>(static_cast<::std::uint_fast8_t>(et)),
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
-                ::fast_io::fast_terminate();
-            }
-            tt.elem_type = et;
-
-            // jump to flags
-            ++curr;
 
             // get flags
             ::std::uint_fast8_t flags{};
@@ -207,7 +175,7 @@ namespace uwvm::wasm
 
             if(flags == 0)
             {
-                tt.limits.present_max = static_cast<bool>(flags);
+                mt.limits.present_max = static_cast<bool>(flags);
 
                 ++curr;
 
@@ -248,13 +216,13 @@ namespace uwvm::wasm
 
                 // check 64-bit indexes
                 ::uwvm::wasm::check_index(limit_min);
-                tt.limits.min = limit_min;
+                mt.limits.min = limit_min;
 
                 curr = reinterpret_cast<::std::byte const*>(next_lmin);
             }
             else if(flags == 1)
             {
-                tt.limits.present_max = static_cast<bool>(flags);
+                mt.limits.present_max = static_cast<bool>(flags);
 
                 ++curr;
 
@@ -293,7 +261,7 @@ namespace uwvm::wasm
                         }
                 }
 
-                tt.limits.min = limit_min;
+                mt.limits.min = limit_min;
 
                 curr = reinterpret_cast<::std::byte const*>(next_lmin);
 
@@ -359,7 +327,7 @@ namespace uwvm::wasm
                     ::fast_io::fast_terminate();
                 }
 
-                tt.limits.max = limit_max;
+                mt.limits.max = limit_max;
 
                 curr = reinterpret_cast<::std::byte const*>(next_lmax);
             }
@@ -387,10 +355,10 @@ namespace uwvm::wasm
                                 u8"Terminate.\n\n");
                 ::fast_io::fast_terminate();
             }
-            wasmmod.tablesec.types.emplace_back_unchecked(tt);
+            wasmmod.memorysec.types.emplace_back_unchecked(mt);
         }
 
-        if(table_counter != table_count) [[unlikely]]
+        if(mem_counter != mem_count) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -414,5 +382,6 @@ namespace uwvm::wasm
                                 u8"Terminate.\n\n");
             ::fast_io::fast_terminate();
         }
+
     }
 }  // namespace uwvm::wasm

@@ -464,7 +464,7 @@ namespace uwvm::wasm
 
                     if(flags == 0)
                     {
-                        it.extern_type.table.limit.present_max = static_cast<bool>(flags);
+                        it.extern_type.table.limits.present_max = static_cast<bool>(flags);
 
                         ++curr;
 
@@ -505,13 +505,13 @@ namespace uwvm::wasm
 
                         // check 64-bit indexes
                         ::uwvm::wasm::check_index(limit_min);
-                        it.extern_type.table.limit.min = limit_min;
+                        it.extern_type.table.limits.min = limit_min;
 
                         curr = reinterpret_cast<::std::byte const*>(next_lmin);
                     }
                     else if(flags == 1)
                     {
-                        it.extern_type.table.limit.present_max = static_cast<bool>(flags);
+                        it.extern_type.table.limits.present_max = static_cast<bool>(flags);
 
                         ++curr;
 
@@ -550,7 +550,7 @@ namespace uwvm::wasm
                                 }
                         }
 
-                        it.extern_type.table.limit.min = limit_min;
+                        it.extern_type.table.limits.min = limit_min;
 
                         curr = reinterpret_cast<::std::byte const*>(next_lmin);
 
@@ -616,7 +616,7 @@ namespace uwvm::wasm
                             ::fast_io::fast_terminate();
                         }
 
-                        it.extern_type.table.limit.max = limit_max;
+                        it.extern_type.table.limits.max = limit_max;
 
                         curr = reinterpret_cast<::std::byte const*>(next_lmax);
                     }
@@ -656,7 +656,7 @@ namespace uwvm::wasm
 
                     if(flags == 0)
                     {
-                        it.extern_type.memory.mem_limit.present_max = static_cast<bool>(flags);
+                        it.extern_type.memory.limits.present_max = static_cast<bool>(flags);
 
                         ++curr;
 
@@ -697,13 +697,13 @@ namespace uwvm::wasm
 
                         // check 64-bit indexes
                         ::uwvm::wasm::check_index(limit_min);
-                        it.extern_type.memory.mem_limit.min = limit_min;
+                        it.extern_type.memory.limits.min = limit_min;
 
                         curr = reinterpret_cast<::std::byte const*>(next_lmin);
                     }
                     else if(flags == 1)
                     {
-                        it.extern_type.memory.mem_limit.present_max = static_cast<bool>(flags);
+                        it.extern_type.memory.limits.present_max = static_cast<bool>(flags);
 
                         ++curr;
 
@@ -742,7 +742,7 @@ namespace uwvm::wasm
                                 }
                         }
 
-                        it.extern_type.memory.mem_limit.min = limit_min;
+                        it.extern_type.memory.limits.min = limit_min;
 
                         curr = reinterpret_cast<::std::byte const*>(next_lmin);
 
@@ -808,7 +808,7 @@ namespace uwvm::wasm
                             ::fast_io::fast_terminate();
                         }
 
-                        it.extern_type.memory.mem_limit.max = limit_max;
+                        it.extern_type.memory.limits.max = limit_max;
 
                         curr = reinterpret_cast<::std::byte const*>(next_lmax);
                     }

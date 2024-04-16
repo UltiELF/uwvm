@@ -6,7 +6,7 @@ namespace uwvm::wasm
 {
     struct memory_type
     {
-        ::uwvm::wasm::limit mem_limit{};
+        ::uwvm::wasm::limits limits{};
         bool is_shared{};  // export
     };
 }  // namespace uwvm::wasm::section
