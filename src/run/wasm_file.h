@@ -9,14 +9,12 @@
 
 namespace uwvm
 {
-    inline ::std::size_t wasm_file_ppos{};
-    inline ::fast_io::u8string global_wasm_module_name_storge{};
-
     inline ::fast_io::native_file_loader wasm_file_loader{};
 
     inline ::uwvm::mode running_mode{::uwvm::mode::objdump};
 
-    inline ::uwvm::wasm::abi wasm_abi{};
+    inline ::uwvm::wasm::abi wasm_abi{::uwvm::wasm::abi::detect};
     inline ::uwvm::wasm::wasm_module global_wasm_module{};
+    inline ::fast_io::u8string global_wasm_module_name_storge{};
 
 }  // namespace uwvm

@@ -80,7 +80,7 @@ namespace uwvm
 
         ::uwvm::wasm::scan_wasm_module(
             ::uwvm::global_wasm_module,
-            ::fast_io::u8string_view{::uwvm::global_wasm_module_name_storge.c_str(), ::uwvm::global_wasm_module_name_storge.size()},
+            ::fast_io::u8string_view{::uwvm::global_wasm_module_name_storge.data(), ::uwvm::global_wasm_module_name_storge.size()},
             begin,
             end);
 

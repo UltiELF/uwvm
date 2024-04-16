@@ -20,6 +20,7 @@ namespace uwvm
     };
 
     inline ::fast_io::vector<::uwvm::cmdline::parameter_parsing_results> parsing_result{};
+    inline ::std::size_t wasm_file_ppos{};
 
     template <::std::size_t hash_table_size, ::std::size_t conflict_size>
     inline constexpr parsing_return_val
