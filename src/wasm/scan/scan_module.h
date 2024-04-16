@@ -1,7 +1,7 @@
 #pragma once
 #include <cstddef>
 #include <fast_io.h>
-#include <fast_io_dsal/cstring_view.h>
+#include <fast_io_dsal/string_view.h>
 #ifdef UWVM_TIMER
     #include <fast_io_driver/timer.h>
 #endif
@@ -39,7 +39,7 @@ namespace uwvm::wasm
         return ::fast_io::little_endian(temp);
     }
 
-    inline void scan_wasm_module(::uwvm::wasm::wasm_module& wasmmod, ::fast_io::u8cstring_view name, ::std::byte const* begin, ::std::byte const* end) noexcept
+    inline void scan_wasm_module(::uwvm::wasm::wasm_module& wasmmod, ::fast_io::u8string_view name, ::std::byte const* begin, ::std::byte const* end) noexcept
     {
 #ifdef UWVM_TIMER
         ::fast_io::timer scan_timer{u8"uwvm: [timer] scan module"};
