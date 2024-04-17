@@ -1007,7 +1007,7 @@ namespace uwvm::wasm
                 default: ::fast_io::unreachable();
             }
 
-            wasmmod.importsec.types.push_back_unchecked(::std::move(it));
+            wasmmod.importsec.types.push_back_unchecked(it);
         }
 
         // check import counter
