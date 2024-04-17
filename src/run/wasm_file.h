@@ -15,6 +15,5 @@ namespace uwvm
 
     inline ::uwvm::wasm::abi wasm_abi{::uwvm::wasm::abi::detect};
     inline ::uwvm::wasm::wasm_module global_wasm_module{};
-    inline ::fast_io::u8string global_wasm_module_name_storge{};
 
 }  // namespace uwvm

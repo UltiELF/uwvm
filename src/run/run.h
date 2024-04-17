@@ -16,7 +16,7 @@ namespace uwvm
     {
         // no input file
 
-        if(::uwvm::global_wasm_module_name_storge.empty()) [[unlikely]]
+        if(::uwvm::global_wasm_module.module_name.empty()) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -46,7 +46,7 @@ namespace uwvm
 #ifdef UWVM_TIMER
             ::fast_io::timer file_loader_timer{u8"uwvm: [timer] file loader"};
 #endif
-            ::uwvm::wasm_file_loader = ::fast_io::native_file_loader{::uwvm::global_wasm_module_name_storge};
+            ::uwvm::wasm_file_loader = ::fast_io::native_file_loader{::fast_io::mnp::os_c_str(::uwvm::global_wasm_module.module_name.data())};
         }
 #ifdef __cpp_exceptions
         catch(::fast_io::error e)
@@ -80,7 +80,7 @@ namespace uwvm
 
         ::uwvm::wasm::scan_wasm_module(
             ::uwvm::global_wasm_module,
-            ::fast_io::u8string_view{::uwvm::global_wasm_module_name_storge.data(), ::uwvm::global_wasm_module_name_storge.size()},
+            ::uwvm::global_wasm_module.module_name,
             begin,
             end);
 
