@@ -46,7 +46,8 @@ namespace uwvm
 #ifdef UWVM_TIMER
             ::fast_io::timer file_loader_timer{u8"uwvm: [timer] file loader"};
 #endif
-            ::uwvm::wasm_file_loader = ::fast_io::native_file_loader{::fast_io::mnp::os_c_str_with_known_size(::uwvm::global_wasm_module.module_name.data(),::uwvm::global_wasm_module.module_name.size())};
+            ::uwvm::wasm_file_loader = ::fast_io::native_file_loader{
+                ::fast_io::mnp::os_c_str_with_known_size(::uwvm::global_wasm_module.module_name.data(), ::uwvm::global_wasm_module.module_name.size())};
         }
 #ifdef __cpp_exceptions
         catch(::fast_io::error e)
@@ -78,11 +79,7 @@ namespace uwvm
         auto const begin{reinterpret_cast<::std::byte const*>(::uwvm::wasm_file_loader.cbegin())};
         auto const end{reinterpret_cast<::std::byte const*>(::uwvm::wasm_file_loader.cend())};
 
-        ::uwvm::wasm::scan_wasm_module(
-            ::uwvm::global_wasm_module,
-            ::uwvm::global_wasm_module.module_name,
-            begin,
-            end);
+        ::uwvm::wasm::scan_wasm_module(::uwvm::global_wasm_module, ::uwvm::global_wasm_module.module_name, begin, end);
 
         switch(::uwvm::running_mode)
         {
