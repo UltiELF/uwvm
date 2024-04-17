@@ -17,7 +17,7 @@
     </a>
 </div>
 
-[[English]](README.md)
+|[English](README.md)|
 
 ## 联系我们
 
