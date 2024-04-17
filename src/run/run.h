@@ -46,7 +46,7 @@ namespace uwvm
 #ifdef UWVM_TIMER
             ::fast_io::timer file_loader_timer{u8"uwvm: [timer] file loader"};
 #endif
-            ::uwvm::wasm_file_loader = ::fast_io::native_file_loader{::fast_io::mnp::os_c_str(::uwvm::global_wasm_module.module_name.data())};
+            ::uwvm::wasm_file_loader = ::fast_io::native_file_loader{::fast_io::mnp::os_c_str_with_known_size(::uwvm::global_wasm_module.module_name.data(),::uwvm::global_wasm_module.module_name.size())};
         }
 #ifdef __cpp_exceptions
         catch(::fast_io::error e)
