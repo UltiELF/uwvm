@@ -23,7 +23,7 @@
 
 - [Discord](https://discord.gg/xkvGy79e)
 - QQ: [137136029](http://qm.qq.com/cgi-bin/qm/qr?_wv=1027&k=VwOd_SiQ31UIiX_QtI047ngYYgkzvvlB&authKey=HJecYKgB1HQCtIplBkNjeSxlat8OgNXtk47QURCS6y2c7dAifwHaKZaURIci6yE3&noverify=0&group_code=137136029)
-- 仓库: [Gitee](https://gitee.com/UltiELF/ulti-wvm), [GitHub](https://github.com/UltiELF/ulti-wvm)
+- 仓库: [Gitee](https://gitee.com/UltiELF/uwvm), [GitHub](https://github.com/UltiELF/uwvm)
 
 ## 介绍
 Ultimate WebAssembly 虚拟机

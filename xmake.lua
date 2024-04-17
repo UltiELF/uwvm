@@ -65,6 +65,11 @@ option("sysroot")
 	set_showmenu(true)
 option_end()
 
+option("llvm-target")
+	set_default("default")
+	set_showmenu(true)
+option_end()
+
 option("timer")
 	set_default(false)
 	set_showmenu(true)
@@ -100,6 +105,17 @@ function defopt()
 			local sysroot_cvt = "--sysroot=" .. sysroot_para
 			add_cxflags(sysroot_cvt, {force = true})
 			add_ldflags(sysroot_cvt, {force = true})
+		end
+	end
+
+	if not is_plat("wasm-wasi", "wasm-wasip1", "wasm-wasip2") then 
+		if use_llvm_toolchain then	
+			local sysroot_para = get_config("llvm-target")
+			if sysroot_para ~= "default" and sysroot_para then
+				local sysroot_cvt = "--target=" .. sysroot_para
+				add_cxflags(sysroot_cvt, {force = true})
+				add_ldflags(sysroot_cvt, {force = true})
+			end
 		end
 	end
 
