@@ -227,10 +227,15 @@ namespace uwvm::wasm
                                                                 u8"[",
                                                                 count++,
                                                                 u8"] sig=",
-                                                                t.func_type - func_type_table_base,
-                                                                u8" <",
-                                                                ::fast_io::mnp::strvw(t.name_begin, t.name_end),
-                                                                u8">\n");
+                                                                t.func_type - func_type_table_base);
+                    if((t.name_end - t.name_begin) != 0)
+                    {
+                        ::fast_io::operations::print_freestanding<false>(::std::forward<s>(stm),
+                                                                         u8" <",
+                                                                         ::fast_io::mnp::strvw(t.name_begin, t.name_end),
+                                                                         u8">");
+                    }
+                    ::fast_io::operations::print_freestanding<true>(::std::forward<s>(stm));
                 }
             }
 

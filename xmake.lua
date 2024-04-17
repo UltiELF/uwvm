@@ -74,9 +74,9 @@ option_end()
 function defopt()
 	set_languages("c11", "cxx23")
 
-	if not is_plat("msdosdjgpp") then
+	-- if not is_plat("msdosdjgpp") then
 		add_options("native")
-	end
+	-- end
 	add_options("timer")
 
 	set_exceptions("no-cxx")

@@ -236,6 +236,7 @@ namespace uwvm::wasm
                 case ::uwvm::wasm::section_type::code_sec: break;
                 case ::uwvm::wasm::section_type::data_sec: break;
                 case ::uwvm::wasm::section_type::data_count_sec: break;
+                case ::uwvm::wasm::section_type::tag_sec: break;
                 default:
                     [[unlikely]]
                     {
