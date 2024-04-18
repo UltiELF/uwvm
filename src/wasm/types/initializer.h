@@ -8,26 +8,9 @@ namespace uwvm::wasm
 {
     struct initializer_exp
     {
-        enum class init_type : ::std::uint_fast16_t
-        {
-            i32_const = 0x0041,
-            i64_const = 0x0042,
-            f32_const = 0x0043,
-            f64_const = 0x0044,
-            v128_const = 0xfd02,
-            global_get = 0x0023,
-            ref_null = 0x00d0,
-            ref_func = 0x00d2,
-            invalid = 0xffff
-        };
-
-        union
-        {
-            init_type type;
 #if 0
-            opcode typeOpcode;
+        opcode type_opcode;
 #endif
-        };
 
         union
         {
