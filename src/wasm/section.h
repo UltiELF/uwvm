@@ -5,4 +5,3 @@
 #include "section/table.h"
 #include "section/memory.h"
 
-#include "section/export.h"

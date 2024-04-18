@@ -1,5 +1,6 @@
 ﻿#pragma once
 #include "types/exception.h"
+#include "types/export.h"
 #include "types/extern.h"
 #include "types/function.h"
 #include "types/global.h"

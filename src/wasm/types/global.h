@@ -1,5 +1,6 @@
 ﻿#pragma once
 #include "value.h"
+#include "initializer.h"
 
 namespace uwvm::wasm
 {
@@ -9,4 +10,11 @@ namespace uwvm::wasm
         bool is_mutable;
         bool is_shared{};  // export
     };
+
+    struct local_global_type
+    {
+        global_type type;
+        ::uwvm::wasm::initializer_exp initializer;
+    };
+
 }  // namespace uwvm::wasm

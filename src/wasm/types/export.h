@@ -1,10 +1,9 @@
 ﻿#pragma once
 #include <cstddef>
 #include <cstdint>
-#include "type.h"
-#include "../types.h"
+#include "extern.h"
 
-namespace uwvm::wasm::section
+namespace uwvm::wasm
 {
     struct export_type
     {
