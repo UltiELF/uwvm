@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include <fast_io.h>
 #include "../wasm/objdump.h"
 #include "wasm_file.h"
