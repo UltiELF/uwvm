@@ -1,14 +1,14 @@
 ﻿#pragma once
 #include <fast_io.h>
 #include <io_device.h>
-#include "../clpara/parameters/enable-memory64.h"
+#include "../run/features.h"
 
 namespace uwvm::wasm
 {
     inline void check_index(::std::size_t s) noexcept
     {
 #if defined(__SIZEOF_SIZE_T__) && __SIZEOF_SIZE_T__ == 8
-        auto const has_enable_memory64_alias{::uwvm::parameter::details::enable_memory64_is_exist};
+        auto const has_enable_memory64_alias{::uwvm::features::enable_memory64};
         constexpr auto u32max{static_cast<::std::size_t>(::std::numeric_limits<::std::uint_least32_t>::max())};
         if(!has_enable_memory64_alias && s > u32max) [[unlikely]]
         {
@@ -37,7 +37,7 @@ namespace uwvm::wasm
 #else
         if constexpr(sizeof(::std::size_t) == 8)
         {
-            auto const has_enable_memory64_alias{::uwvm::parameter::details::enable_memory64_is_exist};
+            auto const has_enable_memory64_alias{::uwvm::features::enable_memory64};
             constexpr auto u32max{static_cast<::std::size_t>(::std::numeric_limits<::std::uint_least32_t>::max())};
             if(!has_enable_memory64_alias && s > u32max) [[unlikely]]
             {
