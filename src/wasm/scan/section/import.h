@@ -869,56 +869,68 @@ namespace uwvm::wasm
                     ::uwvm::wasm::value_type vt{};
                     ::fast_io::freestanding::my_memcpy(__builtin_addressof(vt), curr, sizeof(::uwvm::wasm::value_type));
 
-                    if(!::uwvm::wasm::is_valid_value_type_value_with_v128(vt)) [[unlikely]]
+                    switch(vt)
                     {
-                        ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
+                        case ::uwvm::wasm::value_type::i32: [[fallthrough]];
+                        case ::uwvm::wasm::value_type::i64: [[fallthrough]];
+                        case ::uwvm::wasm::value_type::f32: [[fallthrough]];
+                        case ::uwvm::wasm::value_type::f64: break;
+                        case ::uwvm::wasm::value_type::v128:
+                        {
+                            if(!::uwvm::features::enable_fixed_width_simd) [[unlikely]]
+                            {
+                                ::fast_io::io::perr(::uwvm::u8err,
+                                        u8"\033[0m"
 #ifdef __MSDOS__
-                                u8"\033[37m"
+                                        u8"\033[37m"
 #else
-                                u8"\033[97m"
+                                        u8"\033[97m"
 #endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
+                                        u8"uwvm: "
+                                        u8"\033[31m"
+                                        u8"[fatal] "
+                                        u8"\033[0m"
 #ifdef __MSDOS__
-                                u8"\033[37m"
+                                        u8"\033[37m"
 #else
-                                u8"\033[97m"
+                                        u8"\033[97m"
 #endif
-                                u8"Invalid Value Type: ",
-                                ::fast_io::mnp::hex0x<true>(static_cast<::std::uint_fast8_t>(vt)),
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
-                        ::fast_io::fast_terminate();
+                                        u8"Enter parameter --enable-fixed-width-simd to enable wasm fixed-width simd."
+                                        u8"\n"
+                                        u8"\033[0m"
+                                        u8"Terminate.\n\n");
+                                ::fast_io::fast_terminate();
+                            }
+                            break;
+                        }
+                        default:
+                            [[unlikely]]
+                            {
+                                ::fast_io::io::perr(::uwvm::u8err,
+                                        u8"\033[0m"
+#ifdef __MSDOS__
+                                        u8"\033[37m"
+#else
+                                        u8"\033[97m"
+#endif
+                                        u8"uwvm: "
+                                        u8"\033[31m"
+                                        u8"[fatal] "
+                                        u8"\033[0m"
+#ifdef __MSDOS__
+                                        u8"\033[37m"
+#else
+                                        u8"\033[97m"
+#endif
+                                        u8"Invalid Value Type: ",
+                                        ::fast_io::mnp::hex0x<true>(static_cast<::std::uint_fast8_t>(vt)),
+                                        u8"\n"
+                                        u8"\033[0m"
+                                        u8"Terminate.\n\n");
+                                ::fast_io::fast_terminate();
+                            }
                     }
 
-                    if(!::uwvm::parameter::details::enable_relaxed_simd_is_exist && vt == ::uwvm::wasm::value_type::v128) [[unlikely]]
-                    {
-                        ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"Enter parameter --enable-relaxedsimd to enable wasm relaxed simd."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
-                        ::fast_io::fast_terminate();
-                    }
                     it.extern_type.global.type = vt;
 
                     ++curr;
