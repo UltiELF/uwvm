@@ -9,7 +9,7 @@
 
 #include "../../check_index.h"
 #include "../../module.h"
-#include "../../../clpara/parameters/enable-memory64.h"
+#include "../../../run/features.h"
 
 namespace uwvm::wasm
 {
