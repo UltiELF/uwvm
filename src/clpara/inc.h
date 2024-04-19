@@ -10,3 +10,4 @@
 #include "parameters/enable-relaxed-simd.h"
 #include "parameters/enable-exception-handling.h"
 #include "parameters/enable-multi-memory.h"
+#include "parameters/enable-fixed-width-simd.h"
