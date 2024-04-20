@@ -453,7 +453,62 @@ namespace uwvm::wasm
                         ::fast_io::fast_terminate();
                     }
             }
+
+            if(end - curr < 1) [[unlikely]]
+            {
+                ::fast_io::io::perr(::uwvm::u8err,
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"uwvm: "
+                                u8"\033[31m"
+                                u8"[fatal] "
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"No terminator found."
+                                u8"\n"
+                                u8"\033[0m"
+                                u8"Terminate.\n\n");
+                 ::fast_io::fast_terminate();
+            }
+
+            ::std::uint_least8_t opend{};
+            ::fast_io::freestanding::my_memcpy(__builtin_addressof(opend), curr, sizeof(::std::uint_least8_t));
+            if(opend != 0x0b) [[unlikely]]
+            {
+                ::fast_io::io::perr(::uwvm::u8err,
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"uwvm: "
+                                u8"\033[31m"
+                                u8"[fatal] "
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"No terminator found."
+                                u8"\n"
+                                u8"\033[0m"
+                                u8"Terminate.\n\n");
+                 ::fast_io::fast_terminate();
+            }
+
+            // push back
             wasmmod.globalsec.types.emplace_back_unchecked(lgt);
+            ++curr;
         }
 
         if(global_counter != global_count) [[unlikely]]
