@@ -258,7 +258,7 @@ namespace uwvm::wasm
 
                 case ::uwvm::wasm::op_basic::simd_prefix:
                 {
-                    if(!::uwvm::features::enable_fixed_width_simd) [[unlikely]]
+                    if(vt != ::uwvm::wasm::value_type::v128) [[unlikely]]
                     {
                         ::fast_io::io::perr(::uwvm::u8err,
                                         u8"\033[0m"
@@ -276,7 +276,7 @@ namespace uwvm::wasm
 #else
                                         u8"\033[97m"
 #endif
-                                        u8"Enter parameter --enable-fixed-width-simd to enable wasm fixed-width simd."
+                                        u8"The initialized object does not match."
                                         u8"\n"
                                         u8"\033[0m"
                                         u8"Terminate.\n\n");
@@ -388,12 +388,12 @@ namespace uwvm::wasm
                         __uint128_t v128temp{};
                         ::fast_io::freestanding::my_memcpy(__builtin_addressof(v128temp), curr, sizeof(__uint128_t));
                         v128temp = ::fast_io::byte_swap(v128temp);
-                        v128val = ::std::bit_cast<decltype(v128val)>(v128temp);
+                        v128val = ::std::bit_cast<::uwvm::wasm::wasm_v128>(v128temp);
 #else
                         ::std::uint_least64_t v128le[2]{};  // low, high
                         ::fast_io::freestanding::my_memcpy(v128le, curr, sizeof(v128le));
                         ::std::uint_least64_t v128be[2]{::fast_io::byte_swap(v128le[1]), ::fast_io::byte_swap(v128le[0])};
-                        v128val = ::std::bit_cast<decltype(v128val)>(v128be);
+                        v128val = ::std::bit_cast<::uwvm::wasm::wasm_v128>(v128be);
 #endif
                     }
 
