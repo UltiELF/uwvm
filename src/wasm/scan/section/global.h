@@ -207,34 +207,7 @@ namespace uwvm::wasm
             ::std::uint_fast8_t ma{};
             ::fast_io::freestanding::my_memcpy(__builtin_addressof(ma), curr, sizeof(::std::uint_fast8_t));
 
-            if(ma == 1)
-            {
-                if(!::uwvm::features::enable_mutable_globals) [[unlikely]]
-                {
-                    ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"Enter parameter --enable-mutable-globals to enable import or export mutable globals."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
-                    ::fast_io::fast_terminate();
-                }
-            }
-            else if(ma != 0) [[unlikely]]
+            if(ma > 1) [[unlikely]]
             {
                 ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
