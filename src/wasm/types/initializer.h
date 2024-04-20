@@ -3,15 +3,12 @@
 #include "basic_value.h"
 #include "value.h"
 #include "function.h"
+#include "../opcode.h"
 
 namespace uwvm::wasm
 {
     struct initializer_exp
     {
-#if 0
-        opcode type_opcode;
-#endif
-
         union
         {
             ::uwvm::wasm::wasm_i32 i32;
@@ -22,6 +19,8 @@ namespace uwvm::wasm
             ::uwvm::wasm::local_function_type const* ref;
             ::uwvm::wasm::value_type null_reftype;
         };
+
+        ::uwvm::wasm::opcode type_opcode{};
     };
 
 }  // namespace uwvm::wasm

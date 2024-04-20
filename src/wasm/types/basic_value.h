@@ -70,6 +70,10 @@ namespace uwvm::wasm
 #if defined(__SIZEOF_FLOAT128__) || defined(__FLOAT128__)
     using wasm_f128 = __float128;
 #endif
+
+    using op_exten_type = ::std::uint_fast32_t;
+    using op_basic_type = ::std::uint_fast8_t;
+
 }  // namespace uwvm::wasm
 
 #if defined(__SIZEOF_FLOAT16__) || defined(__FLOAT16__)

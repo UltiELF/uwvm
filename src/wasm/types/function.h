@@ -19,5 +19,6 @@ namespace uwvm::wasm
         ::std::byte const* code_end{};
         char8_t const* name_begin{};
         char8_t const* name_end{};
+        bool is_shared{};
     };
 }  // namespace uwvm::wasm

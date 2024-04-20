@@ -229,7 +229,11 @@ namespace uwvm::wasm
                     ::uwvm::wasm::scan_memory_section(wasmmod, curr, sec_end);
                     break;
                 }
-                case ::uwvm::wasm::section_type::global_sec: break;
+                case ::uwvm::wasm::section_type::global_sec:
+                {
+                    ::uwvm::wasm::scan_global_section(wasmmod, curr, sec_end);
+                    break;
+                }
                 case ::uwvm::wasm::section_type::export_sec: break;
                 case ::uwvm::wasm::section_type::start_sec: break;
                 case ::uwvm::wasm::section_type::element_sec: break;

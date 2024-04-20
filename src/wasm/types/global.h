@@ -6,15 +6,15 @@ namespace uwvm::wasm
 {
     struct global_type
     {
-        ::uwvm::wasm::value_type type;
-        bool is_mutable;
+        ::uwvm::wasm::value_type type{};
+        bool is_mutable{};
         bool is_shared{};  // export
     };
 
     struct local_global_type
     {
-        global_type type;
-        ::uwvm::wasm::initializer_exp initializer;
+        ::uwvm::wasm::initializer_exp initializer{};
+        global_type type{};
     };
 
 }  // namespace uwvm::wasm
