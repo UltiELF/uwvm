@@ -425,13 +425,13 @@ namespace uwvm::wasm
     #if defined(_MSC_VER)
                             ::_byteswap_uint64(v128le[1])
     #else
-                            ::fast_io ::details::byte_swap_naive_impl(v128le[1])
+                            ::fast_io::details::byte_swap_naive_impl(v128le[1])
     #endif
                             ,
     #if defined(_MSC_VER)
                             ::_byteswap_uint64(v128le[0])
     #else
-                            ::fast_io ::details::byte_swap_naive_impl(v128le[0])
+                            ::fast_io::details::byte_swap_naive_impl(v128le[0])
     #endif
                         };
                         v128val = ::std::bit_cast<decltype(v128val)>(v128be);
