@@ -409,12 +409,12 @@ namespace uwvm::wasm
                     {
                         ::fast_io::freestanding::my_memcpy(__builtin_addressof(v128val), curr, sizeof(::uwvm::wasm::wasm_v128));
                     }
-                    else 
+                    else // big endian 
                     {
 #ifdef __SIZEOF_INT128__
                         __uint128_t v128temp{};
                         ::fast_io::freestanding::my_memcpy(__builtin_addressof(v128temp), curr, sizeof(__uint128_t));
-                        v128temp = ::fast_io::little_endian(v128temp);
+                        v128temp = ::fast_io::byte_swap(v128temp);
                         v128val = ::std::bit_cast<decltype(v128val)>(v128temp);
 #else
                         ::std::uint_least64_t v128le[2]{};  // low, high
@@ -479,9 +479,9 @@ namespace uwvm::wasm
                  ::fast_io::fast_terminate();
             }
 
-            ::std::uint_least8_t opend{};
-            ::fast_io::freestanding::my_memcpy(__builtin_addressof(opend), curr, sizeof(::std::uint_least8_t));
-            if(opend != 0x0b) [[unlikely]]
+            ::std::uint_least8_t op_terminator{};
+            ::fast_io::freestanding::my_memcpy(__builtin_addressof(op_terminator), curr, sizeof(::std::uint_least8_t));
+            if(op_terminator != 0x0b) [[unlikely]]
             {
                 ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -506,9 +506,10 @@ namespace uwvm::wasm
                  ::fast_io::fast_terminate();
             }
 
+            ++curr;
+
             // push back
             wasmmod.globalsec.types.emplace_back_unchecked(lgt);
-            ++curr;
         }
 
         if(global_counter != global_count) [[unlikely]]
