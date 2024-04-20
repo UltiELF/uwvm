@@ -424,6 +424,8 @@ namespace uwvm::wasm
 #endif
                     }
 
+                    lgt.initializer.v128 = v128val;
+
                     curr += 16;
                     break;
                 }
