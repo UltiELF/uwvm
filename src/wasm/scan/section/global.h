@@ -227,7 +227,7 @@ namespace uwvm::wasm
 #else
                                 u8"\033[97m"
 #endif
-                                u8"Enter parameter --enable-mutable-globals to enable import or export -mutable globals."
+                                u8"Enter parameter --enable-mutable-globals to enable import or export mutable globals."
                                 u8"\n"
                                 u8"\033[0m"
                                 u8"Terminate.\n\n");
@@ -273,15 +273,15 @@ namespace uwvm::wasm
             switch(static_cast<::uwvm::wasm::op_basic>(opb))
             {
                 // to do
-                case ::uwvm::wasm::op_basic::global_get: break;
+                case ::uwvm::wasm::op_basic::global_get: ::fast_io::fast_terminate();
 
-                case ::uwvm::wasm::op_basic::i32_const: break;
-                case ::uwvm::wasm::op_basic::i64_const: break;
-                case ::uwvm::wasm::op_basic::f32_const: break;
-                case ::uwvm::wasm::op_basic::f64_const: break;
+                case ::uwvm::wasm::op_basic::i32_const: ::fast_io::fast_terminate();
+                case ::uwvm::wasm::op_basic::i64_const: ::fast_io::fast_terminate();
+                case ::uwvm::wasm::op_basic::f32_const: ::fast_io::fast_terminate();
+                case ::uwvm::wasm::op_basic::f64_const: ::fast_io::fast_terminate();
 
-                case ::uwvm::wasm::op_basic::ref_null: break;
-                case ::uwvm::wasm::op_basic::ref_func: break;
+                case ::uwvm::wasm::op_basic::ref_null: ::fast_io::fast_terminate();
+                case ::uwvm::wasm::op_basic::ref_func: ::fast_io::fast_terminate();
 
                 case ::uwvm::wasm::op_basic::simd_prefix:
                 {

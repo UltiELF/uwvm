@@ -958,7 +958,7 @@ namespace uwvm::wasm
 #else
                                 u8"\033[97m"
 #endif
-                                u8"Enter parameter --enable-mutable-globals to enable import or export -mutable globals."
+                                u8"Enter parameter --enable-mutable-globals to enable import or export mutable globals."
                                 u8"\n"
                                 u8"\033[0m"
                                 u8"Terminate.\n\n");
