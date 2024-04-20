@@ -419,21 +419,7 @@ namespace uwvm::wasm
 #else
                         ::std::uint_least64_t v128le[2]{};  // low, high
                         ::fast_io::freestanding::my_memcpy(v128le, curr, sizeof(v128le));
-
-                        ::std::uint_least64_t v128be[2]
-                        {
-    #if defined(_MSC_VER)
-                            ::_byteswap_uint64(v128le[1])
-    #else
-                            ::fast_io::details::byte_swap_naive_impl(v128le[1])
-    #endif
-                            ,
-    #if defined(_MSC_VER)
-                            ::_byteswap_uint64(v128le[0])
-    #else
-                            ::fast_io::details::byte_swap_naive_impl(v128le[0])
-    #endif
-                        };
+                        ::std::uint_least64_t v128be[2]{::fast_io::byte_swap(v128le[1]), ::fast_io::byte_swap(v128le[0])};
                         v128val = ::std::bit_cast<decltype(v128val)>(v128be);
 #endif
                     }
