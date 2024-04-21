@@ -12,3 +12,4 @@
 #include "parameters/enable-multi-memory.h"
 #include "parameters/enable-fixed-width-simd.h"
 #include "parameters/enable-mutable-global.h"
+#include "parameters/enable-reference-types.h"

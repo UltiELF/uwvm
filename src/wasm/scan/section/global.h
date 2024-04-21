@@ -172,6 +172,35 @@ namespace uwvm::wasm
                     }
                     break;
                 }
+                case ::uwvm::wasm::value_type::externref: [[fallthrough]];
+                case ::uwvm::wasm::value_type::funcref:
+                {
+                    if(!::uwvm::features::enable_reference_types) [[unlikely]]
+                    {
+                        ::fast_io::io::perr(::uwvm::u8err,
+                                        u8"\033[0m"
+#ifdef __MSDOS__
+                                        u8"\033[37m"
+#else
+                                        u8"\033[97m"
+#endif
+                                        u8"uwvm: "
+                                        u8"\033[31m"
+                                        u8"[fatal] "
+                                        u8"\033[0m"
+#ifdef __MSDOS__
+                                        u8"\033[37m"
+#else
+                                        u8"\033[97m"
+#endif
+                                        u8"Enter parameter --enable-reference-types to enable wasm reference types."
+                                        u8"\n"
+                                        u8"\033[0m"
+                                        u8"Terminate.\n\n");
+                        ::fast_io::fast_terminate();
+                    }
+                    break;
+                }
                 default:
                     [[unlikely]]
                     {
