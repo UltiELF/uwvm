@@ -28,9 +28,23 @@
 ## 介绍
 Ultimate WebAssembly 虚拟机
 
+## 命令行使用
+* 获取版本信息
+```bash
+$ uwvm --version
+```
+* 获取命令列表
+```bash
+$ uwvm --help
+```
+* 运行虚拟机
+```bash
+$ uwvm <param1> <param2> ... --run <file> <argv1> <argv2> ...
+```
+
 ## 特征
 ### 功能扩展
-| 功能                                                                                                                                         |          UWVM                      |
+| 功能                                                                                                                                               |          UWVM                      |
 |----------------------------------------------------------------------------------------------------------------------------------------------------|------------------------------------|
 | [JS BigInt to Wasm i64 integration](https://github.com/WebAssembly/JS-BigInt-integration)                                                          |  N/A                               |
 | [Bulk memory operations](https://github.com/WebAssembly/bulk-memory-operations/blob/master/proposals/bulk-memory-operations/Overview.md)           |  :x:                               |

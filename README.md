@@ -28,6 +28,20 @@
 ## Introduce
 Ultimate WebAssembly Virtual Machine
 
+## Commandline interface
+* Get version information
+```bash
+$ uwvm --version
+```
+* Get a list of commands
+```bash
+$ uwvm --help
+```
+* Running uwvm virtual machine
+```bash
+$ uwvm <param1> <param2> ... --run <file> <argv1> <argv2> ...
+```
+
 ## Features
 ### Feature Extensions
 | Standardized features                                                                                                                              |          UWVM                      |
