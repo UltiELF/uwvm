@@ -274,16 +274,267 @@ namespace uwvm::wasm
 
             switch(static_cast<::uwvm::wasm::op_basic>(opb))
             {
-                // to do
-                case ::uwvm::wasm::op_basic::global_get: ::fast_io::fast_terminate();
+                case ::uwvm::wasm::op_basic::global_get: ::fast_io::fast_terminate(); // to do
 
-                case ::uwvm::wasm::op_basic::i32_const: ::fast_io::fast_terminate();
-                case ::uwvm::wasm::op_basic::i64_const: ::fast_io::fast_terminate();
-                case ::uwvm::wasm::op_basic::f32_const: ::fast_io::fast_terminate();
-                case ::uwvm::wasm::op_basic::f64_const: ::fast_io::fast_terminate();
+                case ::uwvm::wasm::op_basic::i32_const: 
+                {
+                    if(vt != ::uwvm::wasm::value_type::i32) [[unlikely]]
+                    {
+                        ::fast_io::io::perr(::uwvm::u8err,
+                                        u8"\033[0m"
+#ifdef __MSDOS__
+                                        u8"\033[37m"
+#else
+                                        u8"\033[97m"
+#endif
+                                        u8"uwvm: "
+                                        u8"\033[31m"
+                                        u8"[fatal] "
+                                        u8"\033[0m"
+#ifdef __MSDOS__
+                                        u8"\033[37m"
+#else
+                                        u8"\033[97m"
+#endif
+                                        u8"The initialized object does not match."
+                                        u8"\n"
+                                        u8"\033[0m"
+                                        u8"Terminate.\n\n");
+                        ::fast_io::fast_terminate();
+                    }
+                    ::std::int_least32_t i32val{};
 
-                case ::uwvm::wasm::op_basic::ref_null: ::fast_io::fast_terminate();
-                case ::uwvm::wasm::op_basic::ref_func: ::fast_io::fast_terminate();
+                    auto [next_i32, err_i32]{::fast_io::parse_by_scan(reinterpret_cast<char8_t_const_may_alias_ptr>(curr),
+                                                              reinterpret_cast<char8_t_const_may_alias_ptr>(end),
+                                                              ::fast_io::mnp::leb128_get(i32val))};
+                    switch(err_i32)
+                    {
+                        case ::fast_io::parse_code::ok: break;
+                        default:
+                            [[unlikely]]
+                            {
+                                ::fast_io::io::perr(::uwvm::u8err,
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"uwvm: "
+                                u8"\033[31m"
+                                u8"[fatal] "
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"Invalid varint32."
+                                u8"\n"
+                                u8"\033[0m"
+                                u8"Terminate.\n\n");
+                                ::fast_io::fast_terminate();
+                            }
+                    }
+                    lgt.initializer.i32 = i32val;
+
+                    curr = reinterpret_cast<::std::byte const*>(next_i32);
+
+                    break;
+                }
+                case ::uwvm::wasm::op_basic::i64_const:
+                {
+                    if(vt != ::uwvm::wasm::value_type::i64) [[unlikely]]
+                    {
+                        ::fast_io::io::perr(::uwvm::u8err,
+                                        u8"\033[0m"
+#ifdef __MSDOS__
+                                        u8"\033[37m"
+#else
+                                        u8"\033[97m"
+#endif
+                                        u8"uwvm: "
+                                        u8"\033[31m"
+                                        u8"[fatal] "
+                                        u8"\033[0m"
+#ifdef __MSDOS__
+                                        u8"\033[37m"
+#else
+                                        u8"\033[97m"
+#endif
+                                        u8"The initialized object does not match."
+                                        u8"\n"
+                                        u8"\033[0m"
+                                        u8"Terminate.\n\n");
+                        ::fast_io::fast_terminate();
+                    }
+                    ::std::int_least64_t i64val{};
+
+                    auto [next_i64, err_i64]{::fast_io::parse_by_scan(reinterpret_cast<char8_t_const_may_alias_ptr>(curr),
+                                                                      reinterpret_cast<char8_t_const_may_alias_ptr>(end),
+                                                                      ::fast_io::mnp::leb128_get(i64val))};
+                    switch(err_i64)
+                    {
+                        case ::fast_io::parse_code::ok: break;
+                        default:
+                            [[unlikely]]
+                            {
+                                ::fast_io::io::perr(::uwvm::u8err,
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"uwvm: "
+                                u8"\033[31m"
+                                u8"[fatal] "
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"Invalid varint64."
+                                u8"\n"
+                                u8"\033[0m"
+                                u8"Terminate.\n\n");
+                                ::fast_io::fast_terminate();
+                            }
+                    }
+                    lgt.initializer.i64 = i64val;
+
+                    curr = reinterpret_cast<::std::byte const*>(next_i64);
+
+                    break;
+                }
+                case ::uwvm::wasm::op_basic::f32_const:
+                {
+                    if(vt != ::uwvm::wasm::value_type::f32) [[unlikely]]
+                    {
+                        ::fast_io::io::perr(::uwvm::u8err,
+                                        u8"\033[0m"
+#ifdef __MSDOS__
+                                        u8"\033[37m"
+#else
+                                        u8"\033[97m"
+#endif
+                                        u8"uwvm: "
+                                        u8"\033[31m"
+                                        u8"[fatal] "
+                                        u8"\033[0m"
+#ifdef __MSDOS__
+                                        u8"\033[37m"
+#else
+                                        u8"\033[97m"
+#endif
+                                        u8"The initialized object does not match."
+                                        u8"\n"
+                                        u8"\033[0m"
+                                        u8"Terminate.\n\n");
+                        ::fast_io::fast_terminate();
+                    }
+
+                    if(end - curr < 4) [[unlikely]]
+                    {
+                        ::fast_io::io::perr(::uwvm::u8err,
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"uwvm: "
+                                u8"\033[31m"
+                                u8"[fatal] "
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"Invalid f32."
+                                u8"\n"
+                                u8"\033[0m"
+                                u8"Terminate.\n\n");
+                        ::fast_io::fast_terminate();
+                    }
+
+                    ::std::uint_least32_t f32temp{};
+                    ::fast_io::freestanding::my_memcpy(__builtin_addressof(f32temp), curr, sizeof(::std::uint_least32_t));
+                    f32temp = ::fast_io::little_endian(f32temp);
+
+                    lgt.initializer.f32 = ::std::bit_cast<::uwvm::wasm::wasm_f32>(f32temp);
+
+                    curr += 4;
+
+                    break;
+                }
+                case ::uwvm::wasm::op_basic::f64_const:
+                {
+                    if(vt != ::uwvm::wasm::value_type::f64) [[unlikely]]
+                    {
+                        ::fast_io::io::perr(::uwvm::u8err,
+                                        u8"\033[0m"
+#ifdef __MSDOS__
+                                        u8"\033[37m"
+#else
+                                        u8"\033[97m"
+#endif
+                                        u8"uwvm: "
+                                        u8"\033[31m"
+                                        u8"[fatal] "
+                                        u8"\033[0m"
+#ifdef __MSDOS__
+                                        u8"\033[37m"
+#else
+                                        u8"\033[97m"
+#endif
+                                        u8"The initialized object does not match."
+                                        u8"\n"
+                                        u8"\033[0m"
+                                        u8"Terminate.\n\n");
+                        ::fast_io::fast_terminate();
+                    }
+
+                    if(end - curr < 8) [[unlikely]]
+                    {
+                        ::fast_io::io::perr(::uwvm::u8err,
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"uwvm: "
+                                u8"\033[31m"
+                                u8"[fatal] "
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"Invalid f64."
+                                u8"\n"
+                                u8"\033[0m"
+                                u8"Terminate.\n\n");
+                        ::fast_io::fast_terminate();
+                    }
+
+                    ::std::uint_least64_t f64temp{};
+                    ::fast_io::freestanding::my_memcpy(__builtin_addressof(f64temp), curr, sizeof(::std::uint_least64_t));
+                    f64temp = ::fast_io::little_endian(f64temp);
+
+                    lgt.initializer.f64 = ::std::bit_cast<::uwvm::wasm::wasm_f64>(f64temp);
+
+                    curr += 8;
+
+                    break;
+                }
+
+                case ::uwvm::wasm::op_basic::ref_null: ::fast_io::fast_terminate(); // to do
+                case ::uwvm::wasm::op_basic::ref_func: ::fast_io::fast_terminate(); // to do
 
                 case ::uwvm::wasm::op_basic::simd_prefix:
                 {
@@ -411,7 +662,7 @@ namespace uwvm::wasm
                     {
                         ::fast_io::freestanding::my_memcpy(__builtin_addressof(v128val), curr, sizeof(::uwvm::wasm::wasm_v128));
                     }
-                    else // big endian 
+                    else // big endian or PDP11
                     {
 #ifdef __SIZEOF_INT128__
                         __uint128_t v128temp{};
