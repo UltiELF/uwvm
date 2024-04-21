@@ -40,7 +40,7 @@ option("min-win32-sys")
 	set_description("Minimum system required Minimum value for _WIN32_WINNT, _WIN32_WINDOWS and WINVER")
 	set_default("default")
 	set_showmenu(true)
-	set_values("default", "WIN10", "WINBLUE", "WIN8", "WIN7", "WS08", "VISTA", "WS03", "WINXP", "WINME", "WIN98", "WIN95")
+	set_values("default", "WIN10", "WINBLUE", "WIN8", "WIN7", "WS08", "VISTA", "WS03", "WINXP", "WIN2K", "WINME", "WIN98", "WIN95")
 option_end()
 
 option("cppstdlib")
@@ -184,6 +184,8 @@ function defopt()
 			add_defines("_WIN32_WINNT=0x0502")
 		elseif opt_name == "WINXP" then
 			add_defines("_WIN32_WINNT=0x0501")
+		elseif opt_name == "WIN2K" then
+			add_defines("_WIN32_WINNT=0x0500")
 		elseif opt_name == "WINME" then
 			add_defines("_WIN32_WINDOWS=0x0490")
 			add_defines("_WIN32_WINNT=0x0490")
@@ -246,6 +248,8 @@ function defopt()
 			add_defines("_WIN32_WINNT=0x0502")
 		elseif opt_name == "WINXP" then
 			add_defines("_WIN32_WINNT=0x0501")
+		elseif opt_name == "WIN2K" then
+			add_defines("_WIN32_WINNT=0x0500")
 		elseif opt_name == "WINME" then
 			add_defines("_WIN32_WINDOWS=0x0490")
 		elseif opt_name == "WIN98" then

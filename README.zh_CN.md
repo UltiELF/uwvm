@@ -81,7 +81,7 @@ $ xmake f -m [release|releasedbg|debug] -p [windows|mingw|linux|sun|msdosdjgpp|b
 * 目前只支持 msvc 14.30+ ，gcc 14+ 以及 llvm 18+。
 * 若要编译兼容 WIN10 (默认) 以下系统，请添加参数
 ```bash 
---min-win32-sys=[WIN10|WINBLUE|WIN8|WIN7|WS08|VISTA|WS03|WINXP]
+--min-win32-sys=[WIN10|WINBLUE|WIN8|WIN7|WS08|VISTA|WS03|WINXP|WIN2K]
 ```
 * 对于WIN9X (i386-windows-gnu)
 ```bash

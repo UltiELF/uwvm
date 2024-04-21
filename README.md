@@ -81,7 +81,7 @@ $ xmake f -m [release|releasedbg|debug] -p [windows|mingw|macosx|linux|iphoneos 
 * Currently, only MSVC 14.30+ GCC 14+ and LLVM 18+ are supported.
 * To compile systems compatible with Win10 (default) or below, please add parameters
 ```bash 
---min-win32-sys=[WIN10|WINBLUE|WIN8|WIN7|WS08|VISTA|WS03|WINXP] 
+--min-win32-sys=[WIN10|WINBLUE|WIN8|WIN7|WS08|VISTA|WS03|WINXP|WIN2K] 
 ```
 * For Windows 9x (i386-windows-gnu)
 ```bash 
