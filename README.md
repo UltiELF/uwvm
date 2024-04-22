@@ -41,6 +41,14 @@ $ uwvm --help
 ```bash
 $ uwvm <param1> <param2> ... --run <file> <argv1> <argv2> ...
 ```
+* Running mode
+```bash
+--mode [objdump(默认)]
+```
+* Loading WASM ABI (default auto detection)
+```bash
+--abi [bare|emscripten|wasip1|wasip2]
+```
 
 ## Features
 ### Feature Extensions

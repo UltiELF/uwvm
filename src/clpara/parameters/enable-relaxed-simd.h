@@ -12,8 +12,15 @@ namespace uwvm::parameter
     namespace details
     {
         inline constexpr ::fast_io::string_view enable_relaxed_simd_alias{"-Erlxsimd"};
-        extern ::uwvm::cmdline::parameter_return_type enable_relaxed_simd_callback(::uwvm::cmdline::parameter_parsing_results*,
-                                                                                   ::fast_io::vector<::uwvm::cmdline::parameter_parsing_results>&) noexcept;
+#if __has_cpp_attribute(__gnu__::__cold__)
+        [[__gnu__::__cold__]]
+#endif
+        inline ::uwvm::cmdline::parameter_return_type
+            enable_relaxed_simd_callback(::uwvm::cmdline::parameter_parsing_results*, ::fast_io::vector<::uwvm::cmdline::parameter_parsing_results>&) noexcept
+        {
+            ::uwvm::features::enable_fixed_width_simd = true;
+            return ::uwvm::cmdline::parameter_return_type::def;
+        }
 
     }  // namespace details
 

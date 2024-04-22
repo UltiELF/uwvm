@@ -41,6 +41,14 @@ $ uwvm --help
 ```bash
 $ uwvm <param1> <param2> ... --run <file> <argv1> <argv2> ...
 ```
+* 运行模式
+```bash
+--mode [objdump(默认)]
+```
+* 加载 WASM ABI (默认自动检测)
+```bash
+--abi [bare|emscripten|wasip1|wasip2]
+```
 
 ## 特征
 ### 功能扩展
