@@ -6,7 +6,6 @@
     #include <fast_io_driver/timer.h>
 #endif
 #include <io_device.h>
-#include <unfinished.h>  // to do
 
 #include "../../check_index.h"
 #include "../../module.h"
@@ -896,7 +895,7 @@ namespace uwvm::wasm
                     {
                         ::fast_io::freestanding::my_memcpy(__builtin_addressof(v128val), curr, sizeof(::uwvm::wasm::wasm_v128));
                     }
-                    else  // big endian or PDP11
+                    else if constexpr(::std::endian::big == ::std::endian::native)
                     {
 #ifdef __SIZEOF_INT128__
                         __uint128_t v128temp{};
@@ -910,7 +909,14 @@ namespace uwvm::wasm
                         v128val = ::std::bit_cast<::uwvm::wasm::wasm_v128>(v128be);
 #endif
                     }
-
+                    else // support architectures like PDP11
+                    {
+                        ::std::uint_least64_t v128le[2]{};  // low, high
+                        ::fast_io::freestanding::my_memcpy(v128le, curr, sizeof(v128le));
+                        ::std::uint_least64_t v128be[2]{::fast_io::details::byte_swap_naive_impl(v128le[1]), ::fast_io::details::byte_swap_naive_impl(v128le[0])};
+                        v128val = ::std::bit_cast<::uwvm::wasm::wasm_v128>(v128be);
+                    }
+                    
                     lgt.initializer.v128 = v128val;
 
                     curr += 16;
