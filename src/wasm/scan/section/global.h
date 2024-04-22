@@ -6,6 +6,7 @@
     #include <fast_io_driver/timer.h>
 #endif
 #include <io_device.h>
+#include <unfinished.h> // to do
 
 #include "../../check_index.h"
 #include "../../module.h"
@@ -274,7 +275,7 @@ namespace uwvm::wasm
 
             switch(static_cast<::uwvm::wasm::op_basic>(opb))
             {
-                case ::uwvm::wasm::op_basic::global_get: ::fast_io::fast_terminate(); // to do
+                case ::uwvm::wasm::op_basic::global_get: ::uwvm::unfinished(); // to do
 
                 case ::uwvm::wasm::op_basic::i32_const: 
                 {
@@ -533,8 +534,8 @@ namespace uwvm::wasm
                     break;
                 }
 
-                case ::uwvm::wasm::op_basic::ref_null: ::fast_io::fast_terminate(); // to do
-                case ::uwvm::wasm::op_basic::ref_func: ::fast_io::fast_terminate(); // to do
+                case ::uwvm::wasm::op_basic::ref_null: ::uwvm::unfinished();  // to do
+                case ::uwvm::wasm::op_basic::ref_func: ::uwvm::unfinished();  // to do
 
                 case ::uwvm::wasm::op_basic::simd_prefix:
                 {

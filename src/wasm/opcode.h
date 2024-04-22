@@ -1,5 +1,7 @@
 ﻿#pragma once
 #include <cstdint>
+#include <unfinished.h> // to do
+
 #include "types/basic_value.h"
 
 namespace uwvm::wasm
@@ -36,9 +38,9 @@ namespace uwvm::wasm
 
     inline constexpr bool is_op_mvp(op_basic opp) noexcept
     { 
+        ::uwvm::unfinished(); // to do
         switch(opp)
         {
-            // to do
             default: return false;
         }
     }
