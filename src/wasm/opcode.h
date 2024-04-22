@@ -38,7 +38,7 @@ namespace uwvm::wasm
 
     inline constexpr bool is_op_mvp(op_basic opp) noexcept
     { 
-        ::uwvm::unfinished(); // to do
+        // to do
         switch(opp)
         {
             default: return false;

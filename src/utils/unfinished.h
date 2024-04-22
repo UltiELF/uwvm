@@ -8,7 +8,7 @@ namespace uwvm
 #if __has_cpp_attribute(__gnu__::__cold__)
     [[__gnu__::__cold__]]
 #endif
-    [[noreturn]] inline constexpr void unfinished(::std::source_location const& location = ::std::source_location::current()) noexcept
+    [[noreturn]] inline void unfinished(::std::source_location const& location = ::std::source_location::current()) noexcept
     {
         ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
