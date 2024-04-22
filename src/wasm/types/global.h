@@ -16,5 +16,4 @@ namespace uwvm::wasm
         ::uwvm::wasm::initializer_exp initializer{};
         global_type type{};
     };
-
 }  // namespace uwvm::wasm

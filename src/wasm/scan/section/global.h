@@ -6,7 +6,7 @@
     #include <fast_io_driver/timer.h>
 #endif
 #include <io_device.h>
-#include <unfinished.h> // to do
+#include <unfinished.h>  // to do
 
 #include "../../check_index.h"
 #include "../../module.h"
@@ -273,11 +273,143 @@ namespace uwvm::wasm
 
             ++curr;
 
+            // define
+            auto const global_import_size{wasmmod.importsec.global_types.size()};
+            auto const global_import_cbegin{wasmmod.importsec.global_types.cbegin()};
+
+            auto const function_import_size{wasmmod.importsec.func_types.size()};
+            auto const all_function_size{function_import_size + wasmmod.functionsec.function_count};
+
             switch(static_cast<::uwvm::wasm::op_basic>(opb))
             {
-                case ::uwvm::wasm::op_basic::global_get: ::uwvm::unfinished(); // to do
+                case ::uwvm::wasm::op_basic::global_get:
+                {
+                    ::std::size_t global_import_index{};
+                    auto [next_gi, err_gi]{::fast_io::parse_by_scan(reinterpret_cast<char8_t_const_may_alias_ptr>(curr),
+                                                                    reinterpret_cast<char8_t_const_may_alias_ptr>(end),
+                                                                    ::fast_io::mnp::leb128_get(global_import_index))};
+                    switch(err_gi)
+                    {
+                        case ::fast_io::parse_code::ok: break;
+                        default:
+                            [[unlikely]]
+                            {
+                                ::fast_io::io::perr(::uwvm::u8err,
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"uwvm: "
+                                u8"\033[31m"
+                                u8"[fatal] "
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"Invalid global length."
+                                u8"\n"
+                                u8"\033[0m"
+                                u8"Terminate.\n\n");
+                                ::fast_io::fast_terminate();
+                            }
+                    }
 
-                case ::uwvm::wasm::op_basic::i32_const: 
+                    /*
+                     * Note that get_global in an initializer expression can only refer to immutable imported globals and all uses of init_expr can only appear
+                     * after the Imports section.
+                     */
+
+                    // check index
+                    if(global_import_index >= global_import_size) [[unlikely]]
+                    {
+                        ::fast_io::io::perr(::uwvm::u8err,
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"uwvm: "
+                                u8"\033[31m"
+                                u8"[fatal] "
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"Invalid import index."
+                                u8"\n"
+                                u8"\033[0m"
+                                u8"Terminate.\n\n");
+                        ::fast_io::fast_terminate();
+                    }
+
+                    auto const& gtidx{global_import_cbegin[global_import_index]->extern_type.global};
+
+                    // check is immutable
+                    if(gtidx.is_mutable) [[unlikely]]
+                    {
+                        ::fast_io::io::perr(::uwvm::u8err,
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"uwvm: "
+                                u8"\033[31m"
+                                u8"[fatal] "
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"get_global in an initializer expression can only refer to immutable imported globals."
+                                u8"\n"
+                                u8"\033[0m"
+                                u8"Terminate.\n\n");
+                        ::fast_io::fast_terminate();
+                    }
+
+                    // check type
+                    if(vt != gtidx.type) [[unlikely]]
+                    {
+                        ::fast_io::io::perr(::uwvm::u8err,
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"uwvm: "
+                                u8"\033[31m"
+                                u8"[fatal] "
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"Global type mismatch."
+                                u8"\n"
+                                u8"\033[0m"
+                                u8"Terminate.\n\n");
+                        ::fast_io::fast_terminate();
+                    }
+
+                    lgt.initializer.ref = global_import_index;
+
+                    curr = reinterpret_cast<::std::byte const*>(next_gi);
+
+                    break;
+                }
+                case ::uwvm::wasm::op_basic::i32_const:
                 {
                     if(vt != ::uwvm::wasm::value_type::i32) [[unlikely]]
                     {
@@ -306,8 +438,8 @@ namespace uwvm::wasm
                     ::std::int_least32_t i32val{};
 
                     auto [next_i32, err_i32]{::fast_io::parse_by_scan(reinterpret_cast<char8_t_const_may_alias_ptr>(curr),
-                                                              reinterpret_cast<char8_t_const_may_alias_ptr>(end),
-                                                              ::fast_io::mnp::leb128_get(i32val))};
+                                                                      reinterpret_cast<char8_t_const_may_alias_ptr>(end),
+                                                                      ::fast_io::mnp::leb128_get(i32val))};
                     switch(err_i32)
                     {
                         case ::fast_io::parse_code::ok: break;
@@ -534,9 +666,110 @@ namespace uwvm::wasm
                     break;
                 }
 
-                case ::uwvm::wasm::op_basic::ref_null: ::uwvm::unfinished();  // to do
-                case ::uwvm::wasm::op_basic::ref_func: ::uwvm::unfinished();  // to do
+                case ::uwvm::wasm::op_basic::ref_null:
+                {
+                    ::uwvm::wasm::value_type rt{};
+                    ::fast_io::freestanding::my_memcpy(__builtin_addressof(rt), curr, sizeof(::uwvm::wasm::value_type));
+                    if(!::uwvm::wasm::is_valid_value_type_ref(rt)) [[unlikely]]
+                    {
+                        ::fast_io::io::perr(::uwvm::u8err,
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"uwvm: "
+                                u8"\033[31m"
+                                u8"[fatal] "
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"Invalid Reference Type: ",
+                                ::fast_io::mnp::hex0x<true>(static_cast<::std::uint_fast8_t>(rt)),
+                                u8"\n"
+                                u8"\033[0m"
+                                u8"Terminate.\n\n");
+                        ::fast_io::fast_terminate();
+                    }
 
+                    lgt.initializer.null_reftype = rt;
+
+                    ++curr;
+
+                    break;
+                }
+                case ::uwvm::wasm::op_basic::ref_func:
+                {
+                    ::std::size_t func_index{};
+                    auto [next_fi, err_fi]{::fast_io::parse_by_scan(reinterpret_cast<char8_t_const_may_alias_ptr>(curr),
+                                                                    reinterpret_cast<char8_t_const_may_alias_ptr>(end),
+                                                                    ::fast_io::mnp::leb128_get(func_index))};
+                    switch(err_fi)
+                    {
+                        case ::fast_io::parse_code::ok: break;
+                        default:
+                            [[unlikely]]
+                            {
+                                ::fast_io::io::perr(::uwvm::u8err,
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"uwvm: "
+                                u8"\033[31m"
+                                u8"[fatal] "
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"Invalid global length."
+                                u8"\n"
+                                u8"\033[0m"
+                                u8"Terminate.\n\n");
+                                ::fast_io::fast_terminate();
+                            }
+                    }
+
+                    // check index
+                    if(func_index >= all_function_size) [[unlikely]]
+                    {
+                        ::fast_io::io::perr(::uwvm::u8err,
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"uwvm: "
+                                u8"\033[31m"
+                                u8"[fatal] "
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"Invalid function index."
+                                u8"\n"
+                                u8"\033[0m"
+                                u8"Terminate.\n\n");
+                        ::fast_io::fast_terminate();
+                    }
+
+                    lgt.initializer.ref = func_index;
+
+                    curr = reinterpret_cast<::std::byte const*>(next_fi);
+
+                    break;
+                }
                 case ::uwvm::wasm::op_basic::simd_prefix:
                 {
                     if(vt != ::uwvm::wasm::value_type::v128) [[unlikely]]
@@ -659,11 +892,11 @@ namespace uwvm::wasm
 
                     ::uwvm::wasm::wasm_v128 v128val{};
 
-                    if constexpr(::std::endian::little == ::std::endian::native) 
+                    if constexpr(::std::endian::little == ::std::endian::native)
                     {
                         ::fast_io::freestanding::my_memcpy(__builtin_addressof(v128val), curr, sizeof(::uwvm::wasm::wasm_v128));
                     }
-                    else // big endian or PDP11
+                    else  // big endian or PDP11
                     {
 #ifdef __SIZEOF_INT128__
                         __uint128_t v128temp{};
@@ -732,7 +965,7 @@ namespace uwvm::wasm
                                 u8"\n"
                                 u8"\033[0m"
                                 u8"Terminate.\n\n");
-                 ::fast_io::fast_terminate();
+                ::fast_io::fast_terminate();
             }
 
             ::std::uint_least8_t op_terminator{};
@@ -759,7 +992,7 @@ namespace uwvm::wasm
                                 u8"\n"
                                 u8"\033[0m"
                                 u8"Terminate.\n\n");
-                 ::fast_io::fast_terminate();
+                ::fast_io::fast_terminate();
             }
 
             ++curr;

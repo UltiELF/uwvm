@@ -77,6 +77,21 @@ namespace uwvm::wasm
         }
     }
 
+    inline constexpr bool is_valid_value_type_value_with_v128_ref(value_type type) noexcept
+    {
+        switch(type)
+        {
+            case value_type::i32: [[fallthrough]];
+            case value_type::i64: [[fallthrough]];
+            case value_type::f32: [[fallthrough]];
+            case value_type::f64: [[fallthrough]];
+            case value_type::v128: [[fallthrough]];
+            case value_type::funcref: [[fallthrough]];
+            case value_type::externref: return true;
+            default: return false;
+        }
+    }
+
     inline constexpr bool is_valid_value_type_ref(value_type type) noexcept
     {
         switch(type)
