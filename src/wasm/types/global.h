@@ -14,6 +14,8 @@ namespace uwvm::wasm
     struct local_global_type
     {
         ::uwvm::wasm::initializer_exp initializer{};
+        char8_t const* name_begin{};
+        char8_t const* name_end{};
         global_type type{};
     };
 }  // namespace uwvm::wasm
