@@ -3,6 +3,11 @@
 #include <fast_io_dsal/array.h>
 #include "basic_value.h"
 
+/*
+ * to do
+ * add i128, i64x2, i32x4, i16x8
+ */
+
 namespace uwvm::wasm
 {
     namespace details
@@ -27,67 +32,67 @@ namespace uwvm::wasm
             auto const v128_i8x16{v128_i8x16_arr.cbegin()};
             char_type* curr_pos{iter};
             curr_pos = ::fast_io::pr_rsv_to_iterator_unchecked(
-                                            iter,
+                                            curr_pos,
                                             ::fast_io::io_print_alias(::fast_io::mnp::hexupper<false, true>(v128_i8x16[0])));
             *(curr_pos++) = space;
             curr_pos = ::fast_io::pr_rsv_to_iterator_unchecked(
-                                            iter,
+                                            curr_pos,
                                             ::fast_io::io_print_alias(::fast_io::mnp::hexupper<false, true>(v128_i8x16[1])));
             *(curr_pos++) = space;
             curr_pos = ::fast_io::pr_rsv_to_iterator_unchecked(
-                                            iter,
+                                            curr_pos,
                                             ::fast_io::io_print_alias(::fast_io::mnp::hexupper<false, true>(v128_i8x16[2])));
             *(curr_pos++) = space;
             curr_pos = ::fast_io::pr_rsv_to_iterator_unchecked(
-                                            iter,
+                                            curr_pos,
                                             ::fast_io::io_print_alias(::fast_io::mnp::hexupper<false, true>(v128_i8x16[3])));
             *(curr_pos++) = space;
             curr_pos = ::fast_io::pr_rsv_to_iterator_unchecked(
-                                            iter,
+                                            curr_pos,
                                             ::fast_io::io_print_alias(::fast_io::mnp::hexupper<false, true>(v128_i8x16[4])));
             *(curr_pos++) = space;
             curr_pos = ::fast_io::pr_rsv_to_iterator_unchecked(
-                                            iter,
+                                            curr_pos,
                                             ::fast_io::io_print_alias(::fast_io::mnp::hexupper<false, true>(v128_i8x16[5])));
             *(curr_pos++) = space;
             curr_pos = ::fast_io::pr_rsv_to_iterator_unchecked(
-                                            iter,
+                                            curr_pos,
                                             ::fast_io::io_print_alias(::fast_io::mnp::hexupper<false, true>(v128_i8x16[6])));
             *(curr_pos++) = space;
             curr_pos = ::fast_io::pr_rsv_to_iterator_unchecked(
-                                            iter,
+                                            curr_pos,
                                             ::fast_io::io_print_alias(::fast_io::mnp::hexupper<false, true>(v128_i8x16[7])));
             *(curr_pos++) = space;
             curr_pos = ::fast_io::pr_rsv_to_iterator_unchecked(
-                                            iter,
+                                            curr_pos,
                                             ::fast_io::io_print_alias(::fast_io::mnp::hexupper<false, true>(v128_i8x16[8])));
             *(curr_pos++) = space;
             curr_pos = ::fast_io::pr_rsv_to_iterator_unchecked(
-                                            iter,
+                                            curr_pos,
                                             ::fast_io::io_print_alias(::fast_io::mnp::hexupper<false, true>(v128_i8x16[9])));
             *(curr_pos++) = space;
             curr_pos = ::fast_io::pr_rsv_to_iterator_unchecked(
-                                            iter,
+                                            curr_pos,
                                             ::fast_io::io_print_alias(::fast_io::mnp::hexupper<false, true>(v128_i8x16[10])));
             *(curr_pos++) = space;
             curr_pos = ::fast_io::pr_rsv_to_iterator_unchecked(
-                                            iter,
+                                            curr_pos,
                                             ::fast_io::io_print_alias(::fast_io::mnp::hexupper<false, true>(v128_i8x16[11])));
             *(curr_pos++) = space;
             curr_pos = ::fast_io::pr_rsv_to_iterator_unchecked(
-                                            iter,
+                                            curr_pos,
                                             ::fast_io::io_print_alias(::fast_io::mnp::hexupper<false, true>(v128_i8x16[12])));
             *(curr_pos++) = space;
             curr_pos = ::fast_io::pr_rsv_to_iterator_unchecked(
-                                            iter,
+                                            curr_pos,
                                             ::fast_io::io_print_alias(::fast_io::mnp::hexupper<false, true>(v128_i8x16[13])));
             *(curr_pos++) = space;
             curr_pos = ::fast_io::pr_rsv_to_iterator_unchecked(
-                                            iter,
+                                            curr_pos,
                                             ::fast_io::io_print_alias(::fast_io::mnp::hexupper<false, true>(v128_i8x16[14])));
             *(curr_pos++) = space;
             curr_pos = ::fast_io::pr_rsv_to_iterator_unchecked(
-                                            iter,
+                                            curr_pos,
                                             ::fast_io::io_print_alias(::fast_io::mnp::hexupper<false, true>(v128_i8x16[15])));
             return curr_pos;
         }
