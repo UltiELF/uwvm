@@ -21,7 +21,7 @@ namespace uwvm::wasm
         inline constexpr ::std::size_t print_reserve_size(::fast_io::io_reserve_type_t<char_type, v128_print_struct>) noexcept
         {
             constexpr auto real_size{::fast_io::pr_rsv_size<char_type, decltype(::fast_io::io_print_alias(::fast_io::mnp::hexupper<false, true>(::std::uint_least8_t{})))>};
-            return real_size * 16 + 8;
+            return real_size * 16 + 7;
         }
 
         template <::std::integral char_type>
