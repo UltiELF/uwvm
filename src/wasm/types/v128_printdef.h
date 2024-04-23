@@ -15,77 +15,78 @@ namespace uwvm::wasm
         template <::std::integral char_type>
         inline constexpr ::std::size_t print_reserve_size(::fast_io::io_reserve_type_t<char_type, v128_print_struct>) noexcept
         {
-            return 48u;
+            constexpr auto real_size{::fast_io::pr_rsv_size<char_type, decltype(::fast_io::io_print_alias(::fast_io::mnp::hexupper<false, true>(::std::uint_least8_t{})))>};
+            return real_size * 16 + 8;
         }
 
         template <::std::integral char_type>
         inline constexpr char_type* print_reserve_v128_impl(char_type* iter, v128_print_struct v128_val) noexcept
         {
-            using print_alias_hexU8_type = decltype(::fast_io::io_print_alias(::fast_io::mnp::hexupper<false, true>(::std::uint_least8_t{})));
             constexpr auto space{::fast_io::char_literal_v<u8' ', char_type>};
-            auto const v128_i8x16 = ::std::bit_cast<::fast_io::array<::std::uint_least8_t, 16u>>(v128_val);
+            auto const v128_i8x16_arr = ::std::bit_cast<::fast_io::array<::std::uint_least8_t, 16u>>(v128_val);
+            auto const v128_i8x16{v128_i8x16_arr.cbegin()};
             char_type* curr_pos{iter};
-            curr_pos = print_reserve_define(::fast_io::io_reserve_type<char_type, print_alias_hexU8_type>,
+            curr_pos = ::fast_io::pr_rsv_to_iterator_unchecked(
                                             iter,
                                             ::fast_io::io_print_alias(::fast_io::mnp::hexupper<false, true>(v128_i8x16[0])));
             *(curr_pos++) = space;
-            curr_pos = print_reserve_define(::fast_io::io_reserve_type<char_type, print_alias_hexU8_type>,
+            curr_pos = ::fast_io::pr_rsv_to_iterator_unchecked(
                                             iter,
                                             ::fast_io::io_print_alias(::fast_io::mnp::hexupper<false, true>(v128_i8x16[1])));
             *(curr_pos++) = space;
-            curr_pos = print_reserve_define(::fast_io::io_reserve_type<char_type, print_alias_hexU8_type>,
+            curr_pos = ::fast_io::pr_rsv_to_iterator_unchecked(
                                             iter,
                                             ::fast_io::io_print_alias(::fast_io::mnp::hexupper<false, true>(v128_i8x16[2])));
             *(curr_pos++) = space;
-            curr_pos = print_reserve_define(::fast_io::io_reserve_type<char_type, print_alias_hexU8_type>,
+            curr_pos = ::fast_io::pr_rsv_to_iterator_unchecked(
                                             iter,
                                             ::fast_io::io_print_alias(::fast_io::mnp::hexupper<false, true>(v128_i8x16[3])));
             *(curr_pos++) = space;
-            curr_pos = print_reserve_define(::fast_io::io_reserve_type<char_type, print_alias_hexU8_type>,
+            curr_pos = ::fast_io::pr_rsv_to_iterator_unchecked(
                                             iter,
                                             ::fast_io::io_print_alias(::fast_io::mnp::hexupper<false, true>(v128_i8x16[4])));
             *(curr_pos++) = space;
-            curr_pos = print_reserve_define(::fast_io::io_reserve_type<char_type, print_alias_hexU8_type>,
+            curr_pos = ::fast_io::pr_rsv_to_iterator_unchecked(
                                             iter,
                                             ::fast_io::io_print_alias(::fast_io::mnp::hexupper<false, true>(v128_i8x16[5])));
             *(curr_pos++) = space;
-            curr_pos = print_reserve_define(::fast_io::io_reserve_type<char_type, print_alias_hexU8_type>,
+            curr_pos = ::fast_io::pr_rsv_to_iterator_unchecked(
                                             iter,
                                             ::fast_io::io_print_alias(::fast_io::mnp::hexupper<false, true>(v128_i8x16[6])));
             *(curr_pos++) = space;
-            curr_pos = print_reserve_define(::fast_io::io_reserve_type<char_type, print_alias_hexU8_type>,
+            curr_pos = ::fast_io::pr_rsv_to_iterator_unchecked(
                                             iter,
                                             ::fast_io::io_print_alias(::fast_io::mnp::hexupper<false, true>(v128_i8x16[7])));
             *(curr_pos++) = space;
-            curr_pos = print_reserve_define(::fast_io::io_reserve_type<char_type, print_alias_hexU8_type>,
+            curr_pos = ::fast_io::pr_rsv_to_iterator_unchecked(
                                             iter,
                                             ::fast_io::io_print_alias(::fast_io::mnp::hexupper<false, true>(v128_i8x16[8])));
             *(curr_pos++) = space;
-            curr_pos = print_reserve_define(::fast_io::io_reserve_type<char_type, print_alias_hexU8_type>,
+            curr_pos = ::fast_io::pr_rsv_to_iterator_unchecked(
                                             iter,
                                             ::fast_io::io_print_alias(::fast_io::mnp::hexupper<false, true>(v128_i8x16[9])));
             *(curr_pos++) = space;
-            curr_pos = print_reserve_define(::fast_io::io_reserve_type<char_type, print_alias_hexU8_type>,
+            curr_pos = ::fast_io::pr_rsv_to_iterator_unchecked(
                                             iter,
                                             ::fast_io::io_print_alias(::fast_io::mnp::hexupper<false, true>(v128_i8x16[10])));
             *(curr_pos++) = space;
-            curr_pos = print_reserve_define(::fast_io::io_reserve_type<char_type, print_alias_hexU8_type>,
+            curr_pos = ::fast_io::pr_rsv_to_iterator_unchecked(
                                             iter,
                                             ::fast_io::io_print_alias(::fast_io::mnp::hexupper<false, true>(v128_i8x16[11])));
             *(curr_pos++) = space;
-            curr_pos = print_reserve_define(::fast_io::io_reserve_type<char_type, print_alias_hexU8_type>,
+            curr_pos = ::fast_io::pr_rsv_to_iterator_unchecked(
                                             iter,
                                             ::fast_io::io_print_alias(::fast_io::mnp::hexupper<false, true>(v128_i8x16[12])));
             *(curr_pos++) = space;
-            curr_pos = print_reserve_define(::fast_io::io_reserve_type<char_type, print_alias_hexU8_type>,
+            curr_pos = ::fast_io::pr_rsv_to_iterator_unchecked(
                                             iter,
                                             ::fast_io::io_print_alias(::fast_io::mnp::hexupper<false, true>(v128_i8x16[13])));
             *(curr_pos++) = space;
-            curr_pos = print_reserve_define(::fast_io::io_reserve_type<char_type, print_alias_hexU8_type>,
+            curr_pos = ::fast_io::pr_rsv_to_iterator_unchecked(
                                             iter,
                                             ::fast_io::io_print_alias(::fast_io::mnp::hexupper<false, true>(v128_i8x16[14])));
             *(curr_pos++) = space;
-            curr_pos = print_reserve_define(::fast_io::io_reserve_type<char_type, print_alias_hexU8_type>,
+            curr_pos = ::fast_io::pr_rsv_to_iterator_unchecked(
                                             iter,
                                             ::fast_io::io_print_alias(::fast_io::mnp::hexupper<false, true>(v128_i8x16[15])));
             return curr_pos;
