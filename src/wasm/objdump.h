@@ -361,7 +361,7 @@ namespace uwvm::wasm
                         }
                         case ::uwvm::wasm::op_basic::simd_prefix:
                         {
-                            ::fast_io::operations::print_freestanding<true>(::std::forward<s>(stm), u8"v128= ", i8x16(t.initializer.v128));
+                            ::fast_io::operations::print_freestanding<true>(::std::forward<s>(stm), u8"v128=i8x16: ", i8x16(t.initializer.v128));
                             break;
                         }
                         default: ::fast_io::unreachable();
