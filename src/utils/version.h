@@ -104,12 +104,13 @@ namespace uwvm
                                                                ::std::uint_least32_t z,
                                                                ::std::uint_least32_t state) noexcept
         {
+            constexpr auto point{::fast_io::char_literal_v<u8'.', char_type>};
             char_type* curr_pos{print_reserve_define(::fast_io::io_reserve_type<char_type, ::std::uint_least32_t>, iter, x)};
-            *(curr_pos++) = static_cast<char_type>('.');
+            *(curr_pos++) = point; 
             curr_pos = print_reserve_define(::fast_io::io_reserve_type<char_type, ::std::uint_least32_t>, curr_pos, y);
-            *(curr_pos++) = static_cast<char_type>('.');
+            *(curr_pos++) = point;
             curr_pos = print_reserve_define(::fast_io::io_reserve_type<char_type, ::std::uint_least32_t>, curr_pos, z);
-            *(curr_pos++) = static_cast<char_type>('.');
+            *(curr_pos++) = point;
             curr_pos = print_reserve_define(::fast_io::io_reserve_type<char_type, ::std::uint_least32_t>, curr_pos, state);
             return curr_pos;
         }

@@ -293,7 +293,7 @@ namespace uwvm::wasm
                 // Table
                 ::fast_io::operations::print_freestanding<false>(::std::forward<s>(stm),
                                                                  u8"\n" u8"global[",
-                                                                 wasmmod.globalsec.memory_count,
+                                                                 wasmmod.globalsec.global_count,
                                                                  u8"] (start=",
                                                                  ::fast_io::mnp::hex0x<true>(wasmmod.globalsec.sec_begin - wasm_file_begin),
                                                                  u8" end=",
@@ -322,7 +322,7 @@ namespace uwvm::wasm
                     }
                     ::fast_io::operations::print_freestanding<false>(::std::forward<s>(stm), u8" - init ");
 
-                    switch(t.initializer.type_opcode)
+                    switch(t.initializer.type_opcode.op)
                     {
                         case ::uwvm::wasm::op_basic::global_get:
                         {
@@ -361,7 +361,7 @@ namespace uwvm::wasm
                         }
                         case ::uwvm::wasm::op_basic::simd_prefix:
                         {
-                            ::fast_io::operations::print_freestanding<true>(::std::forward<s>(stm), u8"v128=", t.initializer.v128);
+                            ::fast_io::operations::print_freestanding<true>(::std::forward<s>(stm), u8"v128= ", i8x16(t.initializer.v128));
                             break;
                         }
                         default: ::fast_io::unreachable();

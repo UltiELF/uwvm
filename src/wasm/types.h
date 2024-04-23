@@ -1,4 +1,6 @@
 ﻿#pragma once
+#include "types/basic_value.h"
+#include "types/v128_printdef.h"
 #include "types/exception.h"
 #include "types/export.h"
 #include "types/extern.h"
