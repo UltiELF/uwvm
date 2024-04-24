@@ -7,6 +7,7 @@
 
 #include <fast_io.h>
 #include <fast_io_crypto.h>
+#include <fast_io_dsal/array.h>
 #include <fast_io_dsal/vector.h>
 #include <fast_io_dsal/string_view.h>
 #include <fast_io_dsal/cstring_view.h>
@@ -62,8 +63,8 @@ namespace uwvm
         template <::std::size_t N>
         inline consteval auto parameter_sort(parameter const* const (&punsort)[N]) noexcept
         {
-            ::fast_io::freestanding::array<parameter const*, N> res{};
-            for(::std::size_t i{}; i < N; i++) { res[i] = punsort[i]; }
+            ::fast_io::array<parameter const*, N> res{};
+            for(::std::size_t i{}; i < N; i++) { res.index_unchecked(i) = punsort[i]; }
             ::std::ranges::sort(res,
                                 [](parameter const* const a, parameter const* const b) noexcept -> bool
                                 {
@@ -77,7 +78,7 @@ namespace uwvm
         }
 
         template <::std::size_t N>
-        inline constexpr void parameter_clean(::fast_io::freestanding::array<parameter const*, N>& punsort) noexcept
+        inline constexpr void parameter_clean(::fast_io::array<parameter const*, N>& punsort) noexcept
         {
             for(auto i: punsort) { i.callback = nullptr; }
         }
@@ -89,30 +90,33 @@ namespace uwvm
         };
 
         template <::std::size_t N>
-        inline consteval ::std::size_t calculate_all_parameters_size(::fast_io::freestanding::array<parameter const*, N> const& punsort) noexcept
+        inline consteval ::std::size_t calculate_all_parameters_size(::fast_io::array<parameter const*, N> const& punsort) noexcept
         {
             ::std::size_t res{};
             for(::std::size_t i{}; i < N; i++)
             {
                 res++;
-                res += punsort[i]->alias.len;
+                res += punsort.index_unchecked(i)->alias.len;
             }
             return res;
         }
 
         template <::std::size_t Nres, ::std::size_t N>
-        inline consteval auto expand_all_parameters_and_check(::fast_io::freestanding::array<parameter const*, N> const& punsort) noexcept
+        inline consteval auto expand_all_parameters_and_check(::fast_io::array<parameter const*, N> const& punsort) noexcept
         {
-            ::fast_io::freestanding::array<all_parameter, Nres> res{};
+            ::fast_io::array<all_parameter, Nres> res{};
             ::std::size_t res_pos{};
             for(::std::size_t i{}; i < N; i++)
             {
 #if 0
-                if (punsort[i]->is_exist == nullptr)
+                if (punsort.index_unchecked(i)->is_exist == nullptr)
                     ::fast_io::fast_terminate();
 #endif
-                res[res_pos++] = {punsort[i]->name, punsort[i]};
-                for(::std::size_t j{}; j < punsort[i]->alias.len; j++) { res[res_pos++] = {punsort[i]->alias.base[j], punsort[i]}; }
+                res.index_unchecked(res_pos++) = {punsort.index_unchecked(i)->name, punsort.index_unchecked(i)};
+                for(::std::size_t j{}; j < punsort.index_unchecked(i)->alias.len; ++j)
+                {
+                    res.index_unchecked(res_pos++) = {punsort.index_unchecked(i)->alias.base[j], punsort.index_unchecked(i)};
+                }
             }
             ::std::ranges::sort(res,
                                 [](all_parameter const& a, all_parameter const& b) noexcept -> bool
@@ -126,7 +130,7 @@ namespace uwvm
             ::fast_io::string_view check{};  // Empty strings will be sorted and placed first.
             for(auto& i: res)
             {
-                if(i.str == check || i.str.front() != '-')
+                if(i.str == check || i.str.front_unchecked() != '-')
                 {
                     ::fast_io::fast_terminate();  // The first character of the parameter must be '-'
                 }
@@ -143,10 +147,10 @@ namespace uwvm
         }
 
         template <::std::size_t N>
-        inline consteval ::std::size_t calculate_max_para_size(::fast_io::freestanding::array<all_parameter, N> const& punsort) noexcept
+        inline consteval ::std::size_t calculate_max_para_size(::fast_io::array<all_parameter, N> const& punsort) noexcept
         {
             ::std::size_t max_size{};
-            for(::std::size_t i{}; i < N; i++) { max_size = ::std::max(max_size, punsort[i].str.size()); }
+            for(::std::size_t i{}; i < N; i++) { max_size = ::std::max(max_size, punsort.index_unchecked(i).str.size()); }
             return max_size;
         }
 
@@ -160,12 +164,12 @@ namespace uwvm
         };
 
         template <::std::size_t N>
-        inline consteval calculate_hash_table_size_res calculate_hash_table_size(::fast_io::freestanding::array<all_parameter, N> const& ord) noexcept
+        inline consteval calculate_hash_table_size_res calculate_hash_table_size(::fast_io::array<all_parameter, N> const& ord) noexcept
         {
-            constexpr auto sizet_d10{::std::numeric_limits<::std::size_t>::digits10};
+            constexpr auto sizet_d10{static_cast<::std::size_t>(::std::numeric_limits<::std::size_t>::digits10)};
 
             ::fast_io::crc32c_context crc32c{};
-            for(int i{hash_size_base}; i < sizet_d10; i++)
+            for(auto i{hash_size_base}; i < sizet_d10; i++)
             {
                 ::std::size_t hash_size{static_cast<::std::size_t>(1u) << i};
                 bool c{};
@@ -173,9 +177,9 @@ namespace uwvm
                 ::std::size_t* const hash_size_array{new ::std::size_t[hash_size]{}};
                 for(auto& j: ord)
                 {
-                    ::std::size_t const j_str_size{j.str.n};
+                    ::std::size_t const j_str_size{j.str.size()};
                     ::std::byte* const ptr{new ::std::byte[j_str_size]{}};
-                    for(::std::size_t k{}; k < j_str_size; k++) { ptr[k] = static_cast<::std::byte>(j.str.ptr[k]); }
+                    for(::std::size_t k{}; k < j_str_size; k++) { ptr[k] = static_cast<::std::byte>(j.str.index_unchecked(k)); }
                     crc32c.reset();
                     crc32c.update(ptr, ptr + j_str_size);
                     delete[] ptr;
@@ -208,7 +212,7 @@ struct ct_para_str {
 
         struct conflict_table
         {
-            ::fast_io::freestanding::array<ct_para_str, max_conflict_size> ctmem{};
+            ::fast_io::array<ct_para_str, max_conflict_size> ctmem{};
         };
 
         template <::std::size_t hash_table_size, ::std::size_t conflict_size>
@@ -216,12 +220,12 @@ struct ct_para_str {
         {
             static_assert(hash_table_size > 1);
 
-            ::fast_io::freestanding::array<ht_para_cpos, hash_table_size> ht{};
-            ::std::conditional_t<static_cast<bool>(conflict_size), ::fast_io::freestanding::array<conflict_table, conflict_size>, ::std::in_place_t> ct{};
+            ::fast_io::array<ht_para_cpos, hash_table_size> ht{};
+            ::std::conditional_t<static_cast<bool>(conflict_size), ::fast_io::array<conflict_table, conflict_size>, ::std::in_place_t> ct{};
         };
 
         template <::std::size_t hash_table_size, ::std::size_t conflict_size, ::std::size_t N>
-        inline consteval auto generate_hash_table(::fast_io::freestanding::array<all_parameter, N> const& ord) noexcept
+        inline consteval auto generate_hash_table(::fast_io::array<all_parameter, N> const& ord) noexcept
         {
             parameters_hash_table<hash_table_size, conflict_size> res{};
 
@@ -230,20 +234,20 @@ struct ct_para_str {
 
             for(auto& j: ord)
             {
-                ::std::size_t const j_str_size{j.str.n};
+                ::std::size_t const j_str_size{j.str.size()};
                 ::std::byte* const ptr{new ::std::byte[j_str_size]{}};
-                for(::std::size_t k{}; k < j_str_size; k++) { ptr[k] = static_cast<::std::byte>(j.str.ptr[k]); }
+                for(::std::size_t k{}; k < j_str_size; k++) { ptr[k] = static_cast<::std::byte>(j.str.index_unchecked(k)); }
                 crc32c.reset();
                 crc32c.update(ptr, ptr + j_str_size);
                 delete[] ptr;
                 auto const val{crc32c.digest_value() % hash_table_size};
                 if constexpr(conflict_size)
                 {
-                    if(res.ht[val].para == nullptr)
+                    if(res.ht.index_unchecked(val).para == nullptr)
                     {
-                        if(res.ht[val].str.n != 0)
+                        if(!res.ht.index_unchecked(val).str.empty())
                         {
-                            for(auto& i: res.ct[res.ht[val].str.n - 1].ctmem)
+                            for(auto& i: res.ct.index_unchecked(res.ht.index_unchecked(val).str.size() - 1).ctmem)
                             {
                                 if(i.para == nullptr)
                                 {
@@ -255,26 +259,26 @@ struct ct_para_str {
                         }
                         else
                         {
-                            res.ht[val].para = j.para;
-                            res.ht[val].str = j.str;
+                            res.ht.index_unchecked(val).para = j.para;
+                            res.ht.index_unchecked(val).str = j.str;
                         }
                     }
                     else
                     {
-                        res.ct[conflictplace - 1].ctmem[0].para = res.ht[val].para;
-                        res.ct[conflictplace - 1].ctmem[0].str = res.ht[val].str;
-                        res.ht[val].para = nullptr;
-                        res.ht[val].str.ptr = nullptr;
-                        res.ht[val].str.n = conflictplace;
-                        res.ct[conflictplace - 1].ctmem[1].para = j.para;
-                        res.ct[conflictplace - 1].ctmem[1].str = j.str;
+                        res.ct.index_unchecked(conflictplace - 1).ctmem.front_unchecked().para = res.ht[val].para;
+                        res.ct.index_unchecked(conflictplace - 1).ctmem.front_unchecked().str = res.ht[val].str;
+                        res.ht.index_unchecked(val).para = nullptr;
+                        res.ht.index_unchecked(val).str.ptr = nullptr;
+                        res.ht.index_unchecked(val).str.n = conflictplace;
+                        res.ct.index_unchecked(conflictplace - 1).ctmem.index_unchecked(1).para = j.para;
+                        res.ct.index_unchecked(conflictplace - 1).ctmem.index_unchecked(1).str = j.str;
                         conflictplace++;
                     }
                 }
                 else
                 {
-                    res.ht[val].para = j.para;
-                    res.ht[val].str = j.str;
+                    res.ht.index_unchecked(val).para = j.para;
+                    res.ht.index_unchecked(val).str = j.str;
                 }
             }
             return res;
@@ -294,7 +298,7 @@ struct ct_para_str {
             {
                 auto const str_size{str.size()};
                 ::std::byte* const ptr{new ::std::byte[str_size]{}};
-                for(::std::size_t k{}; k < str_size; k++) { ptr[k] = static_cast<::std::byte>(str.ptr[k]); }
+                for(::std::size_t k{}; k < str_size; k++) { ptr[k] = static_cast<::std::byte>(str.index_unchecked(k)); }
                 crc32c.update(ptr, ptr + str_size);
                 delete[] ptr;
             }
@@ -304,27 +308,27 @@ struct ct_para_str {
                 crc32c.update(i, i + str.size());
             }
             auto const val{crc32c.digest_value() % hash_table_size};
-            auto const htval{ht.ht[val]};
+            auto const htval{ht.ht.index_unchecked(val)};
             if constexpr(conflict_size)
             {
                 if(htval.para == nullptr)
                 {
-                    if(htval.str.n != 0)
+                    if(!htval.str.empty())
                     {
-                        auto& ct{ht.ct[htval.str.n - 1].ctmem};
+                        auto const& ct{ht.ct.index_unchecked(htval.str.size() - 1).ctmem};
                         for(::std::size_t i{}; i < max_conflict_size; i++)
                         {
-                            if(ct[i].str == str) { return ct[i].para; }
-                            else if(ct[i].para == nullptr) { return nullptr; }
+                            if(ct.index_unchecked(i).str == str) { return ct.index_unchecked(i).para; }
+                            else if(ct.index_unchecked(i).para == nullptr) [[unlikely]] { return nullptr; }
                         }
                         return nullptr;
                     }
-                    else { return nullptr; }
+                    else [[unlikely]] { return nullptr; }
                 }
                 else
                 {
                     if(str == htval.str) { return htval.para; }
-                    else { return nullptr; }
+                    else [[unlikely]] { return nullptr; }
                 }
             }
             else
@@ -332,9 +336,9 @@ struct ct_para_str {
                 if(htval.para != nullptr)
                 {
                     if(str == htval.str) { return htval.para; }
-                    else { return nullptr; }
+                    else [[unlikely]] { return nullptr; }
                 }
-                else { return nullptr; }
+                else [[unlikely]] { return nullptr; }
             }
         }
 
