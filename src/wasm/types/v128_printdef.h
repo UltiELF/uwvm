@@ -33,6 +33,8 @@ namespace uwvm::wasm
             auto const v128_i8x16_arr = ::std::bit_cast<::fast_io::array<::std::uint_least8_t, 16u>>(v128_val);
             auto const v128_i8x16{v128_i8x16_arr.cbegin()};
             char_type* curr_pos{iter};
+            if constexpr(::std::endian::little == ::std::endian::native)
+            {
             curr_pos = ::fast_io::pr_rsv_to_iterator_unchecked(
                                             curr_pos,
                                             ::fast_io::mnp::hexupper<false, true>(v128_i8x16[0]));
@@ -96,6 +98,74 @@ namespace uwvm::wasm
             curr_pos = ::fast_io::pr_rsv_to_iterator_unchecked(
                                             curr_pos,
                                             ::fast_io::mnp::hexupper<false, true>(v128_i8x16[15]));
+            }
+            else // big endian or PDP
+            {
+            curr_pos = ::fast_io::pr_rsv_to_iterator_unchecked(
+                                            curr_pos,
+                                            ::fast_io::mnp::hexupper<false, true>(v128_i8x16[15]));
+            *(curr_pos++) = space;
+            curr_pos = ::fast_io::pr_rsv_to_iterator_unchecked(
+                                            curr_pos,
+                                            ::fast_io::mnp::hexupper<false, true>(v128_i8x16[14]));
+            *(curr_pos++) = space;
+            curr_pos = ::fast_io::pr_rsv_to_iterator_unchecked(
+                                            curr_pos,
+                                            ::fast_io::mnp::hexupper<false, true>(v128_i8x16[13]));
+            *(curr_pos++) = space;
+            curr_pos = ::fast_io::pr_rsv_to_iterator_unchecked(
+                                            curr_pos,
+                                            ::fast_io::mnp::hexupper<false, true>(v128_i8x16[12]));
+            *(curr_pos++) = space;
+            curr_pos = ::fast_io::pr_rsv_to_iterator_unchecked(
+                                            curr_pos,
+                                            ::fast_io::mnp::hexupper<false, true>(v128_i8x16[11]));
+            *(curr_pos++) = space;
+            curr_pos = ::fast_io::pr_rsv_to_iterator_unchecked(
+                                            curr_pos,
+                                            ::fast_io::mnp::hexupper<false, true>(v128_i8x16[10]));
+            *(curr_pos++) = space;
+            curr_pos = ::fast_io::pr_rsv_to_iterator_unchecked(
+                                            curr_pos,
+                                            ::fast_io::mnp::hexupper<false, true>(v128_i8x16[9]));
+            *(curr_pos++) = space;
+            curr_pos = ::fast_io::pr_rsv_to_iterator_unchecked(
+                                            curr_pos,
+                                            ::fast_io::mnp::hexupper<false, true>(v128_i8x16[8]));
+            *(curr_pos++) = space;
+            curr_pos = ::fast_io::pr_rsv_to_iterator_unchecked(
+                                            curr_pos,
+                                            ::fast_io::mnp::hexupper<false, true>(v128_i8x16[7]));
+            *(curr_pos++) = space;
+            curr_pos = ::fast_io::pr_rsv_to_iterator_unchecked(
+                                            curr_pos,
+                                            ::fast_io::mnp::hexupper<false, true>(v128_i8x16[6]));
+            *(curr_pos++) = space;
+            curr_pos = ::fast_io::pr_rsv_to_iterator_unchecked(
+                                            curr_pos,
+                                            ::fast_io::mnp::hexupper<false, true>(v128_i8x16[5]));
+            *(curr_pos++) = space;
+            curr_pos = ::fast_io::pr_rsv_to_iterator_unchecked(
+                                            curr_pos,
+                                            ::fast_io::mnp::hexupper<false, true>(v128_i8x16[4]));
+            *(curr_pos++) = space;
+            curr_pos = ::fast_io::pr_rsv_to_iterator_unchecked(
+                                            curr_pos,
+                                            ::fast_io::mnp::hexupper<false, true>(v128_i8x16[3]));
+            *(curr_pos++) = space;
+            curr_pos = ::fast_io::pr_rsv_to_iterator_unchecked(
+                                            curr_pos,
+                                            ::fast_io::mnp::hexupper<false, true>(v128_i8x16[2]));
+            *(curr_pos++) = space;
+            curr_pos = ::fast_io::pr_rsv_to_iterator_unchecked(
+                                            curr_pos,
+                                            ::fast_io::mnp::hexupper<false, true>(v128_i8x16[1]));
+            *(curr_pos++) = space;
+            curr_pos = ::fast_io::pr_rsv_to_iterator_unchecked(
+                                            curr_pos,
+                                            ::fast_io::mnp::hexupper<false, true>(v128_i8x16[0]));
+
+            }
             return curr_pos;
         }
 
