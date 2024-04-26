@@ -56,6 +56,7 @@ namespace uwvm
             return parsing_return_val::returnm1;
         }
 
+        pr.clear();
         pr.reserve(static_cast<::std::size_t>(argc));
 
         if(*argv != nullptr) [[likely]]
