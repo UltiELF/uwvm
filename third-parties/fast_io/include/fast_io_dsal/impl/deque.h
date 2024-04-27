@@ -1089,7 +1089,7 @@ constexpr bool operator==(deque<T, allocator1> const &lhs, deque<T, allocator2> 
 	return ::std::equal(lhs.cbegin(), lhs.cend(), rhs.cbegin(), rhs.cend());
 }
 
-#if defined(__cpp_lib_three_way_comparison)
+#if __cpp_lib_three_way_comparison >= 201907L
 
 template <typename T, typename allocator1, typename allocator2>
 	requires ::std::three_way_comparable<T>

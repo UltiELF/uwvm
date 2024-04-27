@@ -1063,7 +1063,7 @@ constexpr bool operator==(vector<T, allocator1> const &lhs, vector<T, allocator2
 	return ::std::equal(lhs.imp.begin_ptr, lhs.imp.curr_ptr, rhs.imp.begin_ptr, rhs.imp.curr_ptr);
 }
 
-#if defined(__cpp_lib_three_way_comparison)
+#if __cpp_lib_three_way_comparison >= 201907L
 template <typename T, typename allocator1, typename allocator2>
 	requires ::std::three_way_comparable<T>
 constexpr auto operator<=>(vector<T, allocator1> const &lhs, vector<T, allocator2> const &rhs) noexcept

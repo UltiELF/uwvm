@@ -718,7 +718,7 @@ constexpr bool operator==(basic_string<chtype, allocator1> const &lhs, basic_str
 	return ::std::equal(lhs.cbegin(), lhs.cend(), rhs.cbegin(), rhs.cend());
 }
 
-#if defined(__cpp_lib_three_way_comparison)
+#if __cpp_lib_three_way_comparison >= 201907L
 
 template <::std::integral chtype, typename allocator1, typename allocator2>
 constexpr auto operator<=>(basic_string<chtype, allocator1> const &lhs, basic_string<chtype, allocator2> const &rhs) noexcept

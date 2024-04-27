@@ -202,7 +202,7 @@ constexpr bool operator==(::fast_io::containers::basic_string_view<char_type> a,
 	return b == a;
 }
 
-#ifdef __cpp_lib_three_way_comparison
+#if __cpp_lib_three_way_comparison >= 201907L
 template <::std::integral char_type>
 constexpr auto operator<=>(::fast_io::containers::basic_cstring_view<char_type> a, ::fast_io::containers::basic_cstring_view<char_type> b) noexcept
 {
