@@ -70,14 +70,14 @@ namespace uwvm
         {
             if(argv[i] == nullptr) [[unlikely]] { continue; }
 
-            ::fast_io::cstring_view argv_str{::fast_io::containers::null_terminated, argv[i], ::fast_io::cstr_len(argv[i])};
+            ::fast_io::cstring_view const argv_str{::fast_io::containers::null_terminated, argv[i], ::fast_io::cstr_len(argv[i])};
 
             if(argv_str.empty()) [[unlikely]] { continue; }
 
             if(argv_str.front_unchecked() == '-')
             {
                 constexpr auto run_para{__builtin_addressof(::uwvm::parameter::run)};
-                auto para{::uwvm::cmdline::find_from_hash_table<hash_table_size, conflict_size>(ht, argv_str)};
+                auto const para{::uwvm::cmdline::find_from_hash_table<hash_table_size, conflict_size>(ht, argv_str)};
                 if(para == nullptr) { pr.emplace_back_unchecked(argv_str, nullptr, ::uwvm::cmdline::parameter_parsing_results_type::invalid_parameter); }
                 else if(para == run_para) [[unlikely]]
                 {
@@ -207,7 +207,7 @@ namespace uwvm
                         ::std::size_t const test_size{str_size * 4u / 10u};
                         ::std::size_t f_test_size{test_size};
 
-                        for(auto& j: ::uwvm::parameter_lookup_table)
+                        for(auto const& j: ::uwvm::parameter_lookup_table)
                         {
                             if(j.str.size() < str_size - f_test_size || j.str.size() > str_size + f_test_size) { continue; }
                             if(auto const dp_res{::uwvm::cmdline::dp<parameter_max_name_size + parameter_max_name_size * 4u / 10u + 1u>(i.str.data(),
