@@ -22,9 +22,12 @@ namespace uwvm
         inline constexpr ::std::size_t
             dp(char_type const* x, ::std::size_t lena, char_type const* y, ::std::size_t lenb) noexcept
         {
+            using Alloc = ::fast_io::native_typed_thread_local_allocator<::std::size_t>;
+
             ::std::size_t* d{};
-            [[maybe_unused]] ::fast_io::array<::std::size_t, Len> storge;
-            if constexpr(Len) { d = storge.data(); }
+            [[maybe_unused]] ::fast_io::array<::std::size_t, Len> storage;
+
+            if constexpr(Len) { d = storage.data(); }
             else
             {
 #if __cpp_if_consteval >= 202106L
@@ -35,7 +38,7 @@ namespace uwvm
                 {
                     d = new ::std::size_t[lenb + 1];
                 }
-                else { d = ::fast_io::native_typed_thread_local_allocator<::std::size_t>::allocate(lenb + 1); }
+                else { d = Alloc::allocate(lenb + 1); }
             }
 
             for(::std::size_t j{}; j <= lenb; j++) { d[j] = j; }
@@ -46,11 +49,11 @@ namespace uwvm
                 d[0] = i;
                 for(::std::size_t j{1}; j <= lenb; j++)
                 {
-                    ::std::size_t temp{d[j]};
+                    ::std::size_t const temp{d[j]};
                     if(x[i - 1] == y[j - 1]) { d[j] = old; }
                     else
                     {
-                        size_t min = d[j] + 1;
+                        ::std::size_t min = d[j] + 1;
                         if(d[j - 1] + 1 < min) { min = d[j - 1] + 1; }
                         if(old + 1 < min) { min = old + 1; }
                         d[j] = min;
@@ -73,11 +76,11 @@ namespace uwvm
                 }
                 else
                 {
-                    if constexpr(::fast_io::details::has_deallocate_n_impl<::fast_io::native_typed_thread_local_allocator<::std::size_t>>)
+                    if constexpr(::fast_io::details::has_deallocate_n_impl<Alloc>)
                     {
-                        ::fast_io::native_typed_thread_local_allocator<::std::size_t>::deallocate_n(d, lenb + 1);
+                        Alloc::deallocate_n(d, lenb + 1);
                     }
-                    else { ::fast_io::native_typed_thread_local_allocator<::std::size_t>::deallocate(d); }
+                    else { Alloc::deallocate(d); }
                 }
             }
 
