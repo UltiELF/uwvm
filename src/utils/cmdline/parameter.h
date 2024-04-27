@@ -265,8 +265,8 @@ struct ct_para_str {
                     }
                     else
                     {
-                        res.ct.index_unchecked(conflictplace - 1).ctmem.front_unchecked().para = res.ht[val].para;
-                        res.ct.index_unchecked(conflictplace - 1).ctmem.front_unchecked().str = res.ht[val].str;
+                        res.ct.index_unchecked(conflictplace - 1).ctmem.front_unchecked().para = res.ht.index_unchecked(val).para;
+                        res.ct.index_unchecked(conflictplace - 1).ctmem.front_unchecked().str = res.ht.index_unchecked(val).str;
                         res.ht.index_unchecked(val).para = nullptr;
                         res.ht.index_unchecked(val).str.ptr = nullptr;
                         res.ht.index_unchecked(val).str.n = conflictplace;
