@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include <fast_io.h>
 #include <fast_io_dsal/array.h>
 #include "basic_value.h"
