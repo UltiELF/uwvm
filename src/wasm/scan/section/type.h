@@ -111,6 +111,7 @@ namespace uwvm::wasm
         ::uwvm::wasm::check_index(type_count);
 
         wasmmod.typesec.type_count = type_count;
+        wasmmod.typesec.types.clear();
         wasmmod.typesec.types.reserve(type_count);
 
         // jump to functype(0x60)

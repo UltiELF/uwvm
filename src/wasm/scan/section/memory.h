@@ -136,6 +136,7 @@ namespace uwvm::wasm
         }
 #endif
         wasmmod.memorysec.memory_count = mem_count;
+        wasmmod.memorysec.types.clear();
         wasmmod.memorysec.types.reserve(mem_count);
 
         // jump to memory type

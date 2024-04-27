@@ -125,6 +125,7 @@ namespace uwvm::wasm
         ::uwvm::wasm::check_index(import_count);
 
         wasmmod.importsec.import_count = import_count;
+        wasmmod.importsec.types.clear();
         wasmmod.importsec.types.reserve(import_count);
 
         // jump to 1st import leb128
@@ -1128,6 +1129,13 @@ namespace uwvm::wasm
                                 u8"Terminate.\n\n");
             ::fast_io::fast_terminate();
         }
+
+        // clear
+        wasmmod.importsec.func_types.clear();
+        wasmmod.importsec.table_types.clear();
+        wasmmod.importsec.memory_types.clear();
+        wasmmod.importsec.global_types.clear();
+        wasmmod.importsec.tag_types.clear();
 
         // reserve
         wasmmod.importsec.func_types.reserve(import_func_counter);

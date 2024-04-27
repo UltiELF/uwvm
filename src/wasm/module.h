@@ -20,6 +20,7 @@ namespace uwvm::wasm
         ::uwvm::wasm::section::table_section tablesec{};
         ::uwvm::wasm::section::memory_section memorysec{};
         ::uwvm::wasm::section::global_section globalsec{};
+        ::uwvm::wasm::section::export_section exportsec{};
     };
 }  // namespace uwvm::wasm
 

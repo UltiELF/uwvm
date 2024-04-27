@@ -125,6 +125,7 @@ namespace uwvm::wasm
         ::uwvm::wasm::check_index(function_count);
 
         wasmmod.functionsec.function_count = function_count;
+        wasmmod.functionsec.types.clear();
         wasmmod.functionsec.types.reserve(function_count);
 
         // jump to func type

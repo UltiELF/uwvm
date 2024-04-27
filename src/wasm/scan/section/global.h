@@ -100,6 +100,7 @@ namespace uwvm::wasm
         ::uwvm::wasm::check_index(global_count);
 
         wasmmod.globalsec.global_count = global_count;
+        wasmmod.globalsec.types.clear();
         wasmmod.globalsec.types.reserve(global_count);
 
         // jump to global type

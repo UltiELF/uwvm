@@ -135,6 +135,7 @@ namespace uwvm::wasm
         }
 #endif
         wasmmod.tablesec.table_count = table_count;
+        wasmmod.tablesec.types.clear();
         wasmmod.tablesec.types.reserve(table_count);
 
         // jump to table type
