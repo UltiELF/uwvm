@@ -154,7 +154,7 @@ namespace uwvm
             return max_size;
         }
 
-        inline constexpr ::std::size_t hash_size_base{4u}; // 2 ^ hash_size_base
+        inline constexpr ::std::size_t hash_size_base{4u};  // 2 ^ hash_size_base
         inline constexpr ::std::size_t max_conflict_size{8u};
 
         struct calculate_hash_table_size_res
@@ -179,13 +179,13 @@ namespace uwvm
                 {
                     ::std::size_t const j_str_size{j.str.size()};
                     ::std::byte* const ptr{new ::std::byte[j_str_size]{}};
-                    for(::std::size_t k{}; k < j_str_size; k++) { ptr[k] = static_cast<::std::byte>(j.str.index_unchecked(k)); }
+                    for(::std::size_t k{}; k < j_str_size; ++k) { ptr[k] = static_cast<::std::byte>(j.str.index_unchecked(k)); }
                     crc32c.reset();
                     crc32c.update(ptr, ptr + j_str_size);
                     delete[] ptr;
                     auto const val{crc32c.digest_value() % hash_size};
-                    hash_size_array[val]++;
-                    if(hash_size_array[val] == 2) { extra_size++; }
+                    ++hash_size_array[val];
+                    if(hash_size_array[val] == 2) { ++extra_size; }
                     if(hash_size_array[val] > max_conflict_size) { c = true; }
                 }
 
@@ -208,7 +208,7 @@ struct ct_para_str {
 };
 #else
         using ct_para_str = all_parameter;
-#endif  // 0
+#endif
 
         struct conflict_table
         {
@@ -236,7 +236,7 @@ struct ct_para_str {
             {
                 ::std::size_t const j_str_size{j.str.size()};
                 ::std::byte* const ptr{new ::std::byte[j_str_size]{}};
-                for(::std::size_t k{}; k < j_str_size; k++) { ptr[k] = static_cast<::std::byte>(j.str.index_unchecked(k)); }
+                for(::std::size_t k{}; k < j_str_size; ++k) { ptr[k] = static_cast<::std::byte>(j.str.index_unchecked(k)); }
                 crc32c.reset();
                 crc32c.update(ptr, ptr + j_str_size);
                 delete[] ptr;
@@ -298,7 +298,7 @@ struct ct_para_str {
             {
                 auto const str_size{str.size()};
                 ::std::byte* const ptr{new ::std::byte[str_size]{}};
-                for(::std::size_t k{}; k < str_size; k++) { ptr[k] = static_cast<::std::byte>(str.index_unchecked(k)); }
+                for(::std::size_t k{}; k < str_size; ++k) { ptr[k] = static_cast<::std::byte>(str.index_unchecked(k)); }
                 crc32c.update(ptr, ptr + str_size);
                 delete[] ptr;
             }
