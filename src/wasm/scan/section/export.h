@@ -213,27 +213,27 @@ namespace uwvm::wasm
 
             switch(ek)
             {
-                case uwvm::wasm::extern_kind::func:
+                case ::uwvm::wasm::extern_kind::func:
                 {
                     ++export_func_counter;
                     break;
                 }
-                case uwvm::wasm::extern_kind::table:
+                case ::uwvm::wasm::extern_kind::table:
                 {
                     ++export_table_counter;
                     break;
                 }
-                case uwvm::wasm::extern_kind::memory:
+                case ::uwvm::wasm::extern_kind::memory:
                 {
                     ++export_memory_counter;
                     break;
                 }
-                case uwvm::wasm::extern_kind::global:
+                case ::uwvm::wasm::extern_kind::global:
                 {
                     ++export_global_counter;
                     break;
                 }
-                case uwvm::wasm::extern_kind::tag:
+                case ::uwvm::wasm::extern_kind::tag:
                 {
                     ++export_tag_counter;
                     break;
