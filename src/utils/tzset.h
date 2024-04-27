@@ -6,6 +6,12 @@ namespace uwvm
 {
     struct tz_set_s
     {
-        tz_set_s() noexcept { ::fast_io::posix_tzset(); }
+#if __has_cpp_attribute(__gnu__::__cold__)
+        [[__gnu__::__cold__]]
+#endif
+        tz_set_s() noexcept
+        {
+            ::fast_io::posix_tzset();
+        }
     };
 }  // namespace uwvm

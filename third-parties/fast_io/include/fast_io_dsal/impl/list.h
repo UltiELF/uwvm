@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 namespace fast_io
 {
@@ -618,6 +618,12 @@ public:
 	[[nodiscard]] static inline constexpr size_type max_size() noexcept
 	{
 		constexpr size_type mxvl{SIZE_MAX / sizeof(node_type)};
+		return mxvl;
+	}
+
+	[[nodiscard]] static inline constexpr size_type max_size_bytes() noexcept
+	{
+		constexpr size_type mxvl{SIZE_MAX / sizeof(node_type) * sizeof(value_type)};
 		return mxvl;
 	}
 

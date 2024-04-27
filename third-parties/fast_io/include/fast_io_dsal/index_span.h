@@ -23,24 +23,19 @@
 #include <cstring>
 #endif
 
-#include "../fast_io_core.h"
-#include "impl/array.h"
+#include "span.h"
+#include "impl/index_span.h"
 
 namespace fast_io
 {
 
-template <typename T, ::std::size_t N>
-using array = ::fast_io::containers::array<T, N>;
+using ::fast_io::containers::index_unchecked;
+using ::fast_io::containers::index_span;
 
 namespace tlc
 {
-template <typename T, ::std::size_t N>
-using array = ::fast_io::containers::array<T, N>;
-
-using ::fast_io::containers::to_array;
+using ::fast_io::containers::index_span;
 } // namespace tlc
-
-using ::fast_io::containers::to_array;
 
 } // namespace fast_io
 
