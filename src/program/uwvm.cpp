@@ -4,17 +4,16 @@
 #include <fast_io_device.h>
 
 #include <io_device.h>
-#include "../clpara/impl.h"
 #include <version.h>
 #include <install-paths/storge_argv0.h>
+#include "../clpara/impl.h"
 #include "../run/run.h"
 
 int main(int argc, char** argv)
 {
     ::uwvm::path::argv0 = argc ? *argv : nullptr;
 
-    auto& parse_res{::uwvm::parsing_result};
-    switch(::uwvm::parsing_return_val const pr{::uwvm::parsing(argc, argv, parse_res, ::uwvm::hash_table)}; pr)
+    switch(auto const pr{::uwvm::parsing(argc, argv, ::uwvm::parsing_result, ::uwvm::hash_table)}; pr)
     {
         case ::uwvm::parsing_return_val::def: break;
         case ::uwvm::parsing_return_val::return0: return 0;
