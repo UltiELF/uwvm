@@ -95,7 +95,7 @@ inline constexpr void sha512_do_constexpr_function(::std::uint_least64_t *__rest
 		::std::uint_least32_t i{};
 		for (; i < 16; ++i)
 		{
-			if (::std::is_constant_evaluated())
+			if (__builtin_is_constant_evaluated())
 			{
 				::std::uint_least64_t value{};
 				for (::std::size_t j{}; j != 8; ++j)

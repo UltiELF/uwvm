@@ -722,7 +722,7 @@ scan_int_contiguous_none_space_part_define_impl(char_type const *first, char_typ
 	{
 		if (
 #if __cpp_lib_is_constant_evaluated >= 201811L
-			!::std::is_constant_evaluated() &&
+			!__builtin_is_constant_evaluated() &&
 #endif
 			last - first >= 32) [[likely]]
 		{

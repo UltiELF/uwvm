@@ -256,7 +256,7 @@ inline constexpr U byte_swap(U a) noexcept
 #else
 
 #if __cpp_lib_is_constant_evaluated >= 201811L
-		if (::std::is_constant_evaluated())
+		if (__builtin_is_constant_evaluated())
 		{
 			return details::byte_swap_naive_impl(a);
 		}

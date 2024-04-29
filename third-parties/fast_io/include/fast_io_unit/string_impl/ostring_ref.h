@@ -70,7 +70,7 @@ strlike_set_curr(io_strlike_type_t<char_type, ::std::basic_string<char_type, tra
 #if __cpp_if_consteval >= 202106L
 	if consteval
 #else
-	if (::std::is_constant_evaluated())
+	if (__builtin_is_constant_evaluated())
 #endif
 	{
 		auto old_ptr{str.data()};

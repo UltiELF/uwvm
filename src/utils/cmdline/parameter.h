@@ -61,7 +61,13 @@ namespace uwvm
         };
 
         template <::std::size_t N>
-        inline consteval auto parameter_sort(parameter const* const (&punsort)[N]) noexcept
+        inline 
+#if __cpp_consteval >= 201811L
+            consteval
+#else
+            constexpr
+#endif
+            auto parameter_sort(parameter const* const (&punsort)[N]) noexcept
         {
             ::fast_io::array<parameter const*, N> res{};
             for(::std::size_t i{}; i < N; ++i) { res.index_unchecked(i) = punsort[i]; }
@@ -90,7 +96,13 @@ namespace uwvm
         };
 
         template <::std::size_t N>
-        inline consteval ::std::size_t calculate_all_parameters_size(::fast_io::array<parameter const*, N> const& punsort) noexcept
+        inline 
+#if __cpp_consteval >= 201811L
+            consteval
+#else
+            constexpr
+#endif
+            ::std::size_t calculate_all_parameters_size(::fast_io::array<parameter const*, N> const& punsort) noexcept
         {
             ::std::size_t res{};
             for(::std::size_t i{}; i < N; ++i)
@@ -102,7 +114,13 @@ namespace uwvm
         }
 
         template <::std::size_t Nres, ::std::size_t N>
-        inline consteval auto expand_all_parameters_and_check(::fast_io::array<parameter const*, N> const& punsort) noexcept
+        inline 
+#if __cpp_consteval >= 201811L
+            consteval
+#else
+            constexpr
+#endif
+            auto expand_all_parameters_and_check(::fast_io::array<parameter const*, N> const& punsort) noexcept
         {
             ::fast_io::array<all_parameter, Nres> res{};
             ::std::size_t res_pos{};
@@ -147,7 +165,13 @@ namespace uwvm
         }
 
         template <::std::size_t N>
-        inline consteval ::std::size_t calculate_max_para_size(::fast_io::array<all_parameter, N> const& punsort) noexcept
+        inline 
+#if __cpp_consteval >= 201811L
+            consteval
+#else
+            constexpr
+#endif
+            ::std::size_t calculate_max_para_size(::fast_io::array<all_parameter, N> const& punsort) noexcept
         {
             ::std::size_t max_size{};
             for(::std::size_t i{}; i < N; ++i) { max_size = ::std::max(max_size, punsort.index_unchecked(i).str.size()); }
@@ -164,7 +188,13 @@ namespace uwvm
         };
 
         template <::std::size_t N>
-        inline consteval calculate_hash_table_size_res calculate_hash_table_size(::fast_io::array<all_parameter, N> const& ord) noexcept
+        inline 
+#if __cpp_consteval >= 201811L
+            consteval
+#else
+            constexpr
+#endif
+            calculate_hash_table_size_res calculate_hash_table_size(::fast_io::array<all_parameter, N> const& ord) noexcept
         {
             constexpr auto sizet_d10{static_cast<::std::size_t>(::std::numeric_limits<::std::size_t>::digits10)};
 
@@ -225,7 +255,13 @@ struct ct_para_str {
         };
 
         template <::std::size_t hash_table_size, ::std::size_t conflict_size, ::std::size_t N>
-        inline consteval auto generate_hash_table(::fast_io::array<all_parameter, N> const& ord) noexcept
+        inline
+#if __cpp_consteval >= 201811L
+            consteval
+#else
+            constexpr
+#endif
+            auto generate_hash_table(::fast_io::array<all_parameter, N> const& ord) noexcept
         {
             parameters_hash_table<hash_table_size, conflict_size> res{};
 
