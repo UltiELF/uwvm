@@ -275,7 +275,8 @@ namespace uwvm::wasm
 
             // check export index
             {
-                for(auto const func_count{wasmmod.importsec.func_types.size() + wasmmod.functionsec.function_count}; auto const i: wasmmod.exportsec.func_types)
+                for(auto const func_count{wasmmod.importsec.func_types.size() + wasmmod.functionsec.function_count}; 
+                    auto const i: wasmmod.exportsec.func_types)
                 {
                     if(i->index >= func_count) [[unlikely]]
                     {
@@ -303,7 +304,8 @@ namespace uwvm::wasm
                     }
                 }
 
-                for(auto const table_count{wasmmod.importsec.table_types.size() + wasmmod.tablesec.table_count}; auto const i: wasmmod.exportsec.table_types)
+                for(auto const table_count{wasmmod.importsec.table_types.size() + wasmmod.tablesec.table_count}; 
+                    auto const i: wasmmod.exportsec.table_types)
                 {
                     if(i->index >= table_count) [[unlikely]]
                     {
@@ -330,6 +332,7 @@ namespace uwvm::wasm
                         ::fast_io::fast_terminate();
                     }
                 }
+
                 for(auto const memory_count{wasmmod.importsec.memory_types.size() + wasmmod.memorysec.memory_count};
                     auto const i: wasmmod.exportsec.memory_types)
                 {
@@ -358,6 +361,7 @@ namespace uwvm::wasm
                         ::fast_io::fast_terminate();
                     }
                 }
+
                 for(auto const global_count{wasmmod.importsec.global_types.size() + wasmmod.globalsec.global_count};
                     auto const i: wasmmod.exportsec.global_types)
                 {
@@ -388,7 +392,8 @@ namespace uwvm::wasm
                 }
 
 #if 0
-                 // to do
+                // tag
+                // to do
                 for(auto const tag_count{wasmmod.importsec.tag_types.size() + wasmmod.tagsec.tag_count};
                     auto const i: wasmmod.exportsec.tag_types)
                 {
