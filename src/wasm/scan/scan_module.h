@@ -272,10 +272,7 @@ namespace uwvm::wasm
                                 u8"Terminate.\n\n");
                         ::fast_io::fast_terminate();
                     }
-            }
-
-            // check 
-            ::uwvm::wasm::check_wasm_module(wasmmod);
+            } 
 
             // set curr
             curr = sec_end;
@@ -307,5 +304,7 @@ namespace uwvm::wasm
                 ::fast_io::fast_terminate();
             }
         }
+
+        ::uwvm::wasm::check_wasm_module(wasmmod);
     }
 }  // namespace uwvm
