@@ -306,6 +306,8 @@
                         u8"Windows Server 2003 with SP1, Windows XP with SP2"
         #elif _WIN32_WINNT >= 0x0501
                         u8"Windows Server 2003, Windows XP"
+        #elif _WIN32_WINNT >= 0x0500
+                        u8"Windows 2000"
         #endif
     #endif
 #elif defined(__MSDOS__)
