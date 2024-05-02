@@ -36,9 +36,8 @@
         return ::uwvm::cmdline::parameter_return_type::return_m1_imme;
     }
 
-    auto& pres_sresp1{*sresp1};
-    pres_sresp1.type = ::uwvm::cmdline::parameter_parsing_results_type::occupied_arg;
-    if(auto s1s{pres_sresp1.str}; s1s == ::fast_io::string_view{"objdump"}) { ::uwvm::running_mode = ::uwvm::mode::objdump; }
+    sresp1->type = ::uwvm::cmdline::parameter_parsing_results_type::occupied_arg;
+    if(auto s1s{sresp1->str}; s1s == "objdump") { ::uwvm::running_mode = ::uwvm::mode::objdump; }
     else
     {
         ::fast_io::io::perr(::uwvm::u8err,
