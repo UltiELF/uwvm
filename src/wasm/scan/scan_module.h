@@ -10,6 +10,7 @@
 #include "../check_index.h"
 #include "../module.h"
 #include "scan_section.h"
+#include "check_module.h"
 
 namespace uwvm::wasm
 {
@@ -273,157 +274,8 @@ namespace uwvm::wasm
                     }
             }
 
-            // check export index
-            {
-                for(auto const func_count{wasmmod.importsec.func_types.size() + wasmmod.functionsec.function_count}; 
-                    auto const i: wasmmod.exportsec.func_types)
-                {
-                    if(i->index >= func_count) [[unlikely]]
-                    {
-                        ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"Invalid function index."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
-                        ::fast_io::fast_terminate();
-                    }
-                }
-
-                for(auto const table_count{wasmmod.importsec.table_types.size() + wasmmod.tablesec.table_count}; 
-                    auto const i: wasmmod.exportsec.table_types)
-                {
-                    if(i->index >= table_count) [[unlikely]]
-                    {
-                        ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"Invalid table index."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
-                        ::fast_io::fast_terminate();
-                    }
-                }
-
-                for(auto const memory_count{wasmmod.importsec.memory_types.size() + wasmmod.memorysec.memory_count};
-                    auto const i: wasmmod.exportsec.memory_types)
-                {
-                    if(i->index >= memory_count) [[unlikely]]
-                    {
-                        ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"Invalid memory index."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
-                        ::fast_io::fast_terminate();
-                    }
-                }
-
-                for(auto const global_count{wasmmod.importsec.global_types.size() + wasmmod.globalsec.global_count};
-                    auto const i: wasmmod.exportsec.global_types)
-                {
-                    if(i->index >= global_count) [[unlikely]]
-                    {
-                        ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"Invalid global index."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
-                        ::fast_io::fast_terminate();
-                    }
-                }
-
-#if 0
-                // tag
-                // to do
-                for(auto const tag_count{wasmmod.importsec.tag_types.size() + wasmmod.tagsec.tag_count};
-                    auto const i: wasmmod.exportsec.tag_types)
-                {
-                    if(i->index >= tag_count) [[unlikely]]
-                    {
-                        ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-    #ifdef __MSDOS__
-                                u8"\033[37m"
-    #else
-                                u8"\033[97m"
-    #endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-    #ifdef __MSDOS__
-                                u8"\033[37m"
-    #else
-                                u8"\033[97m"
-    #endif
-                                u8"Invalid tag index."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
-                        ::fast_io::fast_terminate();
-                    }
-                }
-#endif
-            }
+            // check 
+            ::uwvm::wasm::check_wasm_module(wasmmod);
 
             // set curr
             curr = sec_end;
