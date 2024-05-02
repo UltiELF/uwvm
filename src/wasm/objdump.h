@@ -368,6 +368,87 @@ namespace uwvm::wasm
                     }
                 }
             }
+
+            if(wasmmod.exportsec.sec_begin) [[likely]]
+            {
+                // Export
+                ::fast_io::operations::print_freestanding<false>(::std::forward<s>(stm),
+                                                                 u8"\n" u8"Export[",
+                                                                 wasmmod.exportsec.export_count,
+                                                                 u8"] (start=",
+                                                                 ::fast_io::mnp::hex0x<true>(wasmmod.exportsec.sec_begin - wasm_file_begin),
+                                                                 u8" end=",
+                                                                 ::fast_io::mnp::hex0x<true>(wasmmod.exportsec.sec_end - wasm_file_begin),
+                                                                 u8" size=",
+                                                                 ::fast_io::mnp::hex0x<true>(wasmmod.exportsec.sec_end - wasmmod.exportsec.sec_begin),
+                                                                 u8"):\n");
+
+                // func
+
+                for(auto const t: wasmmod.exportsec.func_types)
+                {
+                    ::fast_io::operations::print_freestanding<false>(::std::forward<s>(stm), 
+                                                                     u8" - "
+                                                                     u8"func" 
+                                                                     u8"[",
+                                                                     t->index, 
+                                                                     u8"] -> \"",
+                                                                     ::fast_io::mnp::strvw(t->name_begin, t->name_end),
+                                                                     u8"\"\n");
+                }
+
+                // table
+                for(auto const t: wasmmod.exportsec.table_types)
+                {
+                    ::fast_io::operations::print_freestanding<false>(::std::forward<s>(stm), 
+                                                                     u8" - "
+                                                                     u8"table" 
+                                                                     u8"[",
+                                                                     t->index, 
+                                                                     u8"] -> \"",
+                                                                     ::fast_io::mnp::strvw(t->name_begin, t->name_end),
+                                                                     u8"\"\n");
+                }
+
+                // memory
+                for(auto const t: wasmmod.exportsec.memory_types)
+                {
+                    ::fast_io::operations::print_freestanding<false>(::std::forward<s>(stm), 
+                                                                     u8" - "
+                                                                     u8"memroy" 
+                                                                     u8"[",
+                                                                     t->index, 
+                                                                     u8"] -> \"",
+                                                                     ::fast_io::mnp::strvw(t->name_begin, t->name_end),
+                                                                     u8"\"\n");
+                }
+
+                // global
+                for(auto const t: wasmmod.exportsec.global_types)
+                {
+                    ::fast_io::operations::print_freestanding<false>(::std::forward<s>(stm), 
+                                                                     u8" - "
+                                                                     u8"global" 
+                                                                     u8"[",
+                                                                     t->index, 
+                                                                     u8"] -> \"",
+                                                                     ::fast_io::mnp::strvw(t->name_begin, t->name_end),
+                                                                     u8"\"\n");
+                }
+
+                // tag
+                for(auto const t: wasmmod.exportsec.tag_types)
+                {
+                    ::fast_io::operations::print_freestanding<false>(::std::forward<s>(stm), 
+                                                                     u8" - "
+                                                                     u8"tag" 
+                                                                     u8"[",
+                                                                     t->index, 
+                                                                     u8"] -> \"",
+                                                                     ::fast_io::mnp::strvw(t->name_begin, t->name_end),
+                                                                     u8"\"\n");
+                }
+            }
         }
         else if constexpr(::std::same_as<char_type, char16_t>) {}
         else if constexpr(::std::same_as<char_type, char32_t>) {}

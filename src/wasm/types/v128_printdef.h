@@ -12,7 +12,7 @@ namespace uwvm::wasm
 {
     namespace details
     {
-        // template ::fast_io:bmy_integral to support u8 u16 u32 u64 u128
+        // template ::fast_io::my_integral to support u8 u16 u32 u64 u128
         struct v128_print_struct
         {
             // sizeof(v128)
