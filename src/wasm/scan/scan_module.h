@@ -305,6 +305,7 @@ namespace uwvm::wasm
             }
         }
 
+        // check
         ::uwvm::wasm::check_wasm_module(wasmmod);
     }
 }  // namespace uwvm
