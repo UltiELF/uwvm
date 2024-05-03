@@ -1,6 +1,9 @@
 ﻿<div style="text-align:center">
     <img src="documents/images/logo_256x256.png" , alt="logo" />
     <h1>Ultimate WebAssembly Virtual Machine</h1>
+    <a href="https://github.com/UltiELF/uwvm/actions?query=workflow%3Auwvm-build">
+      <img src="https://img.shields.io/github/actions/workflow/status/UltiELF/uwvm/uwvm.yml?branch=master&style=flat-square&logo=linux" alt="github-ci" />
+    </a>
     <a href="LICENSE.md">
         <img src="https://img.shields.io/badge/License-Apache%202.0-green.svg" , alt="License" />
     </a>
