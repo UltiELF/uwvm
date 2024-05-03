@@ -201,7 +201,7 @@ namespace uwvm
             ::fast_io::crc32c_context crc32c{};
             for(auto i{hash_size_base}; i < sizet_d10; ++i)
             {
-                ::std::size_t hash_size{static_cast<::std::size_t>(1u) << i};
+                ::std::size_t const hash_size{static_cast<::std::size_t>(1u) << i};
                 bool c{};
                 ::std::size_t extra_size{};
                 ::std::size_t* const hash_size_array{new ::std::size_t[hash_size]{}};
