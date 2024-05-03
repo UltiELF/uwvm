@@ -19,7 +19,8 @@ jobs:
         run: |
           wget https://github.com/trcrsired/gcc-releases/releases/download/2024-04-30-x86_64-generic-linux-gnu/x86_64-generic-linux-gnu.tar.xz
           tar xf x86_64-generic-linux-gnu.tar.xz
+          rsync -a x86_64-generic-linux-gnu/runtimes/* x86_64-generic-linux-gnu/
       - name: Tests-x86_64-inux-gnu
         run: |
-          xmake f -p linux -a x86_64 -m debug --static=y --sdk=`pwd`/x86_64-generic-linux-gnu/
+          xmake f -p linux -a x86_64 -m debug --static=n --sdk=`pwd`/x86_64-generic-linux-gnu/
           xmake
