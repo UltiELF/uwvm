@@ -68,7 +68,7 @@ namespace uwvm
     #else
                                 u8"\033[97m"
     #endif
-                                  ,
+                                ,
                                 e,
                                 u8"\n"
                                 u8"\033[0m"

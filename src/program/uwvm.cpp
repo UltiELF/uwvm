@@ -13,7 +13,7 @@ int main(int argc, char** argv)
 {
     ::uwvm::path::argv0 = argc ? *argv : nullptr;
 
-    switch(auto const pr{::uwvm::parsing(argc, argv, ::uwvm::parsing_result, ::uwvm::hash_table)}; pr)
+    switch(::uwvm::parsing(argc, argv, ::uwvm::parsing_result, ::uwvm::hash_table))
     {
         case ::uwvm::parsing_return_val::def: break;
         case ::uwvm::parsing_return_val::return0: return 0;

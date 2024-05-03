@@ -4,6 +4,6 @@
 
 namespace uwvm::path
 {
-    inline ::fast_io::dir_file working_path_df{::fast_io::at_fdcwd(), "."};
+    inline ::fast_io::dir_file working_path_df{::fast_io::at_fdcwd(), u8"."};
 
 }  // namespace uwvm::path
