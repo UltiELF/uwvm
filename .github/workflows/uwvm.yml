@@ -21,5 +21,5 @@ jobs:
           tar xf x86_64-generic-linux-gnu.tar.xz
       - name: Tests-x86_64-inux-gnu
         run: |
-          xmake f -p linux -a x86_64 -m debug --static=n --sdk=`pwd`/x86_64-generic-linux-gnu/
+          xmake f -p linux -a x86_64 -m debug --static=y --sdk=`pwd`/x86_64-generic-linux-gnu/
           xmake
