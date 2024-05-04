@@ -8,7 +8,7 @@ add_defines("UWVM_VERSION_Y=0")
 add_defines("UWVM_VERSION_Z=0")
 add_defines("UWVM_VERSION_S=0")
 
-set_allowedplats("windows", "mingw", "linux", "sun", "msdosdjgpp", "bsd", "freebsd", "dragonflybsd", "netbsd", "openbsd", "macosx", "iphoneos", "watchos", "wasm-wasi", "wasm-wasip1", "wasm-wasip2", "cross")
+set_allowedplats("windows", "mingw", "linux", "sun", "msdosdjgpp", "unix", "bsd", "freebsd", "dragonflybsd", "netbsd", "openbsd", "macosx", "iphoneos", "watchos", "wasm-wasi", "wasm-wasip1", "wasm-wasip2", "cross")
 
 add_rules("mode.debug", "mode.release", "mode.releasedbg")
 set_defaultmode("releasedbg")
@@ -188,13 +188,10 @@ function defopt()
 			add_defines("_WIN32_WINNT=0x0500")
 		elseif opt_name == "WINME" then
 			add_defines("_WIN32_WINDOWS=0x0490")
-			add_defines("_WIN32_WINNT=0x0490")
 		elseif opt_name == "WIN98" then
 			add_defines("_WIN32_WINDOWS=0x0410")
-			add_defines("_WIN32_WINNT=0x0410")
 		elseif opt_name == "WIN95" then
 			add_defines("_WIN32_WINDOWS=0x0400")
-			add_defines("_WIN32_WINNT=0x0400")
 		else
 			error("invalid value")
 		end
@@ -323,7 +320,7 @@ function defopt()
 			add_ldflags("-static")
 		end
 
-	elseif is_plat("bsd", "freebsd", "dragonflybsd", "netbsd", "openbsd") then
+	elseif is_plat("unix", "bsd", "freebsd", "dragonflybsd", "netbsd", "openbsd") then
 		add_cxflags("-fno-rtti")
 		add_cxflags("-fno-unwind-tables")
 		add_cxflags("-fno-asynchronous-unwind-tables")
