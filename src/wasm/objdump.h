@@ -449,6 +449,23 @@ namespace uwvm::wasm
                                                                      u8"\"\n");
                 }
             }
+
+            // start
+            if(wasmmod.startsec.sec_begin) [[likely]]
+            {
+                ::fast_io::operations::print_freestanding<false>(::std::forward<s>(stm),
+                                                                 u8"\n" u8"start",
+                                                                 ::fast_io::mnp::hex0x<true>(wasmmod.startsec.sec_begin - wasm_file_begin),
+                                                                 u8" end=",
+                                                                 ::fast_io::mnp::hex0x<true>(wasmmod.startsec.sec_end - wasm_file_begin),
+                                                                 u8" size=",
+                                                                 ::fast_io::mnp::hex0x<true>(wasmmod.startsec.sec_end - wasmmod.startsec.sec_begin),
+                                                                 u8"):\n" 
+                                                                 u8" - "
+                                                                 u8"func[",
+                                                                 wasmmod.startsec.index,
+                                                                 u8"]\n");
+            }
         }
         else if constexpr(::std::same_as<char_type, char16_t>) {}
         else if constexpr(::std::same_as<char_type, char32_t>) {}

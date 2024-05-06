@@ -21,6 +21,7 @@ namespace uwvm::wasm
         ::uwvm::wasm::section::memory_section memorysec{};
         ::uwvm::wasm::section::global_section globalsec{};
         ::uwvm::wasm::section::export_section exportsec{};
+        ::uwvm::wasm::section::start_section startsec{};
     };
 }  // namespace uwvm::wasm
 

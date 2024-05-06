@@ -240,7 +240,11 @@ namespace uwvm::wasm
                     ::uwvm::wasm::scan_export_section(wasmmod, curr, sec_end);
                     break;
                 }
-                case ::uwvm::wasm::section_type::start_sec: break;
+                case ::uwvm::wasm::section_type::start_sec:
+                {
+                    ::uwvm::wasm::scan_start_section(wasmmod, curr, sec_end);
+                    break;
+                }
                 case ::uwvm::wasm::section_type::element_sec: break;
                 case ::uwvm::wasm::section_type::code_sec: break;
                 case ::uwvm::wasm::section_type::data_sec: break;

@@ -6,3 +6,4 @@
 #include "section/memory.h"
 #include "section/global.h"
 #include "section/export.h"
+#include "section/start.h"
