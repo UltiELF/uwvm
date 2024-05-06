@@ -13,7 +13,8 @@ namespace uwvm
 
     namespace details
     {
-        inline constexpr ::uwvm::cmdline::parameter const* parameter_unsort[]{
+        inline constexpr ::uwvm::cmdline::parameter const* parameter_unsort[]
+        {
 #include "parainc.h"
         };
     }  // namespace details
