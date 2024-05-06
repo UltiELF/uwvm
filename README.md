@@ -18,6 +18,10 @@
         href="https://discord.gg/xkvGy79e">
         <img src="https://img.shields.io/badge/chat-on%20Discord-7289da.svg" , alt="Discord" />
     </a>
+    <a
+        href="https://kook.top/L7rWIo">
+        <img src="https://img.shields.io/badge/chat-on%20KOOK-6bff1d.svg" , alt="KOOK" />
+    </a>
 </div>
 
 |[简体中文](README.zh_CN.md)|
@@ -25,6 +29,7 @@
 ## Contact Us
 
 - [Discord](https://discord.gg/xkvGy79e)
+- [KOOK](https://kook.top/L7rWIo)
 - QQ: [137136029](http://qm.qq.com/cgi-bin/qm/qr?_wv=1027&k=VwOd_SiQ31UIiX_QtI047ngYYgkzvvlB&authKey=HJecYKgB1HQCtIplBkNjeSxlat8OgNXtk47QURCS6y2c7dAifwHaKZaURIci6yE3&noverify=0&group_code=137136029)
 - repositories: [Gitee](https://gitee.com/UltiELF/uwvm), [GitHub](https://github.com/UltiELF/uwvm)
 
