@@ -1,4 +1,4 @@
-// RUN: %libomp-cxx-compile-and-run
+﻿// RUN: %libomp-cxx-compile-and-run
 
 /*
  * This test aims to check whether hidden helper task can work with regular task

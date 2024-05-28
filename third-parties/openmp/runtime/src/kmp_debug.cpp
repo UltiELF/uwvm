@@ -1,4 +1,4 @@
-/*
+﻿/*
  * kmp_debug.cpp -- debug utilities for the Guide library
  */
 

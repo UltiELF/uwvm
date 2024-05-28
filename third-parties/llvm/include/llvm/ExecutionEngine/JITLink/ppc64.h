@@ -1,4 +1,4 @@
-//===--- ppc64.h - Generic JITLink ppc64 edge kinds, utilities --*- C++ -*-===//
+﻿//===--- ppc64.h - Generic JITLink ppc64 edge kinds, utilities --*- C++ -*-===//
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
 // See https://llvm.org/LICENSE.txt for license information.

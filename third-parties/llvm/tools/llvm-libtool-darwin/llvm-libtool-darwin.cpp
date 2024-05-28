@@ -1,4 +1,4 @@
-//===-- llvm-libtool-darwin.cpp - a tool for creating libraries -----------===//
+﻿//===-- llvm-libtool-darwin.cpp - a tool for creating libraries -----------===//
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
 // See https://llvm.org/LICENSE.txt for license information.

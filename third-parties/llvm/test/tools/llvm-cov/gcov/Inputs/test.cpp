@@ -1,4 +1,4 @@
-#include "test.h"
+﻿#include "test.h"
 #include <cstdlib>
 
 bool on = false;

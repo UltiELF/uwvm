@@ -1,4 +1,4 @@
-/*-
+﻿/*-
  * This code is derived from OpenBSD's libc/regex, original license follows:
  *
  * Copyright (c) 1992, 1993, 1994 Henry Spencer.

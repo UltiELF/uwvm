@@ -1,4 +1,4 @@
-/*===-- llvm-c/blake3.h - BLAKE3 C Interface ----------------------*- C -*-===*\
+﻿/*===-- llvm-c/blake3.h - BLAKE3 C Interface ----------------------*- C -*-===*\
 |*                                                                            *|
 |* Released into the public domain with CC0 1.0                               *|
 |* See 'llvm/lib/Support/BLAKE3/LICENSE' for info.                            *|

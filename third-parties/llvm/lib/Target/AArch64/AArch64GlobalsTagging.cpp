@@ -1,4 +1,4 @@
-//===- AArch64GlobalsTagging.cpp - Global tagging in IR -------------------===//
+﻿//===- AArch64GlobalsTagging.cpp - Global tagging in IR -------------------===//
 //
 //                     The LLVM Compiler Infrastructure
 //

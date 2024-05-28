@@ -1,4 +1,4 @@
-//===- llvm/ADT/ilist_node_options.h - ilist_node Options -------*- C++ -*-===//
+﻿//===- llvm/ADT/ilist_node_options.h - ilist_node Options -------*- C++ -*-===//
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
 // See https://llvm.org/LICENSE.txt for license information.

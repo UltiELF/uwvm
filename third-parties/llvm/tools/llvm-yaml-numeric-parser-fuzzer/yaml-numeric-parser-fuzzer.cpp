@@ -1,4 +1,4 @@
-//===-- yaml-numeric-parser-fuzzer.cpp - Fuzzer for YAML numeric parser ---===//
+﻿//===-- yaml-numeric-parser-fuzzer.cpp - Fuzzer for YAML numeric parser ---===//
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
 // See https://llvm.org/LICENSE.txt for license information.

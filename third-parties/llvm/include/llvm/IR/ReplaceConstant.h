@@ -1,4 +1,4 @@
-//===- ReplaceConstant.h - Replacing LLVM constant expressions --*- C++ -*-===//
+﻿//===- ReplaceConstant.h - Replacing LLVM constant expressions --*- C++ -*-===//
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
 // See https://llvm.org/LICENSE.txt for license information.

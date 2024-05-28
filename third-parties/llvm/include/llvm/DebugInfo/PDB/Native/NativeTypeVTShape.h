@@ -1,4 +1,4 @@
-//===- NativeTypeVTShape.h - info about virtual table shape ------*- C++-*-===//
+﻿//===- NativeTypeVTShape.h - info about virtual table shape ------*- C++-*-===//
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
 // See https://llvm.org/LICENSE.txt for license information.

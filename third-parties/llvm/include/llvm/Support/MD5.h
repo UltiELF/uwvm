@@ -1,4 +1,4 @@
-/* -*- C++ -*-
+﻿/* -*- C++ -*-
  * This code is derived from (original license follows):
  *
  * This is an OpenSSL-compatible implementation of the RSA Data Security, Inc.

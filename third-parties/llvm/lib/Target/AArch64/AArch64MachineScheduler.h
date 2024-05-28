@@ -1,4 +1,4 @@
-//===- AArch64MachineScheduler.h - Custom AArch64 MI scheduler --*- C++ -*-===//
+﻿//===- AArch64MachineScheduler.h - Custom AArch64 MI scheduler --*- C++ -*-===//
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
 // See https://llvm.org/LICENSE.txt for license information.

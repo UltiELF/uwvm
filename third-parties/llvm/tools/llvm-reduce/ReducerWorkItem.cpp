@@ -1,4 +1,4 @@
-//===- ReducerWorkItem.cpp - Wrapper for Module and MachineFunction -------===//
+﻿//===- ReducerWorkItem.cpp - Wrapper for Module and MachineFunction -------===//
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
 // See https://llvm.org/LICENSE.txt for license information.

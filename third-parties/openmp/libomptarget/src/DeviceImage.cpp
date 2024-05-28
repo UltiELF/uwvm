@@ -1,4 +1,4 @@
-//===-- DeviceImage.cpp - Representation of the device code/image ---------===//
+﻿//===-- DeviceImage.cpp - Representation of the device code/image ---------===//
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
 // See https://llvm.org/LICENSE.txt for license information.

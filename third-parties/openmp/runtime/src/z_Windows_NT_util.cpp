@@ -1,4 +1,4 @@
-/*
+﻿/*
  * z_Windows_NT_util.cpp -- platform specific routines.
  */
 

@@ -1,4 +1,4 @@
-#if defined(WIN32) || defined(_WIN32)
+﻿#if defined(WIN32) || defined(_WIN32)
 #include <windows.h>
 #define delay() Sleep(1);
 #else

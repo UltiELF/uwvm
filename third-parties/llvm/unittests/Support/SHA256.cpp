@@ -1,4 +1,4 @@
-//===- llvm/unittest/Support/SHA256Test.cpp - SHA256 tests
+﻿//===- llvm/unittest/Support/SHA256Test.cpp - SHA256 tests
 //----------------------===//
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.

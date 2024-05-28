@@ -1,4 +1,4 @@
-//==- RegAllocScore.h - evaluate regalloc policy quality  ----------*-C++-*-==//
+﻿//==- RegAllocScore.h - evaluate regalloc policy quality  ----------*-C++-*-==//
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
 // See https://llvm.org/LICENSE.txt for license information.

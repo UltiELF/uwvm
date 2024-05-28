@@ -1,4 +1,4 @@
-/*
+﻿/*
  * kmp_error.h -- PTS functions for error checking at runtime.
  */
 

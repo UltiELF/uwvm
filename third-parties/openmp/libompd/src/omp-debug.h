@@ -1,4 +1,4 @@
-/*
+﻿/*
  * omp-debug.h
  *
  *  Created on: Jan 14, 2015

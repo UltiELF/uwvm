@@ -1,4 +1,4 @@
-//===- IPDBSession.h - base interface for a PDB symbol context --*- C++ -*-===//
+﻿//===- IPDBSession.h - base interface for a PDB symbol context --*- C++ -*-===//
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
 // See https://llvm.org/LICENSE.txt for license information.

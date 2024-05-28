@@ -1,4 +1,4 @@
-//=======- AliasSetTrackerTest.cpp - Unit test for the Alias Set Tracker  -===//
+﻿//=======- AliasSetTrackerTest.cpp - Unit test for the Alias Set Tracker  -===//
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
 // See https://llvm.org/LICENSE.txt for license information.

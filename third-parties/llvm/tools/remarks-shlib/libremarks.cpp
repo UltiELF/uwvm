@@ -1,4 +1,4 @@
-//===-libremarks.cpp - LLVM Remarks Shared Library ------------------------===//
+﻿//===-libremarks.cpp - LLVM Remarks Shared Library ------------------------===//
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
 // See https://llvm.org/LICENSE.txt for license information.

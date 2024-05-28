@@ -1,4 +1,4 @@
-// RUN: %libomptarget-compilexx-generic && %libomptarget-run-fail-generic
+﻿// RUN: %libomptarget-compilexx-generic && %libomptarget-run-fail-generic
 // RUN: %libomptarget-compileoptxx-generic && %libomptarget-run-fail-generic
 
 int main(int argc, char *argv[]) {

@@ -1,4 +1,4 @@
-//===-- R600AsmPrinter.h - Print R600 assembly code -------------*- C++ -*-===//
+﻿//===-- R600AsmPrinter.h - Print R600 assembly code -------------*- C++ -*-===//
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
 // See https://llvm.org/LICENSE.txt for license information.

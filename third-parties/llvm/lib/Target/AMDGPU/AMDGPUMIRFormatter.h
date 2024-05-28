@@ -1,4 +1,4 @@
-//===-- llvm/Target/AMDGPU/AMDGPUMIRFormatter.h -----------------*- C++ -*-===//
+﻿//===-- llvm/Target/AMDGPU/AMDGPUMIRFormatter.h -----------------*- C++ -*-===//
 //
 //                     The LLVM Compiler Infrastructure
 //

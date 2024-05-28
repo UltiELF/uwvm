@@ -1,4 +1,4 @@
-//===- llvm/ADT/SuffixTreeNode.cpp - Nodes for SuffixTrees --------*- C++
+﻿//===- llvm/ADT/SuffixTreeNode.cpp - Nodes for SuffixTrees --------*- C++
 //-*-===//
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.

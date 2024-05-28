@@ -1,4 +1,4 @@
-/*
+﻿/*
  * kmp_barrier.cpp
  */
 

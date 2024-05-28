@@ -1,4 +1,4 @@
-/*
+﻿/*
  * kmp_utils.h -- Utilities that used internally
  */
 

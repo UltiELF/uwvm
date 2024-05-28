@@ -1,4 +1,4 @@
-/*
+﻿/*
  * @@name:   ompd-types.h
  */
 

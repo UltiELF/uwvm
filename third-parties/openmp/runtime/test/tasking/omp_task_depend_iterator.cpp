@@ -1,4 +1,4 @@
-// RUN: %libomp-cxx-compile-and-run
+﻿// RUN: %libomp-cxx-compile-and-run
 
 /*
 

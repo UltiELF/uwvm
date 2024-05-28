@@ -1,4 +1,4 @@
-//===- LoopSimplify.cpp - Loop Canonicalization Pass ----------------------===//
+﻿//===- LoopSimplify.cpp - Loop Canonicalization Pass ----------------------===//
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
 // See https://llvm.org/LICENSE.txt for license information.

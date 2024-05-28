@@ -1,4 +1,4 @@
-//===-- R600InstPrinter.cpp - AMDGPU MC Inst -> ASM ---------------------===//
+﻿//===-- R600InstPrinter.cpp - AMDGPU MC Inst -> ASM ---------------------===//
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
 // See https://llvm.org/LICENSE.txt for license information.

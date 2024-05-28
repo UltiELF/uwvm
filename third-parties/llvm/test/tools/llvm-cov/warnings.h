@@ -1,4 +1,4 @@
-// RUN: llvm-cov show %S/Inputs/prevent_false_instantiations.covmapping -instr-profile %S/Inputs/elf_binary_comdat.profdata -path-equivalence=/tmp,%S | FileCheck %s -allow-empty -check-prefix=FAKE-FILE-STDOUT
+﻿// RUN: llvm-cov show %S/Inputs/prevent_false_instantiations.covmapping -instr-profile %S/Inputs/elf_binary_comdat.profdata -path-equivalence=/tmp,%S | FileCheck %s -allow-empty -check-prefix=FAKE-FILE-STDOUT
 // RUN: llvm-cov show %S/Inputs/prevent_false_instantiations.covmapping -instr-profile %S/Inputs/elf_binary_comdat.profdata -path-equivalence=/tmp,%S 2>&1 | FileCheck %s -check-prefix=FAKE-FILE-STDERR
 // RUN: not llvm-cov report %S/Inputs/prevent_false_instantiations.covmapping -instr-profile %S/Inputs/elf_binary_comdat.profdata -format=html
 // RUN: not llvm-cov export %S/Inputs/prevent_false_instantiations.covmapping -instr-profile %S/Inputs/elf_binary_comdat.profdata -format=html

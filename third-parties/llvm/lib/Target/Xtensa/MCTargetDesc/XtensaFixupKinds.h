@@ -1,4 +1,4 @@
-//===-- XtensaMCFixups.h - Xtensa-specific fixup entries --------*- C++ -*-===//
+﻿//===-- XtensaMCFixups.h - Xtensa-specific fixup entries --------*- C++ -*-===//
 //
 //                     The LLVM Compiler Infrastructure
 //

@@ -1,4 +1,4 @@
-// RUN: %libomptarget-compilexx-run-and-check-generic
+﻿// RUN: %libomptarget-compilexx-run-and-check-generic
 
 // REQUIRES: libc
 

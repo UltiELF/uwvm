@@ -1,4 +1,4 @@
-// <copyright file="Program.cpp" company="Microsoft Corporation">
+﻿// <copyright file="Program.cpp" company="Microsoft Corporation">
 // Copyright (C) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT license.
 // </copyright>

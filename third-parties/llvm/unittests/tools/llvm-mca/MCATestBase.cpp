@@ -1,4 +1,4 @@
-#include "MCATestBase.h"
+﻿#include "MCATestBase.h"
 #include "Views/SummaryView.h"
 #include "llvm/MCA/CustomBehaviour.h"
 #include "llvm/MCA/InstrBuilder.h"

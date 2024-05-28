@@ -1,4 +1,4 @@
-//=======- CaptureTrackingTest.cpp - Unit test for the Capture Tracking ---===//
+﻿//=======- CaptureTrackingTest.cpp - Unit test for the Capture Tracking ---===//
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
 // See https://llvm.org/LICENSE.txt for license information.

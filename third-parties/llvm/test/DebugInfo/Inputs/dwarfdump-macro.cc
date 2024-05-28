@@ -1,4 +1,4 @@
-#define M1 Value1
+﻿#define M1 Value1
 #include "dwarfdump-macro.h"
 #define M2(x, y)   ((x)+(y)* Value2)
 

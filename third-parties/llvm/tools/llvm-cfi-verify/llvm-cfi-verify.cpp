@@ -1,4 +1,4 @@
-//===-- llvm-cfi-verify.cpp - CFI Verification tool for LLVM --------------===//
+﻿//===-- llvm-cfi-verify.cpp - CFI Verification tool for LLVM --------------===//
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
 // See https://llvm.org/LICENSE.txt for license information.

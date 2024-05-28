@@ -1,4 +1,4 @@
-/*
+﻿/*
  * kmp_settings.cpp -- Initialize environment variables
  */
 

@@ -1,4 +1,4 @@
-//===-- llvm/Support/Signposts.h - Interval debug annotations ---*- C++ -*-===//
+﻿//===-- llvm/Support/Signposts.h - Interval debug annotations ---*- C++ -*-===//
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
 // See https://llvm.org/LICENSE.txt for license information.

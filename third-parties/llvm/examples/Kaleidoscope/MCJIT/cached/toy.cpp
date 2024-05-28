@@ -1,4 +1,4 @@
-#define MINIMAL_STDERR_OUTPUT
+﻿#define MINIMAL_STDERR_OUTPUT
 
 #include "llvm/Analysis/Passes.h"
 #include "llvm/ExecutionEngine/ExecutionEngine.h"

@@ -1,4 +1,4 @@
-/*
+﻿/*
  * kmp_ftn_stdcall.cpp -- Fortran __stdcall linkage support for OpenMP.
  */
 

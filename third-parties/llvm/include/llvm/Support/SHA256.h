@@ -1,4 +1,4 @@
-//====- SHA256.cpp - SHA256 implementation ---*- C++ -* ======//
+﻿//====- SHA256.cpp - SHA256 implementation ---*- C++ -* ======//
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
 // See https://llvm.org/LICENSE.txt for license information.

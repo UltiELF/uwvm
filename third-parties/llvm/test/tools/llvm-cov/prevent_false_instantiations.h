@@ -1,4 +1,4 @@
-// Checks that function instantiations don't go to a wrong file.
+﻿// Checks that function instantiations don't go to a wrong file.
 
 // INSTANTIATION-NOT: {{_Z5func[1,2]v}}
 // NAN-NOT: {{[ \t]+}}nan%

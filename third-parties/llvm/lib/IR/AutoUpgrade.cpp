@@ -1,4 +1,4 @@
-//===-- AutoUpgrade.cpp - Implement auto-upgrade helper functions ---------===//
+﻿//===-- AutoUpgrade.cpp - Implement auto-upgrade helper functions ---------===//
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
 // See https://llvm.org/LICENSE.txt for license information.

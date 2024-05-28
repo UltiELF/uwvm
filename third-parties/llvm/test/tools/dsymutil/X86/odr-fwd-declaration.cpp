@@ -1,4 +1,4 @@
-/* Compile with:
+﻿/* Compile with:
    for FILE in `seq 3`; do
      clang -g -c  X86/odr-fwd-declaration.cpp -DFILE$FILE -o Inputs/odr-fwd-declaration/$FILE.o
    done

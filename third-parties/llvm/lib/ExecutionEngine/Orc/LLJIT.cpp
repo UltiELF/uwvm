@@ -1,4 +1,4 @@
-//===--------- LLJIT.cpp - An ORC-based JIT for compiling LLVM IR ---------===//
+﻿//===--------- LLJIT.cpp - An ORC-based JIT for compiling LLVM IR ---------===//
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
 // See https://llvm.org/LICENSE.txt for license information.

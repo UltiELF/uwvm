@@ -1,4 +1,4 @@
-/*===-- llvm-c/Deprecated.h - Deprecation macro -------------------*- C -*-===*\
+﻿/*===-- llvm-c/Deprecated.h - Deprecation macro -------------------*- C -*-===*\
 |*                                                                            *|
 |* Part of the LLVM Project, under the Apache License v2.0 with LLVM          *|
 |* Exceptions.                                                                *|

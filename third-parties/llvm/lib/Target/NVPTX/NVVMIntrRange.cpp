@@ -1,4 +1,4 @@
-//===- NVVMIntrRange.cpp - Set !range metadata for NVVM intrinsics --------===//
+﻿//===- NVVMIntrRange.cpp - Set !range metadata for NVVM intrinsics --------===//
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
 // See https://llvm.org/LICENSE.txt for license information.

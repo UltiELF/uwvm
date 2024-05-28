@@ -1,4 +1,4 @@
-//===- ArgList.cpp - Argument List Management -----------------------------===//
+﻿//===- ArgList.cpp - Argument List Management -----------------------------===//
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
 // See https://llvm.org/LICENSE.txt for license information.

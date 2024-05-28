@@ -1,4 +1,4 @@
-// Basic handling of line counts.
+﻿// Basic handling of line counts.
 // RUN: llvm-profdata merge %S/Inputs/lineExecutionCounts.proftext -o %t.profdata
 
 // before any coverage              // WHOLE-FILE: [[@LINE]]|      |// before

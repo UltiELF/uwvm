@@ -1,4 +1,4 @@
-//===- Cloning.cpp - Unit tests for the Cloner ----------------------------===//
+﻿//===- Cloning.cpp - Unit tests for the Cloner ----------------------------===//
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
 // See https://llvm.org/LICENSE.txt for license information.

@@ -1,4 +1,4 @@
-//===-- VEMachineFunctionInfo.cpp - VE Machine Function Info --------------===//
+﻿//===-- VEMachineFunctionInfo.cpp - VE Machine Function Info --------------===//
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
 // See https://llvm.org/LICENSE.txt for license information.

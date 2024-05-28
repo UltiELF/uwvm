@@ -1,4 +1,4 @@
-//===-- XtensaMCAsmBackend.cpp - Xtensa assembler backend -----------------===//
+﻿//===-- XtensaMCAsmBackend.cpp - Xtensa assembler backend -----------------===//
 //
 //                     The LLVM Compiler Infrastructure
 //

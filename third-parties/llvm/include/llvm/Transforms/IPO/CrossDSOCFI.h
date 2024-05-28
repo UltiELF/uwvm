@@ -1,4 +1,4 @@
-//===-- CrossDSOCFI.cpp - Externalize this module's CFI checks --*- C++ -*-===//
+﻿//===-- CrossDSOCFI.cpp - Externalize this module's CFI checks --*- C++ -*-===//
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
 // See https://llvm.org/LICENSE.txt for license information.

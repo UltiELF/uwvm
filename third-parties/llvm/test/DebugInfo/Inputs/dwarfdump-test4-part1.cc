@@ -1,4 +1,4 @@
-#include "dwarfdump-test4-decl.h"
+﻿#include "dwarfdump-test4-decl.h"
 int c(){a();}
 
 // Built with gcc 4.6.3

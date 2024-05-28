@@ -1,4 +1,4 @@
-#include "kmp_config.h"
+﻿#include "kmp_config.h"
 
 #if USE_DEBUGGER
 /*

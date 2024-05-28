@@ -1,4 +1,4 @@
-//===-------- SimplePackedSerializationTest.cpp - Test SPS scheme ---------===//
+﻿//===-------- SimplePackedSerializationTest.cpp - Test SPS scheme ---------===//
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
 // See https://llvm.org/LICENSE.txt for license information.

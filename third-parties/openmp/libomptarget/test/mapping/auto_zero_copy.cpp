@@ -1,4 +1,4 @@
-// clang-format off
+﻿// clang-format off
 // RUN: %libomptarget-compilexx-generic
 // RUN: env OMPX_APU_MAPS=1 HSA_XNACK=1 LIBOMPTARGET_INFO=30 %libomptarget-run-generic 2>&1 \
 // RUN: | %fcheck-generic -check-prefix=INFO_ZERO -check-prefix=CHECK

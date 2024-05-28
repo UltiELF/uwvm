@@ -1,4 +1,4 @@
-//===-- llvm/Support/raw_socket_stream.h - Socket streams --*- C++ -*-===//
+﻿//===-- llvm/Support/raw_socket_stream.h - Socket streams --*- C++ -*-===//
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
 // See https://llvm.org/LICENSE.txt for license information.

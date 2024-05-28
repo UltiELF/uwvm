@@ -1,4 +1,4 @@
-/*
+﻿/*
  * kmp_collapse.h -- header for loop collapse feature
  */
 

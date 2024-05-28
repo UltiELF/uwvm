@@ -1,4 +1,4 @@
-/*===-- llvm-c/Object.h - Object Lib C Iface --------------------*- C++ -*-===*/
+﻿/*===-- llvm-c/Object.h - Object Lib C Iface --------------------*- C++ -*-===*/
 /*                                                                            */
 /* Part of the LLVM Project, under the Apache License v2.0 with LLVM          */
 /* Exceptions.                                                                */

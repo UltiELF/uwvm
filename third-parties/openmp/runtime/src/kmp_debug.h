@@ -1,4 +1,4 @@
-/*
+﻿/*
  * kmp_debug.h -- debug / assertion code for Assure library
  */
 

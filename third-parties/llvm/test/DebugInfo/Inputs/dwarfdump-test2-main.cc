@@ -1,4 +1,4 @@
-extern "C" int a();
+﻿extern "C" int a();
 
 int main() {
   return a();

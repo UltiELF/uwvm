@@ -1,4 +1,4 @@
-//===-- CoalesceBranches.cpp - Coalesce blocks with the same condition ---===//
+﻿//===-- CoalesceBranches.cpp - Coalesce blocks with the same condition ---===//
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
 // See https://llvm.org/LICENSE.txt for license information.

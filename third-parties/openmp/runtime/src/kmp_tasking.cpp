@@ -1,4 +1,4 @@
-/*
+﻿/*
  * kmp_tasking.cpp -- OpenMP 3.0 tasking support.
  */
 

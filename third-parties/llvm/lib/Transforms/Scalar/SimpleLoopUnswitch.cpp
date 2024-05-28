@@ -1,4 +1,4 @@
-///===- SimpleLoopUnswitch.cpp - Hoist loop-invariant control flow ---------===//
+﻿///===- SimpleLoopUnswitch.cpp - Hoist loop-invariant control flow ---------===//
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
 // See https://llvm.org/LICENSE.txt for license information.

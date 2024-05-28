@@ -1,4 +1,4 @@
-#include <omp-tools.h>
+﻿#include <omp-tools.h>
 
 // From openmp/runtime/test/ompt/callback.h
 #define register_ompt_callback_t(name, type)                                   \

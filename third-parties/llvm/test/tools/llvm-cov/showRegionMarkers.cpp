@@ -1,4 +1,4 @@
-// RUN: llvm-profdata merge %S/Inputs/regionMarkers.proftext -o %t.profdata
+﻿// RUN: llvm-profdata merge %S/Inputs/regionMarkers.proftext -o %t.profdata
 
 int main() {                      // CHECK-NOT: Marker at [[@LINE]]:12
   int x = 0;

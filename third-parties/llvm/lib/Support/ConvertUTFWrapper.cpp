@@ -1,4 +1,4 @@
-//===-- ConvertUTFWrapper.cpp - Wrap ConvertUTF.h with clang data types -----===
+﻿//===-- ConvertUTFWrapper.cpp - Wrap ConvertUTF.h with clang data types -----===
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
 // See https://llvm.org/LICENSE.txt for license information.

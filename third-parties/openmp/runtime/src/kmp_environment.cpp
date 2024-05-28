@@ -1,4 +1,4 @@
-/*
+﻿/*
  * kmp_environment.cpp -- Handle environment variables OS-independently.
  */
 

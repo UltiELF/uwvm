@@ -1,4 +1,4 @@
-//==- MSP430FrameLowering.h - Define frame lowering for MSP430 --*- C++ -*--==//
+﻿//==- MSP430FrameLowering.h - Define frame lowering for MSP430 --*- C++ -*--==//
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
 // See https://llvm.org/LICENSE.txt for license information.

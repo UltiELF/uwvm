@@ -1,4 +1,4 @@
-//===- llvm/Analysis/Trace.h - Represent one trace of LLVM code -*- C++ -*-===//
+﻿//===- llvm/Analysis/Trace.h - Represent one trace of LLVM code -*- C++ -*-===//
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
 // See https://llvm.org/LICENSE.txt for license information.

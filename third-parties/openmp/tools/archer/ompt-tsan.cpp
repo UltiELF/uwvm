@@ -1,4 +1,4 @@
-/*
+﻿/*
  * ompt-tsan.cpp -- Archer runtime library, TSan annotations for Archer
  */
 

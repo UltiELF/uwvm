@@ -1,4 +1,4 @@
-//===-- TargetParser - Parser for target features ---------------*- C++ -*-===//
+﻿//===-- TargetParser - Parser for target features ---------------*- C++ -*-===//
 //
 //                     The LLVM Compiler Infrastructure
 //

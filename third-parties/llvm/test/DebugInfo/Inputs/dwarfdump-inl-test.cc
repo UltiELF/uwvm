@@ -1,4 +1,4 @@
-#include "dwarfdump-inl-test.h"
+﻿#include "dwarfdump-inl-test.h"
 static inline int inlined_f() {
   volatile int x = inlined_g();
   return x;

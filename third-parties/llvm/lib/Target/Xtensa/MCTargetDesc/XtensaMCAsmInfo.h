@@ -1,4 +1,4 @@
-//===-- XtensaMCAsmInfo.h - Xtensa Asm Info --------------------*- C++ -*--===//
+﻿//===-- XtensaMCAsmInfo.h - Xtensa Asm Info --------------------*- C++ -*--===//
 //
 //                     The LLVM Compiler Infrastructure
 //

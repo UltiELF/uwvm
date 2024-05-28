@@ -1,4 +1,4 @@
-// clang-format off
+﻿// clang-format off
 // This file does not contain any code; it just contains additional text and formatting
 // for doxygen.
 

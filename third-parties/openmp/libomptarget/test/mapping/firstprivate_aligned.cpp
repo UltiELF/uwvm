@@ -1,4 +1,4 @@
-// RUN: %libomptarget-compilexx-generic -O3 && %libomptarget-run-generic
+﻿// RUN: %libomptarget-compilexx-generic -O3 && %libomptarget-run-generic
 
 #include <stdio.h>
 

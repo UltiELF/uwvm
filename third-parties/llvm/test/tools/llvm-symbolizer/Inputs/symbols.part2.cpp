@@ -1,4 +1,4 @@
-#include "symbols.h"
+﻿#include "symbols.h"
 
 int static static_var = 4;
 

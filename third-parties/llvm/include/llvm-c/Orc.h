@@ -1,4 +1,4 @@
-/*===---------------- llvm-c/Orc.h - OrcV2 C bindings -----------*- C++ -*-===*\
+﻿/*===---------------- llvm-c/Orc.h - OrcV2 C bindings -----------*- C++ -*-===*\
 |*                                                                            *|
 |* Part of the LLVM Project, under the Apache License v2.0 with LLVM          *|
 |* Exceptions.                                                                *|

@@ -1,4 +1,4 @@
-#include "Views/SummaryView.h"
+﻿#include "Views/SummaryView.h"
 #include "X86TestBase.h"
 #include "llvm/ADT/SmallPtrSet.h"
 #include "llvm/MCA/CustomBehaviour.h"

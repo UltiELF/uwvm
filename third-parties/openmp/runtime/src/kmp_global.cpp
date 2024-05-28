@@ -1,4 +1,4 @@
-/*
+﻿/*
  * kmp_global.cpp -- KPTS global variables for runtime support library
  */
 

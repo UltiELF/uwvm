@@ -1,4 +1,4 @@
-//===-- Thumb2ITBlockPass.cpp - Insert Thumb-2 IT blocks ------------------===//
+﻿//===-- Thumb2ITBlockPass.cpp - Insert Thumb-2 IT blocks ------------------===//
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
 // See https://llvm.org/LICENSE.txt for license information.

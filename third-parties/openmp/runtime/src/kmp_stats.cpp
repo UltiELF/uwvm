@@ -1,4 +1,4 @@
-/** @file kmp_stats.cpp
+﻿/** @file kmp_stats.cpp
  * Statistics gathering and processing.
  */
 

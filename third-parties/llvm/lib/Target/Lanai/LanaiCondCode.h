@@ -1,4 +1,4 @@
-// The encoding used for conditional codes used in BR instructions
+﻿// The encoding used for conditional codes used in BR instructions
 
 #ifndef LLVM_LIB_TARGET_LANAI_LANAICONDCODE_H
 #define LLVM_LIB_TARGET_LANAI_LANAICONDCODE_H

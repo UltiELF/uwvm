@@ -1,4 +1,4 @@
-/** @file kmp_stats_timing.cpp
+﻿/** @file kmp_stats_timing.cpp
  * Timing functions
  */
 

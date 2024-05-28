@@ -1,4 +1,4 @@
-//===- Local.h - Functions to perform local transformations -----*- C++ -*-===//
+﻿//===- Local.h - Functions to perform local transformations -----*- C++ -*-===//
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
 // See https://llvm.org/LICENSE.txt for license information.

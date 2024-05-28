@@ -1,4 +1,4 @@
-//===-- llvm-dwarfdump.cpp - Debug info dumping utility for llvm ----------===//
+﻿//===-- llvm-dwarfdump.cpp - Debug info dumping utility for llvm ----------===//
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
 // See https://llvm.org/LICENSE.txt for license information.

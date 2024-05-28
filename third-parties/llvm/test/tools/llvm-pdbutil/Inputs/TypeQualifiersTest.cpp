@@ -1,4 +1,4 @@
-// Compile with "cl /c /Zi /GR- TypeQualifiersTest.cpp"
+﻿// Compile with "cl /c /Zi /GR- TypeQualifiersTest.cpp"
 // Link with "link TypeQualifiersTest.obj /debug /nodefaultlib /entry:main"
 
 union Union {

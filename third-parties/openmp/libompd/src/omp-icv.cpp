@@ -1,4 +1,4 @@
-/*
+﻿/*
  * omp-icv.cpp -- OMPD Internal Control Variable handling
  */
 

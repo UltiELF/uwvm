@@ -1,4 +1,4 @@
-//===- LoopStrengthReduce.cpp - Strength Reduce IVs in Loops --------------===//
+﻿//===- LoopStrengthReduce.cpp - Strength Reduce IVs in Loops --------------===//
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
 // See https://llvm.org/LICENSE.txt for license information.

@@ -1,4 +1,4 @@
-inline int inlined_h() {
+﻿inline int inlined_h() {
   volatile int z = 0;
   return z;
 }

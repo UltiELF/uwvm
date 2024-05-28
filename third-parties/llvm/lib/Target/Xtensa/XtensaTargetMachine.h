@@ -1,4 +1,4 @@
-//===-- XtensaTargetMachine.h - Define TargetMachine for Xtensa -*- C++ -*-===//
+﻿//===-- XtensaTargetMachine.h - Define TargetMachine for Xtensa -*- C++ -*-===//
 //
 //                     The LLVM Compiler Infrastructure
 //

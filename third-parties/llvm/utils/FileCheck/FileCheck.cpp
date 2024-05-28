@@ -1,4 +1,4 @@
-//===- FileCheck.cpp - Check that File's Contents match what is expected --===//
+﻿//===- FileCheck.cpp - Check that File's Contents match what is expected --===//
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
 // See https://llvm.org/LICENSE.txt for license information.

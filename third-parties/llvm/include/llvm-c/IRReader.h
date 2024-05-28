@@ -1,4 +1,4 @@
-/*===-- llvm-c/IRReader.h - IR Reader C Interface -----------------*- C -*-===*\
+﻿/*===-- llvm-c/IRReader.h - IR Reader C Interface -----------------*- C -*-===*\
 |*                                                                            *|
 |* Part of the LLVM Project, under the Apache License v2.0 with LLVM          *|
 |* Exceptions.                                                                *|

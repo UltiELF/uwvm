@@ -1,4 +1,4 @@
-struct foo {};
+﻿struct foo {};
 struct bar {};
 void sink(void*);
 int main() {

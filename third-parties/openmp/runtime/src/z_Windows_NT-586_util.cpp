@@ -1,4 +1,4 @@
-/*
+﻿/*
  * z_Windows_NT-586_util.cpp -- platform specific routines.
  */
 

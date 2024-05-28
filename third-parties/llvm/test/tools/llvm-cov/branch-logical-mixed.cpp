@@ -1,4 +1,4 @@
-// RUN: llvm-profdata merge %S/Inputs/branch-logical-mixed.proftext -o %t.profdata
+﻿// RUN: llvm-profdata merge %S/Inputs/branch-logical-mixed.proftext -o %t.profdata
 // RUN: llvm-cov show --show-branches=count %S/Inputs/branch-logical-mixed.o32l -instr-profile %t.profdata -path-equivalence=/tmp,%S %s | FileCheck %s
 // RUN: llvm-cov report --show-branch-summary %S/Inputs/branch-logical-mixed.o32l -instr-profile %t.profdata -show-functions -path-equivalence=/tmp,%S %s | FileCheck %s -check-prefix=REPORT
 

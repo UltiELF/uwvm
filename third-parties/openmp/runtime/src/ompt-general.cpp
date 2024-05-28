@@ -1,4 +1,4 @@
-/*
+﻿/*
  * ompt-general.cpp -- OMPT implementation of interface functions
  */
 

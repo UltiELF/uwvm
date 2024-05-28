@@ -1,4 +1,4 @@
-// RUN: llvm-cov show %S/Inputs/templateInstantiations.covmapping -instr-profile %S/Inputs/templateInstantiations.profdata -path-equivalence=/tmp,%S %s | FileCheck -check-prefixes=SHARED,ALL %s
+﻿// RUN: llvm-cov show %S/Inputs/templateInstantiations.covmapping -instr-profile %S/Inputs/templateInstantiations.profdata -path-equivalence=/tmp,%S %s | FileCheck -check-prefixes=SHARED,ALL %s
 // RUN: llvm-cov show %S/Inputs/templateInstantiations.covmapping -instr-profile %S/Inputs/templateInstantiations.profdata -path-equivalence=/tmp,%S -name=_Z4funcIbEiT_ %s | FileCheck -check-prefixes=SHARED,FILTER %s
 
 // before coverage   // ALL:         [[@LINE]]|  |// before

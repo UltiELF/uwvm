@@ -1,4 +1,4 @@
-//===-- X86InstrFoldTables.h - X86 Instruction Folding Tables ---*- C++ -*-===//
+﻿//===-- X86InstrFoldTables.h - X86 Instruction Folding Tables ---*- C++ -*-===//
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
 // See https://llvm.org/LICENSE.txt for license information.

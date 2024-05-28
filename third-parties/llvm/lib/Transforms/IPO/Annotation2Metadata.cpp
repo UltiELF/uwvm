@@ -1,4 +1,4 @@
-//===-- Annotation2Metadata.cpp - Add !annotation metadata. ---------------===//
+﻿//===-- Annotation2Metadata.cpp - Add !annotation metadata. ---------------===//
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
 // See https://llvm.org/LICENSE.txt for license information.

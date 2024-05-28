@@ -1,4 +1,4 @@
-/*
+﻿/*
  * ompd-private.h
  */
 

@@ -1,4 +1,4 @@
-//===- ReduceDIMetadata.cpp - Specialized Delta pass for DebugInfo --------===//
+﻿//===- ReduceDIMetadata.cpp - Specialized Delta pass for DebugInfo --------===//
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
 // See https://llvm.org/LICENSE.txt for license information.

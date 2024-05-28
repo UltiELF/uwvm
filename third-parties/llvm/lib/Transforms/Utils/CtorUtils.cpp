@@ -1,4 +1,4 @@
-//===- CtorUtils.cpp - Helpers for working with global_ctors ----*- C++ -*-===//
+﻿//===- CtorUtils.cpp - Helpers for working with global_ctors ----*- C++ -*-===//
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
 // See https://llvm.org/LICENSE.txt for license information.

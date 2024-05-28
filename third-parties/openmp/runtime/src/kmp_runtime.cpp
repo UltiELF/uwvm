@@ -1,4 +1,4 @@
-/*
+﻿/*
  * kmp_runtime.cpp -- KPTS runtime support library
  */
 

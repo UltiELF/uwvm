@@ -1,4 +1,4 @@
-#ifndef LLVM_DWP_DWP_H
+﻿#ifndef LLVM_DWP_DWP_H
 #define LLVM_DWP_DWP_H
 
 #include "DWPStringPool.h"

@@ -1,4 +1,4 @@
-//===-- MipsSERegisterInfo.h - Mips32/64 Register Information ---*- C++ -*-===//
+﻿//===-- MipsSERegisterInfo.h - Mips32/64 Register Information ---*- C++ -*-===//
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
 // See https://llvm.org/LICENSE.txt for license information.

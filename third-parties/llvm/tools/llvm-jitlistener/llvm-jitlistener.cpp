@@ -1,4 +1,4 @@
-//===-- llvm-jitlistener.cpp - Utility for testing MCJIT event listener ---===//
+﻿//===-- llvm-jitlistener.cpp - Utility for testing MCJIT event listener ---===//
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
 // See https://llvm.org/LICENSE.txt for license information.

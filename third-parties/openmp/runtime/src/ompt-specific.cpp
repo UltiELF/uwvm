@@ -1,4 +1,4 @@
-/*
+﻿/*
  * ompt-specific.cpp -- OMPT internal functions
  */
 

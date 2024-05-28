@@ -1,4 +1,4 @@
-// Build with "cl.exe /Zi /GR- /GS- -EHs-c- every-function.cpp /link /debug /nodefaultlib /incremental:no /entry:main"
+﻿// Build with "cl.exe /Zi /GR- /GS- -EHs-c- every-function.cpp /link /debug /nodefaultlib /incremental:no /entry:main"
 // Getting functions with the correct calling conventions requires building in x86.
 
 // clang-format off

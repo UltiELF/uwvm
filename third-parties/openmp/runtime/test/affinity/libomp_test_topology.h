@@ -1,4 +1,4 @@
-#ifndef LIBOMP_TEST_TOPOLOGY_H
+﻿#ifndef LIBOMP_TEST_TOPOLOGY_H
 #define LIBOMP_TEST_TOPOLOGY_H
 
 #include "libomp_test_affinity.h"

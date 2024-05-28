@@ -1,4 +1,4 @@
-#include "callback.h"
+﻿#include "callback.h"
 #include <omp.h>
 
 int main()

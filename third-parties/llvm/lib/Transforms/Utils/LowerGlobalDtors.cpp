@@ -1,4 +1,4 @@
-//===-- LowerGlobalDtors.cpp - Lower @llvm.global_dtors -------------------===//
+﻿//===-- LowerGlobalDtors.cpp - Lower @llvm.global_dtors -------------------===//
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
 // See https://llvm.org/LICENSE.txt for license information.

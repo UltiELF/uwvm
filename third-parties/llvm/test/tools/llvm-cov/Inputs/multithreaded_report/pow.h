@@ -1,4 +1,4 @@
-template<typename T>
+﻿template<typename T>
 T pow(T b, T p) {
   if (!p)
     return 1;

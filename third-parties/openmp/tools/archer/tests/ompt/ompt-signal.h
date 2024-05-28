@@ -1,4 +1,4 @@
-/*
+﻿/*
  * ompt-signal.h -- Header providing low-level synchronization for tests
  */
 

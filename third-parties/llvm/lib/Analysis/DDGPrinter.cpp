@@ -1,4 +1,4 @@
-//===- DDGPrinter.cpp - DOT printer for the data dependence graph ----------==//
+﻿//===- DDGPrinter.cpp - DOT printer for the data dependence graph ----------==//
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
 // See https://llvm.org/LICENSE.txt for license information.

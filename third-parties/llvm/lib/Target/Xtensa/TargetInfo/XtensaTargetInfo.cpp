@@ -1,4 +1,4 @@
-//===-- XtensaTargetInfo.cpp - Xtensa Target Implementation ---------------===//
+﻿//===-- XtensaTargetInfo.cpp - Xtensa Target Implementation ---------------===//
 //
 //                     The LLVM Compiler Infrastructure
 //

@@ -1,4 +1,4 @@
-/*
+﻿/*
  * kmp_ftn_entry.h -- Fortran entry linkage support for OpenMP.
  */
 

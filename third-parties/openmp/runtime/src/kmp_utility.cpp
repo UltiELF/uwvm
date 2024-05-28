@@ -1,4 +1,4 @@
-/*
+﻿/*
  * kmp_utility.cpp -- Utility routines for the OpenMP support library.
  */
 

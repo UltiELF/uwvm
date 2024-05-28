@@ -1,4 +1,4 @@
-/*
+﻿/*
  * kmp_str.cpp -- String manipulation routines.
  */
 

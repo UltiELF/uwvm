@@ -1,4 +1,4 @@
-//===- AssumptionCache.cpp - Cache finding @llvm.assume calls -------------===//
+﻿//===- AssumptionCache.cpp - Cache finding @llvm.assume calls -------------===//
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
 // See https://llvm.org/LICENSE.txt for license information.

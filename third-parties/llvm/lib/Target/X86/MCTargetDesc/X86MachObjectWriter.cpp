@@ -1,4 +1,4 @@
-//===-- X86MachObjectWriter.cpp - X86 Mach-O Writer -----------------------===//
+﻿//===-- X86MachObjectWriter.cpp - X86 Mach-O Writer -----------------------===//
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
 // See https://llvm.org/LICENSE.txt for license information.

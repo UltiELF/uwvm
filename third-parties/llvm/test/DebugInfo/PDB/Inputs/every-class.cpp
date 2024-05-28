@@ -1,4 +1,4 @@
-// Build with "cl.exe /Z7 /GR- /GS- /GX- every-class.cpp /link /debug:full /nodefaultlib /incremental:no /entry:main"
+﻿// Build with "cl.exe /Z7 /GR- /GS- /GX- every-class.cpp /link /debug:full /nodefaultlib /incremental:no /entry:main"
 
 #include <stdint.h>
 

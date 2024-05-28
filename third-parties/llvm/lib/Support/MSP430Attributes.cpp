@@ -1,4 +1,4 @@
-//===-- MSP430Attributes.cpp - MSP430 Attributes --------------------------===//
+﻿//===-- MSP430Attributes.cpp - MSP430 Attributes --------------------------===//
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
 // See https://llvm.org/LICENSE.txt for license information.

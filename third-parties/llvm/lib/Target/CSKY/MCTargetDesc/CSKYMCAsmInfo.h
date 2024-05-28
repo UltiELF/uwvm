@@ -1,4 +1,4 @@
-//===-- CSKYMCAsmInfo.h - CSKY Asm Info ------------------------*- C++ -*--===//
+﻿//===-- CSKYMCAsmInfo.h - CSKY Asm Info ------------------------*- C++ -*--===//
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
 // See https://llvm.org/LICENSE.txt for license information.

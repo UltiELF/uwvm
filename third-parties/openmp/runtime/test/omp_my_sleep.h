@@ -1,4 +1,4 @@
-#ifndef MY_SLEEP_H
+﻿#ifndef MY_SLEEP_H
 #define MY_SLEEP_H
 
 /*! Utility function to have a sleep function with better resolution and

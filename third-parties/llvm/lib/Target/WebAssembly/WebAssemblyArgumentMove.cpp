@@ -1,4 +1,4 @@
-//===-- WebAssemblyArgumentMove.cpp - Argument instruction moving ---------===//
+﻿//===-- WebAssemblyArgumentMove.cpp - Argument instruction moving ---------===//
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
 // See https://llvm.org/LICENSE.txt for license information.

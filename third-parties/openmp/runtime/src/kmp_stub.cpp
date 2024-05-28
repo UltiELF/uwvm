@@ -1,4 +1,4 @@
-/*
+﻿/*
  * kmp_stub.cpp -- stub versions of user-callable OpenMP RT functions.
  */
 

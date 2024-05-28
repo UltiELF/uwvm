@@ -1,4 +1,4 @@
-//==- SHA1.h - SHA1 implementation for LLVM                     --*- C++ -*-==//
+﻿//==- SHA1.h - SHA1 implementation for LLVM                     --*- C++ -*-==//
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
 // See https://llvm.org/LICENSE.txt for license information.

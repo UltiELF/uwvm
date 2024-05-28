@@ -1,4 +1,4 @@
-// RUN: %libomptarget-compilexx-run-and-check-generic
+﻿// RUN: %libomptarget-compilexx-run-and-check-generic
 // RUN: %libomptarget-compileoptxx-run-and-check-generic
 // RUN: %libomptarget-compilexx-generic && \
 // RUN: env OMPTARGET_DUMP_OFFLOAD_ENTRIES=0 %libomptarget-run-generic 2>&1 | \

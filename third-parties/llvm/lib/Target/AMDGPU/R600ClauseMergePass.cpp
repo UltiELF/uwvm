@@ -1,4 +1,4 @@
-//===-- R600ClauseMergePass - Merge consecutive CF_ALU -------------------===//
+﻿//===-- R600ClauseMergePass - Merge consecutive CF_ALU -------------------===//
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
 // See https://llvm.org/LICENSE.txt for license information.

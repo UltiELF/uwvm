@@ -1,4 +1,4 @@
-/*
+﻿/*
  * kmp_wrapper_malloc.h -- Wrappers for memory allocation routines
  *                         (malloc(), free(), and others).
  */

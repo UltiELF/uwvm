@@ -1,4 +1,4 @@
-//===-- XtensaMCExpr.cpp - Xtensa specific MC expression classes ----------===//
+﻿//===-- XtensaMCExpr.cpp - Xtensa specific MC expression classes ----------===//
 //
 //                     The LLVM Compiler Infrastructure
 //

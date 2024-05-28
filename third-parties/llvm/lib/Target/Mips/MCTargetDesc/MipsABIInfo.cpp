@@ -1,4 +1,4 @@
-//===---- MipsABIInfo.cpp - Information about MIPS ABI's ------------------===//
+﻿//===---- MipsABIInfo.cpp - Information about MIPS ABI's ------------------===//
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
 // See https://llvm.org/LICENSE.txt for license information.

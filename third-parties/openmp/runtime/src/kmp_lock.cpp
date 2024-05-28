@@ -1,4 +1,4 @@
-/*
+﻿/*
  * kmp_lock.cpp -- lock-related functions
  */
 

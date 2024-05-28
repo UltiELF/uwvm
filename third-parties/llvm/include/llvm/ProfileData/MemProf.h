@@ -1,4 +1,4 @@
-#ifndef LLVM_PROFILEDATA_MEMPROF_H_
+﻿#ifndef LLVM_PROFILEDATA_MEMPROF_H_
 #define LLVM_PROFILEDATA_MEMPROF_H_
 
 #include "llvm/ADT/STLFunctionalExtras.h"

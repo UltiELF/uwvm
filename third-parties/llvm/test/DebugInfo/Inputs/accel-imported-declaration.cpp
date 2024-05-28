@@ -1,4 +1,4 @@
-// Compiled on MacOS using:
+﻿// Compiled on MacOS using:
 // clang++ -c -std=c++2a -gdwarf-4 -O0 -o accel-imported-declaration.macho-arm64.o
 
 namespace A {

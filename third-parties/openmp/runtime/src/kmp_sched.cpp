@@ -1,4 +1,4 @@
-/*
+﻿/*
  * kmp_sched.cpp -- static scheduling -- iteration initialization
  */
 

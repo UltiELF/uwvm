@@ -1,4 +1,4 @@
-//===- XtensaAsmParser.cpp - Parse Xtensa assembly to MCInst instructions -===//
+﻿//===- XtensaAsmParser.cpp - Parse Xtensa assembly to MCInst instructions -===//
 //
 //                     The LLVM Compiler Infrastructure
 //

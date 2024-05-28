@@ -1,4 +1,4 @@
-//===--- ELF_loongarch.cpp - JIT linker implementation for ELF/loongarch --===//
+﻿//===--- ELF_loongarch.cpp - JIT linker implementation for ELF/loongarch --===//
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
 // See https://llvm.org/LICENSE.txt for license information.

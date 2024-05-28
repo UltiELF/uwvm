@@ -1,4 +1,4 @@
-/*
+﻿/*
  * kmp_dispatch.cpp: dynamic scheduling - iteration initialization and dispatch.
  */
 

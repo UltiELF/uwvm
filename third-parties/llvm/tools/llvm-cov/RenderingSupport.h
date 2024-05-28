@@ -1,4 +1,4 @@
-//===- RenderingSupport.h - output stream rendering support functions  ----===//
+﻿//===- RenderingSupport.h - output stream rendering support functions  ----===//
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
 // See https://llvm.org/LICENSE.txt for license information.

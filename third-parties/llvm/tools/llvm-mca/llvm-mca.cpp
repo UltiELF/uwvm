@@ -1,4 +1,4 @@
-//===-- llvm-mca.cpp - Machine Code Analyzer -------------------*- C++ -* -===//
+﻿//===-- llvm-mca.cpp - Machine Code Analyzer -------------------*- C++ -* -===//
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
 // See https://llvm.org/LICENSE.txt for license information.

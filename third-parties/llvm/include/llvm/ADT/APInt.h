@@ -1,4 +1,4 @@
-//===-- llvm/ADT/APInt.h - For Arbitrary Precision Integer -----*- C++ -*--===//
+﻿//===-- llvm/ADT/APInt.h - For Arbitrary Precision Integer -----*- C++ -*--===//
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
 // See https://llvm.org/LICENSE.txt for license information.

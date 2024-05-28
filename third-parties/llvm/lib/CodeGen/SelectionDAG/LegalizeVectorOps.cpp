@@ -1,4 +1,4 @@
-//===- LegalizeVectorOps.cpp - Implement SelectionDAG::LegalizeVectors ----===//
+﻿//===- LegalizeVectorOps.cpp - Implement SelectionDAG::LegalizeVectors ----===//
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
 // See https://llvm.org/LICENSE.txt for license information.

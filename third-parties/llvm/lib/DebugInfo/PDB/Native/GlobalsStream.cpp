@@ -1,4 +1,4 @@
-//===- GlobalsStream.cpp - PDB Index of Symbols by Name ---------*- C++ -*-===//
+﻿//===- GlobalsStream.cpp - PDB Index of Symbols by Name ---------*- C++ -*-===//
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
 // See https://llvm.org/LICENSE.txt for license information.

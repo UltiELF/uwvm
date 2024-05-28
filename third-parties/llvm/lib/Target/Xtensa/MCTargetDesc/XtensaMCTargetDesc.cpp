@@ -1,4 +1,4 @@
-//===-- XtensaMCTargetDesc.cpp - Xtensa target descriptions ---------------===//
+﻿//===-- XtensaMCTargetDesc.cpp - Xtensa target descriptions ---------------===//
 //
 //                     The LLVM Compiler Infrastructure
 //

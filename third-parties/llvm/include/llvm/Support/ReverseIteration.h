@@ -1,4 +1,4 @@
-#ifndef LLVM_SUPPORT_REVERSEITERATION_H
+﻿#ifndef LLVM_SUPPORT_REVERSEITERATION_H
 #define LLVM_SUPPORT_REVERSEITERATION_H
 
 #include "llvm/Config/abi-breaking.h"

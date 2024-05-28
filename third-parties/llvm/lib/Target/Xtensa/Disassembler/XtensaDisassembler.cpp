@@ -1,4 +1,4 @@
-//===-- XtensaDisassembler.cpp - Disassembler for Xtensa ------------------===//
+﻿//===-- XtensaDisassembler.cpp - Disassembler for Xtensa ------------------===//
 //
 //                     The LLVM Compiler Infrastructure
 //

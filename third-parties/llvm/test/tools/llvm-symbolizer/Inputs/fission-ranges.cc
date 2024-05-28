@@ -1,4 +1,4 @@
-static inline int inlined_f() {
+﻿static inline int inlined_f() {
   volatile int x = 2;
   return x;
 }

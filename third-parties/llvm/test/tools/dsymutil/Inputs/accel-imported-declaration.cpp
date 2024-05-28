@@ -1,4 +1,4 @@
-// Compiled on macOS using:
+﻿// Compiled on macOS using:
 // 1. clang++ -c -std=c++2a -gdwarf-4 -O0 -o accel-imported-declaration.macho-arm64.o
 // 2. clang++ -Wl,-oso_prefix=$PWD accel-imported-declaration.macho-arm64.o -o accel-imported-declaration.macho-arm64
 //

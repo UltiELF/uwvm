@@ -1,4 +1,4 @@
-//===- XtensaInstPrinter.h - Convert Xtensa MCInst to asm syntax -*- C++ -*-==//
+﻿//===- XtensaInstPrinter.h - Convert Xtensa MCInst to asm syntax -*- C++ -*-==//
 //
 //                     The LLVM Compiler Infrastructure
 //

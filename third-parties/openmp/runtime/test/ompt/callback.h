@@ -1,4 +1,4 @@
-#ifndef _BSD_SOURCE
+﻿#ifndef _BSD_SOURCE
 #define _BSD_SOURCE
 #endif
 #ifndef _DEFAULT_SOURCE

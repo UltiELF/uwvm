@@ -1,4 +1,4 @@
-//===-- OProfileWrapper.cpp - OProfile JIT API Wrapper implementation -----===//
+﻿//===-- OProfileWrapper.cpp - OProfile JIT API Wrapper implementation -----===//
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
 // See https://llvm.org/LICENSE.txt for license information.

@@ -1,4 +1,4 @@
-#include "../../header.h"
+﻿#include "../../header.h"
 
 template<>
 bool equal<int>(int a, int b)

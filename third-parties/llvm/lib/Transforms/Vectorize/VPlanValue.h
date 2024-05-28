@@ -1,4 +1,4 @@
-//===- VPlanValue.h - Represent Values in Vectorizer Plan -----------------===//
+﻿//===- VPlanValue.h - Represent Values in Vectorizer Plan -----------------===//
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
 // See https://llvm.org/LICENSE.txt for license information.

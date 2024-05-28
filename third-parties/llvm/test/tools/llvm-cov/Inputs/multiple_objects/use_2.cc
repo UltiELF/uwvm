@@ -1,4 +1,4 @@
-#undef DEF
+﻿#undef DEF
 #include "header.h"
 
 static int foo() {

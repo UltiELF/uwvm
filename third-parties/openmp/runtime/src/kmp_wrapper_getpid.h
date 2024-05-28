@@ -1,4 +1,4 @@
-/*
+﻿/*
  * kmp_wrapper_getpid.h -- getpid() declaration.
  */
 

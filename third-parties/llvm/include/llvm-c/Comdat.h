@@ -1,4 +1,4 @@
-/*===-- llvm-c/Comdat.h - Module Comdat C Interface -------------*- C++ -*-===*\
+﻿/*===-- llvm-c/Comdat.h - Module Comdat C Interface -------------*- C++ -*-===*\
 |*                                                                            *|
 |* Part of the LLVM Project, under the Apache License v2.0 with LLVM          *|
 |* Exceptions.                                                                *|

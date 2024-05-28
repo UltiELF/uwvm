@@ -1,4 +1,4 @@
-//===- PassManager.cpp - Infrastructure for managing & running IR passes --===//
+﻿//===- PassManager.cpp - Infrastructure for managing & running IR passes --===//
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
 // See https://llvm.org/LICENSE.txt for license information.

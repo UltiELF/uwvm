@@ -1,4 +1,4 @@
-//===------- ELF_ppc64.cpp -JIT linker implementation for ELF/ppc64 -------===//
+﻿//===------- ELF_ppc64.cpp -JIT linker implementation for ELF/ppc64 -------===//
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
 // See https://llvm.org/LICENSE.txt for license information.

@@ -1,4 +1,4 @@
-#include "benchmark/benchmark.h"
+﻿#include "benchmark/benchmark.h"
 #include "llvm/Support/YAMLTraits.h"
 
 static void BM_YAMLDummyIsNumeric(benchmark::State& state) {

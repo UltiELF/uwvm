@@ -1,4 +1,4 @@
-/*
+﻿/*
  * ompt-internal.h - header of OMPT internal data structures
  */
 

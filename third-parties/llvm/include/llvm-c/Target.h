@@ -1,4 +1,4 @@
-/*===-- llvm-c/Target.h - Target Lib C Iface --------------------*- C++ -*-===*/
+﻿/*===-- llvm-c/Target.h - Target Lib C Iface --------------------*- C++ -*-===*/
 /*                                                                            */
 /* Part of the LLVM Project, under the Apache License v2.0 with LLVM          */
 /* Exceptions.                                                                */

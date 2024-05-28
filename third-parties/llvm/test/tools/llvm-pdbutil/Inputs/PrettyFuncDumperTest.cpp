@@ -1,4 +1,4 @@
-// Compile for x86 (FPO disabled)
+﻿// Compile for x86 (FPO disabled)
 // Compile with "cl /c /Zi /GR- PrettyFuncDumperTest.cpp"
 // Link with "link PrettyFuncDumperTest.obj /debug /nodefaultlib /entry:main"
 

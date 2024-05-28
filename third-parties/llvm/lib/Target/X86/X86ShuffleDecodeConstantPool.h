@@ -1,4 +1,4 @@
-//===-- X86ShuffleDecodeConstantPool.h - X86 shuffle decode -----*-C++-*---===//
+﻿//===-- X86ShuffleDecodeConstantPool.h - X86 shuffle decode -----*-C++-*---===//
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
 // See https://llvm.org/LICENSE.txt for license information.

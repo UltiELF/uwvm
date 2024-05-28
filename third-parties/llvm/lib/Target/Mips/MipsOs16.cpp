@@ -1,4 +1,4 @@
-//===---- MipsOs16.cpp for Mips Option -Os16                       --------===//
+﻿//===---- MipsOs16.cpp for Mips Option -Os16                       --------===//
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
 // See https://llvm.org/LICENSE.txt for license information.

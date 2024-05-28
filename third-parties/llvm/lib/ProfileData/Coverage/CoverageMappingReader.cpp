@@ -1,4 +1,4 @@
-//===- CoverageMappingReader.cpp - Code coverage mapping reader -----------===//
+﻿//===- CoverageMappingReader.cpp - Code coverage mapping reader -----------===//
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
 // See https://llvm.org/LICENSE.txt for license information.

@@ -1,4 +1,4 @@
-// This file is a part of sources used to build `symbols.so`, which is used to
+﻿// This file is a part of sources used to build `symbols.so`, which is used to
 // test symbol location search made by llvm-symbolizer.
 //
 // Build instructions:

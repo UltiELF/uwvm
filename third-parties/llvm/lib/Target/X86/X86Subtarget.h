@@ -1,4 +1,4 @@
-//===-- X86Subtarget.h - Define Subtarget for the X86 ----------*- C++ -*--===//
+﻿//===-- X86Subtarget.h - Define Subtarget for the X86 ----------*- C++ -*--===//
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
 // See https://llvm.org/LICENSE.txt for license information.

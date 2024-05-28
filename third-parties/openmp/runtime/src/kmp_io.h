@@ -1,4 +1,4 @@
-/*
+﻿/*
  * kmp_io.h -- RTL IO header file.
  */
 

@@ -1,4 +1,4 @@
-#ifndef CL_COMMON_DEFINES_H
+﻿#ifndef CL_COMMON_DEFINES_H
 #define CL_COMMON_DEFINES_H
 // This file includes defines that are common to both kernel code and
 // the NVPTX back-end.

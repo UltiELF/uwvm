@@ -1,4 +1,4 @@
-#ifndef LLVM_PROFILEDATA_RAWMEMPROFREADER_H_
+﻿#ifndef LLVM_PROFILEDATA_RAWMEMPROFREADER_H_
 #define LLVM_PROFILEDATA_RAWMEMPROFREADER_H_
 //===- MemProfReader.h - Instrumented memory profiling reader ---*- C++ -*-===//
 //

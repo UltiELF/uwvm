@@ -1,4 +1,4 @@
-//===-- llvm/MC/MCXCOFFObjectWriter.h - XCOFF Object Writer ---------------===//
+﻿//===-- llvm/MC/MCXCOFFObjectWriter.h - XCOFF Object Writer ---------------===//
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
 // See https://llvm.org/LICENSE.txt for license information.

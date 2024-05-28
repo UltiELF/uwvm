@@ -1,4 +1,4 @@
-//===-- PPCCTRLoops.cpp - Generate CTR loops ------------------------------===//
+﻿//===-- PPCCTRLoops.cpp - Generate CTR loops ------------------------------===//
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
 // See https://llvm.org/LICENSE.txt for license information.

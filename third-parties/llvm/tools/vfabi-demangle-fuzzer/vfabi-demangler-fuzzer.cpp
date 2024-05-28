@@ -1,4 +1,4 @@
-//===-- vfabi-demangler-fuzzer.cpp - Fuzzer VFABI using lib/Fuzzer   ------===//
+﻿//===-- vfabi-demangler-fuzzer.cpp - Fuzzer VFABI using lib/Fuzzer   ------===//
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
 // See https://llvm.org/LICENSE.txt for license information.

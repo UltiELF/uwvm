@@ -1,4 +1,4 @@
-//===--------- Definition of the SanitizerCoverage class --------*- C++ -*-===//
+﻿//===--------- Definition of the SanitizerCoverage class --------*- C++ -*-===//
 //
 //                     The LLVM Compiler Infrastructure
 //

@@ -1,4 +1,4 @@
-//===- AMDGPUBaseInfo.h - Top level definitions for AMDGPU ------*- C++ -*-===//
+﻿//===- AMDGPUBaseInfo.h - Top level definitions for AMDGPU ------*- C++ -*-===//
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
 // See https://llvm.org/LICENSE.txt for license information.

@@ -1,4 +1,4 @@
-static inline void f1() {
+﻿static inline void f1() {
 #ifdef DEF
   if (false && false)
     return;

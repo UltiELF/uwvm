@@ -1,4 +1,4 @@
-//===-- llvm-size.cpp - Print the size of each object section ---*- C++ -*-===//
+﻿//===-- llvm-size.cpp - Print the size of each object section ---*- C++ -*-===//
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
 // See https://llvm.org/LICENSE.txt for license information.

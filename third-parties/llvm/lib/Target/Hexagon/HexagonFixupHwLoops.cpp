@@ -1,4 +1,4 @@
-//===---- HexagonFixupHwLoops.cpp - Fixup HW loops too far from LOOPn. ----===//
+﻿//===---- HexagonFixupHwLoops.cpp - Fixup HW loops too far from LOOPn. ----===//
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
 // See https://llvm.org/LICENSE.txt for license information.

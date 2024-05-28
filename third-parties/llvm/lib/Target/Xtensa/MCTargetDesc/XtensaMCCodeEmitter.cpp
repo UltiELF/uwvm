@@ -1,4 +1,4 @@
-//===-- XtensaMCCodeEmitter.cpp - Convert Xtensa Code to Machine Code -----===//
+﻿//===-- XtensaMCCodeEmitter.cpp - Convert Xtensa Code to Machine Code -----===//
 //
 //                     The LLVM Compiler Infrastructure
 //

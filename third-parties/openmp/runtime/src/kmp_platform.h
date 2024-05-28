@@ -1,4 +1,4 @@
-/*
+﻿/*
  * kmp_platform.h -- header for determining operating system and architecture
  */
 

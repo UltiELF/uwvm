@@ -1,4 +1,4 @@
-void TestH(int *res, int *c, int *d, int *p, int n) {
+﻿void TestH(int *res, int *c, int *d, int *p, int n) {
   int i;
 
 #pragma clang loop vectorize(assume_safety)

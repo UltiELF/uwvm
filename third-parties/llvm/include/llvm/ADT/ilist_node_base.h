@@ -1,4 +1,4 @@
-//===- llvm/ADT/ilist_node_base.h - Intrusive List Node Base -----*- C++ -*-==//
+﻿//===- llvm/ADT/ilist_node_base.h - Intrusive List Node Base -----*- C++ -*-==//
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
 // See https://llvm.org/LICENSE.txt for license information.

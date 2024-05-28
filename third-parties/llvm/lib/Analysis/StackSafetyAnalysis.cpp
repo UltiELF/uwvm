@@ -1,4 +1,4 @@
-//===- StackSafetyAnalysis.cpp - Stack memory safety analysis -------------===//
+﻿//===- StackSafetyAnalysis.cpp - Stack memory safety analysis -------------===//
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
 // See https://llvm.org/LICENSE.txt for license information.

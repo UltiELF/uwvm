@@ -1,4 +1,4 @@
-//===- StringTableBuilder.cpp - String table building utility -------------===//
+﻿//===- StringTableBuilder.cpp - String table building utility -------------===//
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
 // See https://llvm.org/LICENSE.txt for license information.

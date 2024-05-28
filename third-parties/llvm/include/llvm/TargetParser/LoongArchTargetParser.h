@@ -1,4 +1,4 @@
-//==-- LoongArch64TargetParser - Parser for LoongArch64 features --*- C++ -*-=//
+﻿//==-- LoongArch64TargetParser - Parser for LoongArch64 features --*- C++ -*-=//
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
 // See https://llvm.org/LICENSE.txt for license information.

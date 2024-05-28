@@ -1,4 +1,4 @@
-//===- llvm/IR/TrackingMDRef.h - Tracking Metadata references ---*- C++ -*-===//
+﻿//===- llvm/IR/TrackingMDRef.h - Tracking Metadata references ---*- C++ -*-===//
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
 // See https://llvm.org/LICENSE.txt for license information.

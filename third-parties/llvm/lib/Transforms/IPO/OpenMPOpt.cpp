@@ -1,4 +1,4 @@
-//===-- IPO/OpenMPOpt.cpp - Collection of OpenMP specific optimizations ---===//
+﻿//===-- IPO/OpenMPOpt.cpp - Collection of OpenMP specific optimizations ---===//
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
 // See https://llvm.org/LICENSE.txt for license information.

@@ -1,4 +1,4 @@
-// Compile with "cl /c /Zi /GR- symbolformat.cpp"
+﻿// Compile with "cl /c /Zi /GR- symbolformat.cpp"
 // Compile symbolformat-fpo.cpp (see file for instructions)
 // Link with "link symbolformat.obj symbolformat-fpo.obj /debug /nodefaultlib
 //    /entry:main /out:symbolformat.exe"

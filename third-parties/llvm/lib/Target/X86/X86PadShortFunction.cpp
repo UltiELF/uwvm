@@ -1,4 +1,4 @@
-//===-------- X86PadShortFunction.cpp - pad short functions -----------===//
+﻿//===-------- X86PadShortFunction.cpp - pad short functions -----------===//
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
 // See https://llvm.org/LICENSE.txt for license information.

@@ -1,4 +1,4 @@
-/*
+﻿/*
  * kmp_affinity.cpp -- affinity management
  */
 

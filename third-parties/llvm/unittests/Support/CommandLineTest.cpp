@@ -1,4 +1,4 @@
-//===- llvm/unittest/Support/CommandLineTest.cpp - CommandLine tests ------===//
+﻿//===- llvm/unittest/Support/CommandLineTest.cpp - CommandLine tests ------===//
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
 // See https://llvm.org/LICENSE.txt for license information.

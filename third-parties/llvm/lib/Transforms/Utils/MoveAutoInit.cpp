@@ -1,4 +1,4 @@
-//===-- MoveAutoInit.cpp - move auto-init inst closer to their use site----===//
+﻿//===-- MoveAutoInit.cpp - move auto-init inst closer to their use site----===//
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
 // See https://llvm.org/LICENSE.txt for license information.

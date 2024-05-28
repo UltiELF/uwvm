@@ -1,4 +1,4 @@
-//===- MemoryMapper.h - Cross-process memory mapper -------------*- C++ -*-===//
+﻿//===- MemoryMapper.h - Cross-process memory mapper -------------*- C++ -*-===//
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
 // See https://llvm.org/LICENSE.txt for license information.

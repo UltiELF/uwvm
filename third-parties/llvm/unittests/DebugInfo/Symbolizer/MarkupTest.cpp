@@ -1,4 +1,4 @@
-
+﻿
 //===- unittest/DebugInfo/Symbolizer/MarkupTest.cpp - Markup parser tests -===//
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.

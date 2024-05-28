@@ -1,4 +1,4 @@
-/*
+﻿/*
  * kmp_collapse.cpp -- loop collapse feature
  */
 

@@ -1,4 +1,4 @@
-//===- DIASupport.h - Common header includes for DIA ------------*- C++ -*-===//
+﻿//===- DIASupport.h - Common header includes for DIA ------------*- C++ -*-===//
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
 // See https://llvm.org/LICENSE.txt for license information.

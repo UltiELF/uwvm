@@ -1,4 +1,4 @@
-#include <stdlib.h>
+﻿#include <stdlib.h>
 
 bool case0(bool a) {
     return 0 && a;

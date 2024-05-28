@@ -1,4 +1,4 @@
-#include "prevent_false_instantiations.h"
+﻿#include "prevent_false_instantiations.h"
 
 void func1() {
   DO_SOMETHING();

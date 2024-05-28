@@ -1,4 +1,4 @@
-//===- Thumb1FrameLowering.h - Thumb1-specific frame info stuff ---*- C++ -*-=//
+﻿//===- Thumb1FrameLowering.h - Thumb1-specific frame info stuff ---*- C++ -*-=//
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
 // See https://llvm.org/LICENSE.txt for license information.

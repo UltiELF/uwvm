@@ -1,4 +1,4 @@
-// Compile with "cl /c /Zi /GR- ComplexPaddingTest.cpp"
+﻿// Compile with "cl /c /Zi /GR- ComplexPaddingTest.cpp"
 // Link with "link ComplexPaddingTest.obj /debug /nodefaultlib /entry:main"
 
 #include <stdint.h>

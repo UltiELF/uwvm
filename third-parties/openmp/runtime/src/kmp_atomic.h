@@ -1,4 +1,4 @@
-/*
+﻿/*
  * kmp_atomic.h - ATOMIC header file
  */
 

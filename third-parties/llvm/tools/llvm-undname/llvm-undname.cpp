@@ -1,4 +1,4 @@
-//===-- llvm-undname.cpp - Microsoft ABI name undecorator
+﻿//===-- llvm-undname.cpp - Microsoft ABI name undecorator
 //------------------===//
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.

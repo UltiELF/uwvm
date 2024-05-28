@@ -1,4 +1,4 @@
-//===- lib/CodeGen/GlobalISel/LegalizerInfo.cpp - Legalizer ---------------===//
+﻿//===- lib/CodeGen/GlobalISel/LegalizerInfo.cpp - Legalizer ---------------===//
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
 // See https://llvm.org/LICENSE.txt for license information.

@@ -1,4 +1,4 @@
-/*
+﻿/*
  * TargetValue.h -- Access to target values using OMPD callbacks
  */
 

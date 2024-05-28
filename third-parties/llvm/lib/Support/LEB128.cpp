@@ -1,4 +1,4 @@
-//===- LEB128.cpp - LEB128 utility functions implementation -----*- C++ -*-===//
+﻿//===- LEB128.cpp - LEB128 utility functions implementation -----*- C++ -*-===//
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
 // See https://llvm.org/LICENSE.txt for license information.

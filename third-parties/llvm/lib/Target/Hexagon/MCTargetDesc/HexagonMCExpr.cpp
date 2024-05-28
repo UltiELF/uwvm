@@ -1,4 +1,4 @@
-//===-- HexagonMCExpr.cpp - Hexagon specific MC expression classes
+﻿//===-- HexagonMCExpr.cpp - Hexagon specific MC expression classes
 //----------===//
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.

@@ -1,4 +1,4 @@
-// Compile with "cl /c /Zi /GR- FilterTest.cpp"
+﻿// Compile with "cl /c /Zi /GR- FilterTest.cpp"
 // Link with "link FilterTest.obj /debug /nodefaultlib /entry:main"
 
 class FilterTestClass {

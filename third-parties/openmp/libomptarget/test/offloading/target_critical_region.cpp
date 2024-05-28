@@ -1,4 +1,4 @@
-// RUN: %libomptarget-compilexx-run-and-check-generic
+﻿// RUN: %libomptarget-compilexx-run-and-check-generic
 
 // UNSUPPORTED: aarch64-unknown-linux-gnu
 // UNSUPPORTED: aarch64-unknown-linux-gnu-LTO

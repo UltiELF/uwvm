@@ -1,4 +1,4 @@
-//===-- X86AsmParserCommon.h - Common functions for X86AsmParser ---------===//
+﻿//===-- X86AsmParserCommon.h - Common functions for X86AsmParser ---------===//
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
 // See https://llvm.org/LICENSE.txt for license information.

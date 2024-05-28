@@ -1,4 +1,4 @@
-//=== i386.h - Generic JITLink i386 edge kinds, utilities -*- C++ -*-===//
+﻿//=== i386.h - Generic JITLink i386 edge kinds, utilities -*- C++ -*-===//
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
 // See https://llvm.org/LICENSE.txt for license information.

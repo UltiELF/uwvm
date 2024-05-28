@@ -1,4 +1,4 @@
-//===-- SIFixVGPRCopies.cpp - Fix VGPR Copies after regalloc --------------===//
+﻿//===-- SIFixVGPRCopies.cpp - Fix VGPR Copies after regalloc --------------===//
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
 // See https://llvm.org/LICENSE.txt for license information.

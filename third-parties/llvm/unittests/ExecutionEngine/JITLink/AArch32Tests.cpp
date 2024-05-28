@@ -1,4 +1,4 @@
-//===------- AArch32Tests.cpp - Unit tests for the AArch32 backend --------===//
+﻿//===------- AArch32Tests.cpp - Unit tests for the AArch32 backend --------===//
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
 // See https://llvm.org/LICENSE.txt for license information.

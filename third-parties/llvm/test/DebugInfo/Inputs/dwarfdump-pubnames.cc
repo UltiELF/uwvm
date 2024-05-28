@@ -1,4 +1,4 @@
-// Object file built using:
+﻿// Object file built using:
 // clang -g -mllvm -generate-dwarf-pubnames -o dwarfdump-pubnames.elf-x86_64 \
 //    dwarfdump-pubnames.cc  -c
 

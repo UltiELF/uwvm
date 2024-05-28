@@ -1,4 +1,4 @@
-/*
+﻿/*
  * kmp_wait_release.h -- Wait/Release implementation
  */
 

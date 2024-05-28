@@ -1,4 +1,4 @@
-//==- raw_sha1_ostream.h - raw_ostream that compute SHA1        --*- C++ -*-==//
+﻿//==- raw_sha1_ostream.h - raw_ostream that compute SHA1        --*- C++ -*-==//
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
 // See https://llvm.org/LICENSE.txt for license information.

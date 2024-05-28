@@ -1,4 +1,4 @@
-//===-- X86InstPrinterCommon.cpp - X86 assembly instruction printing ------===//
+﻿//===-- X86InstPrinterCommon.cpp - X86 assembly instruction printing ------===//
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
 // See https://llvm.org/LICENSE.txt for license information.

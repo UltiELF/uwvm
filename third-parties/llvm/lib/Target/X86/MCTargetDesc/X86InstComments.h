@@ -1,4 +1,4 @@
-//=- X86InstComments.h - Generate verbose-asm comments for instrs -*- C++ -*-=//
+﻿//=- X86InstComments.h - Generate verbose-asm comments for instrs -*- C++ -*-=//
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
 // See https://llvm.org/LICENSE.txt for license information.

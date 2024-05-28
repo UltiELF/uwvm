@@ -1,4 +1,4 @@
-//===- TestPasses.cpp - "buggy" passes used to test bugpoint --------------===//
+﻿//===- TestPasses.cpp - "buggy" passes used to test bugpoint --------------===//
 //
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.

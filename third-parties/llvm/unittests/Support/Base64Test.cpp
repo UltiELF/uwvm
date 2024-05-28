@@ -1,4 +1,4 @@
-//===- llvm/unittest/Support/Base64Test.cpp - Base64 tests
+﻿//===- llvm/unittest/Support/Base64Test.cpp - Base64 tests
 //--------------------===//
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.

@@ -1,4 +1,4 @@
-//==-- llvm/CodeGen/ExecutionDomainFix.h - Execution Domain Fix -*- C++ -*--==//
+﻿//==-- llvm/CodeGen/ExecutionDomainFix.h - Execution Domain Fix -*- C++ -*--==//
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
 // See https://llvm.org/LICENSE.txt for license information.

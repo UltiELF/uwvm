@@ -1,4 +1,4 @@
-//===-- FuzzerCLI.h - Common logic for CLIs of fuzzers ----------*- C++ -*-===//
+﻿//===-- FuzzerCLI.h - Common logic for CLIs of fuzzers ----------*- C++ -*-===//
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
 // See https://llvm.org/LICENSE.txt for license information.

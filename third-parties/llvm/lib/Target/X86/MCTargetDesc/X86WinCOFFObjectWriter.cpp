@@ -1,4 +1,4 @@
-//===-- X86WinCOFFObjectWriter.cpp - X86 Win COFF Writer ------------------===//
+﻿//===-- X86WinCOFFObjectWriter.cpp - X86 Win COFF Writer ------------------===//
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
 // See https://llvm.org/LICENSE.txt for license information.

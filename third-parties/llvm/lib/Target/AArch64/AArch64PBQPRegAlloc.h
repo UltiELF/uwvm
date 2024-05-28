@@ -1,4 +1,4 @@
-//==- AArch64PBQPRegAlloc.h - AArch64 specific PBQP constraints --*- C++ -*-==//
+﻿//==- AArch64PBQPRegAlloc.h - AArch64 specific PBQP constraints --*- C++ -*-==//
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
 // See https://llvm.org/LICENSE.txt for license information.

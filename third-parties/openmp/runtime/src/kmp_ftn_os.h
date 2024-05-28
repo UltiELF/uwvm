@@ -1,4 +1,4 @@
-/*
+﻿/*
  * kmp_ftn_os.h -- KPTS Fortran defines header file.
  */
 

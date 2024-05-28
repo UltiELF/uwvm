@@ -1,4 +1,4 @@
-#if USE_DEBUGGER
+﻿#if USE_DEBUGGER
 /*
  * kmp_debugger.h -- debugger support.
  */

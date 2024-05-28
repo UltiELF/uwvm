@@ -1,4 +1,4 @@
-// RUN: %libomptarget-compileoptxx-run-and-check-generic
+﻿// RUN: %libomptarget-compileoptxx-run-and-check-generic
 
 #include <omp.h>
 #include <stdio.h>

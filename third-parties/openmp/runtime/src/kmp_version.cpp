@@ -1,4 +1,4 @@
-/*
+﻿/*
  * kmp_version.cpp
  */
 

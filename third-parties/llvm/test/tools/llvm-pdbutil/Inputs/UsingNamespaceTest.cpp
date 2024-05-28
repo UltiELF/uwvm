@@ -1,4 +1,4 @@
-// Compile with "cl /c /Zi /GR- UsingNamespaceTest.cpp"
+﻿// Compile with "cl /c /Zi /GR- UsingNamespaceTest.cpp"
 // Link with "link UsingNamespaceTest.obj /debug /nodefaultlib /entry:main"
 
 namespace NS {

@@ -1,4 +1,4 @@
-//===-- llvm/ADT/Statistic.h - Easy way to expose stats ---------*- C++ -*-===//
+﻿//===-- llvm/ADT/Statistic.h - Easy way to expose stats ---------*- C++ -*-===//
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
 // See https://llvm.org/LICENSE.txt for license information.

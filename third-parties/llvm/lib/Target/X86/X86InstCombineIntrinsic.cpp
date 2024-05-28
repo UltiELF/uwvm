@@ -1,4 +1,4 @@
-//===-- X86InstCombineIntrinsic.cpp - X86 specific InstCombine pass -------===//
+﻿//===-- X86InstCombineIntrinsic.cpp - X86 specific InstCombine pass -------===//
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
 // See https://llvm.org/LICENSE.txt for license information.

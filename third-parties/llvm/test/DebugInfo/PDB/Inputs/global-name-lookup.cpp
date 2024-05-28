@@ -1,4 +1,4 @@
-// Build with "cl.exe /Z7 /GR- /GS- -EHs-c- every-function.cpp /link /debug /nodefaultlib /incremental:no /entry:main"
+﻿// Build with "cl.exe /Z7 /GR- /GS- -EHs-c- every-function.cpp /link /debug /nodefaultlib /incremental:no /entry:main"
 
 void __cdecl operator delete(void *, unsigned int) {}
 void __cdecl operator delete(void *, unsigned __int64) {}

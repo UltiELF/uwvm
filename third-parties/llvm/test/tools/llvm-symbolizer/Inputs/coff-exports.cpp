@@ -1,4 +1,4 @@
-// To generate the corresponding EXE, run:
+﻿// To generate the corresponding EXE, run:
 // clang-cl -MD -c coff-exports.cpp && lld-link /MANIFEST:NO coff-exports.obj
 
 #define EXPORT __declspec(dllexport)

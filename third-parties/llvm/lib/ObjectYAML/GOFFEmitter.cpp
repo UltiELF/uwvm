@@ -1,4 +1,4 @@
-//===- yaml2goff - Convert YAML to a GOFF object file ---------------------===//
+﻿//===- yaml2goff - Convert YAML to a GOFF object file ---------------------===//
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
 // See https://llvm.org/LICENSE.txt for license information.

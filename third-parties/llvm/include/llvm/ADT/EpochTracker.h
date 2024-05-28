@@ -1,4 +1,4 @@
-//===- llvm/ADT/EpochTracker.h - ADT epoch tracking --------------*- C++ -*-==//
+﻿//===- llvm/ADT/EpochTracker.h - ADT epoch tracking --------------*- C++ -*-==//
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
 // See https://llvm.org/LICENSE.txt for license information.

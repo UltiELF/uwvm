@@ -1,4 +1,4 @@
-//===-- X86.h - Top-level interface for X86 representation ------*- C++ -*-===//
+﻿//===-- X86.h - Top-level interface for X86 representation ------*- C++ -*-===//
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
 // See https://llvm.org/LICENSE.txt for license information.

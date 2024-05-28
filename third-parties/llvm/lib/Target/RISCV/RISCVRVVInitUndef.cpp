@@ -1,4 +1,4 @@
-//===- RISCVRVVInitUndef.cpp - Initialize undef vector value to pseudo ----===//
+﻿//===- RISCVRVVInitUndef.cpp - Initialize undef vector value to pseudo ----===//
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
 // See https://llvm.org/LICENSE.txt for license information.

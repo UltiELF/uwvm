@@ -1,4 +1,4 @@
-//===- PDBSymbolExe.h - Accessors for querying executables in a PDB ----*-===//
+﻿//===- PDBSymbolExe.h - Accessors for querying executables in a PDB ----*-===//
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
 // See https://llvm.org/LICENSE.txt for license information.

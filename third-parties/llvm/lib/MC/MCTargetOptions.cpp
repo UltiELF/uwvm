@@ -1,4 +1,4 @@
-//===- lib/MC/MCTargetOptions.cpp - MC Target Options ---------------------===//
+﻿//===- lib/MC/MCTargetOptions.cpp - MC Target Options ---------------------===//
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
 // See https://llvm.org/LICENSE.txt for license information.

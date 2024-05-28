@@ -1,4 +1,4 @@
-// Build with "cl.exe /Zi /GR- /GX- every-enum.cpp /link /debug /nodefaultlib /incremental:no /entry:main"
+﻿// Build with "cl.exe /Zi /GR- /GX- every-enum.cpp /link /debug /nodefaultlib /incremental:no /entry:main"
 
 #include <stdint.h>
 

@@ -1,4 +1,4 @@
-//===- RPC.h - Interface for remote procedure calls from the GPU ----------===//
+﻿//===- RPC.h - Interface for remote procedure calls from the GPU ----------===//
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
 // See https://llvm.org/LICENSE.txt for license information.

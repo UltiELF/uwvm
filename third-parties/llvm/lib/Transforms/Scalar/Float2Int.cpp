@@ -1,4 +1,4 @@
-//===- Float2Int.cpp - Demote floating point ops to work on integers ------===//
+﻿//===- Float2Int.cpp - Demote floating point ops to work on integers ------===//
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
 // See https://llvm.org/LICENSE.txt for license information.

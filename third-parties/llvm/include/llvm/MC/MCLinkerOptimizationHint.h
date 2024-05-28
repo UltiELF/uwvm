@@ -1,4 +1,4 @@
-//===- MCLinkerOptimizationHint.h - LOH interface ---------------*- C++ -*-===//
+﻿//===- MCLinkerOptimizationHint.h - LOH interface ---------------*- C++ -*-===//
 //
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.

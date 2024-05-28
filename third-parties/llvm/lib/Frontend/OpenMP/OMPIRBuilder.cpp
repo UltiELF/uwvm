@@ -1,4 +1,4 @@
-//===- OpenMPIRBuilder.cpp - Builder for LLVM-IR for OpenMP directives ----===//
+﻿//===- OpenMPIRBuilder.cpp - Builder for LLVM-IR for OpenMP directives ----===//
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
 // See https://llvm.org/LICENSE.txt for license information.

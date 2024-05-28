@@ -1,4 +1,4 @@
-//===- IPDBSourceFile.cpp - base interface for a PDB source file ----------===//
+﻿//===- IPDBSourceFile.cpp - base interface for a PDB source file ----------===//
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
 // See https://llvm.org/LICENSE.txt for license information.

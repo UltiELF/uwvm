@@ -1,4 +1,4 @@
-//===-- AArch64MachObjectWriter.cpp - ARM Mach Object Writer --------------===//
+﻿//===-- AArch64MachObjectWriter.cpp - ARM Mach Object Writer --------------===//
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
 // See https://llvm.org/LICENSE.txt for license information.

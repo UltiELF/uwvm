@@ -1,4 +1,4 @@
-//===- ScalarizeMaskedMemIntrin.h - Scalarize unsupported masked mem ----===//
+﻿//===- ScalarizeMaskedMemIntrin.h - Scalarize unsupported masked mem ----===//
 //                                    intrinsics
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.

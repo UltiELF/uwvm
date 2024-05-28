@@ -1,4 +1,4 @@
-#ifndef LLVM_SUPPORT_LOCALE_H
+﻿#ifndef LLVM_SUPPORT_LOCALE_H
 #define LLVM_SUPPORT_LOCALE_H
 
 namespace llvm {

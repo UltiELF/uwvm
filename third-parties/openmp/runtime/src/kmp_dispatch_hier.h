@@ -1,4 +1,4 @@
-/*
+﻿/*
  * kmp_dispatch_hier.h -- hierarchical scheduling methods and data structures
  */
 

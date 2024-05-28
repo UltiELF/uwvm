@@ -1,4 +1,4 @@
-/*===-- include/llvm-c/DataTypes.h - Define fixed size types ------*- C -*-===*\
+﻿/*===-- include/llvm-c/DataTypes.h - Define fixed size types ------*- C -*-===*\
 |*                                                                            *|
 |* Part of the LLVM Project, under the Apache License v2.0 with LLVM          *|
 |* Exceptions.                                                                *|

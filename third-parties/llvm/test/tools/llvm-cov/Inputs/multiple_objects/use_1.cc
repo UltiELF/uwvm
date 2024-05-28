@@ -1,4 +1,4 @@
-#define DEF
+﻿#define DEF
 #include "header.h"
 
 int main() {

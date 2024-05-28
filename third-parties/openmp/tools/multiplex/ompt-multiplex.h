@@ -1,4 +1,4 @@
-//===--- ompt-multiplex.h - header-only multiplexing of OMPT tools -- C -*-===//
+﻿//===--- ompt-multiplex.h - header-only multiplexing of OMPT tools -- C -*-===//
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
 // See https://llvm.org/LICENSE.txt for license information.

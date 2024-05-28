@@ -1,4 +1,4 @@
-// Build with "cl.exe /Zi /GR- /GX- every-type.cpp /link /debug /nodefaultlib /entry:main"
+﻿// Build with "cl.exe /Zi /GR- /GX- every-type.cpp /link /debug /nodefaultlib /entry:main"
 
 // clang-format off
 void *__purecall = 0;

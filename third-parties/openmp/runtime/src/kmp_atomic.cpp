@@ -1,4 +1,4 @@
-/*
+﻿/*
  * kmp_atomic.cpp -- ATOMIC implementation routines
  */
 

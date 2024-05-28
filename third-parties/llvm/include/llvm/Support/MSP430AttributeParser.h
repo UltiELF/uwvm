@@ -1,4 +1,4 @@
-//===-- MSP430AttributeParser.h - MSP430 Attribute Parser -------*- C++ -*-===//
+﻿//===-- MSP430AttributeParser.h - MSP430 Attribute Parser -------*- C++ -*-===//
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
 // See https://llvm.org/LICENSE.txt for license information.

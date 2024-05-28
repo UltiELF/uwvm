@@ -1,4 +1,4 @@
-#include "callback.h"
+﻿#include "callback.h"
 #include <omp.h>
 
 /* With the combined parallel-for construct (base.h), the return-addresses are hard to compare.

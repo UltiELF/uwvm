@@ -1,4 +1,4 @@
-//===-- ARMOptimizeBarriersPass - two DMBs without a memory access in between,
+﻿//===-- ARMOptimizeBarriersPass - two DMBs without a memory access in between,
 //removed one -===//
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.

@@ -1,4 +1,4 @@
-//===- BPFCORE.h - Common info for Compile-Once Run-EveryWhere  -*- C++ -*-===//
+﻿//===- BPFCORE.h - Common info for Compile-Once Run-EveryWhere  -*- C++ -*-===//
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
 // See https://llvm.org/LICENSE.txt for license information.

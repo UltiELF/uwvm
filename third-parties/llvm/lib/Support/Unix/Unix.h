@@ -1,4 +1,4 @@
-//===- llvm/Support/Unix/Unix.h - Common Unix Include File -------*- C++ -*-===//
+﻿//===- llvm/Support/Unix/Unix.h - Common Unix Include File -------*- C++ -*-===//
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
 // See https://llvm.org/LICENSE.txt for license information.

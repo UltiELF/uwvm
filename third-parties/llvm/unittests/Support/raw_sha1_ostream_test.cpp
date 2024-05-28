@@ -1,4 +1,4 @@
-//===- llvm/unittest/Support/raw_ostream_test.cpp - raw_ostream tests -----===//
+﻿//===- llvm/unittest/Support/raw_ostream_test.cpp - raw_ostream tests -----===//
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
 // See https://llvm.org/LICENSE.txt for license information.

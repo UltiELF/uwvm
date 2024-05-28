@@ -1,4 +1,4 @@
-//===- lib/MC/MCSymbolXCOFF.cpp - XCOFF Code Symbol Representation --------===//
+﻿//===- lib/MC/MCSymbolXCOFF.cpp - XCOFF Code Symbol Representation --------===//
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
 // See https://llvm.org/LICENSE.txt for license information.

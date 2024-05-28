@@ -1,4 +1,4 @@
-//===- LiveRegUnits.cpp - Register Unit Set -------------------------------===//
+﻿//===- LiveRegUnits.cpp - Register Unit Set -------------------------------===//
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
 // See https://llvm.org/LICENSE.txt for license information.

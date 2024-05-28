@@ -1,4 +1,4 @@
-//===- IMSFFile.h - Abstract base class for an MSF file ---------*- C++ -*-===//
+﻿//===- IMSFFile.h - Abstract base class for an MSF file ---------*- C++ -*-===//
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
 // See https://llvm.org/LICENSE.txt for license information.

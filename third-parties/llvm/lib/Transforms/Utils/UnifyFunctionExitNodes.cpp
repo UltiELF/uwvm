@@ -1,4 +1,4 @@
-//===- UnifyFunctionExitNodes.cpp - Make all functions have a single exit -===//
+﻿//===- UnifyFunctionExitNodes.cpp - Make all functions have a single exit -===//
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
 // See https://llvm.org/LICENSE.txt for license information.

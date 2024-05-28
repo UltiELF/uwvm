@@ -1,4 +1,4 @@
-/*
+﻿/*
  * kmp_settings.h -- Initialize environment variables
  */
 

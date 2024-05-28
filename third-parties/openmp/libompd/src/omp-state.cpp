@@ -1,4 +1,4 @@
-/*
+﻿/*
  * omp-state.cpp -- OMPD states
  */
 

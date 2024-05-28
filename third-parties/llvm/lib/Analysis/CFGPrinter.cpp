@@ -1,4 +1,4 @@
-//===- CFGPrinter.cpp - DOT printer for the control flow graph ------------===//
+﻿//===- CFGPrinter.cpp - DOT printer for the control flow graph ------------===//
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
 // See https://llvm.org/LICENSE.txt for license information.

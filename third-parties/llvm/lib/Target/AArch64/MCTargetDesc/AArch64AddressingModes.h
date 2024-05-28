@@ -1,4 +1,4 @@
-//===- AArch64AddressingModes.h - AArch64 Addressing Modes ------*- C++ -*-===//
+﻿//===- AArch64AddressingModes.h - AArch64 Addressing Modes ------*- C++ -*-===//
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
 // See https://llvm.org/LICENSE.txt for license information.

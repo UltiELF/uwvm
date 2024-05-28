@@ -1,4 +1,4 @@
-//=== lib/CodeGen/GlobalISel/AArch64O0PreLegalizerCombiner.cpp ------------===//
+﻿//=== lib/CodeGen/GlobalISel/AArch64O0PreLegalizerCombiner.cpp ------------===//
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
 // See https://llvm.org/LICENSE.txt for license information.

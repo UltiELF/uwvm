@@ -1,4 +1,4 @@
-int func1() {
+﻿int func1() {
   return 1;
 }
 int func2() {

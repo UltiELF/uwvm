@@ -1,4 +1,4 @@
-//===-- MSP430MachineFunctionInfo.cpp - MSP430 machine function info ------===//
+﻿//===-- MSP430MachineFunctionInfo.cpp - MSP430 machine function info ------===//
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
 // See https://llvm.org/LICENSE.txt for license information.

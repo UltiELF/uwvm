@@ -1,4 +1,4 @@
-//===-- ELF_loongarch.h - JIT link functions for ELF/loongarch -*- C++ -*--===//
+﻿//===-- ELF_loongarch.h - JIT link functions for ELF/loongarch -*- C++ -*--===//
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
 // See https://llvm.org/LICENSE.txt for license information.

@@ -1,4 +1,4 @@
-//===- MCInstPrinter.cpp - Convert an MCInst to target assembly syntax ----===//
+﻿//===- MCInstPrinter.cpp - Convert an MCInst to target assembly syntax ----===//
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
 // See https://llvm.org/LICENSE.txt for license information.

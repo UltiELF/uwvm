@@ -1,4 +1,4 @@
-//===- lib/Support/ErrorHandling.cpp - Callbacks for errors ---------------===//
+﻿//===- lib/Support/ErrorHandling.cpp - Callbacks for errors ---------------===//
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
 // See https://llvm.org/LICENSE.txt for license information.

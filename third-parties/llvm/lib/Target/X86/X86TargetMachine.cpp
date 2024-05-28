@@ -1,4 +1,4 @@
-//===-- X86TargetMachine.cpp - Define TargetMachine for the X86 -----------===//
+﻿//===-- X86TargetMachine.cpp - Define TargetMachine for the X86 -----------===//
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
 // See https://llvm.org/LICENSE.txt for license information.

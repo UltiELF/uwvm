@@ -1,4 +1,4 @@
-// RUN: %libomp-cxx-compile-and-run | FileCheck %s
+﻿// RUN: %libomp-cxx-compile-and-run | FileCheck %s
 // REQUIRES: ompt, linux
 
 #include <thread>

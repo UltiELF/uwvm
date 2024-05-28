@@ -1,4 +1,4 @@
-//===- InjectTLIMAppings.h - TLI to VFABI attribute injection  ------------===//
+﻿//===- InjectTLIMAppings.h - TLI to VFABI attribute injection  ------------===//
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
 // See https://llvm.org/LICENSE.txt for license information.

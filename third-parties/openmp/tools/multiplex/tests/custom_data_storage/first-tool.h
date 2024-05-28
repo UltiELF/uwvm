@@ -1,4 +1,4 @@
-#include "omp-tools.h"
+﻿#include "omp-tools.h"
 
 #define ompt_start_tool disable_ompt_start_tool
 #define _TOOL_PREFIX " _first_tool:"

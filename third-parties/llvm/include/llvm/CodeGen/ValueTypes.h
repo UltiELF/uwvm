@@ -1,4 +1,4 @@
-//===- CodeGen/ValueTypes.h - Low-Level Target independ. types --*- C++ -*-===//
+﻿//===- CodeGen/ValueTypes.h - Low-Level Target independ. types --*- C++ -*-===//
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
 // See https://llvm.org/LICENSE.txt for license information.

@@ -1,4 +1,4 @@
-//===- MLModelRunner.h ---- ML model runner interface -----------*- C++ -*-===//
+﻿//===- MLModelRunner.h ---- ML model runner interface -----------*- C++ -*-===//
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
 // See https://llvm.org/LICENSE.txt for license information.

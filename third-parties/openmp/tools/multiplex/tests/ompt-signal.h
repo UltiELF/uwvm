@@ -1,4 +1,4 @@
-// These functions are used to provide a signal-wait mechanism to enforce
+﻿// These functions are used to provide a signal-wait mechanism to enforce
 // expected scheduling for the test cases. Conditional variable (s) needs to be
 // shared! Initialize to 0
 #include <unistd.h>

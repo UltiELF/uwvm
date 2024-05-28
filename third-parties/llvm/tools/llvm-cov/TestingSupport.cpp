@@ -1,4 +1,4 @@
-//===- TestingSupport.cpp - Convert objects files into test files --------===//
+﻿//===- TestingSupport.cpp - Convert objects files into test files --------===//
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
 // See https://llvm.org/LICENSE.txt for license information.

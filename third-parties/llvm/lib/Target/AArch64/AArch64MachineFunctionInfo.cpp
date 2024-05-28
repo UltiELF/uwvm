@@ -1,4 +1,4 @@
-//=- AArch64MachineFunctionInfo.cpp - AArch64 Machine Function Info ---------=//
+﻿//=- AArch64MachineFunctionInfo.cpp - AArch64 Machine Function Info ---------=//
 
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.

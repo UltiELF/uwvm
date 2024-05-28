@@ -1,4 +1,4 @@
-/*
+﻿/*
  * kmp_alloc.cpp -- private/shared dynamic memory allocation and management
  */
 

@@ -1,4 +1,4 @@
-//===-- X86LoadValueInjectionRetHardening.cpp - LVI RET hardening for x86 --==//
+﻿//===-- X86LoadValueInjectionRetHardening.cpp - LVI RET hardening for x86 --==//
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
 // See https://llvm.org/LICENSE.txt for license information.

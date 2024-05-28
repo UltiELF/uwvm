@@ -1,4 +1,4 @@
-/*
+﻿/*
  * z_Linux_util.cpp -- platform specific routines.
  */
 

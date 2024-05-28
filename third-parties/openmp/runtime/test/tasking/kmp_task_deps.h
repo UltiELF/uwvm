@@ -1,4 +1,4 @@
-#ifndef KMP_TASK_DEPS_H
+﻿#ifndef KMP_TASK_DEPS_H
 #define KMP_TASK_DEPS_H
 
 #include <stddef.h> /* size_t */

@@ -1,4 +1,4 @@
-//===- PlaceSafepoints.h - Place GC Safepoints ----------------------------===//
+﻿//===- PlaceSafepoints.h - Place GC Safepoints ----------------------------===//
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
 // See https://llvm.org/LICENSE.txt for license information.

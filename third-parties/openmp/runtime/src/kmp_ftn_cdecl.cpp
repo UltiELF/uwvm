@@ -1,4 +1,4 @@
-/*
+﻿/*
  * kmp_ftn_cdecl.cpp -- Fortran __cdecl linkage support for OpenMP.
  */
 

@@ -1,4 +1,4 @@
-#ifndef KMP_STATS_H
+﻿#ifndef KMP_STATS_H
 #define KMP_STATS_H
 
 /** @file kmp_stats.h

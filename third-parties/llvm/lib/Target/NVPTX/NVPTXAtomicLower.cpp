@@ -1,4 +1,4 @@
-//===-- NVPTXAtomicLower.cpp - Lower atomics of local memory ----*- C++ -*-===//
+﻿//===-- NVPTXAtomicLower.cpp - Lower atomics of local memory ----*- C++ -*-===//
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
 // See https://llvm.org/LICENSE.txt for license information.

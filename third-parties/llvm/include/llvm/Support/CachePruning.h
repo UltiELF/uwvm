@@ -1,4 +1,4 @@
-//=- CachePruning.h - Helper to manage the pruning of a cache dir -*- C++ -*-=//
+﻿//=- CachePruning.h - Helper to manage the pruning of a cache dir -*- C++ -*-=//
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
 // See https://llvm.org/LICENSE.txt for license information.

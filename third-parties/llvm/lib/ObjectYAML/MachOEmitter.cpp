@@ -1,4 +1,4 @@
-//===- yaml2macho - Convert YAML to a Mach object file --------------------===//
+﻿//===- yaml2macho - Convert YAML to a Mach object file --------------------===//
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
 // See https://llvm.org/LICENSE.txt for license information.

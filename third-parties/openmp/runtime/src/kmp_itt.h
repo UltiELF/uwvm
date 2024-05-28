@@ -1,4 +1,4 @@
-#if USE_ITT_BUILD
+﻿#if USE_ITT_BUILD
 /*
  * kmp_itt.h -- ITT Notify interface.
  */

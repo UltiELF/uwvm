@@ -1,4 +1,4 @@
-//=- llvm/LTO/SummaryBasedOptimizations.h -Link time optimizations-*- C++ -*-=//
+﻿//=- llvm/LTO/SummaryBasedOptimizations.h -Link time optimizations-*- C++ -*-=//
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
 // See https://llvm.org/LICENSE.txt for license information.

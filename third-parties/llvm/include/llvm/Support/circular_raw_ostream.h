@@ -1,4 +1,4 @@
-//===-- llvm/Support/circular_raw_ostream.h - Buffered streams --*- C++ -*-===//
+﻿//===-- llvm/Support/circular_raw_ostream.h - Buffered streams --*- C++ -*-===//
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
 // See https://llvm.org/LICENSE.txt for license information.

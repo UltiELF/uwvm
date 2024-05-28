@@ -1,2 +1,2 @@
-#include "dwarfdump-test4-decl.h"
+﻿#include "dwarfdump-test4-decl.h"
 int d(){a();}

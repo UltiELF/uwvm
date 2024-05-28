@@ -1,4 +1,4 @@
-//===- llvm-readobj.cpp - Dump contents of an Object File -----------------===//
+﻿//===- llvm-readobj.cpp - Dump contents of an Object File -----------------===//
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
 // See https://llvm.org/LICENSE.txt for license information.

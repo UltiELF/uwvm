@@ -1,4 +1,4 @@
-//===--- llvm-jitlink-coff.cpp -- COFF parsing support for llvm-jitlink ---===//
+﻿//===--- llvm-jitlink-coff.cpp -- COFF parsing support for llvm-jitlink ---===//
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
 // See https://llvm.org/LICENSE.txt for license information.

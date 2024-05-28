@@ -1,4 +1,4 @@
-// RUN: llvm-cov show %S/Inputs/highlightedRanges.covmapping -instr-profile %S/Inputs/highlightedRanges.profdata -dump -path-equivalence=/tmp,%S %s 2>&1 | FileCheck %s -check-prefixes=SHARED
+﻿// RUN: llvm-cov show %S/Inputs/highlightedRanges.covmapping -instr-profile %S/Inputs/highlightedRanges.profdata -dump -path-equivalence=/tmp,%S %s 2>&1 | FileCheck %s -check-prefixes=SHARED
 
 void func() {
   return;

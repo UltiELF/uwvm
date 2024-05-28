@@ -1,4 +1,4 @@
-//=== A15SDOptimizerPass.cpp - Optimize DPR and SPR register accesses on A15==//
+﻿//=== A15SDOptimizerPass.cpp - Optimize DPR and SPR register accesses on A15==//
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
 // See https://llvm.org/LICENSE.txt for license information.

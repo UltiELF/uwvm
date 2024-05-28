@@ -1,4 +1,4 @@
-/*
+﻿/*
  * ompd-specific.h -- OpenMP debug support
  */
 

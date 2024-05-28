@@ -1,4 +1,4 @@
-//===- ValueMap.h - Safe map from Values to data ----------------*- C++ -*-===//
+﻿//===- ValueMap.h - Safe map from Values to data ----------------*- C++ -*-===//
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
 // See https://llvm.org/LICENSE.txt for license information.

@@ -1,4 +1,4 @@
-//===-- XtensaMCAsmInfo.cpp - Xtensa Asm Properties -----------------------===//
+﻿//===-- XtensaMCAsmInfo.cpp - Xtensa Asm Properties -----------------------===//
 //
 //                     The LLVM Compiler Infrastructure
 //

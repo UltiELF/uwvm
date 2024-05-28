@@ -1,4 +1,4 @@
-// clang-format off
+﻿// clang-format off
 // RUN: %libomptarget-compilexx-generic && env LIBOMPTARGET_DEBUG=1 %libomptarget-run-generic 2>&1 | %fcheck-generic
 // clang-format on
 

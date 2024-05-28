@@ -1,4 +1,4 @@
-/* Compile with:
+﻿/* Compile with:
    for FILE in `seq 3`; do
      clang -g -c  odr-member-functions.cpp -DFILE$FILE -o
    odr-member-functions/$FILE.o done

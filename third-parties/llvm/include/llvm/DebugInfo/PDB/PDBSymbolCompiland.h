@@ -1,4 +1,4 @@
-//===- PDBSymbolCompiland.h - Accessors for querying PDB compilands -----*-===//
+﻿//===- PDBSymbolCompiland.h - Accessors for querying PDB compilands -----*-===//
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
 // See https://llvm.org/LICENSE.txt for license information.

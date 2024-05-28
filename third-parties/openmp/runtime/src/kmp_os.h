@@ -1,4 +1,4 @@
-/*
+﻿/*
  * kmp_os.h -- KPTS runtime header file.
  */
 

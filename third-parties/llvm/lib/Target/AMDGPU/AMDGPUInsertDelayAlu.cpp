@@ -1,4 +1,4 @@
-//===- AMDGPUInsertDelayAlu.cpp - Insert s_delay_alu instructions ---------===//
+﻿//===- AMDGPUInsertDelayAlu.cpp - Insert s_delay_alu instructions ---------===//
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
 // See https://llvm.org/LICENSE.txt for license information.

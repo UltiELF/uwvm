@@ -1,4 +1,4 @@
-/*
+﻿/*
  * ompt-specific.h - header of OMPT internal functions implementation
  */
 

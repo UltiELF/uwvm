@@ -1,4 +1,4 @@
-//===- Mips16HardFloat.cpp for Mips16 Hard Float --------------------------===//
+﻿//===- Mips16HardFloat.cpp for Mips16 Hard Float --------------------------===//
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
 // See https://llvm.org/LICENSE.txt for license information.

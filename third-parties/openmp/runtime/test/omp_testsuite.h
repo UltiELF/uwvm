@@ -1,4 +1,4 @@
-/* Global headerfile of the OpenMP Testsuite */
+﻿/* Global headerfile of the OpenMP Testsuite */
 
 #ifndef OMP_TESTSUITE_H
 #define OMP_TESTSUITE_H

@@ -1,4 +1,4 @@
-//===- BinaryStreamWriter.cpp - Writes objects to a BinaryStream ----------===//
+﻿//===- BinaryStreamWriter.cpp - Writes objects to a BinaryStream ----------===//
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
 // See https://llvm.org/LICENSE.txt for license information.

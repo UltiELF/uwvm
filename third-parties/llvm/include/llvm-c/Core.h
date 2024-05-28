@@ -1,4 +1,4 @@
-/*===-- llvm-c/Core.h - Core Library C Interface ------------------*- C -*-===*\
+﻿/*===-- llvm-c/Core.h - Core Library C Interface ------------------*- C -*-===*\
 |*                                                                            *|
 |* Part of the LLVM Project, under the Apache License v2.0 with LLVM          *|
 |* Exceptions.                                                                *|

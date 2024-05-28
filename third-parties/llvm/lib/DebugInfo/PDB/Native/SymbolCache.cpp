@@ -1,4 +1,4 @@
-#include "llvm/DebugInfo/PDB/Native/SymbolCache.h"
+﻿#include "llvm/DebugInfo/PDB/Native/SymbolCache.h"
 
 #include "llvm/DebugInfo/CodeView/DebugChecksumsSubsection.h"
 #include "llvm/DebugInfo/CodeView/DebugLinesSubsection.h"

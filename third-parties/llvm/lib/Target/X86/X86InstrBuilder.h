@@ -1,4 +1,4 @@
-//===-- X86InstrBuilder.h - Functions to aid building x86 insts -*- C++ -*-===//
+﻿//===-- X86InstrBuilder.h - Functions to aid building x86 insts -*- C++ -*-===//
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
 // See https://llvm.org/LICENSE.txt for license information.

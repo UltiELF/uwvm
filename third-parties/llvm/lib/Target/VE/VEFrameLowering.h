@@ -1,4 +1,4 @@
-//===-- VEFrameLowering.h - Define frame lowering for VE --*- C++ -*-===//
+﻿//===-- VEFrameLowering.h - Define frame lowering for VE --*- C++ -*-===//
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
 // See https://llvm.org/LICENSE.txt for license information.

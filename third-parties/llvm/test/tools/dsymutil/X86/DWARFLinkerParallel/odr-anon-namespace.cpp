@@ -1,4 +1,4 @@
-/* Compile with:
+﻿/* Compile with:
    for FILE in `seq 2`; do
      clang -g -c  odr-anon-namespace.cpp -DFILE$FILE -o odr-anon-namespace/$FILE.o
    done

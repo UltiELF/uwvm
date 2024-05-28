@@ -1,4 +1,4 @@
-// Compile with "cl /c /Zi /GR- ClassLayoutTest.cpp"
+﻿// Compile with "cl /c /Zi /GR- ClassLayoutTest.cpp"
 // Link with "link ClassLayoutTest.obj /debug /nodefaultlib /entry:main"
 
 namespace MembersTest {

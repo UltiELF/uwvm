@@ -1,4 +1,4 @@
-//===----- ELF_i386.cpp - JIT linker implementation for ELF/i386 ----===//
+﻿//===----- ELF_i386.cpp - JIT linker implementation for ELF/i386 ----===//
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
 // See https://llvm.org/LICENSE.txt for license information.

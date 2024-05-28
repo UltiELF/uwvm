@@ -1,4 +1,4 @@
-// RUN: %libomptarget-compilexx-and-run-generic
+﻿// RUN: %libomptarget-compilexx-and-run-generic
 // RUN: %libomptarget-compileoptxx-and-run-generic
 
 // FIXME: This is a bug in host offload, this should run fine.

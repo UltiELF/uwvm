@@ -1,4 +1,4 @@
-//===-- RISCVInstPrinter.cpp - Convert RISC-V MCInst to asm syntax --------===//
+﻿//===-- RISCVInstPrinter.cpp - Convert RISC-V MCInst to asm syntax --------===//
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
 // See https://llvm.org/LICENSE.txt for license information.

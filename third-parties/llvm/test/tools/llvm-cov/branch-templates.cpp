@@ -1,4 +1,4 @@
-// RUN: llvm-profdata merge %S/Inputs/branch-templates.proftext -o %t.profdata
+﻿// RUN: llvm-profdata merge %S/Inputs/branch-templates.proftext -o %t.profdata
 // RUN: llvm-cov show --show-expansions --show-branches=count %S/Inputs/branch-templates.o32l -instr-profile %t.profdata -path-equivalence=/tmp,%S %s | FileCheck %s
 // RUN: llvm-cov report --show-branch-summary %S/Inputs/branch-templates.o32l -instr-profile %t.profdata -show-functions -path-equivalence=/tmp,%S %s | FileCheck %s -check-prefix=REPORT
 // RUN: llvm-cov report --show-branch-summary %S/Inputs/branch-templates.o32l -instr-profile %t.profdata -path-equivalence=/tmp,%S %s | FileCheck %s -check-prefix=REPORTFILE

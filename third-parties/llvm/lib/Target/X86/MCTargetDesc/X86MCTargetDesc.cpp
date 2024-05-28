@@ -1,4 +1,4 @@
-//===-- X86MCTargetDesc.cpp - X86 Target Descriptions ---------------------===//
+﻿//===-- X86MCTargetDesc.cpp - X86 Target Descriptions ---------------------===//
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
 // See https://llvm.org/LICENSE.txt for license information.

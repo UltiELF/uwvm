@@ -1,4 +1,4 @@
-//===- llvm/Support/Chrono.h - Utilities for Timing Manipulation-*- C++ -*-===//
+﻿//===- llvm/Support/Chrono.h - Utilities for Timing Manipulation-*- C++ -*-===//
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
 // See https://llvm.org/LICENSE.txt for license information.

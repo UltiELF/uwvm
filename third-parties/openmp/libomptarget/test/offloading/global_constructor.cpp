@@ -1,4 +1,4 @@
-// RUN: %libomptarget-compilexx-generic && %libomptarget-run-generic | %fcheck-generic
+﻿// RUN: %libomptarget-compilexx-generic && %libomptarget-run-generic | %fcheck-generic
 
 #include <cstdio>
 

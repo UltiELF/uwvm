@@ -1,4 +1,4 @@
-/*
+﻿/*
  * kmp_affinity.h -- header for affinity management
  */
 

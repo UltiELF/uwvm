@@ -1,4 +1,4 @@
-//===-- R600MCTargetDesc.cpp - R600 Target Descriptions -------------------===//
+﻿//===-- R600MCTargetDesc.cpp - R600 Target Descriptions -------------------===//
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
 // See https://llvm.org/LICENSE.txt for license information.

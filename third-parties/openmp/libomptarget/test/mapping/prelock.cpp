@@ -1,4 +1,4 @@
-// RUN: %libomptarget-compilexx-generic
+﻿// RUN: %libomptarget-compilexx-generic
 // RUN: %libomptarget-run-generic %fcheck-generic
 
 // UNSUPPORTED: aarch64-unknown-linux-gnu

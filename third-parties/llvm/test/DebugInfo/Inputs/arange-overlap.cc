@@ -1,4 +1,4 @@
-void call();
+﻿void call();
 
 struct S {
   static void foo() { call(); call(); }

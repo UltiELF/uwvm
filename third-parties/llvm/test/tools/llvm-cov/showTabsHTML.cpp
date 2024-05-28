@@ -1,4 +1,4 @@
-// RUN: llvm-profdata merge -o %t.profdata %S/Inputs/showTabsHTML.proftext
+﻿// RUN: llvm-profdata merge -o %t.profdata %S/Inputs/showTabsHTML.proftext
 // RUN: llvm-cov show %S/Inputs/showTabsHTML.covmapping -format html -instr-profile %t.profdata -path-equivalence=/tmp,%S %s | FileCheck %s --strict-whitespace
 
 int main(int argc, char ** argv) {

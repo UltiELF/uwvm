@@ -1,4 +1,4 @@
-//===- HexagonHardwareLoops.cpp - Identify and generate hardware loops ----===//
+﻿//===- HexagonHardwareLoops.cpp - Identify and generate hardware loops ----===//
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
 // See https://llvm.org/LICENSE.txt for license information.

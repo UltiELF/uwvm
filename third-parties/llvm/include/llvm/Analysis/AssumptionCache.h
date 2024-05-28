@@ -1,4 +1,4 @@
-//===- llvm/Analysis/AssumptionCache.h - Track @llvm.assume -----*- C++ -*-===//
+﻿//===- llvm/Analysis/AssumptionCache.h - Track @llvm.assume -----*- C++ -*-===//
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
 // See https://llvm.org/LICENSE.txt for license information.

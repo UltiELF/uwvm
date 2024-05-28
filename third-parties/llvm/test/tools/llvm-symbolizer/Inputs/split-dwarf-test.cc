@@ -1,4 +1,4 @@
-void f1() {
+﻿void f1() {
 }
 
 inline __attribute__((always_inline)) void f2() {

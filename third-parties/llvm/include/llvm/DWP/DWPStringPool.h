@@ -1,4 +1,4 @@
-#ifndef LLVM_DWP_DWPSTRINGPOOL_H
+﻿#ifndef LLVM_DWP_DWPSTRINGPOOL_H
 #define LLVM_DWP_DWPSTRINGPOOL_H
 
 #include "llvm/ADT/DenseMap.h"

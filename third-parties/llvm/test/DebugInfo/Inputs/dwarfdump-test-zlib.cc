@@ -1,4 +1,4 @@
-class DummyClass {
+﻿class DummyClass {
   int a_;
  public:
   DummyClass(int a) : a_(a) {}

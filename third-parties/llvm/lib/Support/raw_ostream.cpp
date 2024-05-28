@@ -1,4 +1,4 @@
-//===--- raw_ostream.cpp - Implement the raw_ostream classes --------------===//
+﻿//===--- raw_ostream.cpp - Implement the raw_ostream classes --------------===//
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
 // See https://llvm.org/LICENSE.txt for license information.

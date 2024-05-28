@@ -1,4 +1,4 @@
-/*! \file */
+﻿/*! \file */
 /*
  * kmp.h -- KPTS runtime header file.
  */

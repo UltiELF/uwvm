@@ -1,4 +1,4 @@
-// Check that llvm-cov loads real coverage mapping data for a function
+﻿// Check that llvm-cov loads real coverage mapping data for a function
 // even though dummy coverage data for that function comes first.
 // Dummy coverage data is exported if the definition of an inline function
 // is seen but the function is not used in the translation unit.

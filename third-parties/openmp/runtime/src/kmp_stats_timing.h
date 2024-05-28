@@ -1,4 +1,4 @@
-#ifndef KMP_STATS_TIMING_H
+﻿#ifndef KMP_STATS_TIMING_H
 #define KMP_STATS_TIMING_H
 
 /** @file kmp_stats_timing.h

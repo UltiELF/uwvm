@@ -1,4 +1,4 @@
-/*
+﻿/*
  * kmp_version.h -- version number for this release
  */
 

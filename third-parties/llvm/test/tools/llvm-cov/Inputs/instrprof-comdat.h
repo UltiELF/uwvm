@@ -1,4 +1,4 @@
-template <class T> class FOO {
+﻿template <class T> class FOO {
 public:
   FOO() : t(0) {}
 

@@ -1,3 +1,3 @@
-extern "C" int a() {
+﻿extern "C" int a() {
   return 0;
 }

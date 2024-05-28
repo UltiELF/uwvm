@@ -1,4 +1,4 @@
-#include "bar.h"
+﻿#include "bar.h"
 
 int foo() {
   return 1;

@@ -1,4 +1,4 @@
-//===- LoopCacheAnalysis.cpp - Loop Cache Analysis -------------------------==//
+﻿//===- LoopCacheAnalysis.cpp - Loop Cache Analysis -------------------------==//
 //
 //                     The LLVM Compiler Infrastructure
 //

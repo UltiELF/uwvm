@@ -1,4 +1,4 @@
-// RUN: %libomp-cxx-compile -fopenmp-version=51
+﻿// RUN: %libomp-cxx-compile -fopenmp-version=51
 // RUN: %libomp-run | FileCheck %s --check-prefix OMP51
 
 #include <stdio.h>

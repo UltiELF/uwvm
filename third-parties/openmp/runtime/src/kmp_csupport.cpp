@@ -1,4 +1,4 @@
-/*
+﻿/*
  * kmp_csupport.cpp -- kfront linkage support for OpenMP.
  */
 

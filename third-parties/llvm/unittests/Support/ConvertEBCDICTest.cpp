@@ -1,4 +1,4 @@
-//===- unittests/Support/ConvertEBCDICTest.cpp - EBCDIC/UTF8 conversion tests
+﻿//===- unittests/Support/ConvertEBCDICTest.cpp - EBCDIC/UTF8 conversion tests
 //-===//
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
