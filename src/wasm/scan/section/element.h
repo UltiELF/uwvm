@@ -275,6 +275,36 @@ namespace uwvm::wasm
 
             curr = reinterpret_cast<::std::byte const*>(next_i32);
 
+            // op terminator
+            ::std::uint_least8_t op_terminator{};
+            ::fast_io::freestanding::my_memcpy(__builtin_addressof(op_terminator), curr, sizeof(::std::uint_least8_t));
+            if(op_terminator != 0x0b) [[unlikely]]
+            {
+                ::fast_io::io::perr(::uwvm::u8err,
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"uwvm: "
+                                u8"\033[31m"
+                                u8"[fatal] "
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"No terminator found."
+                                u8"\n"
+                                u8"\033[0m"
+                                u8"Terminate.\n\n");
+                ::fast_io::fast_terminate();
+            }
+
+            ++curr;
+
             // num_elem
             ::std::size_t num_elem{};
             auto [next_num_elem, err_num_elem]{::fast_io::parse_by_scan(reinterpret_cast<char8_t_const_may_alias_ptr>(curr),
@@ -310,7 +340,6 @@ namespace uwvm::wasm
                     }
             }
 
-            ++num_elem;
             ::uwvm::wasm::check_index(num_elem);
             est.elem_count = num_elem;
 
