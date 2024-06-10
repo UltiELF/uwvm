@@ -500,6 +500,26 @@ namespace uwvm::wasm
                     }
                 }
             }
+
+            // code
+            if(wasmmod.codesec.sec_begin) [[likely]]
+            {
+                ::fast_io::operations::print_freestanding<false>(::std::forward<s>(stm),
+                                                                 u8"\n" u8"Code[",
+                                                                 wasmmod.codesec.code_count,
+                                                                 u8"] (start=",
+                                                                 ::fast_io::mnp::hex0x<true>(wasmmod.codesec.sec_begin - wasm_file_begin),
+                                                                 u8" end=",
+                                                                 ::fast_io::mnp::hex0x<true>(wasmmod.codesec.sec_end - wasm_file_begin),
+                                                                 u8" size=",
+                                                                 ::fast_io::mnp::hex0x<true>(wasmmod.codesec.sec_end - wasmmod.codesec.sec_begin),
+                                                                 u8"):\n");
+
+                for(::std::size_t code_count{wasmmod.importsec.func_types.size()}; auto const& t: wasmmod.codesec.bodies)
+                {
+                    ::fast_io::operations::print_freestanding<true>(::std::forward<s>(stm), u8" - " u8"func" u8"[", code_count++, u8"] size=", t.body_size);
+                }
+            }
         }
         else if constexpr(::std::same_as<char_type, char16_t>) {}
         else if constexpr(::std::same_as<char_type, char32_t>) {}
