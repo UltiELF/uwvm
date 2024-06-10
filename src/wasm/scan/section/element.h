@@ -103,7 +103,7 @@ namespace uwvm::wasm
         wasmmod.elemsec.elem_segments.clear();
         wasmmod.elemsec.elem_segments.reserve(elem_count);
 
-        // jump to global type
+        // jump to element type
         curr = reinterpret_cast<::std::byte const*>(next);
 
         ::std::size_t elem_counter{};
@@ -404,7 +404,7 @@ namespace uwvm::wasm
 #else
                                 u8"\033[97m"
 #endif
-                                u8"The number of globals resolved does not match the actual number."
+                                u8"The number of elements resolved does not match the actual number."
                                 u8"\n"
                                 u8"\033[0m"
                                 u8"Terminate.\n\n");
