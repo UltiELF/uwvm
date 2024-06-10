@@ -472,13 +472,13 @@ namespace uwvm::wasm
             {
                 ::fast_io::operations::print_freestanding<false>(::std::forward<s>(stm),
                                                                  u8"\n" u8"Elem[",
-                                                                 wasmmod.exportsec.export_count,
+                                                                 wasmmod.elemsec.elem_segment_count,
                                                                  u8"] (start=",
-                                                                 ::fast_io::mnp::hex0x<true>(wasmmod.exportsec.sec_begin - wasm_file_begin),
+                                                                 ::fast_io::mnp::hex0x<true>(wasmmod.elemsec.sec_begin - wasm_file_begin),
                                                                  u8" end=",
-                                                                 ::fast_io::mnp::hex0x<true>(wasmmod.exportsec.sec_end - wasm_file_begin),
+                                                                 ::fast_io::mnp::hex0x<true>(wasmmod.elemsec.sec_end - wasm_file_begin),
                                                                  u8" size=",
-                                                                 ::fast_io::mnp::hex0x<true>(wasmmod.exportsec.sec_end - wasmmod.exportsec.sec_begin),
+                                                                 ::fast_io::mnp::hex0x<true>(wasmmod.elemsec.sec_end - wasmmod.elemsec.sec_begin),
                                                                  u8"):\n");
 
                 // segment
