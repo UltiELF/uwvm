@@ -298,7 +298,7 @@ namespace uwvm
                 }
             }
 
-            if(shouldreturn)
+            if(shouldreturn) [[unlikely]] 
             {
                 ::fast_io::io::perrln(buf_u8err);
                 return parsing_return_val::returnm1;
@@ -337,7 +337,7 @@ namespace uwvm
 
             bool const ign_invpm_b{ign_invpm->is_exist ? *ign_invpm->is_exist : false};
 #else
-            bool const ign_invpm_b{false};
+            constexpr bool ign_invpm_b{false};
 #endif
             bool shouldreturn{};
             ::fast_io::u8native_io_observer buf_u8err{::uwvm::u8err};
@@ -395,7 +395,7 @@ namespace uwvm
                     }
                 }
             }
-            if(shouldreturn)
+            if(shouldreturn) [[unlikely]] 
             {
                 ::fast_io::io::perrln(buf_u8err);
                 return parsing_return_val::returnm1;

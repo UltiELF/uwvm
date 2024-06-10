@@ -11,7 +11,7 @@
         <img src="https://img.shields.io/badge/language-c++23-blue.svg" ,alt="cppreference" />
     </a>
     <a
-        href="http://qm.qq.com/cgi-bin/qm/qr?_wv=1027&k=VwOd_SiQ31UIiX_QtI047ngYYgkzvvlB&authKey=HJecYKgB1HQCtIplBkNjeSxlat8OgNXtk47QURCS6y2c7dAifwHaKZaURIci6yE3&noverify=0&group_code=137136029">
+        href="http://qm.qq.com/cgi-bin/qm/qr?_wv=1027&k=ZC_7qjkJTPdDT1-mjefD-a8X5V30A_ql&authKey=CJ41sGDX5Oyut4IccWrKUdsqSfbgJztM7OiJ4etn7ruTJRpYbgi%2FIrfEEJxHOZew&noverify=0&group_code=909035408">
         <img src="https://img.shields.io/badge/chat-on%20QQ-red.svg" , alt="QQ" />
     </a>
     <a
@@ -30,7 +30,7 @@
 
 - [Discord](https://discord.gg/xkvGy79e)
 - [KOOK](https://kook.top/L7rWIo)
-- QQ: [137136029](http://qm.qq.com/cgi-bin/qm/qr?_wv=1027&k=VwOd_SiQ31UIiX_QtI047ngYYgkzvvlB&authKey=HJecYKgB1HQCtIplBkNjeSxlat8OgNXtk47QURCS6y2c7dAifwHaKZaURIci6yE3&noverify=0&group_code=137136029)
+- QQ: [909035408](http://qm.qq.com/cgi-bin/qm/qr?_wv=1027&k=ZC_7qjkJTPdDT1-mjefD-a8X5V30A_ql&authKey=CJ41sGDX5Oyut4IccWrKUdsqSfbgJztM7OiJ4etn7ruTJRpYbgi%2FIrfEEJxHOZew&noverify=0&group_code=909035408)
 - repositories: [Gitee](https://gitee.com/UltiELF/uwvm), [GitHub](https://github.com/UltiELF/uwvm)
 
 ## Introduce
