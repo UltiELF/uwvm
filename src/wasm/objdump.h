@@ -520,6 +520,36 @@ namespace uwvm::wasm
                     ::fast_io::operations::print_freestanding<true>(::std::forward<s>(stm), u8" - " u8"func" u8"[", code_count++, u8"] size=", t.body_size);
                 }
             }
+
+            // data
+            if(wasmmod.datasec.sec_begin) [[likely]]
+            {
+                ::fast_io::operations::print_freestanding<false>(::std::forward<s>(stm),
+                                                                 u8"\n" u8"Data[",
+                                                                 wasmmod.datasec.count,
+                                                                 u8"] (start=",
+                                                                 ::fast_io::mnp::hex0x<true>(wasmmod.datasec.sec_begin - wasm_file_begin),
+                                                                 u8" end=",
+                                                                 ::fast_io::mnp::hex0x<true>(wasmmod.datasec.sec_end - wasm_file_begin),
+                                                                 u8" size=",
+                                                                 ::fast_io::mnp::hex0x<true>(wasmmod.datasec.sec_end - wasmmod.datasec.sec_begin),
+                                                                 u8"):\n");
+
+                for(::std::size_t count{}; auto const& t: wasmmod.datasec.entries)
+                {
+                    ::fast_io::operations::print_freestanding<true>(::std::forward<s>(stm),
+                                                                    u8" - " u8"segment" u8"[", 
+                                                                    count++,
+                                                                    u8"] memory=",
+                                                                    t.index,
+                                                                    u8" size=",
+                                                                    t.size,
+                                                                    u8" - init i32=",
+                                                                    t.offset.i32);
+                }
+            }
+
+            //
         }
         else if constexpr(::std::same_as<char_type, char16_t>) {}
         else if constexpr(::std::same_as<char_type, char32_t>) {}

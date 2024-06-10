@@ -24,6 +24,7 @@ namespace uwvm::wasm
         ::uwvm::wasm::section::start_section startsec{};
         ::uwvm::wasm::section::element_section elemsec{};
         ::uwvm::wasm::section::code_section codesec{};
+        ::uwvm::wasm::section::data_section datasec{};
     };
 }  // namespace uwvm::wasm
 

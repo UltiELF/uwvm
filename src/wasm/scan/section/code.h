@@ -161,7 +161,7 @@ namespace uwvm::wasm
 #else
                                 u8"\033[97m"
 #endif
-                                u8"The number of cold bodies resolved does not match the actual number."
+                                u8"The number of code bodies resolved does not match the actual number."
                                 u8"\n"
                                 u8"\033[0m"
                                 u8"Terminate.\n\n");
@@ -399,7 +399,33 @@ namespace uwvm::wasm
             fb.begin = curr;
             curr = fb.end;
 
-            wasmmod.codesec.bodies.push_back_unchecked(::std::move(fb));  // vector
+            wasmmod.codesec.bodies.push_back_unchecked(::std::move(fb));  // move vector
         }
+
+        if(code_counter != code_count) [[unlikely]]
+        {
+            ::fast_io::io::perr(::uwvm::u8err,
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"uwvm: "
+                                u8"\033[31m"
+                                u8"[fatal] "
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"The number of codes resolved does not match the actual number."
+                                u8"\n"
+                                u8"\033[0m"
+                                u8"Terminate.\n\n");
+            ::fast_io::fast_terminate();
+        }
+
     }
 }  // namespace uwvm::wasm
