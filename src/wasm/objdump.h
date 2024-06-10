@@ -466,6 +466,40 @@ namespace uwvm::wasm
                                                                  wasmmod.startsec.index,
                                                                  u8"]\n");
             }
+
+            // element
+            if(wasmmod.elemsec.sec_begin) [[likely]]
+            {
+                ::fast_io::operations::print_freestanding<false>(::std::forward<s>(stm),
+                                                                 u8"\n" u8"Elem[",
+                                                                 wasmmod.exportsec.export_count,
+                                                                 u8"] (start=",
+                                                                 ::fast_io::mnp::hex0x<true>(wasmmod.exportsec.sec_begin - wasm_file_begin),
+                                                                 u8" end=",
+                                                                 ::fast_io::mnp::hex0x<true>(wasmmod.exportsec.sec_end - wasm_file_begin),
+                                                                 u8" size=",
+                                                                 ::fast_io::mnp::hex0x<true>(wasmmod.exportsec.sec_end - wasmmod.exportsec.sec_begin),
+                                                                 u8"):\n");
+
+                // segment
+                for(::std::size_t segment_counter{}; auto const& t: wasmmod.elemsec.elem_segments)
+                {
+                    ::fast_io::operations::print_freestanding<true>(::std::forward<s>(stm),
+                                                                    u8" - segment[",
+                                                                    segment_counter++,
+                                                                    u8"] flags=0 table=",
+                                                                    t.index,
+                                                                    u8" count=",
+                                                                    t.elem_count,
+                                                                    u8" - init i32=",
+                                                                    t.initializer.i32);
+                    // elems
+                    for(::std::size_t elem_counter{}; auto const e: t.elems)
+                    {
+                        ::fast_io::operations::print_freestanding<true>(::std::forward<s>(stm), u8"  - elem[", elem_counter++, u8"] = ref.func:", e);
+                    }
+                }
+            }
         }
         else if constexpr(::std::same_as<char_type, char16_t>) {}
         else if constexpr(::std::same_as<char_type, char32_t>) {}
