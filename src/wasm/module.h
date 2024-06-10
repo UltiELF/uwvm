@@ -22,6 +22,7 @@ namespace uwvm::wasm
         ::uwvm::wasm::section::global_section globalsec{};
         ::uwvm::wasm::section::export_section exportsec{};
         ::uwvm::wasm::section::start_section startsec{};
+        ::uwvm::wasm::section::element_section elemsec{};
     };
 }  // namespace uwvm::wasm
 

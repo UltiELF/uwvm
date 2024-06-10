@@ -13,10 +13,10 @@
 
 namespace uwvm::wasm
 {
-    inline void scan_table_section(::uwvm::wasm::wasm_module& wasmmod, ::std::byte const* begin, ::std::byte const* end) noexcept
+    inline void scan_element_section(::uwvm::wasm::wasm_module& wasmmod, ::std::byte const* begin, ::std::byte const* end) noexcept
     {
 #ifdef UWVM_TIMER
-        ::fast_io::timer scan_table_section_timer{u8"uwvm: [timer] scan table section"};
+        ::fast_io::timer scan_element_section_timer{u8"uwvm: [timer] scan element section"};
 #endif
         // alias def
         using char8_t_may_alias_ptr
@@ -29,19 +29,9 @@ namespace uwvm::wasm
             [[__gnu__::__may_alias__]]
 #endif
             = char8_t const*;
-        using value_type_may_alias_ptr
-#if __has_cpp_attribute(__gnu__::__may_alias__)
-            [[__gnu__::__may_alias__]]
-#endif
-            = ::uwvm::wasm::value_type*;
-        using value_type_const_may_alias_ptr
-#if __has_cpp_attribute(__gnu__::__may_alias__)
-            [[__gnu__::__may_alias__]]
-#endif
-            = ::uwvm::wasm::value_type const*;
 
         // check is exist
-        if(wasmmod.tablesec.sec_begin) [[unlikely]]
+        if(wasmmod.elemsec.sec_begin) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -59,23 +49,23 @@ namespace uwvm::wasm
 #else
                                 u8"\033[97m"
 #endif
-                                u8"Duplicate WASM Section: Table."
+                                u8"Duplicate WASM Section: Element."
                                 u8"\n"
                                 u8"\033[0m"
                                 u8"Terminate.\n\n");
             ::fast_io::fast_terminate();
         }
-        wasmmod.tablesec.sec_begin = begin;
-        wasmmod.tablesec.sec_end = end;
+        wasmmod.elemsec.sec_begin = begin;
+        wasmmod.elemsec.sec_end = end;
 
         // curr
         auto curr{begin};
 
-        // get function size
-        ::std::size_t table_count{};
+        // get elem size
+        ::std::size_t elem_count{};
         auto [next, err]{::fast_io::parse_by_scan(reinterpret_cast<char8_t_const_may_alias_ptr>(curr),
                                                   reinterpret_cast<char8_t_const_may_alias_ptr>(end),
-                                                  ::fast_io::mnp::leb128_get(table_count))};
+                                                  ::fast_io::mnp::leb128_get(elem_count))};
         switch(err)
         {
             case ::fast_io::parse_code::ok: break;
@@ -105,13 +95,91 @@ namespace uwvm::wasm
                     ::fast_io::fast_terminate();
                 }
         }
+
+        // check 64-bit indexes
+        ::uwvm::wasm::check_index(elem_count);
+
+        wasmmod.elemsec.elem_segment_count = elem_count;
+        wasmmod.elemsec.elem_segments.clear();
+        wasmmod.elemsec.elem_segments.reserve(elem_count);
+
+        // jump to global type
+        curr = reinterpret_cast<::std::byte const*>(next);
+
+        ::std::size_t elem_counter{};
+
+        auto const func_count{wasmmod.importsec.func_types.size() + wasmmod.functionsec.function_count};
+
+        for(; curr < end;)
+        {
+            ::uwvm::wasm::elem_segment_type est{};  // union
+
+            if(++elem_counter > elem_count) [[unlikely]]
+            {
+                ::fast_io::io::perr(::uwvm::u8err,
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"uwvm: "
+                                u8"\033[31m"
+                                u8"[fatal] "
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"The number of elements resolved does not match the actual number."
+                                u8"\n"
+                                u8"\033[0m"
+                                u8"Terminate.\n\n");
+                ::fast_io::fast_terminate();
+            }
+
+            ::std::size_t index{};
+            auto [next_index, err_index]{::fast_io::parse_by_scan(reinterpret_cast<char8_t_const_may_alias_ptr>(curr),
+                                                                  reinterpret_cast<char8_t_const_may_alias_ptr>(end),
+                                                                  ::fast_io::mnp::leb128_get(index))};
+            switch(err_index)
+            {
+                case ::fast_io::parse_code::ok: break;
+                default:
+                    [[unlikely]]
+                    {
+                        ::fast_io::io::perr(::uwvm::u8err,
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"uwvm: "
+                                u8"\033[31m"
+                                u8"[fatal] "
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"Invalid table length."
+                                u8"\n"
+                                u8"\033[0m"
+                                u8"Terminate.\n\n");
+                        ::fast_io::fast_terminate();
+                    }
+            }
+
 #if 0  // future🦄
        // check 64-bit indexes
-        ::uwvm::wasm::check_index(table_count);
+            ::uwvm::wasm::check_index(index);
 #else
-        if(table_count > 1) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
+            if(index > 1) [[unlikely]]
+            {
+                ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
     #ifdef __MSDOS__
                                 u8"\033[37m"
@@ -127,24 +195,22 @@ namespace uwvm::wasm
     #else
                                 u8"\033[97m"
     #endif
-                                u8"In the MVP, the number of tables must be no more than 1."
+                                u8"In the MVP, the index of tables must be no more than 1."
                                 u8"\n"
                                 u8"\033[0m"
                                 u8"Terminate.\n\n");
-            ::fast_io::fast_terminate();
-        }
+                ::fast_io::fast_terminate();
+            }
 #endif
-        wasmmod.tablesec.table_count = table_count;
-        wasmmod.tablesec.types.clear();
-        wasmmod.tablesec.types.reserve(table_count);
+            est.index = index;
+            curr = reinterpret_cast<::std::byte const*>(next_index);
 
-        // jump to table type
-        curr = reinterpret_cast<::std::byte const*>(next);
-        ::std::size_t table_counter{};
+            // init_expr
+            ::uwvm::wasm::op_basic_type opb{};
+            ::fast_io::freestanding::my_memcpy(__builtin_addressof(opb), curr, sizeof(::uwvm::wasm::op_basic_type));
+            est.initializer.type_opcode.op = static_cast<::uwvm::wasm::op_basic>(opb);
 
-        for(::uwvm::wasm::table_type tt{}; curr < end;)
-        {
-            if(++table_counter > table_count) [[unlikely]]
+            if(static_cast<::uwvm::wasm::op_basic>(opb) != ::uwvm::wasm::op_basic::i32_const) [[unlikely]]
             {
                 ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -162,68 +228,27 @@ namespace uwvm::wasm
 #else
                                 u8"\033[97m"
 #endif
-                                u8"The number of tables resolved does not match the actual number."
+                                u8"Invalid i32 initializer expression that calculates the offset of a placement element."
                                 u8"\n"
                                 u8"\033[0m"
                                 u8"Terminate.\n\n");
                 ::fast_io::fast_terminate();
             }
 
-            ::uwvm::wasm::value_type et{};
-            ::fast_io::freestanding::my_memcpy(__builtin_addressof(et), curr, sizeof(::uwvm::wasm::value_type));
-
-            if(!::uwvm::wasm::is_valid_value_type_ref(et)) [[unlikely]]
-            {
-                ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"Invalid Elem Type: ",
-                                ::fast_io::mnp::hex0x<true>(static_cast<::std::uint_fast8_t>(et)),
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
-                ::fast_io::fast_terminate();
-            }
-            tt.elem_type = et;
-
-            // jump to flags
+            // set curr to i32 value
             ++curr;
 
-            // get flags
-            ::std::uint_fast8_t flags{};
-            ::fast_io::freestanding::my_memcpy(__builtin_addressof(flags), curr, sizeof(::std::uint_fast8_t));
-
-            if(flags == 0)
+            ::std::int_least32_t i32val{};
+            auto [next_i32, err_i32]{::fast_io::parse_by_scan(reinterpret_cast<char8_t_const_may_alias_ptr>(curr),
+                                                              reinterpret_cast<char8_t_const_may_alias_ptr>(end),
+                                                              ::fast_io::mnp::leb128_get(i32val))};
+            switch(err_i32)
             {
-                tt.limits.present_max = static_cast<bool>(flags);
-
-                ++curr;
-
-                // get type index
-                ::std::size_t limit_min{};
-                auto [next_lmin, err_lmin]{::fast_io::parse_by_scan(reinterpret_cast<char8_t_const_may_alias_ptr>(curr),
-                                                                    reinterpret_cast<char8_t_const_may_alias_ptr>(end),
-                                                                    ::fast_io::mnp::leb128_get(limit_min))};
-                switch(err_lmin)
-                {
-                    case ::fast_io::parse_code::ok: break;
-                    default:
-                        [[unlikely]]
-                        {
-                            ::fast_io::io::perr(::uwvm::u8err,
+                case ::fast_io::parse_code::ok: break;
+                default:
+                    [[unlikely]]
+                    {
+                        ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
 #ifdef __MSDOS__
                                 u8"\033[37m"
@@ -239,32 +264,66 @@ namespace uwvm::wasm
 #else
                                 u8"\033[97m"
 #endif
-                                u8"Invalid limit length."
+                                u8"Invalid varint32."
                                 u8"\n"
                                 u8"\033[0m"
                                 u8"Terminate.\n\n");
-                            ::fast_io::fast_terminate();
-                        }
-                }
-
-                // check 64-bit indexes
-                ::uwvm::wasm::check_index(limit_min);
-                tt.limits.min = limit_min;
-
-                curr = reinterpret_cast<::std::byte const*>(next_lmin);
+                        ::fast_io::fast_terminate();
+                    }
             }
-            else if(flags == 1)
+            est.initializer.i32 = i32val;
+
+            curr = reinterpret_cast<::std::byte const*>(next_i32);
+
+            // num_elem
+            ::std::size_t num_elem{};
+            auto [next_num_elem, err_num_elem]{::fast_io::parse_by_scan(reinterpret_cast<char8_t_const_may_alias_ptr>(curr),
+                                                                        reinterpret_cast<char8_t_const_may_alias_ptr>(end),
+                                                                        ::fast_io::mnp::leb128_get(num_elem))};
+            switch(err_index)
             {
-                tt.limits.present_max = static_cast<bool>(flags);
+                case ::fast_io::parse_code::ok: break;
+                default:
+                    [[unlikely]]
+                    {
+                        ::fast_io::io::perr(::uwvm::u8err,
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"uwvm: "
+                                u8"\033[31m"
+                                u8"[fatal] "
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"Invalid table length."
+                                u8"\n"
+                                u8"\033[0m"
+                                u8"Terminate.\n\n");
+                        ::fast_io::fast_terminate();
+                    }
+            }
 
-                ++curr;
+            ::uwvm::wasm::check_index(num_elem);
+            est.elem_count = num_elem;
 
-                // get type index
-                ::std::size_t limit_min{};
-                auto [next_lmin, err_lmin]{::fast_io::parse_by_scan(reinterpret_cast<char8_t_const_may_alias_ptr>(curr),
-                                                                    reinterpret_cast<char8_t_const_may_alias_ptr>(end),
-                                                                    ::fast_io::mnp::leb128_get(limit_min))};
-                switch(err_lmin)
+            curr = reinterpret_cast<::std::byte const*>(next_num_elem);
+
+            // get num elems
+            est.elems.reserve(num_elem);
+            for(::std::size_t i{}; i < num_elem; ++i)
+            {
+                ::std::size_t sequence{};
+                auto [next_sequence, err_sequence]{::fast_io::parse_by_scan(reinterpret_cast<char8_t_const_may_alias_ptr>(curr),
+                                                                            reinterpret_cast<char8_t_const_may_alias_ptr>(end),
+                                                                            ::fast_io::mnp::leb128_get(sequence))};
+                switch(err_sequence)
                 {
                     case ::fast_io::parse_code::ok: break;
                     default:
@@ -286,7 +345,7 @@ namespace uwvm::wasm
 #else
                                 u8"\033[97m"
 #endif
-                                u8"Invalid limit length."
+                                u8"Invalid table length."
                                 u8"\n"
                                 u8"\033[0m"
                                 u8"Terminate.\n\n");
@@ -294,48 +353,7 @@ namespace uwvm::wasm
                         }
                 }
 
-                tt.limits.min = limit_min;
-
-                curr = reinterpret_cast<::std::byte const*>(next_lmin);
-
-                ::std::size_t limit_max{};
-                auto [next_lmax, err_lmax]{::fast_io::parse_by_scan(reinterpret_cast<char8_t_const_may_alias_ptr>(curr),
-                                                                    reinterpret_cast<char8_t_const_may_alias_ptr>(end),
-                                                                    ::fast_io::mnp::leb128_get(limit_max))};
-                switch(err_lmax)
-                {
-                    case ::fast_io::parse_code::ok: break;
-                    default:
-                        [[unlikely]]
-                        {
-                            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"Invalid limit length."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Termaxate.\n\n");
-                            ::fast_io::fast_terminate();
-                        }
-                }
-
-                // check 64-bit indexes
-                ::uwvm::wasm::check_index(limit_max);
-
-                if(limit_min > limit_max) [[unlikely]]
+                if(sequence >= func_count) [[unlikely]]
                 {
                     ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -353,45 +371,22 @@ namespace uwvm::wasm
 #else
                                 u8"\033[97m"
 #endif
-                                u8"Initial > Maximum."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Termaxate.\n\n");
-                    ::fast_io::fast_terminate();
-                }
-
-                tt.limits.max = limit_max;
-
-                curr = reinterpret_cast<::std::byte const*>(next_lmax);
-            }
-            else [[unlikely]]
-            {
-                ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"Invalid flags."
+                                u8"Invalid function index."
                                 u8"\n"
                                 u8"\033[0m"
                                 u8"Terminate.\n\n");
-                ::fast_io::fast_terminate();
+                    ::fast_io::fast_terminate();
+                }
+
+                est.elems.push_back_unchecked(sequence);
+                curr = reinterpret_cast<::std::byte const*>(next_sequence);
             }
-            wasmmod.tablesec.types.emplace_back_unchecked(tt);
+
+            // write to wasmod
+            wasmmod.elemsec.elem_segments.push_back_unchecked(::std::move(est));  // vector move
         }
 
-        if(table_counter != table_count) [[unlikely]]
+        if(elem_counter != elem_count) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -409,7 +404,7 @@ namespace uwvm::wasm
 #else
                                 u8"\033[97m"
 #endif
-                                u8"The number of tables resolved does not match the actual number."
+                                u8"The number of globals resolved does not match the actual number."
                                 u8"\n"
                                 u8"\033[0m"
                                 u8"Terminate.\n\n");
