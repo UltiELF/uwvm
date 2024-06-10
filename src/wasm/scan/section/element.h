@@ -310,6 +310,7 @@ namespace uwvm::wasm
                     }
             }
 
+            ++num_elem;
             ::uwvm::wasm::check_index(num_elem);
             est.elem_count = num_elem;
 
