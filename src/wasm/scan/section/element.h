@@ -174,7 +174,7 @@ namespace uwvm::wasm
             }
 
 #if 0  // future🦄
-       // check 64-bit indexes
+            // check 64-bit indexes
             ::uwvm::wasm::check_index(index);
 #else
             if(index > 1) [[unlikely]]
@@ -342,11 +342,11 @@ namespace uwvm::wasm
 
             ::uwvm::wasm::check_index(num_elem);
             est.elem_count = num_elem;
+            est.elems.reserve(num_elem);
 
             curr = reinterpret_cast<::std::byte const*>(next_num_elem);
 
             // get num elems
-            est.elems.reserve(num_elem);
             for(::std::size_t i{}; i < num_elem; ++i)
             {
                 ::std::size_t sequence{};

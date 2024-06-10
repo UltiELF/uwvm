@@ -8,3 +8,4 @@
 #include "section/export.h"
 #include "section/start.h"
 #include "section/element.h"
+#include "section/code.h"

@@ -250,7 +250,11 @@ namespace uwvm::wasm
                     ::uwvm::wasm::scan_element_section(wasmmod, curr, sec_end);
                     break;
                 }
-                case ::uwvm::wasm::section_type::code_sec: break;
+                case ::uwvm::wasm::section_type::code_sec:
+                {
+                    ::uwvm::wasm::scan_code_section(wasmmod, curr, sec_end);
+                    break;
+                }
                 case ::uwvm::wasm::section_type::data_sec: break;
                 case ::uwvm::wasm::section_type::data_count_sec: break;
                 case ::uwvm::wasm::section_type::tag_sec: break;
