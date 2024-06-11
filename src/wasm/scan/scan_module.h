@@ -85,7 +85,7 @@ namespace uwvm::wasm
 #else
                                 u8"\033[97m"
 #endif
-                                u8"(",
+                                u8"(offset=",
                                 ::fast_io::mnp::addrvw(curr - begin),
                                 u8") "
                                 u8"Illegal WASM file format.\n"
@@ -119,7 +119,7 @@ namespace uwvm::wasm
 #else
                                 u8"\033[97m"
 #endif
-                                u8"(",
+                                u8"(offset=",
                                 ::fast_io::mnp::addrvw(curr - begin),
                                 u8") "
                                 u8"No WASM sections found.\n"
@@ -163,7 +163,7 @@ namespace uwvm::wasm
 #else
                                 u8"\033[97m"
 #endif
-                                u8"(",
+                                u8"(offset=",
                                 ::fast_io::mnp::addrvw(curr - begin),
                                 u8") "
                                 u8"Invalid section length."
@@ -199,7 +199,7 @@ namespace uwvm::wasm
 #else
                                 u8"\033[97m"
 #endif
-                                u8"(",
+                                u8"(offset=",
                                 ::fast_io::mnp::addrvw(curr - begin),
                                 u8") "
                                 u8"Invalid section length."
@@ -293,7 +293,7 @@ namespace uwvm::wasm
 #else
                                 u8"\033[97m"
 #endif
-                                u8"(",
+                                u8"(offset=",
                                 ::fast_io::mnp::addrvw(curr - begin),
                                 u8") "
                                 u8"Unknown WASM section: ",
@@ -328,7 +328,7 @@ namespace uwvm::wasm
 #else
                                 u8"\033[97m"
 #endif
-                                u8"(",
+                                u8"(offset=",
                                 ::fast_io::mnp::addrvw(curr - begin),
                                 u8") "
                                 u8"Unable to read leb128."

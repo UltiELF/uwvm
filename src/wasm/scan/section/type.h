@@ -60,7 +60,7 @@ namespace uwvm::wasm
 #else
                                 u8"\033[97m"
 #endif
-                                u8"(",
+                                u8"(offset=",
                                 ::fast_io::mnp::addrvw(begin - wasmmod.module_begin),
                                 u8") "
                                 u8"Duplicate WASM Section: Type."
@@ -102,7 +102,7 @@ namespace uwvm::wasm
 #else
                                 u8"\033[97m"
 #endif
-                                u8"(",
+                                u8"(offset=",
                                 ::fast_io::mnp::addrvw(curr - wasmmod.module_begin),
                                 u8") "
                                 u8"Invalid type length."
@@ -151,7 +151,7 @@ namespace uwvm::wasm
 #else
                                 u8"\033[97m"
 #endif
-                                u8"(",
+                                u8"(offset=",
                                 ::fast_io::mnp::addrvw(curr - wasmmod.module_begin),
                                 u8") "
                                 u8"The number of types resolved does not match the actual number."
@@ -191,7 +191,7 @@ namespace uwvm::wasm
 #else
                                 u8"\033[97m"
 #endif
-                                u8"(",
+                                u8"(offset=",
                                 ::fast_io::mnp::addrvw(curr - wasmmod.module_begin),
                                 u8") "
                                 u8"Invalid type length."
@@ -225,7 +225,7 @@ namespace uwvm::wasm
 #else
                                 u8"\033[97m"
 #endif
-                                u8"(",
+                                u8"(offset=",
                                 ::fast_io::mnp::addrvw(curr - wasmmod.module_begin),
                                 u8") "
                                 u8"Invalid parameter length."
@@ -267,7 +267,7 @@ namespace uwvm::wasm
 #else
                                         u8"\033[97m"
 #endif
-                                        u8"(",
+                                        u8"(offset=",
                                         ::fast_io::mnp::addrvw(curr - wasmmod.module_begin),
                                         u8") "
                                         u8"Enter parameter --enable-fixed-width-simd to enable wasm fixed-width simd."
@@ -299,7 +299,7 @@ namespace uwvm::wasm
 #else
                                         u8"\033[97m"
 #endif
-                                        u8"(",
+                                        u8"(offset=",
                                         ::fast_io::mnp::addrvw(curr - wasmmod.module_begin),
                                         u8") "
                                         u8"Enter parameter --enable-reference-types to enable wasm reference types."
@@ -329,7 +329,7 @@ namespace uwvm::wasm
 #else
                                         u8"\033[97m"
 #endif
-                                        u8"(",
+                                        u8"(offset=",
                                         ::fast_io::mnp::addrvw(curr - wasmmod.module_begin),
                                         u8") "
                                         u8"Invalid Type: ",
@@ -369,7 +369,7 @@ namespace uwvm::wasm
 #else
                                 u8"\033[97m"
 #endif
-                                u8"(",
+                                u8"(offset=",
                                 ::fast_io::mnp::addrvw(curr - wasmmod.module_begin),
                                 u8") "
                                 u8"Invalid type length."
@@ -398,7 +398,7 @@ namespace uwvm::wasm
 #else
                                 u8"\033[97m"
 #endif
-                                u8"(",
+                                u8"(offset=",
                                 ::fast_io::mnp::addrvw(curr - wasmmod.module_begin),
                                 u8") "
                                 u8"Enter parameter --enable-multivalue to enable multi-value."
@@ -431,7 +431,7 @@ namespace uwvm::wasm
 #else
                                 u8"\033[97m"
 #endif
-                                u8"(",
+                                u8"(offset=",
                                 ::fast_io::mnp::addrvw(curr - wasmmod.module_begin),
                                 u8") "
                                 u8"Invalid result length."
@@ -472,7 +472,7 @@ namespace uwvm::wasm
 #else
                                         u8"\033[97m"
 #endif
-                                        u8"(",
+                                        u8"(offset=",
                                         ::fast_io::mnp::addrvw(curr - wasmmod.module_begin),
                                         u8") "
                                         u8"Enter parameter --enable-fixed-width-simd to enable wasm fixed-width simd."
@@ -504,7 +504,7 @@ namespace uwvm::wasm
 #else
                                         u8"\033[97m"
 #endif
-                                        u8"(",
+                                        u8"(offset=",
                                         ::fast_io::mnp::addrvw(curr - wasmmod.module_begin),
                                         u8") "
                                         u8"Enter parameter --enable-reference-types to enable wasm reference types."
@@ -534,7 +534,7 @@ namespace uwvm::wasm
 #else
                                         u8"\033[97m"
 #endif
-                                        u8"(",
+                                        u8"(offset=",
                                         ::fast_io::mnp::addrvw(curr - wasmmod.module_begin),
                                         u8") "
                                         u8"Invalid Type: ",
@@ -576,7 +576,7 @@ namespace uwvm::wasm
 #else
                                 u8"\033[97m"
 #endif
-                                u8"(",
+                                u8"(offset=",
                                 ::fast_io::mnp::addrvw(curr - wasmmod.module_begin),
                                 u8") "
                                 u8"Invalid Type: ",
@@ -608,7 +608,7 @@ namespace uwvm::wasm
 #else
                                 u8"\033[97m"
 #endif
-                                u8"(",
+                                u8"(offset=",
                                 ::fast_io::mnp::addrvw(curr - wasmmod.module_begin),
                                 u8") "
                                 u8"The number of types resolved does not match the actual number."

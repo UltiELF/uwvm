@@ -59,7 +59,7 @@ namespace uwvm::wasm
 #else
                                 u8"\033[97m"
 #endif
-                                u8"(",
+                                u8"(offset=",
                                 ::fast_io::mnp::addrvw(begin - wasmmod.module_begin),
                                 u8") "
                                 u8"Duplicate WASM Section: Data."
@@ -101,7 +101,7 @@ namespace uwvm::wasm
 #else
                                 u8"\033[97m"
 #endif
-                                u8"(",
+                                u8"(offset=",
                                 ::fast_io::mnp::addrvw(curr - wasmmod.module_begin),
                                 u8") "
                                 u8"Invalid table length."
@@ -148,7 +148,7 @@ namespace uwvm::wasm
 #else
                                 u8"\033[97m"
 #endif
-                                u8"(",
+                                u8"(offset=",
                                 ::fast_io::mnp::addrvw(curr - wasmmod.module_begin),
                                 u8") "
                                 u8"The number of data segments does not match the actual number."
@@ -185,7 +185,7 @@ namespace uwvm::wasm
 #else
                                 u8"\033[97m"
 #endif
-                                u8"(",
+                                u8"(offset=",
                                 ::fast_io::mnp::addrvw(curr - wasmmod.module_begin),
                                 u8") "
                                 u8"Invalid table length."
@@ -214,7 +214,7 @@ namespace uwvm::wasm
 #else
                                 u8"\033[97m"
 #endif
-                                u8"(",
+                                u8"(offset=",
                                 ::fast_io::mnp::addrvw(curr - wasmmod.module_begin),
                                 u8") "
                                 u8"Invalid memory index."
@@ -251,7 +251,7 @@ namespace uwvm::wasm
 #else
                                 u8"\033[97m"
 #endif
-                                u8"(",
+                                u8"(offset=",
                                 ::fast_io::mnp::addrvw(curr - wasmmod.module_begin),
                                 u8") "
                                 u8"Invalid i32 initializer expression that calculates the offset of a placement element."
@@ -290,7 +290,7 @@ namespace uwvm::wasm
 #else
                                 u8"\033[97m"
 #endif
-                                u8"(",
+                                u8"(offset=",
                                 ::fast_io::mnp::addrvw(curr - wasmmod.module_begin),
                                 u8") "
                                 u8"Invalid varint32."
@@ -325,7 +325,7 @@ namespace uwvm::wasm
 #else
                                 u8"\033[97m"
 #endif
-                                u8"(",
+                                u8"(offset=",
                                 ::fast_io::mnp::addrvw(curr - wasmmod.module_begin),
                                 u8") "
                                 u8"No terminator found."
@@ -363,7 +363,7 @@ namespace uwvm::wasm
 #else
                                 u8"\033[97m"
 #endif
-                                u8"(",
+                                u8"(offset=",
                                 ::fast_io::mnp::addrvw(curr - wasmmod.module_begin),
                                 u8") "
                                 u8"Invalid size length."
@@ -405,7 +405,7 @@ namespace uwvm::wasm
 #else
                                 u8"\033[97m"
 #endif
-                                u8"(",
+                                u8"(offset=",
                                 ::fast_io::mnp::addrvw(curr - wasmmod.module_begin),
                                 u8") "
                                 u8"The number of dates resolved does not match the actual number."

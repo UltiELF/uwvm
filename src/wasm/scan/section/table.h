@@ -59,7 +59,7 @@ namespace uwvm::wasm
 #else
                                 u8"\033[97m"
 #endif
-                                u8"(",
+                                u8"(offset=",
                                 ::fast_io::mnp::addrvw(begin - wasmmod.module_begin),
                                 u8") "
                                 u8"Duplicate WASM Section: Table."
@@ -101,7 +101,7 @@ namespace uwvm::wasm
 #else
                                 u8"\033[97m"
 #endif
-                                u8"(",
+                                u8"(offset=",
                                 ::fast_io::mnp::addrvw(curr - wasmmod.module_begin),
                                 u8") "
                                 u8"Invalid table length."
@@ -133,7 +133,7 @@ namespace uwvm::wasm
     #else
                                 u8"\033[97m"
     #endif
-                                u8"(",
+                                u8"(offset=",
                                 ::fast_io::mnp::addrvw(curr - wasmmod.module_begin),
                                 u8") "
                                 u8"In the MVP, the number of tables must be no more than 1."
@@ -171,7 +171,7 @@ namespace uwvm::wasm
 #else
                                 u8"\033[97m"
 #endif
-                                u8"(",
+                                u8"(offset=",
                                 ::fast_io::mnp::addrvw(curr - wasmmod.module_begin),
                                 u8") "
                                 u8"The number of tables resolved does not match the actual number."
@@ -202,7 +202,7 @@ namespace uwvm::wasm
 #else
                                 u8"\033[97m"
 #endif
-                                u8"(",
+                                u8"(offset=",
                                 ::fast_io::mnp::addrvw(curr - wasmmod.module_begin),
                                 u8") "
                                 u8"Invalid Elem Type: ",
@@ -254,7 +254,7 @@ namespace uwvm::wasm
 #else
                                 u8"\033[97m"
 #endif
-                                u8"(",
+                                u8"(offset=",
                                 ::fast_io::mnp::addrvw(curr - wasmmod.module_begin),
                                 u8") "
                                 u8"Invalid limit length."
@@ -304,7 +304,7 @@ namespace uwvm::wasm
 #else
                                 u8"\033[97m"
 #endif
-                                u8"(",
+                                u8"(offset=",
                                 ::fast_io::mnp::addrvw(curr - wasmmod.module_begin),
                                 u8") "
                                 u8"Invalid limit length."
@@ -345,7 +345,7 @@ namespace uwvm::wasm
 #else
                                 u8"\033[97m"
 #endif
-                                u8"(",
+                                u8"(offset=",
                                 ::fast_io::mnp::addrvw(curr - wasmmod.module_begin),
                                 u8") "
                                 u8"Invalid limit length."
@@ -377,7 +377,7 @@ namespace uwvm::wasm
 #else
                                 u8"\033[97m"
 #endif
-                                u8"(",
+                                u8"(offset=",
                                 ::fast_io::mnp::addrvw(curr - wasmmod.module_begin),
                                 u8") "
                                 u8"Initial > Maximum."
@@ -409,7 +409,7 @@ namespace uwvm::wasm
 #else
                                 u8"\033[97m"
 #endif
-                                u8"(",
+                                u8"(offset=",
                                 ::fast_io::mnp::addrvw(curr - wasmmod.module_begin),
                                 u8") "
                                 u8"Invalid flags."
@@ -439,7 +439,7 @@ namespace uwvm::wasm
 #else
                                 u8"\033[97m"
 #endif
-                                u8"(",
+                                u8"(offset=",
                                 ::fast_io::mnp::addrvw(curr - wasmmod.module_begin),
                                 u8") "
                                 u8"The number of tables resolved does not match the actual number."

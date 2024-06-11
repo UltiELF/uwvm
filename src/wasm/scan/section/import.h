@@ -48,7 +48,7 @@ namespace uwvm::wasm
 #else
                                 u8"\033[97m"
 #endif
-                                u8"(",
+                                u8"(offset=",
                                 ::fast_io::mnp::addrvw(begin - wasmmod.module_begin),
                                 u8") "
                                 u8"The type section must appear before import section."
@@ -77,7 +77,7 @@ namespace uwvm::wasm
 #else
                                 u8"\033[97m"
 #endif
-                                u8"(",
+                                u8"(offset=",
                                 ::fast_io::mnp::addrvw(begin - wasmmod.module_begin),
                                 u8") "
                                 u8"Duplicate WASM Section: Import."
@@ -119,7 +119,7 @@ namespace uwvm::wasm
 #else
                                 u8"\033[97m"
 #endif
-                                u8"(",
+                                u8"(offset=",
                                 ::fast_io::mnp::addrvw(curr - wasmmod.module_begin),
                                 u8") "
                                 u8"Invalid type length."
@@ -173,7 +173,7 @@ namespace uwvm::wasm
 #else
                                 u8"\033[97m"
 #endif
-                                u8"(",
+                                u8"(offset=",
                                 ::fast_io::mnp::addrvw(curr - wasmmod.module_begin),
                                 u8") "
                                 u8"The number of types resolved does not match the actual number."
@@ -210,7 +210,7 @@ namespace uwvm::wasm
 #else
                                 u8"\033[97m"
 #endif
-                                u8"(",
+                                u8"(offset=",
                                 ::fast_io::mnp::addrvw(curr - wasmmod.module_begin),
                                 u8") "
                                 u8"Invalid type length."
@@ -250,7 +250,7 @@ namespace uwvm::wasm
 #else
                                 u8"\033[97m"
 #endif
-                                u8"(",
+                                u8"(offset=",
                                 ::fast_io::mnp::addrvw(curr - wasmmod.module_begin),
                                 u8") "
                                 u8"Invalid import module length."
@@ -287,7 +287,7 @@ namespace uwvm::wasm
 #else
                                 u8"\033[97m"
 #endif
-                                u8"(",
+                                u8"(offset=",
                                 ::fast_io::mnp::addrvw(curr - wasmmod.module_begin),
                                 u8") "
                                 u8"Invalid type length."
@@ -319,7 +319,7 @@ namespace uwvm::wasm
 #else
                                 u8"\033[97m"
 #endif
-                                u8"(",
+                                u8"(offset=",
                                 ::fast_io::mnp::addrvw(curr - wasmmod.module_begin),
                                 u8") "
                                 u8"Invalid name length."
@@ -355,7 +355,7 @@ namespace uwvm::wasm
 #else
                                 u8"\033[97m"
 #endif
-                                u8"(",
+                                u8"(offset=",
                                 ::fast_io::mnp::addrvw(curr - wasmmod.module_begin),
                                 u8") "
                                 u8"Invalid import name length."
@@ -385,7 +385,7 @@ namespace uwvm::wasm
 #else
                                 u8"\033[97m"
 #endif
-                                u8"(",
+                                u8"(offset=",
                                 ::fast_io::mnp::addrvw(curr - wasmmod.module_begin),
                                 u8") "
                                 u8"Invalid Type: ",
@@ -434,7 +434,7 @@ namespace uwvm::wasm
 #else
                                 u8"\033[97m"
 #endif
-                                u8"(",
+                                u8"(offset=",
                                 ::fast_io::mnp::addrvw(curr - wasmmod.module_begin),
                                 u8") "
                                 u8"Invalid type length."
@@ -464,7 +464,7 @@ namespace uwvm::wasm
 #else
                                 u8"\033[97m"
 #endif
-                                u8"(",
+                                u8"(offset=",
                                 ::fast_io::mnp::addrvw(curr - wasmmod.module_begin),
                                 u8") "
                                 u8"Invalid type index."
@@ -506,7 +506,7 @@ namespace uwvm::wasm
 #else
                                 u8"\033[97m"
 #endif
-                                u8"(",
+                                u8"(offset=",
                                 ::fast_io::mnp::addrvw(curr - wasmmod.module_begin),
                                 u8") "
                                 u8"Invalid Elem Type: ",
@@ -559,7 +559,7 @@ namespace uwvm::wasm
 #else
                                             u8"\033[97m"
 #endif
-                                            u8"(",
+                                            u8"(offset=",
                                             ::fast_io::mnp::addrvw(curr - wasmmod.module_begin),
                                             u8") "
                                             u8"Invalid limit length."
@@ -609,7 +609,7 @@ namespace uwvm::wasm
 #else
                                             u8"\033[97m"
 #endif
-                                            u8"(",
+                                            u8"(offset=",
                                             ::fast_io::mnp::addrvw(curr - wasmmod.module_begin),
                                             u8") "
                                             u8"Invalid limit length."
@@ -650,7 +650,7 @@ namespace uwvm::wasm
 #else
                                             u8"\033[97m"
 #endif
-                                            u8"(",
+                                            u8"(offset=",
                                             ::fast_io::mnp::addrvw(curr - wasmmod.module_begin),
                                             u8") "
                                             u8"Invalid limit length."
@@ -682,7 +682,7 @@ namespace uwvm::wasm
 #else
                                 u8"\033[97m"
 #endif
-                                u8"(",
+                                u8"(offset=",
                                 ::fast_io::mnp::addrvw(curr - wasmmod.module_begin),
                                 u8") "
                                 u8"Initial > Maximum."
@@ -714,7 +714,7 @@ namespace uwvm::wasm
 #else
                                 u8"\033[97m"
 #endif
-                                u8"(",
+                                u8"(offset=",
                                 ::fast_io::mnp::addrvw(curr - wasmmod.module_begin),
                                 u8") "
                                 u8"Invalid flags."
@@ -766,7 +766,7 @@ namespace uwvm::wasm
 #else
                                             u8"\033[97m"
 #endif
-                                            u8"(",
+                                            u8"(offset=",
                                             ::fast_io::mnp::addrvw(curr - wasmmod.module_begin),
                                             u8") "
                                             u8"Invalid limit length."
@@ -816,7 +816,7 @@ namespace uwvm::wasm
 #else
                                             u8"\033[97m"
 #endif
-                                            u8"(",
+                                            u8"(offset=",
                                             ::fast_io::mnp::addrvw(curr - wasmmod.module_begin),
                                             u8") "
                                             u8"Invalid limit length."
@@ -857,7 +857,7 @@ namespace uwvm::wasm
 #else
                                             u8"\033[97m"
 #endif
-                                            u8"(",
+                                            u8"(offset=",
                                             ::fast_io::mnp::addrvw(curr - wasmmod.module_begin),
                                             u8") "
                                             u8"Invalid limit length."
@@ -889,7 +889,7 @@ namespace uwvm::wasm
 #else
                                 u8"\033[97m"
 #endif
-                                u8"(",
+                                u8"(offset=",
                                 ::fast_io::mnp::addrvw(curr - wasmmod.module_begin),
                                 u8") "
                                 u8"Initial > Maximum."
@@ -921,7 +921,7 @@ namespace uwvm::wasm
 #else
                                 u8"\033[97m"
 #endif
-                                u8"(",
+                                u8"(offset=",
                                 ::fast_io::mnp::addrvw(curr - wasmmod.module_begin),
                                 u8") "
                                 u8"Invalid flags."
@@ -965,7 +965,7 @@ namespace uwvm::wasm
 #else
                                         u8"\033[97m"
 #endif
-                                        u8"(",
+                                        u8"(offset=",
                                         ::fast_io::mnp::addrvw(curr - wasmmod.module_begin),
                                         u8") "
                                         u8"Enter parameter --enable-fixed-width-simd to enable wasm fixed-width simd."
@@ -997,7 +997,7 @@ namespace uwvm::wasm
 #else
                                         u8"\033[97m"
 #endif
-                                        u8"(",
+                                        u8"(offset=",
                                         ::fast_io::mnp::addrvw(curr - wasmmod.module_begin),
                                         u8") "
                                         u8"Enter parameter --enable-reference-types to enable wasm reference types."
@@ -1027,7 +1027,7 @@ namespace uwvm::wasm
 #else
                                         u8"\033[97m"
 #endif
-                                        u8"(",
+                                        u8"(offset=",
                                         ::fast_io::mnp::addrvw(curr - wasmmod.module_begin),
                                         u8") "
                                         u8"Invalid Value Type: ",
@@ -1066,7 +1066,7 @@ namespace uwvm::wasm
 #else
                                 u8"\033[97m"
 #endif
-                                u8"(",
+                                u8"(offset=",
                                 ::fast_io::mnp::addrvw(curr - wasmmod.module_begin),
                                 u8") "
                                 u8"Enter parameter --enable-mutable-globals to enable import or export mutable globals."
@@ -1094,7 +1094,7 @@ namespace uwvm::wasm
 #else
                                 u8"\033[97m"
 #endif
-                                u8"(",
+                                u8"(offset=",
                                 ::fast_io::mnp::addrvw(curr - wasmmod.module_begin),
                                 u8") "
                                 u8"Invalid varuint1."
@@ -1145,7 +1145,7 @@ namespace uwvm::wasm
 #else
                                 u8"\033[97m"
 #endif
-                                u8"(",
+                                u8"(offset=",
                                 ::fast_io::mnp::addrvw(curr - wasmmod.module_begin),
                                 u8") "
                                 u8"Invalid type length."
@@ -1175,7 +1175,7 @@ namespace uwvm::wasm
 #else
                                 u8"\033[97m"
 #endif
-                                u8"(",
+                                u8"(offset=",
                                 ::fast_io::mnp::addrvw(curr - wasmmod.module_begin),
                                 u8") "
                                 u8"Invalid type length."
@@ -1213,7 +1213,7 @@ namespace uwvm::wasm
 #else
                                 u8"\033[97m"
 #endif
-                                u8"(",
+                                u8"(offset=",
                                 ::fast_io::mnp::addrvw(curr - wasmmod.module_begin),
                                 u8") "
                                 u8"The number of imports resolved does not match the actual number."
