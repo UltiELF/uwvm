@@ -56,10 +56,10 @@ namespace uwvm::path
         }
         else if(strchr(argv0, path_separator))
         {
-            ::getcwd(newpath2, PATH_MAX);
+            [[maybe_unused]] auto const unused1{::getcwd(newpath2, PATH_MAX)};
             ::strncat(newpath2, path_separator_as_string, PATH_MAX + 256);
             ::strncat(newpath2, argv0, PATH_MAX + 256);
-            [[maybe_unused]] auto const unused1{::realpath(newpath2, newpath)};
+            [[maybe_unused]] auto const unused2{::realpath(newpath2, newpath)};
             if(!access(newpath, F_OK))
             {
                 newpath[PATH_MAX - 1] = 0;
