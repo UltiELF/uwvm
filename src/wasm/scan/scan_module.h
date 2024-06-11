@@ -85,6 +85,9 @@ namespace uwvm::wasm
 #else
                                 u8"\033[97m"
 #endif
+                                u8"(",
+                                ::fast_io::mnp::addrvw(curr - begin),
+                                u8") "
                                 u8"Illegal WASM file format.\n"
                                 u8"\033[0m"
                                 u8"Terminate.\n\n");
@@ -116,6 +119,9 @@ namespace uwvm::wasm
 #else
                                 u8"\033[97m"
 #endif
+                                u8"(",
+                                ::fast_io::mnp::addrvw(curr - begin),
+                                u8") "
                                 u8"No WASM sections found.\n"
                                 u8"\033[0m"
                                 u8"Terminate.\n\n");
@@ -157,6 +163,9 @@ namespace uwvm::wasm
 #else
                                 u8"\033[97m"
 #endif
+                                u8"(",
+                                ::fast_io::mnp::addrvw(curr - begin),
+                                u8") "
                                 u8"Invalid section length."
                                 u8"\n"
                                 u8"\033[0m"
@@ -190,6 +199,9 @@ namespace uwvm::wasm
 #else
                                 u8"\033[97m"
 #endif
+                                u8"(",
+                                ::fast_io::mnp::addrvw(curr - begin),
+                                u8") "
                                 u8"Invalid section length."
                                 u8"\n"
                                 u8"\033[0m"
@@ -281,6 +293,9 @@ namespace uwvm::wasm
 #else
                                 u8"\033[97m"
 #endif
+                                u8"(",
+                                ::fast_io::mnp::addrvw(curr - begin),
+                                u8") "
                                 u8"Unknown WASM section: ",
                                 ::fast_io::mnp::hex0x<true>(sec_num),
                                 u8"\n"
@@ -313,6 +328,9 @@ namespace uwvm::wasm
 #else
                                 u8"\033[97m"
 #endif
+                                u8"(",
+                                ::fast_io::mnp::addrvw(curr - begin),
+                                u8") "
                                 u8"Unable to read leb128."
                                 u8"\n"
                                 u8"\033[0m"
