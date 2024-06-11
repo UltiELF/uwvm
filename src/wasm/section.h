@@ -10,3 +10,4 @@
 #include "section/element.h"
 #include "section/code.h"
 #include "section/data.h"
+#include "section/custom.h"

@@ -3,6 +3,7 @@
 #include <cstdint>
 #include <fast_io_dsal/vector.h>
 
+#include "../types/data.h"
 
 namespace uwvm::wasm::section
 {

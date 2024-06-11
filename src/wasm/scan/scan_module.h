@@ -216,7 +216,11 @@ namespace uwvm::wasm
             auto const sec_type{static_cast<::uwvm::wasm::section_type>(sec_num)};
             switch(sec_type)
             {
-                case ::uwvm::wasm::section_type::custom_sec: break;
+                case ::uwvm::wasm::section_type::custom_sec:
+                {
+                    ::uwvm::wasm::scan_custom_section(wasmmod, curr, sec_end);
+                    break;
+                }
                 case ::uwvm::wasm::section_type::type_sec:
                 {
                     ::uwvm::wasm::scan_type_section(wasmmod, curr, sec_end);

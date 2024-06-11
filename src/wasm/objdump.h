@@ -415,7 +415,7 @@ namespace uwvm::wasm
                 {
                     ::fast_io::operations::print_freestanding<false>(::std::forward<s>(stm), 
                                                                      u8" - "
-                                                                     u8"memroy" 
+                                                                     u8"memory" 
                                                                      u8"[",
                                                                      t->index, 
                                                                      u8"] -> \"",
@@ -549,7 +549,16 @@ namespace uwvm::wasm
                 }
             }
 
-            //
+            // custom
+            for(auto const& t: wasmmod.cussecs)
+            {
+                ::fast_io::operations::print_freestanding<false>(::std::forward<s>(stm),
+                                                                    u8"\n"
+                                                                    u8"Custom:\n"
+                                                                    u8" - name: \"", 
+                                                                    ::fast_io::mnp::strvw(t.name_begin,t.name_end), 
+                                                                    u8"\"\n");
+            }
         }
         else if constexpr(::std::same_as<char_type, char16_t>) {}
         else if constexpr(::std::same_as<char_type, char32_t>) {}
