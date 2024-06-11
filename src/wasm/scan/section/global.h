@@ -49,6 +49,9 @@ namespace uwvm::wasm
 #else
                                 u8"\033[97m"
 #endif
+                                u8"(",
+                                ::fast_io::mnp::addrvw(begin - wasmmod.module_begin),
+                                u8") "
                                 u8"Duplicate WASM Section: Global."
                                 u8"\n"
                                 u8"\033[0m"
@@ -88,6 +91,9 @@ namespace uwvm::wasm
 #else
                                 u8"\033[97m"
 #endif
+                                u8"(",
+                                ::fast_io::mnp::addrvw(curr - wasmmod.module_begin),
+                                u8") "
                                 u8"Invalid global length."
                                 u8"\n"
                                 u8"\033[0m"
@@ -129,6 +135,9 @@ namespace uwvm::wasm
 #else
                                 u8"\033[97m"
 #endif
+                                u8"(",
+                                ::fast_io::mnp::addrvw(curr - wasmmod.module_begin),
+                                u8") "
                                 u8"The number of globals resolved does not match the actual number."
                                 u8"\n"
                                 u8"\033[0m"
@@ -165,6 +174,9 @@ namespace uwvm::wasm
 #else
                                         u8"\033[97m"
 #endif
+                                        u8"(",
+                                        ::fast_io::mnp::addrvw(curr - wasmmod.module_begin),
+                                        u8") "
                                         u8"Enter parameter --enable-fixed-width-simd to enable wasm fixed-width simd."
                                         u8"\n"
                                         u8"\033[0m"
@@ -194,6 +206,9 @@ namespace uwvm::wasm
 #else
                                         u8"\033[97m"
 #endif
+                                        u8"(",
+                                        ::fast_io::mnp::addrvw(curr - wasmmod.module_begin),
+                                        u8") "
                                         u8"Enter parameter --enable-reference-types to enable wasm reference types."
                                         u8"\n"
                                         u8"\033[0m"
@@ -221,6 +236,9 @@ namespace uwvm::wasm
 #else
                                         u8"\033[97m"
 #endif
+                                        u8"(",
+                                        ::fast_io::mnp::addrvw(curr - wasmmod.module_begin),
+                                        u8") "
                                         u8"Invalid Value Type: ",
                                         ::fast_io::mnp::hex0x<true>(static_cast<::std::uint_fast8_t>(vt)),
                                         u8"\n"
@@ -255,6 +273,9 @@ namespace uwvm::wasm
 #else
                                 u8"\033[97m"
 #endif
+                                u8"(",
+                                ::fast_io::mnp::addrvw(curr - wasmmod.module_begin),
+                                u8") "
                                 u8"Invalid varuint1."
                                 u8"\n"
                                 u8"\033[0m"
@@ -310,6 +331,9 @@ namespace uwvm::wasm
 #else
                                 u8"\033[97m"
 #endif
+                                u8"(",
+                                ::fast_io::mnp::addrvw(curr - wasmmod.module_begin),
+                                u8") "
                                 u8"Invalid global length."
                                 u8"\n"
                                 u8"\033[0m"
@@ -342,6 +366,9 @@ namespace uwvm::wasm
 #else
                                 u8"\033[97m"
 #endif
+                                u8"(",
+                                ::fast_io::mnp::addrvw(curr - wasmmod.module_begin),
+                                u8") "
                                 u8"Invalid import index."
                                 u8"\n"
                                 u8"\033[0m"
@@ -370,6 +397,9 @@ namespace uwvm::wasm
 #else
                                 u8"\033[97m"
 #endif
+                                u8"(",
+                                ::fast_io::mnp::addrvw(curr - wasmmod.module_begin),
+                                u8") "
                                 u8"get_global in an initializer expression can only refer to immutable imported globals."
                                 u8"\n"
                                 u8"\033[0m"
@@ -396,6 +426,9 @@ namespace uwvm::wasm
 #else
                                 u8"\033[97m"
 #endif
+                                u8"(",
+                                ::fast_io::mnp::addrvw(curr - wasmmod.module_begin),
+                                u8") "
                                 u8"Global type mismatch."
                                 u8"\n"
                                 u8"\033[0m"
@@ -429,6 +462,9 @@ namespace uwvm::wasm
 #else
                                         u8"\033[97m"
 #endif
+                                        u8"(",
+                                        ::fast_io::mnp::addrvw(curr - wasmmod.module_begin),
+                                        u8") "
                                         u8"The initialized object does not match."
                                         u8"\n"
                                         u8"\033[0m"
@@ -462,6 +498,9 @@ namespace uwvm::wasm
 #else
                                 u8"\033[97m"
 #endif
+                                u8"(",
+                                ::fast_io::mnp::addrvw(curr - wasmmod.module_begin),
+                                u8") "
                                 u8"Invalid varint32."
                                 u8"\n"
                                 u8"\033[0m"
@@ -495,6 +534,9 @@ namespace uwvm::wasm
 #else
                                         u8"\033[97m"
 #endif
+                                        u8"(",
+                                        ::fast_io::mnp::addrvw(curr - wasmmod.module_begin),
+                                        u8") "
                                         u8"The initialized object does not match."
                                         u8"\n"
                                         u8"\033[0m"
@@ -528,6 +570,9 @@ namespace uwvm::wasm
 #else
                                 u8"\033[97m"
 #endif
+                                u8"(",
+                                ::fast_io::mnp::addrvw(curr - wasmmod.module_begin),
+                                u8") "
                                 u8"Invalid varint64."
                                 u8"\n"
                                 u8"\033[0m"
@@ -561,6 +606,9 @@ namespace uwvm::wasm
 #else
                                         u8"\033[97m"
 #endif
+                                        u8"(",
+                                        ::fast_io::mnp::addrvw(curr - wasmmod.module_begin),
+                                        u8") "
                                         u8"The initialized object does not match."
                                         u8"\n"
                                         u8"\033[0m"
@@ -586,6 +634,9 @@ namespace uwvm::wasm
 #else
                                 u8"\033[97m"
 #endif
+                                u8"(",
+                                ::fast_io::mnp::addrvw(curr - wasmmod.module_begin),
+                                u8") "
                                 u8"Invalid f32."
                                 u8"\n"
                                 u8"\033[0m"
@@ -623,6 +674,9 @@ namespace uwvm::wasm
 #else
                                         u8"\033[97m"
 #endif
+                                        u8"(",
+                                        ::fast_io::mnp::addrvw(curr - wasmmod.module_begin),
+                                        u8") "
                                         u8"The initialized object does not match."
                                         u8"\n"
                                         u8"\033[0m"
@@ -648,6 +702,9 @@ namespace uwvm::wasm
 #else
                                 u8"\033[97m"
 #endif
+                                u8"(",
+                                ::fast_io::mnp::addrvw(curr - wasmmod.module_begin),
+                                u8") "
                                 u8"Invalid f64."
                                 u8"\n"
                                 u8"\033[0m"
@@ -688,6 +745,9 @@ namespace uwvm::wasm
 #else
                                 u8"\033[97m"
 #endif
+                                u8"(",
+                                ::fast_io::mnp::addrvw(curr - wasmmod.module_begin),
+                                u8") "
                                 u8"Invalid Reference Type: ",
                                 ::fast_io::mnp::hex0x<true>(static_cast<::std::uint_fast8_t>(rt)),
                                 u8"\n"
@@ -730,6 +790,9 @@ namespace uwvm::wasm
 #else
                                 u8"\033[97m"
 #endif
+                                u8"(",
+                                ::fast_io::mnp::addrvw(curr - wasmmod.module_begin),
+                                u8") "
                                 u8"Invalid global length."
                                 u8"\n"
                                 u8"\033[0m"
@@ -757,6 +820,9 @@ namespace uwvm::wasm
 #else
                                 u8"\033[97m"
 #endif
+                                u8"(",
+                                ::fast_io::mnp::addrvw(curr - wasmmod.module_begin),
+                                u8") "
                                 u8"Invalid function index."
                                 u8"\n"
                                 u8"\033[0m"
@@ -789,7 +855,10 @@ namespace uwvm::wasm
                                         u8"\033[37m"
 #else
                                         u8"\033[97m"
-#endif
+#endif 
+                                        u8"(",
+                                        ::fast_io::mnp::addrvw(curr - wasmmod.module_begin),
+                                        u8") "
                                         u8"The initialized object does not match."
                                         u8"\n"
                                         u8"\033[0m"
@@ -823,6 +892,9 @@ namespace uwvm::wasm
 #else
                                 u8"\033[97m"
 #endif
+                                u8"(",
+                                ::fast_io::mnp::addrvw(curr - wasmmod.module_begin),
+                                u8") "
                                 u8"Invalid extension opcode."
                                 u8"\n"
                                 u8"\033[0m"
@@ -853,6 +925,9 @@ namespace uwvm::wasm
 #else
                                 u8"\033[97m"
 #endif
+                                u8"(",
+                                ::fast_io::mnp::addrvw(curr - wasmmod.module_begin),
+                                u8") "
                                 u8"Invalid extension opcode."
                                 u8"\n"
                                 u8"\033[0m"
@@ -883,6 +958,9 @@ namespace uwvm::wasm
 #else
                                 u8"\033[97m"
 #endif
+                                u8"(",
+                                ::fast_io::mnp::addrvw(curr - wasmmod.module_begin),
+                                u8") "
                                 u8"Invalid v128."
                                 u8"\n"
                                 u8"\033[0m"
@@ -942,6 +1020,9 @@ namespace uwvm::wasm
 #else
                                 u8"\033[97m"
 #endif
+                                u8"(",
+                                ::fast_io::mnp::addrvw(curr - wasmmod.module_begin),
+                                u8") "
                                 u8"Invalid initializer opcode."
                                 u8"\n"
                                 u8"\033[0m"
@@ -968,6 +1049,9 @@ namespace uwvm::wasm
 #else
                                 u8"\033[97m"
 #endif
+                                u8"(",
+                                ::fast_io::mnp::addrvw(curr - wasmmod.module_begin),
+                                u8") "
                                 u8"No terminator found."
                                 u8"\n"
                                 u8"\033[0m"
@@ -995,6 +1079,9 @@ namespace uwvm::wasm
 #else
                                 u8"\033[97m"
 #endif
+                                u8"(",
+                                ::fast_io::mnp::addrvw(curr - wasmmod.module_begin),
+                                u8") "
                                 u8"No terminator found."
                                 u8"\n"
                                 u8"\033[0m"
@@ -1026,6 +1113,9 @@ namespace uwvm::wasm
 #else
                                 u8"\033[97m"
 #endif
+                                u8"(",
+                                ::fast_io::mnp::addrvw(curr - wasmmod.module_begin),
+                                u8") "
                                 u8"The number of globals resolved does not match the actual number."
                                 u8"\n"
                                 u8"\033[0m"

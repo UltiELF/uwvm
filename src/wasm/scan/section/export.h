@@ -49,6 +49,9 @@ namespace uwvm::wasm
 #else
                                 u8"\033[97m"
 #endif
+                                u8"(",
+                                ::fast_io::mnp::addrvw(begin - wasmmod.module_begin),
+                                u8") "
                                 u8"Duplicate WASM Section: Export."
                                 u8"\n"
                                 u8"\033[0m"
@@ -94,6 +97,9 @@ namespace uwvm::wasm
 #else
                                 u8"\033[97m"
 #endif
+                                u8"(",
+                                ::fast_io::mnp::addrvw(curr - wasmmod.module_begin),
+                                u8") "
                                 u8"Invalid export length."
                                 u8"\n"
                                 u8"\033[0m"
@@ -133,6 +139,9 @@ namespace uwvm::wasm
 #else
                                 u8"\033[97m"
 #endif
+                                u8"(",
+                                ::fast_io::mnp::addrvw(curr - wasmmod.module_begin),
+                                u8") "
                                 u8"The number of exports resolved does not match the actual number."
                                 u8"\n"
                                 u8"\033[0m"
@@ -166,6 +175,9 @@ namespace uwvm::wasm
 #else
                                 u8"\033[97m"
 #endif
+                                u8"(",
+                                ::fast_io::mnp::addrvw(curr - wasmmod.module_begin),
+                                u8") "
                                 u8"Invalid index length."
                                 u8"\n"
                                 u8"\033[0m"
@@ -197,6 +209,9 @@ namespace uwvm::wasm
 #else
                                 u8"\033[97m"
 #endif
+                                u8"(",
+                                ::fast_io::mnp::addrvw(curr - wasmmod.module_begin),
+                                u8") "
                                 u8"Invalid index length."
                                 u8"\n"
                                 u8"\033[0m"
@@ -257,6 +272,9 @@ namespace uwvm::wasm
 #else
                                 u8"\033[97m"
 #endif
+                                u8"(",
+                                ::fast_io::mnp::addrvw(curr - wasmmod.module_begin),
+                                u8") "
                                 u8"Invalid Type: ",
                                 ::fast_io::mnp::hex0x<true>(static_cast<::std::uint_fast8_t>(ek)),
                                 u8"\n"
@@ -295,6 +313,9 @@ namespace uwvm::wasm
 #else
                                 u8"\033[97m"
 #endif
+                                u8"(",
+                                ::fast_io::mnp::addrvw(curr - wasmmod.module_begin),
+                                u8") "
                                 u8"Invalid index length."
                                 u8"\n"
                                 u8"\033[0m"
@@ -328,6 +349,9 @@ namespace uwvm::wasm
 #else
                                 u8"\033[97m"
 #endif
+                                u8"(",
+                                ::fast_io::mnp::addrvw(curr - wasmmod.module_begin),
+                                u8") "
                                 u8"The number of exports resolved does not match the actual number."
                                 u8"\n"
                                 u8"\033[0m"

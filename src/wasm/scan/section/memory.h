@@ -59,6 +59,9 @@ namespace uwvm::wasm
 #else
                                 u8"\033[97m"
 #endif
+                                u8"(",
+                                ::fast_io::mnp::addrvw(begin - wasmmod.module_begin),
+                                u8") "
                                 u8"Duplicate WASM Section: Memory."
                                 u8"\n"
                                 u8"\033[0m"
@@ -99,6 +102,9 @@ namespace uwvm::wasm
 #else
                                 u8"\033[97m"
 #endif
+                                u8"(",
+                                ::fast_io::mnp::addrvw(curr - wasmmod.module_begin),
+                                u8") "
                                 u8"Invalid table length."
                                 u8"\n"
                                 u8"\033[0m"
@@ -128,6 +134,9 @@ namespace uwvm::wasm
 #else
                                 u8"\033[97m"
 #endif
+                                u8"(",
+                                ::fast_io::mnp::addrvw(curr - wasmmod.module_begin),
+                                u8") "
                                 u8"In the MVP, the number of memories must be no more than 1."
                                 u8"\n"
                                 u8"\033[0m"
@@ -164,6 +173,9 @@ namespace uwvm::wasm
 #else
                                 u8"\033[97m"
 #endif
+                                u8"(",
+                                ::fast_io::mnp::addrvw(curr - wasmmod.module_begin),
+                                u8") "
                                 u8"The number of memories resolved does not match the actual number."
                                 u8"\n"
                                 u8"\033[0m"
@@ -208,6 +220,9 @@ namespace uwvm::wasm
 #else
                                 u8"\033[97m"
 #endif
+                                u8"(",
+                                ::fast_io::mnp::addrvw(curr - wasmmod.module_begin),
+                                u8") "
                                 u8"Invalid limit length."
                                 u8"\n"
                                 u8"\033[0m"
@@ -255,6 +270,9 @@ namespace uwvm::wasm
 #else
                                 u8"\033[97m"
 #endif
+                                u8"(",
+                                ::fast_io::mnp::addrvw(curr - wasmmod.module_begin),
+                                u8") "
                                 u8"Invalid limit length."
                                 u8"\n"
                                 u8"\033[0m"
@@ -293,10 +311,13 @@ namespace uwvm::wasm
 #else
                                 u8"\033[97m"
 #endif
+                                u8"(",
+                                ::fast_io::mnp::addrvw(curr - wasmmod.module_begin),
+                                u8") "
                                 u8"Invalid limit length."
                                 u8"\n"
                                 u8"\033[0m"
-                                u8"Termaxate.\n\n");
+                                u8"Terminate.\n\n");
                             ::fast_io::fast_terminate();
                         }
                 }
@@ -322,10 +343,13 @@ namespace uwvm::wasm
 #else
                                 u8"\033[97m"
 #endif
+                                u8"(",
+                                ::fast_io::mnp::addrvw(curr - wasmmod.module_begin),
+                                u8") "
                                 u8"Initial > Maximum."
                                 u8"\n"
                                 u8"\033[0m"
-                                u8"Termaxate.\n\n");
+                                u8"Terminate.\n\n");
                     ::fast_io::fast_terminate();
                 }
 
@@ -351,6 +375,9 @@ namespace uwvm::wasm
 #else
                                 u8"\033[97m"
 #endif
+                                u8"(",
+                                ::fast_io::mnp::addrvw(curr - wasmmod.module_begin),
+                                u8") "
                                 u8"Invalid flags."
                                 u8"\n"
                                 u8"\033[0m"
@@ -378,6 +405,9 @@ namespace uwvm::wasm
 #else
                                 u8"\033[97m"
 #endif
+                                u8"(",
+                                ::fast_io::mnp::addrvw(curr - wasmmod.module_begin),
+                                u8") "
                                 u8"The number of memories resolved does not match the actual number."
                                 u8"\n"
                                 u8"\033[0m"

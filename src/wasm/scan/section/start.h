@@ -48,6 +48,10 @@ namespace uwvm::wasm
 #else
                                 u8"\033[97m"
 #endif
+                
+                                u8"(",
+                                ::fast_io::mnp::addrvw(begin - wasmmod.module_begin),
+                                u8") "
                                 u8"Duplicate WASM Section: Table."
                                 u8"\n"
                                 u8"\033[0m"
@@ -84,6 +88,10 @@ namespace uwvm::wasm
 #else
                                 u8"\033[97m"
 #endif
+                        
+                                u8"(",
+                                ::fast_io::mnp::addrvw(begin - wasmmod.module_begin),
+                                u8") "
                                 u8"Invalid table length."
                                 u8"\n"
                                 u8"\033[0m"
@@ -110,6 +118,9 @@ namespace uwvm::wasm
 #else
                                 u8"\033[97m"
 #endif
+                                u8"(",
+                                ::fast_io::mnp::addrvw(begin - wasmmod.module_begin),
+                                u8") "
                                 u8"Invalid function index."
                                 u8"\n"
                                 u8"\033[0m"
@@ -137,6 +148,9 @@ namespace uwvm::wasm
 #else
                                 u8"\033[97m"
 #endif
+                                u8"(",
+                                ::fast_io::mnp::addrvw(begin - wasmmod.module_begin),
+                                u8") "
                                 u8"Contains invalid information."
                                 u8"\n"
                                 u8"\033[0m"

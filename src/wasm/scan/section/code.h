@@ -59,6 +59,9 @@ namespace uwvm::wasm
 #else
                                 u8"\033[97m"
 #endif
+                                u8"(",
+                                ::fast_io::mnp::addrvw(begin - wasmmod.module_begin),
+                                u8") "
                                 u8"Duplicate WASM Section: Code."
                                 u8"\n"
                                 u8"\033[0m"
@@ -98,6 +101,9 @@ namespace uwvm::wasm
 #else
                                 u8"\033[97m"
 #endif
+                                u8"(",
+                                ::fast_io::mnp::addrvw(curr - wasmmod.module_begin),
+                                u8") "
                                 u8"Invalid table length."
                                 u8"\n"
                                 u8"\033[0m"
@@ -124,6 +130,9 @@ namespace uwvm::wasm
 #else
                                 u8"\033[97m"
 #endif
+                                u8"(",
+                                ::fast_io::mnp::addrvw(curr - wasmmod.module_begin),
+                                u8") "
                                 u8"Invalid code count."
                                 u8"\n"
                                 u8"\033[0m"
@@ -161,6 +170,9 @@ namespace uwvm::wasm
 #else
                                 u8"\033[97m"
 #endif
+                                u8"(",
+                                ::fast_io::mnp::addrvw(curr - wasmmod.module_begin),
+                                u8") "
                                 u8"The number of code bodies resolved does not match the actual number."
                                 u8"\n"
                                 u8"\033[0m"
@@ -194,6 +206,9 @@ namespace uwvm::wasm
 #else
                                 u8"\033[97m"
 #endif
+                                u8"(",
+                                ::fast_io::mnp::addrvw(curr - wasmmod.module_begin),
+                                u8") "
                                 u8"Invalid table length."
                                 u8"\n"
                                 u8"\033[0m"
@@ -237,6 +252,9 @@ namespace uwvm::wasm
 #else
                                 u8"\033[97m"
 #endif
+                                u8"(",
+                                ::fast_io::mnp::addrvw(curr - wasmmod.module_begin),
+                                u8") "
                                 u8"Invalid table length."
                                 u8"\n"
                                 u8"\033[0m"
@@ -283,6 +301,9 @@ namespace uwvm::wasm
 #else
                                 u8"\033[97m"
 #endif
+                                u8"(",
+                                ::fast_io::mnp::addrvw(curr - wasmmod.module_begin),
+                                u8") "
                                 u8"Invalid table length."
                                 u8"\n"
                                 u8"\033[0m"
@@ -326,6 +347,9 @@ namespace uwvm::wasm
 #else
                                         u8"\033[97m"
 #endif
+                                        u8"(",
+                                        ::fast_io::mnp::addrvw(curr - wasmmod.module_begin),
+                                        u8") "
                                         u8"Enter parameter --enable-fixed-width-simd to enable wasm fixed-width simd."
                                         u8"\n"
                                         u8"\033[0m"
@@ -355,6 +379,9 @@ namespace uwvm::wasm
 #else
                                         u8"\033[97m"
 #endif
+                                        u8"(",
+                                        ::fast_io::mnp::addrvw(curr - wasmmod.module_begin),
+                                        u8") "
                                         u8"Enter parameter --enable-reference-types to enable wasm reference types."
                                         u8"\n"
                                         u8"\033[0m"
@@ -382,6 +409,9 @@ namespace uwvm::wasm
 #else
                                         u8"\033[97m"
 #endif
+                                        u8"(",
+                                        ::fast_io::mnp::addrvw(curr - wasmmod.module_begin),
+                                        u8") "
                                         u8"Invalid Value Type: ",
                                         ::fast_io::mnp::hex0x<true>(static_cast<::std::uint_fast8_t>(vt)),
                                         u8"\n"
@@ -420,6 +450,9 @@ namespace uwvm::wasm
 #else
                                 u8"\033[97m"
 #endif
+                                u8"(",
+                                ::fast_io::mnp::addrvw(curr - wasmmod.module_begin),
+                                u8") "
                                 u8"The number of codes resolved does not match the actual number."
                                 u8"\n"
                                 u8"\033[0m"
