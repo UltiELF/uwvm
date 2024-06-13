@@ -7,11 +7,7 @@
 
 namespace uwvm::wasm::custom
 {
-    using handlefunc_may_alias_ptr =
-#if __has_cpp_attribute(__gnu__::__may_alias__)
-        [[__gnu__::__may_alias__]]
-#endif
-        bool (*)(::uwvm::wasm::section::custom_section);
+    using handlefunc_may_alias_ptr = bool (*)(::uwvm::wasm::section::custom_section);
 
     struct csfunc_return_struct
     {
@@ -20,11 +16,7 @@ namespace uwvm::wasm::custom
         char8_t const* name_end{};
     };
 
-    using csfunc_may_alias_ptr =
-#if __has_cpp_attribute(__gnu__::__may_alias__)
-        [[__gnu__::__may_alias__]]
-#endif
-        csfunc_return_struct const* (*)();
+    using csfunc_may_alias_ptr = csfunc_return_struct const* (*)();
 
     // storage
     inline ::fast_io::btree_map<::fast_io::u8string_view, handlefunc_may_alias_ptr> custom_handle_funcs{};
