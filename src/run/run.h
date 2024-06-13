@@ -6,8 +6,10 @@
 #endif
 #include <io_device.h>
 #include "wasm_file.h"
+#include "init.h"
 #include "../clpara/parsing_result.h"
 #include "../wasm/scan.h"
+#include "../wasm/custom.h"
 #include "objdump.h"
 
 namespace uwvm
@@ -76,6 +78,9 @@ namespace uwvm
             ::fast_io::fast_terminate();
         }
 #endif
+
+        ::uwvm::init();
+
         auto const begin{reinterpret_cast<::std::byte const*>(::uwvm::wasm_file_loader.cbegin())};
         auto const end{reinterpret_cast<::std::byte const*>(::uwvm::wasm_file_loader.cend())};
 

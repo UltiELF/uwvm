@@ -42,6 +42,7 @@ public:
 	explicit constexpr basic_cstring_view(::fast_io::containers::null_terminated_t, const_pointer p, size_type s) noexcept
 		: string_view_type(p, s)
 	{}
+
 	template <size_type N>
 	constexpr basic_cstring_view(char_type const (&buffer)[N]) noexcept
 		: string_view_type(buffer)

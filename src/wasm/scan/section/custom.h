@@ -10,6 +10,7 @@
 #include "../../check_index.h"
 #include "../../module.h"
 #include "../../../run/features.h"
+#include "../../custom.h"
 
 namespace uwvm::wasm
 {
@@ -88,5 +89,8 @@ namespace uwvm::wasm
         cs.name_end = next + name_len;
 
         wasmmod.cussecs.push_back(cs);
+
+        auto ch{::uwvm::wasm::custom::custom_handle_funcs.find(::fast_io::u8string_view{cs.name_begin, name_len})};
+        if(ch) { (*ch)(cs); }
     }
 }  // namespace uwvm::wasm
