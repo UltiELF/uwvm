@@ -695,7 +695,7 @@ constexpr auto operator<=> (::fast_io::containers::basic_string_view<char_type> 
 }
 
 template <::std::integral char_type, ::std::size_t n>
-constexpr auto operator<=> (char_type const (&buffer)[n], ::fast_io::containers::basic_string_view<char_type> a) noexcept
+constexpr auto operator<=> (char_type const (&buffer)[n], ::fast_io::containers::basic_string_view<char_type> b) noexcept
 {
     constexpr ::std::size_t nm1{n - 1u};
     auto a_ptr{buffer};
