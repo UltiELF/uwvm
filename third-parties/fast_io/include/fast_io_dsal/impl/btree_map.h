@@ -2,23 +2,26 @@
 
 namespace fast_io::containers
 {
-    template <::std::three_way_comparable key_type, typename value_type>
+    template <typename key_type, typename value_type>
     struct btree_pair
     {
         key_type key;
         value_type value;
     };
 
-    template <::std::three_way_comparable key_type, typename value_type>
+    template <typename key_type, typename value_type>
     struct btree_node
     {
-        static constexpr ::std::size_t pairs_size = 16;
-        static constexpr ::std::size_t pairs_size_real = pairs_size - 1;
+        using size_type = ::std::size_t;
+        static constexpr size_type max_size{::std::max(sizeof(key_type), sizeof(value_type))};
+
+        static constexpr size_type pairs_size{::std::max(static_cast<size_type>(16), static_cast<size_type>(4096) / max_size)};
+        static constexpr size_type pairs_size_real = pairs_size - 1;
 
         btree_node* parent_node_ptr{};
         btree_node* pre_child_node_ptr[pairs_size + 1]{};
 
-        ::std::size_t used{};
+        size_type used{};
         key_type keys[pairs_size]{};
         value_type values[pairs_size]{};
     };
@@ -34,22 +37,35 @@ namespace fast_io::containers
         value_type vt{};
     };
 
-    template <::std::three_way_comparable key_type, typename value_type>
-    struct btree_map
+    template <::std::three_way_comparable key_type, typename value_type, typename allocator>
+    class btree_map
     {
+    public:
+        using allocator_type = allocator;
+
+    public:
         using pair_type = btree_pair<key_type, value_type>;
         using node_type = btree_node<key_type, value_type>;
 
-        btree_map() = default;
-        ~btree_map() = default;
+        using pair_type_allocator_type = typed_generic_allocator_adapter<allocator_type, pair_type>;
+        using node_type_allocator_type = typed_generic_allocator_adapter<allocator_type, node_type>;
+
+        constexpr btree_map() noexcept = default;
+        constexpr ~btree_map() noexcept = default;
+
+        explicit constexpr btree_map(::std::initializer_list<pair_type> ilist) noexcept(::std::is_nothrow_move_constructible_v<pair_type>)
+        {
+            auto const end{ilist.end()};
+            for(auto i{ilist.begin()}; i != end; ++i) { insert(::std::move(*i)); }
+        }
 
         pair_type* insert(pair_type node) { return insert_impl(root, ::std::move(node)); }
 
         void check_and_alloc(node_type*& ptr)
         {
-            if(ptr == nullptr)
+            if(ptr == nullptr) [[unlikely]]
             {
-                ptr = new node_type{};
+                ptr = node_type_allocator_type::allocate(1);
                 ::std::construct_at(ptr);
             }
         }
@@ -211,4 +227,4 @@ namespace fast_io::containers
 
         node_type* root{};
     };
-}  // namespace fast_io
+}  // namespace fast_io::containers

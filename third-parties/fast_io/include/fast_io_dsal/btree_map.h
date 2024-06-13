@@ -29,13 +29,13 @@
 namespace fast_io
 {
 
-    template <::std::three_way_comparable key_type, typename value_type>
-    using btree_map = ::fast_io::containers::btree_map<key_type, value_type>;
-
+    template <::std::three_way_comparable key_type, typename value_type, typename Alloc = ::fast_io::native_global_allocator>
+    using btree_map = ::fast_io::containers::btree_map<key_type, value_type, Alloc>;
+     
     namespace tlc
     {
-        template <::std::three_way_comparable key_type, typename value_type>
-        using btree_map = ::fast_io::containers::btree_map<key_type, value_type>;
+        template <::std::three_way_comparable key_type, typename value_type, typename Alloc = ::fast_io::native_thread_local_allocator>
+        using btree_map = ::fast_io::containers::btree_map<key_type, value_type, Alloc>;
 
     }  // namespace tlc
 

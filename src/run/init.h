@@ -14,7 +14,9 @@ namespace uwvm
         ::fast_io::timer init_timer{u8"uwvm: [timer] init"};
 #endif
 
+#if 0
         ::uwvm::wasm::custom::init_builtin_custom_section();
+#endif
     }
 
 }  // namespace uwvm

@@ -19,10 +19,8 @@ namespace uwvm::wasm::custom
     using csfunc_may_alias_ptr = csfunc_return_struct const* (*)();
 
     // storage
-    inline ::fast_io::btree_map<::fast_io::u8string_view, handlefunc_may_alias_ptr> custom_handle_funcs{};
+    inline ::fast_io::btree_map<::fast_io::u8string_view, handlefunc_may_alias_ptr> custom_handle_funcs{
+        {u8"name", __builtin_addressof(::uwvm::wasm::custom::scan_name_custom_section)}
+    };
 
-    inline void init_builtin_custom_section() noexcept 
-    { 
-        custom_handle_funcs.insert({u8"name", __builtin_addressof(::uwvm::wasm::custom::scan_name_custom_section)});
-    }
 }
