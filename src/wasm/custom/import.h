@@ -31,6 +31,7 @@ namespace uwvm::wasm::custom
                         handlefunc.func
                     });
                 }
+                else { break; }
             }
             return true;
         }
