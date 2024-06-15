@@ -363,7 +363,7 @@ namespace uwvm::wasm
                             ::fast_io::operations::print_freestanding<true>(::std::forward<s>(stm), u8"ref_func=function[", t.initializer.ref, u8"]");
                             break;
                         }
-                        case ::uwvm::wasm::op_basic::simd_prefix:
+                        case ::uwvm::wasm::op_basic::simd:
                         {
                             ::fast_io::operations::print_freestanding<true>(::std::forward<s>(stm), u8"v128=i8x16: ", i8x16(t.initializer.v128));
                             break;

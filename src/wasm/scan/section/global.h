@@ -836,7 +836,7 @@ namespace uwvm::wasm
 
                     break;
                 }
-                case ::uwvm::wasm::op_basic::simd_prefix:
+                case ::uwvm::wasm::op_basic::simd:
                 {
                     if(vt != ::uwvm::wasm::value_type::v128) [[unlikely]]
                     {
