@@ -93,16 +93,6 @@ namespace uwvm
                 ::uwvm::u8objdump();
                 break;
             }
-            case ::uwvm::mode::u16objdump:
-            {
-                ::uwvm::u16objdump();
-                break;
-            }
-            case ::uwvm::mode::u32objdump:
-            {
-                ::uwvm::u32objdump();
-                break;
-            }
             default: ::fast_io::unreachable();
         }
     }
