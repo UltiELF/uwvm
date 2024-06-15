@@ -681,7 +681,6 @@ namespace uwvm::wasm
         // Bulk memory/table operators
         data_drop = 0x09,
         elem_drop = 0x0d
-
     };
 
     struct opcode
@@ -738,7 +737,3 @@ namespace uwvm::wasm
     }
 }  // namespace uwvm::wasm
 
-/*
- * to do
- *	0xfc00, i32_trunc_sat_f32_s
- */
