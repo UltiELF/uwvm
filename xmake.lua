@@ -257,7 +257,7 @@ function defopt()
 			error("invalid value")
 		end
 
-	elseif is_plat("linux", "sun") then
+	elseif is_plat("linux") then
 		add_cxflags("-fno-rtti")
 		add_cxflags("-fno-unwind-tables")
 		add_cxflags("-fno-asynchronous-unwind-tables")
@@ -295,6 +295,8 @@ function defopt()
 			-- none
 		end
 
+		add_syslinks("dl")
+
 	elseif is_plat("msdosdjgpp") then
 		add_cxflags("-fno-rtti")
 		add_cxflags("-fno-unwind-tables")
@@ -320,7 +322,7 @@ function defopt()
 			add_ldflags("-static")
 		end
 
-	elseif is_plat("unix", "bsd", "freebsd", "dragonflybsd", "netbsd", "openbsd") then
+	elseif is_plat("unix", "bsd", "freebsd", "dragonflybsd", "netbsd", "openbsd", "sun") then
 		add_cxflags("-fno-rtti")
 		add_cxflags("-fno-unwind-tables")
 		add_cxflags("-fno-asynchronous-unwind-tables")
