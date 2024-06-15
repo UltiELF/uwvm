@@ -66,7 +66,7 @@ namespace uwvm::wasm
 
         // get elem size
         ::std::size_t elem_count{};
-        auto [next, err]{::fast_io::parse_by_scan(reinterpret_cast<char8_t_const_may_alias_ptr>(curr),
+        auto const [next, err]{::fast_io::parse_by_scan(reinterpret_cast<char8_t_const_may_alias_ptr>(curr),
                                                   reinterpret_cast<char8_t_const_may_alias_ptr>(end),
                                                   ::fast_io::mnp::leb128_get(elem_count))};
         switch(err)
@@ -149,7 +149,7 @@ namespace uwvm::wasm
             }
 
             ::std::size_t index{};
-            auto [next_index, err_index]{::fast_io::parse_by_scan(reinterpret_cast<char8_t_const_may_alias_ptr>(curr),
+            auto const [next_index, err_index]{::fast_io::parse_by_scan(reinterpret_cast<char8_t_const_may_alias_ptr>(curr),
                                                                   reinterpret_cast<char8_t_const_may_alias_ptr>(end),
                                                                   ::fast_io::mnp::leb128_get(index))};
             switch(err_index)
@@ -257,7 +257,7 @@ namespace uwvm::wasm
             ++curr;
 
             ::std::int_least32_t i32val{};
-            auto [next_i32, err_i32]{::fast_io::parse_by_scan(reinterpret_cast<char8_t_const_may_alias_ptr>(curr),
+            auto const [next_i32, err_i32]{::fast_io::parse_by_scan(reinterpret_cast<char8_t_const_may_alias_ptr>(curr),
                                                               reinterpret_cast<char8_t_const_may_alias_ptr>(end),
                                                               ::fast_io::mnp::leb128_get(i32val))};
             switch(err_i32)
@@ -331,7 +331,7 @@ namespace uwvm::wasm
 
             // num_elem
             ::std::size_t num_elem{};
-            auto [next_num_elem, err_num_elem]{::fast_io::parse_by_scan(reinterpret_cast<char8_t_const_may_alias_ptr>(curr),
+            auto const [next_num_elem, err_num_elem]{::fast_io::parse_by_scan(reinterpret_cast<char8_t_const_may_alias_ptr>(curr),
                                                                         reinterpret_cast<char8_t_const_may_alias_ptr>(end),
                                                                         ::fast_io::mnp::leb128_get(num_elem))};
             switch(err_index)
@@ -377,7 +377,7 @@ namespace uwvm::wasm
             for(::std::size_t i{}; i < num_elem; ++i)
             {
                 ::std::size_t sequence{};
-                auto [next_sequence, err_sequence]{::fast_io::parse_by_scan(reinterpret_cast<char8_t_const_may_alias_ptr>(curr),
+                auto const [next_sequence, err_sequence]{::fast_io::parse_by_scan(reinterpret_cast<char8_t_const_may_alias_ptr>(curr),
                                                                             reinterpret_cast<char8_t_const_may_alias_ptr>(end),
                                                                             ::fast_io::mnp::leb128_get(sequence))};
                 switch(err_sequence)

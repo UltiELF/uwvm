@@ -76,7 +76,7 @@ namespace uwvm::wasm
 
         // get function size
         ::std::size_t table_count{};
-        auto [next, err]{::fast_io::parse_by_scan(reinterpret_cast<char8_t_const_may_alias_ptr>(curr),
+        auto const [next, err]{::fast_io::parse_by_scan(reinterpret_cast<char8_t_const_may_alias_ptr>(curr),
                                                   reinterpret_cast<char8_t_const_may_alias_ptr>(end),
                                                   ::fast_io::mnp::leb128_get(table_count))};
         switch(err)
@@ -229,7 +229,7 @@ namespace uwvm::wasm
 
                 // get type index
                 ::std::size_t limit_min{};
-                auto [next_lmin, err_lmin]{::fast_io::parse_by_scan(reinterpret_cast<char8_t_const_may_alias_ptr>(curr),
+                auto const [next_lmin, err_lmin]{::fast_io::parse_by_scan(reinterpret_cast<char8_t_const_may_alias_ptr>(curr),
                                                                     reinterpret_cast<char8_t_const_may_alias_ptr>(end),
                                                                     ::fast_io::mnp::leb128_get(limit_min))};
                 switch(err_lmin)
@@ -279,7 +279,7 @@ namespace uwvm::wasm
 
                 // get type index
                 ::std::size_t limit_min{};
-                auto [next_lmin, err_lmin]{::fast_io::parse_by_scan(reinterpret_cast<char8_t_const_may_alias_ptr>(curr),
+                auto const [next_lmin, err_lmin]{::fast_io::parse_by_scan(reinterpret_cast<char8_t_const_may_alias_ptr>(curr),
                                                                     reinterpret_cast<char8_t_const_may_alias_ptr>(end),
                                                                     ::fast_io::mnp::leb128_get(limit_min))};
                 switch(err_lmin)
@@ -320,7 +320,7 @@ namespace uwvm::wasm
                 curr = reinterpret_cast<::std::byte const*>(next_lmin);
 
                 ::std::size_t limit_max{};
-                auto [next_lmax, err_lmax]{::fast_io::parse_by_scan(reinterpret_cast<char8_t_const_may_alias_ptr>(curr),
+                auto const [next_lmax, err_lmax]{::fast_io::parse_by_scan(reinterpret_cast<char8_t_const_may_alias_ptr>(curr),
                                                                     reinterpret_cast<char8_t_const_may_alias_ptr>(end),
                                                                     ::fast_io::mnp::leb128_get(limit_max))};
                 switch(err_lmax)

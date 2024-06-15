@@ -102,21 +102,25 @@ namespace uwvm::wasm
                 // func
                 for(::std::size_t count{}; auto const t: wasmmod.importsec.func_types)
                 {
-                    ::fast_io::operations::print_freestanding<true>(::std::forward<s>(stm),
+                    ::fast_io::operations::print_freestanding<false>(::std::forward<s>(stm),
                                                                 u8" - "
                                                                 u8"func"
                                                                 u8"[",
                                                                 count++,
                                                                 u8"] sig=",
-                                                                t->extern_type.function - func_type_table_base,
-                                                                u8" <__imported_",
-                                                                ::fast_io::mnp::strvw(t->module_begin, t->module_end),
-                                                                u8"_",
-                                                                ::fast_io::mnp::strvw(t->name_begin, t->name_end),
-                                                                u8"> <- ",
-                                                                ::fast_io::mnp::strvw(t->module_begin, t->module_end),
-                                                                u8".",
-                                                                ::fast_io::mnp::strvw(t->name_begin, t->name_end));
+                                                                t->extern_type.function - func_type_table_base);
+                    if((t->custom_name_end - t->custom_name_begin) != 0)
+                    {
+                        ::fast_io::operations::print_freestanding<false>(::std::forward<s>(stm),
+                                                                         u8" <",
+                                                                         ::fast_io::mnp::strvw(t->custom_name_begin, t->custom_name_end),
+                                                                         u8">");
+                    }
+                    ::fast_io::operations::print_freestanding<true>(::std::forward<s>(stm),
+                                                                    u8" <- ",
+                                                                    ::fast_io::mnp::strvw(t->module_begin, t->module_end),
+                                                                    u8".",
+                                                                    ::fast_io::mnp::strvw(t->name_begin, t->name_end));
                 }
 
                 // table
@@ -225,11 +229,11 @@ namespace uwvm::wasm
                                                                 count++,
                                                                 u8"] sig=",
                                                                 t.func_type - func_type_table_base);
-                    if((t.name_end - t.name_begin) != 0)
+                    if((t.custom_name_end - t.custom_name_begin) != 0)
                     {
                         ::fast_io::operations::print_freestanding<false>(::std::forward<s>(stm),
                                                                          u8" <",
-                                                                         ::fast_io::mnp::strvw(t.name_begin, t.name_end),
+                                                                         ::fast_io::mnp::strvw(t.custom_name_begin, t.custom_name_end),
                                                                          u8">");
                     }
                     ::fast_io::operations::print_freestanding<true>(::std::forward<s>(stm));

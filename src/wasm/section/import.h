@@ -15,6 +15,9 @@ namespace uwvm::wasm::section
         char8_t const* name_begin{};
         char8_t const* name_end{};
 
+        char8_t const* custom_name_begin{};
+        char8_t const* custom_name_end{};
+
         ::uwvm::wasm::extern_type extern_type{};
     };
 

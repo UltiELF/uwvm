@@ -72,7 +72,7 @@ namespace uwvm::wasm
         ::std::size_t export_global_counter{};
         ::std::size_t export_tag_counter{};
 
-        auto [next, err]{::fast_io::parse_by_scan(reinterpret_cast<char8_t_const_may_alias_ptr>(curr),
+        auto const [next, err]{::fast_io::parse_by_scan(reinterpret_cast<char8_t_const_may_alias_ptr>(curr),
                                                   reinterpret_cast<char8_t_const_may_alias_ptr>(end),
                                                   ::fast_io::mnp::leb128_get(export_count))};
         switch(err)
@@ -150,7 +150,7 @@ namespace uwvm::wasm
             }
 
             ::std::size_t export_name_len{};
-            auto [next_en, err_en]{::fast_io::parse_by_scan(reinterpret_cast<char8_t_const_may_alias_ptr>(curr),
+            auto const [next_en, err_en]{::fast_io::parse_by_scan(reinterpret_cast<char8_t_const_may_alias_ptr>(curr),
                                                             reinterpret_cast<char8_t_const_may_alias_ptr>(end),
                                                             ::fast_io::mnp::leb128_get(export_name_len))};
             switch(err_en)
@@ -288,7 +288,7 @@ namespace uwvm::wasm
             ++curr;
 
             ::std::size_t index{};
-            auto [next_index, err_index]{::fast_io::parse_by_scan(reinterpret_cast<char8_t_const_may_alias_ptr>(curr),
+            auto const [next_index, err_index]{::fast_io::parse_by_scan(reinterpret_cast<char8_t_const_may_alias_ptr>(curr),
                                                                   reinterpret_cast<char8_t_const_may_alias_ptr>(end),
                                                                   ::fast_io::mnp::leb128_get(index))};
             switch(err_index)

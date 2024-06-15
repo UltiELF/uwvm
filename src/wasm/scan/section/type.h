@@ -77,7 +77,7 @@ namespace uwvm::wasm
 
         // get type size
         ::std::size_t type_count{};
-        auto [next, err]{::fast_io::parse_by_scan(reinterpret_cast<char8_t_const_may_alias_ptr>(curr),
+        auto const [next, err]{::fast_io::parse_by_scan(reinterpret_cast<char8_t_const_may_alias_ptr>(curr),
                                                   reinterpret_cast<char8_t_const_may_alias_ptr>(end),
                                                   ::fast_io::mnp::leb128_get(type_count))};
         switch(err)
@@ -166,7 +166,7 @@ namespace uwvm::wasm
 
                     // get para len
                     ::std::size_t para_len{};
-                    auto [next_para, err_para]{::fast_io::parse_by_scan(reinterpret_cast<char8_t_const_may_alias_ptr>(curr),
+                    auto const [next_para, err_para]{::fast_io::parse_by_scan(reinterpret_cast<char8_t_const_may_alias_ptr>(curr),
                                                                         reinterpret_cast<char8_t_const_may_alias_ptr>(end),
                                                                         ::fast_io::mnp::leb128_get(para_len))};
                     switch(err_para)
@@ -344,7 +344,7 @@ namespace uwvm::wasm
 
                     // get res len
                     ::std::size_t res_len{};
-                    auto [next_res, err_res]{::fast_io::parse_by_scan(reinterpret_cast<char8_t_const_may_alias_ptr>(curr),
+                    auto const [next_res, err_res]{::fast_io::parse_by_scan(reinterpret_cast<char8_t_const_may_alias_ptr>(curr),
                                                                       reinterpret_cast<char8_t_const_may_alias_ptr>(end),
                                                                       ::fast_io::mnp::leb128_get(res_len))};
                     switch(err_res)

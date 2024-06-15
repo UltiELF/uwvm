@@ -94,7 +94,7 @@ namespace uwvm::wasm
 
         // get function size
         ::std::size_t function_count{};
-        auto [next, err]{::fast_io::parse_by_scan(reinterpret_cast<char8_t_const_may_alias_ptr>(curr),
+        auto const [next, err]{::fast_io::parse_by_scan(reinterpret_cast<char8_t_const_may_alias_ptr>(curr),
                                                   reinterpret_cast<char8_t_const_may_alias_ptr>(end),
                                                   ::fast_io::mnp::leb128_get(function_count))};
         switch(err)
@@ -175,7 +175,7 @@ namespace uwvm::wasm
             }
 
             ::std::size_t type_index_len{};
-            auto [next_type_index, err_type_index]{::fast_io::parse_by_scan(reinterpret_cast<char8_t_const_may_alias_ptr>(curr),
+            auto const [next_type_index, err_type_index]{::fast_io::parse_by_scan(reinterpret_cast<char8_t_const_may_alias_ptr>(curr),
                                                                             reinterpret_cast<char8_t_const_may_alias_ptr>(end),
                                                                             ::fast_io::mnp::leb128_get(type_index_len))};
             switch(err_type_index)

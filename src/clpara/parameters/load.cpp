@@ -46,7 +46,7 @@
 #ifdef UWVM_TIMER
         ::fast_io::timer plugin_loader_timer{u8"uwvm: [timer] plugin loader"};
 #endif
-        auto& ndl{::uwvm::plungins.emplace_back(sresp1->str, fast_io::dll_mode::posix_rtld_lazy)};
+        auto const& ndl{::uwvm::plungins.emplace_back(sresp1->str, fast_io::dll_mode::posix_rtld_lazy)};
         ::uwvm::wasm::custom::import_custom_section_from_dll(ndl);
     }
 #ifdef __cpp_exceptions

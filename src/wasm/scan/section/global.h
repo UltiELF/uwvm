@@ -66,7 +66,7 @@ namespace uwvm::wasm
 
         // get global size
         ::std::size_t global_count{};
-        auto [next, err]{::fast_io::parse_by_scan(reinterpret_cast<char8_t_const_may_alias_ptr>(curr),
+        auto const [next, err]{::fast_io::parse_by_scan(reinterpret_cast<char8_t_const_may_alias_ptr>(curr),
                                                   reinterpret_cast<char8_t_const_may_alias_ptr>(end),
                                                   ::fast_io::mnp::leb128_get(global_count))};
         switch(err)
@@ -306,7 +306,7 @@ namespace uwvm::wasm
                 case ::uwvm::wasm::op_basic::global_get:
                 {
                     ::std::size_t global_import_index{};
-                    auto [next_gi, err_gi]{::fast_io::parse_by_scan(reinterpret_cast<char8_t_const_may_alias_ptr>(curr),
+                    auto const [next_gi, err_gi]{::fast_io::parse_by_scan(reinterpret_cast<char8_t_const_may_alias_ptr>(curr),
                                                                     reinterpret_cast<char8_t_const_may_alias_ptr>(end),
                                                                     ::fast_io::mnp::leb128_get(global_import_index))};
                     switch(err_gi)
@@ -473,7 +473,7 @@ namespace uwvm::wasm
                     }
                     ::std::int_least32_t i32val{};
 
-                    auto [next_i32, err_i32]{::fast_io::parse_by_scan(reinterpret_cast<char8_t_const_may_alias_ptr>(curr),
+                    auto const [next_i32, err_i32]{::fast_io::parse_by_scan(reinterpret_cast<char8_t_const_may_alias_ptr>(curr),
                                                                       reinterpret_cast<char8_t_const_may_alias_ptr>(end),
                                                                       ::fast_io::mnp::leb128_get(i32val))};
                     switch(err_i32)
@@ -545,7 +545,7 @@ namespace uwvm::wasm
                     }
                     ::std::int_least64_t i64val{};
 
-                    auto [next_i64, err_i64]{::fast_io::parse_by_scan(reinterpret_cast<char8_t_const_may_alias_ptr>(curr),
+                    auto const [next_i64, err_i64]{::fast_io::parse_by_scan(reinterpret_cast<char8_t_const_may_alias_ptr>(curr),
                                                                       reinterpret_cast<char8_t_const_may_alias_ptr>(end),
                                                                       ::fast_io::mnp::leb128_get(i64val))};
                     switch(err_i64)
@@ -765,7 +765,7 @@ namespace uwvm::wasm
                 case ::uwvm::wasm::op_basic::ref_func:
                 {
                     ::std::size_t func_index{};
-                    auto [next_fi, err_fi]{::fast_io::parse_by_scan(reinterpret_cast<char8_t_const_may_alias_ptr>(curr),
+                    auto const [next_fi, err_fi]{::fast_io::parse_by_scan(reinterpret_cast<char8_t_const_may_alias_ptr>(curr),
                                                                     reinterpret_cast<char8_t_const_may_alias_ptr>(end),
                                                                     ::fast_io::mnp::leb128_get(func_index))};
                     switch(err_fi)
@@ -867,7 +867,7 @@ namespace uwvm::wasm
                     }
 
                     ::uwvm::wasm::op_exten_type ope{};
-                    auto [next_ope, err_ope]{::fast_io::parse_by_scan(reinterpret_cast<char8_t_const_may_alias_ptr>(curr),
+                    auto const [next_ope, err_ope]{::fast_io::parse_by_scan(reinterpret_cast<char8_t_const_may_alias_ptr>(curr),
                                                                       reinterpret_cast<char8_t_const_may_alias_ptr>(end),
                                                                       ::fast_io::mnp::leb128_get(ope))};
                     switch(err_ope)

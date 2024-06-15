@@ -76,7 +76,7 @@ namespace uwvm::wasm
 
         // get elem size
         ::std::size_t code_count{};
-        auto [next, err]{::fast_io::parse_by_scan(reinterpret_cast<char8_t_const_may_alias_ptr>(curr),
+        auto const [next, err]{::fast_io::parse_by_scan(reinterpret_cast<char8_t_const_may_alias_ptr>(curr),
                                                   reinterpret_cast<char8_t_const_may_alias_ptr>(end),
                                                   ::fast_io::mnp::leb128_get(code_count))};
         switch(err)
@@ -181,7 +181,7 @@ namespace uwvm::wasm
             }
 
             ::std::size_t body_size{};
-            auto [next_body_size, err_body_size]{::fast_io::parse_by_scan(reinterpret_cast<char8_t_const_may_alias_ptr>(curr),
+            auto const [next_body_size, err_body_size]{::fast_io::parse_by_scan(reinterpret_cast<char8_t_const_may_alias_ptr>(curr),
                                                                           reinterpret_cast<char8_t_const_may_alias_ptr>(end),
                                                                           ::fast_io::mnp::leb128_get(body_size))};
             switch(err_body_size)
@@ -227,7 +227,7 @@ namespace uwvm::wasm
 
             // local counts
             ::std::size_t local_count{};
-            auto [next_local_count, err_local_count]{::fast_io::parse_by_scan(reinterpret_cast<char8_t_const_may_alias_ptr>(curr),
+            auto const [next_local_count, err_local_count]{::fast_io::parse_by_scan(reinterpret_cast<char8_t_const_may_alias_ptr>(curr),
                                                                               reinterpret_cast<char8_t_const_may_alias_ptr>(end),
                                                                               ::fast_io::mnp::leb128_get(local_count))};
             switch(err_local_count)
@@ -276,7 +276,7 @@ namespace uwvm::wasm
                 ::uwvm::wasm::local_entry le{};
 
                 ::std::size_t count{};
-                auto [next_count, err_count]{::fast_io::parse_by_scan(reinterpret_cast<char8_t_const_may_alias_ptr>(curr),
+                auto const [next_count, err_count]{::fast_io::parse_by_scan(reinterpret_cast<char8_t_const_may_alias_ptr>(curr),
                                                                       reinterpret_cast<char8_t_const_may_alias_ptr>(end),
                                                                       ::fast_io::mnp::leb128_get(count))};
                 switch(err_count)

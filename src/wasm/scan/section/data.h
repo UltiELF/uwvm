@@ -76,7 +76,7 @@ namespace uwvm::wasm
 
         // get data size
         ::std::size_t data_count{};
-        auto [next, err]{::fast_io::parse_by_scan(reinterpret_cast<char8_t_const_may_alias_ptr>(curr),
+        auto const [next, err]{::fast_io::parse_by_scan(reinterpret_cast<char8_t_const_may_alias_ptr>(curr),
                                                   reinterpret_cast<char8_t_const_may_alias_ptr>(end),
                                                   ::fast_io::mnp::leb128_get(data_count))};
         switch(err)
@@ -160,7 +160,7 @@ namespace uwvm::wasm
 
             // index
             ::std::size_t index{};
-            auto [next_index, err_index]{::fast_io::parse_by_scan(reinterpret_cast<char8_t_const_may_alias_ptr>(curr),
+            auto const [next_index, err_index]{::fast_io::parse_by_scan(reinterpret_cast<char8_t_const_may_alias_ptr>(curr),
                                                                   reinterpret_cast<char8_t_const_may_alias_ptr>(end),
                                                                   ::fast_io::mnp::leb128_get(index))};
             switch(err_index)
@@ -265,7 +265,7 @@ namespace uwvm::wasm
             ++curr;
 
             ::std::int_least32_t i32val{};
-            auto [next_i32, err_i32]{::fast_io::parse_by_scan(reinterpret_cast<char8_t_const_may_alias_ptr>(curr),
+            auto const [next_i32, err_i32]{::fast_io::parse_by_scan(reinterpret_cast<char8_t_const_may_alias_ptr>(curr),
                                                               reinterpret_cast<char8_t_const_may_alias_ptr>(end),
                                                               ::fast_io::mnp::leb128_get(i32val))};
             switch(err_i32)
@@ -338,7 +338,7 @@ namespace uwvm::wasm
 
             // size
             ::std::size_t size{};
-            auto [next_size, err_size]{::fast_io::parse_by_scan(reinterpret_cast<char8_t_const_may_alias_ptr>(curr),
+            auto const [next_size, err_size]{::fast_io::parse_by_scan(reinterpret_cast<char8_t_const_may_alias_ptr>(curr),
                                                                 reinterpret_cast<char8_t_const_may_alias_ptr>(end),
                                                                 ::fast_io::mnp::leb128_get(size))};
             switch(err_size)
