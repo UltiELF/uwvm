@@ -72,6 +72,10 @@ namespace uwvm::wasm::custom
 
             auto const data_end{curr + name_payload_len};
 
+            auto const import_func_count{wasmmod.importsec.func_types.size()};
+            auto const local_func_count{wasmmod.functionsec.function_count};
+            auto const func_count{import_func_count + local_func_count};
+
             switch(name_type)
             {
                 case 0:  // module
@@ -109,9 +113,6 @@ namespace uwvm::wasm::custom
                         case ::fast_io::parse_code::ok: break;
                         default: [[unlikely]] return false;
                     }
-
-                    auto const import_func_count{wasmmod.importsec.func_types.size()};
-                    auto const func_count{import_func_count + wasmmod.functionsec.function_count};
 
                     if(count > func_count) [[unlikely]] { return false; }
 
@@ -172,13 +173,111 @@ namespace uwvm::wasm::custom
 
                     break;
                 }
-#if 0 // to do
                 case 2:
                 {
-                    return false;
+                    // count
+                    ::std::size_t count{};  // number of naming in names
+                    auto const [next_count, err_count]{::fast_io::parse_by_scan(reinterpret_cast<char8_t_const_may_alias_ptr>(curr),
+                                                                                reinterpret_cast<char8_t_const_may_alias_ptr>(end),
+                                                                                ::fast_io::mnp::leb128_get(count))};
+                    switch(err_count)
+                    {
+                        case ::fast_io::parse_code::ok: break;
+                        default: [[unlikely]] return false;
+                    }
+
+                    if(count > func_count) [[unlikely]] { return false; }
+
+                    curr = reinterpret_cast<::std::byte const*>(next_count);  // name_begin
+
+                    for(::std::size_t i{}; i < count; ++i)
+                    {
+                        // func index
+                        ::std::size_t index{};  // number of naming in names
+                        auto const [next_index, err_index]{::fast_io::parse_by_scan(reinterpret_cast<char8_t_const_may_alias_ptr>(curr),
+                                                                                    reinterpret_cast<char8_t_const_may_alias_ptr>(end),
+                                                                                    ::fast_io::mnp::leb128_get(index))};
+                        switch(err_index)
+                        {
+                            case ::fast_io::parse_code::ok: break;
+                            default: [[unlikely]] return false;
+                        }
+
+                        if(index >= local_func_count) [[unlikely]] { return false; }
+
+                        curr = reinterpret_cast<::std::byte const*>(next_index);
+
+                        if(index >= import_func_count) [[likely]]
+                        {
+                            auto const func_index{index - import_func_count};
+                            auto& code{wasmmod.codesec.bodies.index_unchecked(func_index)};
+
+                            // name map
+                            // name count
+                            ::std::size_t local_count{};  // number of naming in names
+                            auto const [next_local_count, err_local_count]{::fast_io::parse_by_scan(reinterpret_cast<char8_t_const_may_alias_ptr>(curr),
+                                                                                                    reinterpret_cast<char8_t_const_may_alias_ptr>(end),
+                                                                                                    ::fast_io::mnp::leb128_get(local_count))};
+                            switch(err_local_count)
+                            {
+                                case ::fast_io::parse_code::ok: break;
+                                default: [[unlikely]] return false;
+                            }
+
+                            auto const code_local_count{code.local_count};
+
+                            if(local_count >= code_local_count) [[unlikely]] { return false; }
+
+                            curr = reinterpret_cast<::std::byte const*>(next_local_count);
+
+                            for(::std::size_t i{}; i < local_count; ++i)
+                            {
+                                // index
+                                ::std::size_t index{};  // number of naming in names
+                                auto const [next_index, err_index]{::fast_io::parse_by_scan(reinterpret_cast<char8_t_const_may_alias_ptr>(curr),
+                                                                                            reinterpret_cast<char8_t_const_may_alias_ptr>(end),
+                                                                                            ::fast_io::mnp::leb128_get(index))};
+                                switch(err_index)
+                                {
+                                    case ::fast_io::parse_code::ok: break;
+                                    default: [[unlikely]] return false;
+                                }
+
+                                if(index >= code_local_count) [[unlikely]] { return false; }
+
+                                curr = reinterpret_cast<::std::byte const*>(next_index);
+
+                                // name len
+                                ::std::size_t name_len{};  // length of name_str in bytes
+                                auto const [next_len, err_len]{::fast_io::parse_by_scan(reinterpret_cast<char8_t_const_may_alias_ptr>(curr),
+                                                                                        reinterpret_cast<char8_t_const_may_alias_ptr>(end),
+                                                                                        ::fast_io::mnp::leb128_get(name_len))};
+                                switch(err_len)
+                                {
+                                    case ::fast_io::parse_code::ok: break;
+                                    default: [[unlikely]] return false;
+                                }
+
+                                if(!::uwvm::wasm::custom::check_custom_index(name_len)) [[unlikely]] { return false; }
+
+                                curr = reinterpret_cast<::std::byte const*>(next_len);  // name
+
+                                if(data_end - curr < name_len) [[unlikely]] { return false; }
+
+                                auto& funcbody{code.locals.index_unchecked(index)};
+
+                                funcbody.custom_name_begin = reinterpret_cast<char8_t_const_may_alias_ptr>(curr);
+                                funcbody.custom_name_end = reinterpret_cast<char8_t_const_may_alias_ptr>(curr) + name_len;
+
+                                curr += name_len;
+                            }
+                        }
+                    }
+
+                    if(curr != data_end) [[unlikely]] { return false; }
+
                     break;
                 }
-#endif
                 default:
                     [[unlikely]]
                     {

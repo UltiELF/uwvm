@@ -10,6 +10,8 @@ namespace uwvm::wasm
     {
         ::std::size_t count{};
         ::uwvm::wasm::value_type type{};
+        char8_t const* custom_name_begin{};
+        char8_t const* custom_name_end{};
     };
 
     struct func_body

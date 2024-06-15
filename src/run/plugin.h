@@ -4,6 +4,6 @@
 
 namespace uwvm
 {
-    inline ::fast_io::vector<::fast_io::native_dll_file> plungins{};
+    inline ::fast_io::vector<::fast_io::native_dll_file> plugins{};
 
 }
