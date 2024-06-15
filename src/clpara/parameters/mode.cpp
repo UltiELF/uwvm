@@ -6,7 +6,7 @@
 [[__gnu__::__cold__]]
 #endif
 ::uwvm::cmdline::parameter_return_type(::uwvm::parameter::details::mode_callback)(::uwvm::cmdline::parameter_parsing_results* sres,
-                                                                               ::fast_io::vector<::uwvm::cmdline::parameter_parsing_results>& pres) noexcept
+                                                                                  ::fast_io::vector<::uwvm::cmdline::parameter_parsing_results>& pres) noexcept
 {
     auto sresp1{sres + 1};
     if(sresp1 == pres.cend() || sresp1->type != ::uwvm::cmdline::parameter_parsing_results_type::arg) [[unlikely]]
@@ -30,7 +30,7 @@
                             u8"\033[36m"
                             u8"[--mode|-m] "
                             u8"\033[32m"
-                            u8"[objdump(default)]"
+                            u8"[objdump(default), u16objdump, u32objdump]"
                             u8"\033[0m"
                             u8"\n\n");
         return ::uwvm::cmdline::parameter_return_type::return_m1_imme;
@@ -38,6 +38,8 @@
 
     sresp1->type = ::uwvm::cmdline::parameter_parsing_results_type::occupied_arg;
     if(auto s1s{sresp1->str}; s1s == "objdump") { ::uwvm::running_mode = ::uwvm::mode::objdump; }
+    else if(s1s == "u16objdump") { ::uwvm::running_mode = ::uwvm::mode::u16objdump; }
+    else if(s1s == "u32objdump") { ::uwvm::running_mode = ::uwvm::mode::u32objdump; }
     else
     {
         ::fast_io::io::perr(::uwvm::u8err,
@@ -73,7 +75,7 @@
                             u8"\033[36m"
                             u8"[--mode|-m] "
                             u8"\033[32m"
-                            u8"[objdump(default)]"
+                            u8"[objdump(default), u16objdump, u32objdump]"
                             u8"\033[0m"
                             u8"\n\n");
         return ::uwvm::cmdline::parameter_return_type::return_m1_imme;
