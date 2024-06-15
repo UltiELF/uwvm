@@ -171,15 +171,23 @@ namespace uwvm::wasm::custom
                         curr += name_len;
                     }
 
+                    if(curr != data_end) [[unlikely]] { return false; }
+
                     break;
                 }
+#if 0 // to do
                 case 2:
                 {
                     return false;
                     break;
                 }
-
-                default: [[unlikely]] return false;
+#endif
+                default:
+                    [[unlikely]]
+                    {
+                        curr = data_end;
+                        break;
+                    }
             }
         }
 
