@@ -22,14 +22,7 @@ namespace uwvm
 #ifdef UWVM_TIMER
         ::fast_io::timer objdump_timer{u8"uwvm: [timer] u16objdump"};
 #endif
-#ifndef __AVR__
-        ::fast_io::u16native_io_observer
-#else
-        ::fast_io::u16c_io_observer
-#endif
-            const u16out{::uwvm::u8out.native_handle()};
-
-        ::fast_io::basic_obuf<decltype(u16out)> u16outbuf{};
+        ::fast_io::basic_obuf<decltype(::fast_io::u16c_stdout())> u16outbuf{::fast_io::u16c_stdout()};
         ::fast_io::io::print(u16outbuf, objdump(::uwvm::global_wasm_module));
     }
 
@@ -38,13 +31,7 @@ namespace uwvm
 #ifdef UWVM_TIMER
         ::fast_io::timer objdump_timer{u8"uwvm: [timer] u32objdump"};
 #endif
-#ifndef __AVR__
-        ::fast_io::u32native_io_observer
-#else
-        ::fast_io::u32c_io_observer
-#endif
-            const u32out{::uwvm::u8out.native_handle()};
-        ::fast_io::basic_obuf<decltype(u32out)> u32outbuf{};
+        ::fast_io::basic_obuf<decltype(::fast_io::u32c_stdout())> u32outbuf{::fast_io::u32c_stdout()};
         ::fast_io::io::print(u32outbuf, objdump(::uwvm::global_wasm_module));
     }
 }  // namespace uwvm
