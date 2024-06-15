@@ -1,4 +1,7 @@
 #pragma once
+#ifdef UWVM_TIMER
+    #include <fast_io_driver/timer.h>
+#endif
 #include "../../section/custom.h"
 #include "../../module.h"
 #include "../../../run/wasm_file.h"

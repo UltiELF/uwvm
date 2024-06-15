@@ -19,7 +19,7 @@ namespace uwvm::wasm::custom
     using csfunc_may_alias_ptr = csfunc_return_struct const* (*)();
 
     // storage
-    // use ::fast_io::btree_map instead
+    // inline ::fast_io::btree_map
     inline ::std::map<::fast_io::u8string_view, handlefunc_may_alias_ptr> custom_handle_funcs{
         {u8"name", __builtin_addressof(::uwvm::wasm::custom::scan_name_custom_section)}
     };

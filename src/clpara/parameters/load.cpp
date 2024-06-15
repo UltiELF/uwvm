@@ -1,3 +1,6 @@
+#ifdef UWVM_TIMER
+    #include <fast_io_driver/timer.h>
+#endif
 #include "load.h"
 #include "../parameters.h"
 #include "../../run/plugin.h"
