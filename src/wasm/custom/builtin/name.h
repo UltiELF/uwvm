@@ -1,7 +1,4 @@
 #pragma once
-#ifdef UWVM_TIMER
-    #include <fast_io_driver/timer.h>
-#endif
 #include "../../section/custom.h"
 #include "../../module.h"
 #include "../../../run/wasm_file.h"
@@ -12,9 +9,6 @@ namespace uwvm::wasm::custom
 
     inline bool scan_name_custom_section(::uwvm::wasm::section::custom_section cs) noexcept
     {
-#ifdef UWVM_TIMER
-        ::fast_io::timer scan_custom_name_section_timer{u8"uwvm: [timer] scan custom section: name"};
-#endif
         // alias def
         using char8_t_may_alias_ptr
 #if __has_cpp_attribute(__gnu__::__may_alias__)
