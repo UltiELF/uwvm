@@ -91,6 +91,6 @@ namespace uwvm::wasm
         wasmmod.cussecs.push_back(cs);
 
         auto ch{::uwvm::wasm::custom::custom_handle_funcs.find(::fast_io::u8string_view{cs.name_begin, name_len})};
-        if(ch) { (*ch)(cs); }
+        if(ch != ::uwvm::wasm::custom::custom_handle_funcs.end()) { (ch->second)(cs); }
     }
 }  // namespace uwvm::wasm

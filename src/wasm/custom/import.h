@@ -1,6 +1,5 @@
 #pragma once
 #include <fast_io.h>
-#include <fast_io_dsal/btree_map.h>
 
 #include "../section/custom.h"
 #include "manager.h"
@@ -19,13 +18,8 @@ namespace uwvm::wasm::custom
                 auto const& handlefunc{*csfunc_returnval};
                 if(handlefunc.func && handlefunc.name_begin) [[likely]]
                 {
-                    ::fast_io::u8string_view u8sv{};
-                    if(handlefunc.name_end)
-                    {
-                        u8sv = ::fast_io::u8string_view{handlefunc.name_begin, static_cast<::std::size_t>(handlefunc.name_end - handlefunc.name_begin)};
-                    }
-                    else { u8sv = ::fast_io::u8string_view{::fast_io::mnp::os_c_str(handlefunc.name_begin)}; }
-                    ::uwvm::wasm::custom::custom_handle_funcs.insert({u8sv, handlefunc.func});
+                    ::uwvm::wasm::custom::custom_handle_funcs.insert(
+                        {::fast_io::u8string_view{::fast_io::mnp::os_c_str(handlefunc.name_begin)}, handlefunc.func});
                 }
                 else { break; }
             }

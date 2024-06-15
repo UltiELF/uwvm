@@ -1,10 +1,9 @@
 #pragma once
-#include <stdint.h>
 
 struct custom_section_type
 {
-    uint8_t const* sec_begin{};
-    uint8_t const* sec_end{};
+    unsigned char const* sec_begin{};
+    unsigned char const* sec_end{};
 
     char const* name_begin{};
     char const* name_end{};
@@ -16,7 +15,6 @@ struct csfunc_return_struct_type
 {
     handlefunc_ptr func{};
     char const* name_begin{};
-    char const* name_end{};
 };
 
 /*
