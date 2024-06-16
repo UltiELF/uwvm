@@ -15,3 +15,5 @@
 #include "parameters/enable-fixed-width-simd.h"
 #include "parameters/enable-mutable-global.h"
 #include "parameters/enable-reference-types.h"
+#include "parameters/enable-thread.h"
+#include "parameters/enable-custom-page-sizes.h"

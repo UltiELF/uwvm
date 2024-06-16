@@ -30,7 +30,7 @@
                             u8"\033[36m"
                             u8"[--mode|-m] "
                             u8"\033[32m"
-                            u8"[objdump(default)]"
+                            u8"[objdump(default), int]"
                             u8"\033[0m"
                             u8"\n\n");
         return ::uwvm::cmdline::parameter_return_type::return_m1_imme;
@@ -38,6 +38,8 @@
 
     sresp1->type = ::uwvm::cmdline::parameter_parsing_results_type::occupied_arg;
     if(auto s1s{sresp1->str}; s1s == "objdump") { ::uwvm::running_mode = ::uwvm::mode::objdump; }
+    if(auto s1s{sresp1->str}; s1s == "int") { ::uwvm::running_mode = ::uwvm::mode::interpreter; }
+
     else
     {
         ::fast_io::io::perr(::uwvm::u8err,
@@ -73,7 +75,7 @@
                             u8"\033[36m"
                             u8"[--mode|-m] "
                             u8"\033[32m"
-                            u8"[objdump(default)]"
+                            u8"[objdump(default), int]"
                             u8"\033[0m"
                             u8"\n\n");
         return ::uwvm::cmdline::parameter_return_type::return_m1_imme;

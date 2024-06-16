@@ -11,6 +11,7 @@
 #include "../wasm/scan.h"
 #include "../wasm/custom.h"
 #include "objdump.h"
+#include "../vm/interpreter/int.h"
 
 namespace uwvm
 {
@@ -91,6 +92,11 @@ namespace uwvm
             case ::uwvm::mode::objdump:
             {
                 ::uwvm::u8objdump();
+                break;
+            }
+            case ::uwvm::mode::interpreter :
+            {
+                ::uwvm::interpreter::interpret();
                 break;
             }
             default: ::fast_io::unreachable();

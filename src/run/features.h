@@ -10,4 +10,6 @@ namespace uwvm::features
     inline bool enable_relaxed_simd{};
     inline bool enable_mutable_globals{};
     inline bool enable_reference_types{};
+    inline bool enable_thread{};
+    inline bool enable_custom_page_sizes{};
 }

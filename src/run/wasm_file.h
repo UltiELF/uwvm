@@ -11,7 +11,7 @@ namespace uwvm
 {
     inline ::fast_io::native_file_loader wasm_file_loader{};
 
-    inline ::uwvm::mode running_mode{::uwvm::mode::objdump};
+    inline ::uwvm::mode running_mode{::uwvm::mode::interpreter};
 
     inline ::uwvm::wasm::abi wasm_abi{::uwvm::wasm::abi::detect};
     inline ::uwvm::wasm::wasm_module global_wasm_module{};

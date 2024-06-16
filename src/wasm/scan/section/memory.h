@@ -78,8 +78,8 @@ namespace uwvm::wasm
         // get function size
         ::std::size_t mem_count{};
         auto const [next, err]{::fast_io::parse_by_scan(reinterpret_cast<char8_t_const_may_alias_ptr>(curr),
-                                                  reinterpret_cast<char8_t_const_may_alias_ptr>(end),
-                                                  ::fast_io::mnp::leb128_get(mem_count))};
+                                                        reinterpret_cast<char8_t_const_may_alias_ptr>(end),
+                                                        ::fast_io::mnp::leb128_get(mem_count))};
         switch(err)
         {
             case ::fast_io::parse_code::ok: break;
@@ -187,17 +187,17 @@ namespace uwvm::wasm
             ::std::uint_fast8_t flags{};
             ::fast_io::freestanding::my_memcpy(__builtin_addressof(flags), curr, sizeof(::std::uint_fast8_t));
 
-            if(flags == 0)
+            if(auto const flags0b{flags & 0x01}; flags0b == 0)
             {
-                mt.limits.present_max = static_cast<bool>(flags);
+                mt.limits.present_max = false;
 
                 ++curr;
 
                 // get type index
                 ::std::size_t limit_min{};
                 auto const [next_lmin, err_lmin]{::fast_io::parse_by_scan(reinterpret_cast<char8_t_const_may_alias_ptr>(curr),
-                                                                    reinterpret_cast<char8_t_const_may_alias_ptr>(end),
-                                                                    ::fast_io::mnp::leb128_get(limit_min))};
+                                                                          reinterpret_cast<char8_t_const_may_alias_ptr>(end),
+                                                                          ::fast_io::mnp::leb128_get(limit_min))};
                 switch(err_lmin)
                 {
                     case ::fast_io::parse_code::ok: break;
@@ -237,17 +237,17 @@ namespace uwvm::wasm
 
                 curr = reinterpret_cast<::std::byte const*>(next_lmin);
             }
-            else if(flags == 1)
+            else if(flags0b == 1)
             {
-                mt.limits.present_max = static_cast<bool>(flags);
+                mt.limits.present_max = true;
 
                 ++curr;
 
                 // get type index
                 ::std::size_t limit_min{};
                 auto const [next_lmin, err_lmin]{::fast_io::parse_by_scan(reinterpret_cast<char8_t_const_may_alias_ptr>(curr),
-                                                                    reinterpret_cast<char8_t_const_may_alias_ptr>(end),
-                                                                    ::fast_io::mnp::leb128_get(limit_min))};
+                                                                          reinterpret_cast<char8_t_const_may_alias_ptr>(end),
+                                                                          ::fast_io::mnp::leb128_get(limit_min))};
                 switch(err_lmin)
                 {
                     case ::fast_io::parse_code::ok: break;
@@ -287,8 +287,8 @@ namespace uwvm::wasm
 
                 ::std::size_t limit_max{};
                 auto const [next_lmax, err_lmax]{::fast_io::parse_by_scan(reinterpret_cast<char8_t_const_may_alias_ptr>(curr),
-                                                                    reinterpret_cast<char8_t_const_may_alias_ptr>(end),
-                                                                    ::fast_io::mnp::leb128_get(limit_max))};
+                                                                          reinterpret_cast<char8_t_const_may_alias_ptr>(end),
+                                                                          ::fast_io::mnp::leb128_get(limit_max))};
                 switch(err_lmax)
                 {
                     case ::fast_io::parse_code::ok: break;
@@ -357,7 +357,172 @@ namespace uwvm::wasm
 
                 curr = reinterpret_cast<::std::byte const*>(next_lmax);
             }
-            else [[unlikely]]
+
+            auto const flags1b{(flags & 0x02) >> 1};
+
+            if(flags1b == 1 && !::uwvm::features::enable_thread) [[unlikely]]
+            {
+                ::fast_io::io::perr(::uwvm::u8err,
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"uwvm: "
+                                u8"\033[31m"
+                                u8"[fatal] "
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"(offset=",
+                                ::fast_io::mnp::addrvw(curr - wasmmod.module_begin),
+                                u8") "
+                                u8"Whether the memory is shared or unshared. This was introduced in the threads proposal(--enable-thread)."
+                                u8"\n"
+                                u8"\033[0m"
+                                u8"Terminate.\n\n");
+                ::fast_io::fast_terminate();
+            }
+
+            mt.is_shared = static_cast<bool>(flags1b);
+
+            auto const flags2b{(flags & 0x04) >> 2};
+
+            if(flags2b == 1 && !::uwvm::features::enable_memory64) [[unlikely]]
+            {
+                ::fast_io::io::perr(::uwvm::u8err,
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"uwvm: "
+                                u8"\033[31m"
+                                u8"[fatal] "
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"(offset=",
+                                ::fast_io::mnp::addrvw(curr - wasmmod.module_begin),
+                                u8") "
+                                u8"The index type of memory is i64, memory64 feature is required."
+                                u8"\n"
+                                u8"\033[0m"
+                                u8"Terminate.\n\n");
+                ::fast_io::fast_terminate();
+            }
+
+            auto const flags3b{(flags & 0x08) >> 3};
+
+            if(flags3b == 1)
+            {
+                if(!::uwvm::features::enable_custom_page_sizes) [[unlikely]]
+                {
+                    ::fast_io::io::perr(::uwvm::u8err,
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"uwvm: "
+                                u8"\033[31m"
+                                u8"[fatal] "
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"(offset=",
+                                ::fast_io::mnp::addrvw(curr - wasmmod.module_begin),
+                                u8") "
+                                u8"The index type of memory is i64, memory64 feature is required."
+                                u8"\n"
+                                u8"\033[0m"
+                                u8"Terminate.\n\n");
+                    ::fast_io::fast_terminate();
+                }
+
+                ::std::uint_fast8_t pagesize{};
+
+                auto const [next_pagesize, err_pagesize]{::fast_io::parse_by_scan(reinterpret_cast<char8_t_const_may_alias_ptr>(curr),
+                                                                                  reinterpret_cast<char8_t_const_may_alias_ptr>(end),
+                                                                                  ::fast_io::mnp::leb128_get(pagesize))};
+                switch(err_pagesize)
+                {
+                    case ::fast_io::parse_code::ok: break;
+                    default:
+                        [[unlikely]]
+                        {
+                            ::fast_io::io::perr(::uwvm::u8err,
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"uwvm: "
+                                u8"\033[31m"
+                                u8"[fatal] "
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"(offset=",
+                                ::fast_io::mnp::addrvw(curr - wasmmod.module_begin),
+                                u8") "
+                                u8"Invalid pagesize."
+                                u8"\n"
+                                u8"\033[0m"
+                                u8"Terminate.\n\n");
+                            ::fast_io::fast_terminate();
+                        }
+                }
+
+                if(pagesize > 16) [[unlikely]]
+                {
+                    ::fast_io::io::perr(::uwvm::u8err,
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"uwvm: "
+                                u8"\033[31m"
+                                u8"[fatal] "
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"(offset=",
+                                ::fast_io::mnp::addrvw(curr - wasmmod.module_begin),
+                                u8") "
+                                u8"The number of pagesize must be no more than 16."
+                                u8"\n"
+                                u8"\033[0m"
+                                u8"Terminate.\n\n");
+                    ::fast_io::fast_terminate();
+                }
+
+                mt.mempagesize = static_cast<::std::size_t>(1) << pagesize;
+                curr = reinterpret_cast<::std::byte const*>(next_pagesize);
+            }
+
+            if(flags & 0xF0) [[unlikely]]
             {
                 ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -384,6 +549,7 @@ namespace uwvm::wasm
                                 u8"Terminate.\n\n");
                 ::fast_io::fast_terminate();
             }
+
             wasmmod.memorysec.types.emplace_back_unchecked(mt);
         }
 
