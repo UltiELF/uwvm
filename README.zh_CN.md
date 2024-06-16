@@ -51,7 +51,7 @@ $ uwvm <param1> <param2> ... --run <file> <argv1> <argv2> ...
 ```
 * 运行模式
 ```bash
---mode [objdump(默认)]
+--mode [objdump(默认), int]
 ```
 * 加载 WASM ABI (默认自动检测)
 ```bash

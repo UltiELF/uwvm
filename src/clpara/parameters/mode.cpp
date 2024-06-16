@@ -30,7 +30,7 @@
                             u8"\033[36m"
                             u8"[--mode|-m] "
                             u8"\033[32m"
-                            u8"[objdump(default), int]"
+                            u8"[objdump, int(default)]"
                             u8"\033[0m"
                             u8"\n\n");
         return ::uwvm::cmdline::parameter_return_type::return_m1_imme;
@@ -75,7 +75,7 @@
                             u8"\033[36m"
                             u8"[--mode|-m] "
                             u8"\033[32m"
-                            u8"[objdump(default), int]"
+                            u8"[objdump, int(default)]"
                             u8"\033[0m"
                             u8"\n\n");
         return ::uwvm::cmdline::parameter_return_type::return_m1_imme;

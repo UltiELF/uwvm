@@ -18,7 +18,7 @@ namespace uwvm::parameter
 
     inline constexpr ::uwvm::cmdline::parameter mode{
         .name{::fast_io::string_view{"--mode"}},
-        .describe{::fast_io::u8string_view{u8"Select operation mode. Usage: [--mode|-m] [objdump(default), int]"}},
+        .describe{::fast_io::u8string_view{u8"Select operation mode. Usage: [--mode|-m] [objdump, int(default)]"}},
         .alias{::uwvm::cmdline::kns_str_scatter_t{__builtin_addressof(details::mode_alias), 1}},
         .callback{__builtin_addressof(details::mode_callback)},
         .is_exist{__builtin_addressof(details::mode_is_exist)},
