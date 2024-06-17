@@ -13,6 +13,10 @@
 #define __DWARF_PARSER_HPP__
 
 #include <inttypes.h>
+#ifndef PRIx64
+#define PRIx64 "llx"
+#endif
+
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>

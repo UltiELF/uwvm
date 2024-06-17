@@ -39,19 +39,6 @@ namespace uwvm::vm::interpreter::func
                                 ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
                                 u8") "
                                 u8"Catch unreachable\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
-
-        // backtrace
-
-                ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
                                 u8"\033[33m"
                                 u8"[back trace] \n"
                                 u8"\033[0m"
@@ -67,15 +54,12 @@ namespace uwvm::vm::interpreter::func
         ::std::size_t counter{};
         for(auto const& i: bt)
         {
-            ::fast_io::io::perrln(::uwvm::u8err,
+            ::fast_io::io::perr(::uwvm::u8err,
                                   u8"[",
                                   counter++,
                                   u8"] (",
                                   ::fast_io::mnp::code_cvt(i.description()),
-                                  u8") ",
-                                  ::fast_io::mnp::code_cvt(i.source_file()),
-                                  u8":L",
-                                  i.source_line());
+                                  u8")\n");
         }
         ::fast_io::io::perrln(::uwvm::u8err);
 #else
@@ -109,6 +93,7 @@ namespace uwvm::vm::interpreter::func
                                 ::fast_io::mnp::addrvw(pc),
                                 u8"]\n");
         }
+        ::fast_io::io::perrln(::uwvm::u8err);
 #endif
 
         ::fast_io::fast_terminate();
