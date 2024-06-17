@@ -15,7 +15,7 @@ namespace uwvm::vm::interpreter
         ::uwvm::wasm::wasm_v128 v128;
     };
 
-    enum class flow_control_t : ::std::size_t
+    enum class flow_control_t : ::std::uint_fast8_t
     {
         block,
         loop,
@@ -42,10 +42,17 @@ namespace uwvm::vm::interpreter
 
     using int_func_t = void (*)(::std::byte const*, stack_machine&);
 
+    struct ext_t
+    {
+        struct operator_t const* end{};
+        struct operator_t const* branch{};
+    };
+
     struct operator_t
     {
         ::std::byte const* code_begin{};
         int_func_t int_func{};
+        ext_t ext{};  // extra info
     };
 
     struct ast
@@ -54,3 +61,30 @@ namespace uwvm::vm::interpreter
     };
 
 }  // namespace uwvm::vm::interpreter
+
+namespace fast_io::freestanding
+{
+    template <>
+    struct is_trivially_relocatable<::uwvm::vm::interpreter::stack_machine>
+    {
+        inline static constexpr bool value = true;
+    };
+
+    template <>
+    struct is_zero_default_constructible<::uwvm::vm::interpreter::stack_machine>
+    {
+        inline static constexpr bool value = true;
+    };
+
+    template <>
+    struct is_trivially_relocatable<::uwvm::vm::interpreter::ast>
+    {
+        inline static constexpr bool value = true;
+    };
+
+    template <>
+    struct is_zero_default_constructible<::uwvm::vm::interpreter::ast>
+    {
+        inline static constexpr bool value = true;
+    };
+}  // namespace fast_io::freestanding

@@ -451,7 +451,7 @@ public:
 	{
 		this->destroy();
 		this->imp = vec.imp;
-		vec.imp = nullptr;
+		vec.imp = {};
 		return *this;
 	}
 	constexpr ~vector()

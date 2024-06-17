@@ -52,15 +52,7 @@ namespace uwvm::vm::interpreter::func
 #if defined(_MSC_VER)
         auto const bt{::std::stacktrace::current()};
         ::std::size_t counter{};
-        for(auto const& i: bt)
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                  u8"[",
-                                  counter++,
-                                  u8"] (",
-                                  ::fast_io::mnp::code_cvt(i.description()),
-                                  u8")\n");
-        }
+        for(auto const& i: bt) { ::fast_io::io::perr(::uwvm::u8err, u8"[", counter++, u8"] (", ::fast_io::mnp::code_cvt(i.description()), u8")\n"); }
         ::fast_io::io::perrln(::uwvm::u8err);
 #else
         ::unw_cursor_t cursor{};
@@ -102,9 +94,45 @@ namespace uwvm::vm::interpreter::func
 #if __has_cpp_attribute(__gnu__::__hot__)
     [[__gnu__::__hot__]]
 #endif
-    inline void block(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
+    inline void
+        block(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
     {
         sm.flow.emplace(curr, ::uwvm::vm::interpreter::flow_control_t::block);
     }
 
+#if __has_cpp_attribute(__gnu__::__hot__)
+    [[__gnu__::__hot__]]
+#endif
+    inline void
+        loop(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
+    {
+        sm.flow.emplace(curr, ::uwvm::vm::interpreter::flow_control_t::loop);
+    }
+
+#if __has_cpp_attribute(__gnu__::__hot__)
+    [[__gnu__::__hot__]]
+#endif
+    inline void
+        if_(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
+    {
+        sm.flow.emplace(curr, ::uwvm::vm::interpreter::flow_control_t::if_);
+    }
+
+#if __has_cpp_attribute(__gnu__::__hot__)
+    [[__gnu__::__hot__]]
+#endif
+    inline void
+        else_(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
+    {
+        sm.flow.emplace(curr, ::uwvm::vm::interpreter::flow_control_t::else_);
+    }
+
+#if __has_cpp_attribute(__gnu__::__hot__)
+    [[__gnu__::__hot__]]
+#endif
+    inline void
+        end(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
+    {
+        sm.flow.emplace(curr, ::uwvm::vm::interpreter::flow_control_t::end);
+    }
 }  // namespace uwvm::vm::interpreter::func

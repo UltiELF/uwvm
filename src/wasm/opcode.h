@@ -246,7 +246,7 @@ namespace uwvm::wasm
         simd_interleaved = 0xff,
         simd = 0xfd,
         reference_types = 0xfc,
-        bulkMemory = 0xfc,
+        bulk_memory = 0xfc,
     };
 
     enum class op_exten_simd_interleaved : ::uwvm::wasm::op_exten_type  // 0xff
