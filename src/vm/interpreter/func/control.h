@@ -1,6 +1,13 @@
 #pragma once
+#if defined(_MSC_VER)
+    #include <stacktrace>
+#else
+    #include <libunwind.h>
+#endif
+
 #include <fast_io.h>
 #include <io_device.h>
+
 #include "../ast.h"
 #include "../../../run/wasm_file.h"
 
@@ -36,6 +43,73 @@ namespace uwvm::vm::interpreter::func
                                 u8"Terminate.\n\n");
 
         // backtrace
+
+                ::fast_io::io::perr(::uwvm::u8err,
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"uwvm: "
+                                u8"\033[33m"
+                                u8"[back trace] \n"
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                            );
+
+#if defined(_MSC_VER)
+        auto const bt{::std::stacktrace::current()};
+        ::std::size_t counter{};
+        for(auto const& i: bt)
+        {
+            ::fast_io::io::perrln(::uwvm::u8err,
+                                  u8"[",
+                                  counter++,
+                                  u8"] (",
+                                  ::fast_io::mnp::code_cvt(i.description()),
+                                  u8") ",
+                                  ::fast_io::mnp::code_cvt(i.source_file()),
+                                  u8":L",
+                                  i.source_line());
+        }
+        ::fast_io::io::perrln(::uwvm::u8err);
+#else
+        ::unw_cursor_t cursor{};
+        ::unw_context_t context{};
+
+        ::unw_getcontext(__builtin_addressof(context));
+        ::unw_init_local(__builtin_addressof(cursor), __builtin_addressof(context));
+
+        ::std::size_t counter{};
+        while(::unw_step(__builtin_addressof(cursor)) > 0)
+        {
+            ::unw_word_t offset{};
+            ::unw_word_t pc{};
+
+            char8_t fname[1024];
+            fname[0] = u8'\0';
+
+            ::unw_get_reg(__builtin_addressof(cursor), UNW_REG_IP, __builtin_addressof(pc));
+
+            ::unw_get_proc_name(__builtin_addressof(cursor), reinterpret_cast<char*>(fname), sizeof(fname), __builtin_addressof(offset));
+
+            ::fast_io::io::perr(::uwvm::u8err,
+                                u8"[",
+                                counter++,
+                                u8"] (",
+                                ::fast_io::mnp::os_c_str(fname),
+                                u8"+",
+                                ::fast_io::mnp::addrvw(offset),
+                                u8") [",
+                                ::fast_io::mnp::addrvw(pc),
+                                u8"]\n");
+        }
+#endif
 
         ::fast_io::fast_terminate();
     }
