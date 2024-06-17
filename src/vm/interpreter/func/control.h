@@ -1,5 +1,5 @@
 #pragma once
-#if defined(_MSC_VER)
+#if defined(_MSC_VER) || defined(__MSDOS__)
     #include <stacktrace>
 #else
     #include <libunwind.h>
@@ -49,7 +49,7 @@ namespace uwvm::vm::interpreter::func
 #endif
                             );
 
-#if defined(_MSC_VER)
+#if defined(_MSC_VER) || defined(__MSDOS__)
         auto const bt{::std::stacktrace::current()};
         ::std::size_t counter{};
         for(auto const& i: bt) { ::fast_io::io::perr(::uwvm::u8err, u8"[", counter++, u8"] (", ::fast_io::mnp::code_cvt(i.description()), u8")\n"); }

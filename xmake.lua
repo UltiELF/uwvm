@@ -493,7 +493,7 @@ target("uwvm")
 	defopt()
 
 	--libunwind
-	if not is_plat("windows") then
+	if not (is_plat("windows") or is_plat("msdosdjgpp")) then
 		add_deps("unwind")
 		add_includedirs("third-parties/libunwind/include/")
 	end
@@ -516,7 +516,7 @@ target("uwvm")
 	end
 target_end()
 
-if not is_plat("windows") then
+if not (is_plat("windows") or is_plat("msdosdjgpp"))then
 	target("unwind")
 		set_kind("static")
 		defopt()
