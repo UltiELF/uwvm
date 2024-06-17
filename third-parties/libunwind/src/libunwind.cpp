@@ -26,6 +26,14 @@
 #include <sanitizer/asan_interface.h>
 #endif
 
+#ifdef PRIxPTR
+#if __WORDSIZE == 64
+#define PRIxPTR "lx"
+#else
+#define PRIxPTR "x"
+#endif
+#endif
+
 #if !defined(__USING_SJLJ_EXCEPTIONS__) && !defined(__USING_WASM_EXCEPTIONS__)
 #include "AddressSpace.hpp"
 #include "UnwindCursor.hpp"
