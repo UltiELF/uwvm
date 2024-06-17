@@ -30,6 +30,14 @@
 #include "AddressSpace.hpp"
 #include "UnwindCursor.hpp"
 
+#ifndef PRIxPTR
+#if __WORDSIZE == 64
+#define PRIxPTR "lx"
+#else
+#define PRIxPTR "x"
+#endif
+#endif
+
 using namespace libunwind;
 
 /// internal object to represent this processes address space
@@ -108,14 +116,6 @@ _LIBUNWIND_HIDDEN int __unw_get_reg(unw_cursor_t *cursor, unw_regnum_t regNum,
   return UNW_EBADREG;
 }
 _LIBUNWIND_WEAK_ALIAS(__unw_get_reg, unw_get_reg)
-
-#ifdef PRIxPTR
-#if __WORDSIZE == 64
-#define PRIxPTR "lx"
-#else
-#define PRIxPTR "x"
-#endif
-#endif
 
 /// Set value of specified register at cursor position in stack frame.
 _LIBUNWIND_HIDDEN int __unw_set_reg(unw_cursor_t *cursor, unw_regnum_t regNum,
