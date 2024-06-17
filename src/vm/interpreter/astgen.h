@@ -395,7 +395,8 @@ namespace uwvm::vm::interpreter
                 }
                 case ::uwvm::wasm::op_basic::else_:
                 {
-                    op.int_func = __builtin_addressof(::uwvm::vm::interpreter::func::else_);
+                    op.int_func = __builtin_addressof(::uwvm::vm::interpreter::func::non);
+
                     if(details::ga_flow.empty()) [[unlikely]]
                     {
                         ::fast_io::io::perr(::uwvm::u8err,

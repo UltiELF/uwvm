@@ -38,6 +38,8 @@ namespace uwvm::vm::interpreter
     {
         ::fast_io::stack<stack_t> stack{};
         ::fast_io::stack<flow_t> flow{};
+        struct operator_t const* curr_op{};
+
     };
 
     using int_func_t = void (*)(::std::byte const*, stack_machine&);

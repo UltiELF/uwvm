@@ -91,6 +91,15 @@ namespace uwvm::vm::interpreter::func
         ::fast_io::fast_terminate();
     }
 
+    #if __has_cpp_attribute(__gnu__::__hot__)
+    [[__gnu__::__hot__]]
+#endif
+    inline void
+        non(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
+    {
+        ++sm.curr_op;
+    }
+
 #if __has_cpp_attribute(__gnu__::__hot__)
     [[__gnu__::__hot__]]
 #endif
@@ -98,6 +107,7 @@ namespace uwvm::vm::interpreter::func
         block(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
     {
         sm.flow.emplace(curr, ::uwvm::vm::interpreter::flow_control_t::block);
+        ++sm.curr_op;
     }
 
 #if __has_cpp_attribute(__gnu__::__hot__)
@@ -107,6 +117,7 @@ namespace uwvm::vm::interpreter::func
         loop(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
     {
         sm.flow.emplace(curr, ::uwvm::vm::interpreter::flow_control_t::loop);
+        ++sm.curr_op;
     }
 
 #if __has_cpp_attribute(__gnu__::__hot__)
@@ -116,15 +127,7 @@ namespace uwvm::vm::interpreter::func
         if_(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
     {
         sm.flow.emplace(curr, ::uwvm::vm::interpreter::flow_control_t::if_);
-    }
-
-#if __has_cpp_attribute(__gnu__::__hot__)
-    [[__gnu__::__hot__]]
-#endif
-    inline void
-        else_(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
-    {
-        sm.flow.emplace(curr, ::uwvm::vm::interpreter::flow_control_t::else_);
+        ++sm.curr_op;
     }
 
 #if __has_cpp_attribute(__gnu__::__hot__)
@@ -133,6 +136,7 @@ namespace uwvm::vm::interpreter::func
     inline void
         end(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
     {
-        sm.flow.emplace(curr, ::uwvm::vm::interpreter::flow_control_t::end);
+        sm.flow.pop_unchecked();
+        ++sm.curr_op;
     }
 }  // namespace uwvm::vm::interpreter::func
