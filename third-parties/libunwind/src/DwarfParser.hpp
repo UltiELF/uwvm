@@ -25,7 +25,9 @@
 #ifndef PRId64
 #define PRId64 "lld" 
 #endif
-
+#ifndef PRIu8
+#define PRIu8 "hhu"
+#endif
 
 #include <stdint.h>
 #include <stdio.h>
