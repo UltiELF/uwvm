@@ -521,7 +521,7 @@ namespace uwvm::wasm
 
                 for(::std::size_t code_count{wasmmod.importsec.func_types.size()}; auto const& t: wasmmod.codesec.bodies)
                 {
-                    ::fast_io::operations::print_freestanding<true>(::std::forward<s>(stm), " - " "func" "[", code_count++, "] size=", t.body_size);
+                    ::fast_io::operations::print_freestanding<true>(::std::forward<s>(stm), " - " "func" "[", code_count++, "] size=", t.body_size, " local=", t.local_count);
                 }
             }
 
@@ -1065,7 +1065,7 @@ namespace uwvm::wasm
 
                 for(::std::size_t code_count{wasmmod.importsec.func_types.size()}; auto const& t: wasmmod.codesec.bodies)
                 {
-                    ::fast_io::operations::print_freestanding<true>(::std::forward<s>(stm), L" - " L"func" L"[", code_count++, L"] size=", t.body_size);
+                    ::fast_io::operations::print_freestanding<true>(::std::forward<s>(stm), L" - " L"func" L"[", code_count++, L"] size=", t.body_size, L" local=", t.local_count);
                 }
             }
 
@@ -1607,7 +1607,7 @@ namespace uwvm::wasm
 
                 for(::std::size_t code_count{wasmmod.importsec.func_types.size()}; auto const& t: wasmmod.codesec.bodies)
                 {
-                    ::fast_io::operations::print_freestanding<true>(::std::forward<s>(stm), u8" - " u8"func" u8"[", code_count++, u8"] size=", t.body_size);
+                    ::fast_io::operations::print_freestanding<true>(::std::forward<s>(stm), u8" - " u8"func" u8"[", code_count++, u8"] size=", t.body_size, u8" local=", t.local_count);
                 }
             }
 
@@ -2151,7 +2151,7 @@ namespace uwvm::wasm
 
                 for(::std::size_t code_count{wasmmod.importsec.func_types.size()}; auto const& t: wasmmod.codesec.bodies)
                 {
-                    ::fast_io::operations::print_freestanding<true>(::std::forward<s>(stm), u" - " u"func" u"[", code_count++, u"] size=", t.body_size);
+                    ::fast_io::operations::print_freestanding<true>(::std::forward<s>(stm), u" - " u"func" u"[", code_count++, u"] size=", t.body_size, u" local=", t.local_count);
                 }
             }
 
@@ -2695,7 +2695,7 @@ namespace uwvm::wasm
 
                 for(::std::size_t code_count{wasmmod.importsec.func_types.size()}; auto const& t: wasmmod.codesec.bodies)
                 {
-                    ::fast_io::operations::print_freestanding<true>(::std::forward<s>(stm), U" - " U"func" U"[", code_count++, U"] size=", t.body_size);
+                    ::fast_io::operations::print_freestanding<true>(::std::forward<s>(stm), U" - " U"func" U"[", code_count++, U"] size=", t.body_size, U" local=", t.local_count);
                 }
             }
 

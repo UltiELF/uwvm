@@ -492,7 +492,16 @@ target("uwvm")
 	set_kind("binary")
 	defopt()
 
+	--libunwind
+	if not is_plat("windows") then
+		add_deps("unwind")
+		add_includedirs("third-parties/libunwind/include/")
+	end
+
+	--fast_io
 	add_includedirs("third-parties/fast_io/include/")
+
+	--uwvm
 	add_includedirs("src/utils/")
 
 	if is_plat("windows", "mingw") then
@@ -507,6 +516,18 @@ target("uwvm")
 	end
 target_end()
 
+if not is_plat("windows") then
+	target("unwind")
+		set_kind("static")
+		defopt()
+
+		add_includedirs("third-parties/libunwind/include/")
+
+		add_files("third-parties/libunwind/src/**.cpp")
+		add_files("third-parties/libunwind/src/**.c")
+		add_files("third-parties/libunwind/src/**.S")	
+	target_end()
+end
 
 --
 -- If you want to known more usage about xmake, please see https://xmake.io

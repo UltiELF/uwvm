@@ -388,7 +388,7 @@ namespace uwvm::wasm
                 ::fast_io::fast_terminate();
             }
 
-            mt.is_shared = static_cast<bool>(flags1b);
+            mt.thread_shared = static_cast<bool>(flags1b);
 
             auto const flags2b{(flags & 0x04) >> 2};
 

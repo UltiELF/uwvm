@@ -10,6 +10,8 @@ namespace uwvm::wasm
     {
         ::uwvm::wasm::limits limits{};
         ::uwvm::wasm::value_type elem_type{}; // ref
-        bool is_shared{}; // thread
+        bool thread_shared{}; // thread
+        bool is_shared{};
+
     };
 }

@@ -13,6 +13,7 @@
 #include "objdump.h"
 #include "../vm/interpreter/int.h"
 
+
 namespace uwvm
 {
     inline void run() noexcept
@@ -96,7 +97,7 @@ namespace uwvm
             }
             case ::uwvm::mode::interpreter :
             {
-                ::uwvm::interpreter::interpret();
+                ::uwvm::vm::interpreter::interpret();
                 break;
             }
             default: ::fast_io::unreachable();

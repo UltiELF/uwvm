@@ -15,8 +15,6 @@ namespace uwvm::wasm
     struct local_function_type
     {
         ::uwvm::wasm::function_type const* func_type{};
-        ::std::byte const* code_begin{};
-        ::std::byte const* code_end{};
         char8_t const* custom_name_begin{};
         char8_t const* custom_name_end{};
         bool is_shared{};
