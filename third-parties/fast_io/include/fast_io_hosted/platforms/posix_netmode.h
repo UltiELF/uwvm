@@ -744,7 +744,7 @@ inline int posix_accept_posix_socket_impl(int fd, void *addr, posix_socklen_t *a
 		[[__gnu__::__may_alias__]]
 #endif
 		= struct sockaddr *;
-	int socfd{::accept(fd, reinterpret_cast<sockaddr_alias_ptr>(addr), addrlen)};
+	int socfd{static_cast<int>(::accept(fd, reinterpret_cast<sockaddr_alias_ptr>(addr), addrlen))};
 	if (socfd == -1)
 	{
 		throw_posix_error();
@@ -765,7 +765,7 @@ inline int posix_recvfrom_posix_socket_impl(int fd, void *buf, ::std::size_t len
 		[[__gnu__::__may_alias__]]
 #endif
 		= struct sockaddr *;
-	int socfd{::recvfrom(fd, buf, len, flags, reinterpret_cast<sockaddr_alias_ptr>(src_addr), addrlen)};
+	int socfd{static_cast<int>(::recvfrom(fd, buf, len, flags, reinterpret_cast<sockaddr_alias_ptr>(src_addr), addrlen))};
 	if (socfd == -1)
 	{
 		throw_posix_error();
@@ -786,7 +786,7 @@ inline int posix_sendto_posix_socket_impl(int fd, void const *buf, ::std::size_t
 		[[__gnu__::__may_alias__]]
 #endif
 		= struct sockaddr const*;
-	int socfd{::sendto(fd, buf, len, flags, reinterpret_cast<sockaddr_const_alias_ptr>(src_addr), addrlen)};
+	int socfd{static_cast<int>(::sendto(fd, buf, len, flags, reinterpret_cast<sockaddr_const_alias_ptr>(src_addr), addrlen))};
 	if (socfd == -1)
 	{
 		throw_posix_error();
