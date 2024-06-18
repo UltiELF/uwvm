@@ -1324,7 +1324,7 @@ public:
 		int a2[2]{-1, -1};
 #if (defined(_WIN32) && !defined(__WINE__) && !defined(__BIONIC__)) && !defined(__CYGWIN__)
 		if (noexcept_call(_pipe, a2, 131072u, _O_BINARY) == -1)
-#elif defined(__MSDOS__)
+#elif defined(__MSDOS__) ||  defined(__DARWIN_C_LEVEL)
 		if (noexcept_call(::pipe, a2) == -1)
 #else
 		if (noexcept_call(::pipe2, a2, O_CLOEXEC) == -1)
