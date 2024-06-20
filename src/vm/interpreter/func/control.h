@@ -91,7 +91,7 @@ namespace uwvm::vm::interpreter::func
         ::fast_io::fast_terminate();
     }
 
-    #if __has_cpp_attribute(__gnu__::__hot__)
+#if __has_cpp_attribute(__gnu__::__hot__)
     [[__gnu__::__hot__]]
 #endif
     inline void
@@ -127,7 +127,13 @@ namespace uwvm::vm::interpreter::func
         if_(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
     {
         sm.flow.emplace(curr, ::uwvm::vm::interpreter::flow_control_t::if_);
-        ++sm.curr_op;
+        auto st{sm.stack.pop_element()};
+        if(static_cast<bool>(st.i32)) { ++sm.curr_op; }
+        else
+        {
+            if(sm.curr_op->ext.branch) { sm.curr_op = sm.curr_op->ext.branch + 1; }
+            else { sm.curr_op = sm.curr_op->ext.end + 1; }
+        }
     }
 
 #if __has_cpp_attribute(__gnu__::__hot__)

@@ -34,20 +34,27 @@ namespace uwvm::vm::interpreter
         flow_control_t flow_e{};
     };
 
+    struct operator_t;
+
     struct stack_machine
     {
-        ::fast_io::stack<stack_t> stack{};
-        ::fast_io::stack<flow_t> flow{};
-        struct operator_t const* curr_op{};
+        ::fast_io::tlc::stack<stack_t, ::fast_io::tlc::vector<stack_t>> stack{};
+        ::fast_io::tlc::stack<flow_t, ::fast_io::tlc::vector<flow_t>> flow{};
+        operator_t const* curr_op{};
 
+        constexpr stack_machine() noexcept 
+        {
+            stack.reserve(::uwvm::default_int_stack_size);
+            flow.reserve(static_cast<::std::size_t>(2) * 1024);
+        }
     };
 
     using int_func_t = void (*)(::std::byte const*, stack_machine&);
 
     struct ext_t
     {
-        struct operator_t const* end{};
-        struct operator_t const* branch{};
+        operator_t const* end{};
+        operator_t const* branch{};
     };
 
     struct operator_t

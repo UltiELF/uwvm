@@ -16,4 +16,6 @@ namespace uwvm
     inline ::uwvm::wasm::abi wasm_abi{::uwvm::wasm::abi::detect};
     inline ::uwvm::wasm::wasm_module global_wasm_module{};
 
+    inline ::std::size_t default_int_stack_size{static_cast<::std::size_t>(8) * 1024 * 1024};
+
 }  // namespace uwvm
