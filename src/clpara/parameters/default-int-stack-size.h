@@ -5,7 +5,7 @@
 #include <io_device.h>
 
 #include <cmdline/parameter.h>
-#include "../../run/wasm_file.h"
+#include "../../vm/interpreter/ast.h"
 
 namespace uwvm::parameter
 {
@@ -80,7 +80,7 @@ namespace uwvm::parameter
                 return ::uwvm::cmdline::parameter_return_type::return_m1_imme;
             }
 
-            ::uwvm::default_int_stack_size = diss;
+            ::uwvm::vm::interpreter::stack_machine::default_int_stack_size = diss / sizeof(::uwvm::vm::interpreter::stack_machine);
 
             return ::uwvm::cmdline::parameter_return_type::def;
         }

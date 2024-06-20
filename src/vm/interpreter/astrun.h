@@ -14,6 +14,7 @@ namespace uwvm::vm::interpreter
             for(s.curr_op = ::std::to_address(a.operators.begin()); s.curr_op != end_op;)
             {
                 if(s.curr_op->int_func) [[likely]] { s.curr_op->int_func(s.curr_op->code_begin, s); }
+                else { ++s.curr_op; }
             }
         }
     }

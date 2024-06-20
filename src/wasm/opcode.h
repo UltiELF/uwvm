@@ -5,6 +5,8 @@
 
 namespace uwvm::wasm
 {
+    // https://pengowray.github.io/wasm-ops/
+    
     // mvp or prefix
     enum class op_basic : ::uwvm::wasm::op_basic_type  // u8
     {

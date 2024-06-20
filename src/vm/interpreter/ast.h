@@ -6,13 +6,18 @@
 
 namespace uwvm::vm::interpreter
 {
-    union stack_t
+    struct stack_t
     {
-        ::uwvm::wasm::wasm_i32 i32;
-        ::uwvm::wasm::wasm_i64 i64;
-        ::uwvm::wasm::wasm_f32 f32;
-        ::uwvm::wasm::wasm_f64 f64;
-        ::uwvm::wasm::wasm_v128 v128;
+        union
+        {
+            ::uwvm::wasm::wasm_i32 i32;
+            ::uwvm::wasm::wasm_i64 i64;
+            ::uwvm::wasm::wasm_f32 f32;
+            ::uwvm::wasm::wasm_f64 f64;
+            ::uwvm::wasm::wasm_v128 v128;
+        };
+
+        ::uwvm::wasm::value_type vt{};
     };
 
     enum class flow_control_t : ::std::uint_fast8_t
@@ -39,13 +44,19 @@ namespace uwvm::vm::interpreter
     struct stack_machine
     {
         ::fast_io::tlc::stack<stack_t, ::fast_io::tlc::vector<stack_t>> stack{};
+#if 0
         ::fast_io::tlc::stack<flow_t, ::fast_io::tlc::vector<flow_t>> flow{};
+#endif
         operator_t const* curr_op{};
 
-        constexpr stack_machine() noexcept 
+        inline static ::std::size_t default_int_stack_size{static_cast<::std::size_t>(1) * 1024 * 1024};
+
+        constexpr stack_machine() noexcept
         {
-            stack.reserve(::uwvm::default_int_stack_size);
+            stack.reserve(default_int_stack_size);
+#if 0
             flow.reserve(static_cast<::std::size_t>(2) * 1024);
+#endif
         }
     };
 
