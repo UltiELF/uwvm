@@ -667,7 +667,90 @@ namespace uwvm::vm::interpreter
                 }
                 case ::uwvm::wasm::op_basic::br_if:
                 {
-                    ::uwvm::unfinished();
+                    op.int_func = __builtin_addressof(::uwvm::vm::interpreter::func::br_if);
+
+                    ++curr;
+
+                    ::std::size_t index{};
+                    auto const [next, err]{::fast_io::parse_by_scan(reinterpret_cast<char8_t_const_may_alias_ptr>(curr),
+                                                                    reinterpret_cast<char8_t_const_may_alias_ptr>(end),
+                                                                    ::fast_io::mnp::leb128_get(index))};
+                    switch(err)
+                    {
+                        case ::fast_io::parse_code::ok: break;
+                        default:
+                            [[unlikely]]
+                            {
+                                ::fast_io::io::perr(::uwvm::u8err,
+                                    u8"\033[0m"
+#ifdef __MSDOS__
+                                    u8"\033[37m"
+#else
+                                    u8"\033[97m"
+#endif
+                                    u8"uwvm: "
+                                    u8"\033[31m"
+                                    u8"[fatal] "
+                                    u8"\033[0m"
+#ifdef __MSDOS__
+                                    u8"\033[37m"
+#else
+                                    u8"\033[97m"
+#endif
+                                    u8"(offset=",
+                                    ::fast_io::mnp::addrvw(curr - wasmmod.module_begin),
+                                    u8") "
+                                    u8"Invalid table length."
+                                    u8"\n"
+                                    u8"\033[0m"
+                                    u8"Terminate.\n\n");
+                                ::fast_io::fast_terminate();
+                            }
+                    }
+
+                    curr = reinterpret_cast<::std::byte const*>(next);
+
+                    auto const cbegin{details::ga_flow.container.cbegin()};
+                    auto i{details::ga_flow.container.cend() - 1};
+
+                    for(; index; --index)
+                    {
+                        if(i->flow_e == ::uwvm::vm::interpreter::flow_control_t::else_) [[unlikely]] { --i; }
+                        --i;
+                    }
+
+                    if(i < cbegin) [[unlikely]]
+                    {
+                        ::fast_io::io::perr(::uwvm::u8err,
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"uwvm: "
+                                u8"\033[31m"
+                                u8"[fatal] "
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"(offset=",
+                                ::fast_io::mnp::addrvw(curr - wasmmod.module_begin),
+                                u8") "
+                                u8"Invalid br index."
+                                u8"\n"
+                                u8"\033[0m"
+                                u8"Terminate.\n\n");
+                        ::fast_io::fast_terminate();
+                    }
+
+                    op.ext.end = i->op->ext.end;
+
+                    temp.operators.emplace_back(op);
+
                     break;
                 }
                 case ::uwvm::wasm::op_basic::br_table:
