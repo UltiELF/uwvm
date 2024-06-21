@@ -296,7 +296,9 @@ function defopt()
 		end
 
 		add_syslinks("dl")
-		add_syslinks("pthread")
+
+		add_cxflags("-pthread")
+		add_ldflags("-pthread")
 
 	elseif is_plat("msdosdjgpp") then
 		add_cxflags("-fno-rtti")
