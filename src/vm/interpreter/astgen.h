@@ -550,6 +550,7 @@ namespace uwvm::vm::interpreter
                     }
 
                     f.op->ext.end = __builtin_addressof(op_ebr);
+                    op_ebr.ext.branch = f.op;
 
                     ++curr;
                     break;
