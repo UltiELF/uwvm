@@ -95,7 +95,7 @@ SpaceBeforeParensOptions:
   AfterFunctionDefinitionName: false
   AfterIfMacros: false
   AfterOverloadedOperator: true
-  AfterPlacementOperator: Never
+  AfterPlacementOperator: false
   AfterRequiresInClause: true
   AfterRequiresInExpression: false
   BeforeNonEmptyParentheses: false

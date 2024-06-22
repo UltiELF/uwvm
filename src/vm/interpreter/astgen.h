@@ -23,6 +23,8 @@ namespace uwvm::vm::interpreter
         inline thread_local ::fast_io::tlc::stack<d_flow_t, ::fast_io::tlc::vector<d_flow_t>> ga_flow{};
     }  // namespace details
 
+    // https://pengowray.github.io/wasm-ops/
+
     inline constexpr ::uwvm::vm::interpreter::ast generate_ast(::uwvm::wasm::func_body const& fb) noexcept
     {
         // alias def
@@ -434,7 +436,7 @@ namespace uwvm::vm::interpreter
                         ::fast_io::fast_terminate();
                     }
 
-                    auto const& f{details::ga_flow.top_unchecked()};
+                    auto& f{details::ga_flow.top_unchecked()};
                     if(f.flow_e != ::uwvm::vm::interpreter::flow_control_t::if_) [[unlikely]]
                     {
                         ::fast_io::io::perr(::uwvm::u8err,
@@ -463,9 +465,12 @@ namespace uwvm::vm::interpreter
                         ::fast_io::fast_terminate();
                     }
 
+                    f.flow_e = ::uwvm::vm::interpreter::flow_control_t::else_;
+
                     auto& op_ebr{temp.operators.emplace_back(op)};
+
+                    // set "if" branch
                     f.op->ext.branch = __builtin_addressof(op_ebr);
-                    details::ga_flow.push({op.code_begin, __builtin_addressof(op_ebr), ::uwvm::vm::interpreter::flow_control_t::else_});
 
                     ++curr;
                     break;
@@ -508,40 +513,39 @@ namespace uwvm::vm::interpreter
                         case ::uwvm::vm::interpreter::flow_control_t::block: [[fallthrough]];
                         case ::uwvm::vm::interpreter::flow_control_t::loop: [[fallthrough]];
                         case ::uwvm::vm::interpreter::flow_control_t::if_: break;
-                        case ::uwvm::vm::interpreter::flow_control_t::else_:  // pop twice
+                        case ::uwvm::vm::interpreter::flow_control_t::else_:
                         {
-                            auto f{details::ga_flow.pop_element_unchecked()};  // if
-                            f.op->ext.end = __builtin_addressof(op_ebr);
+                            // set "if" and "else" end_pointer to this op
+                            const_cast<::uwvm::vm::interpreter::operator_t*>(f.op->ext.branch)->ext.end = __builtin_addressof(op_ebr);
                             break;
                         }
                         default:
                             [[unlikely]]
                             {
                                 ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
+                                    u8"\033[0m"
 #ifdef __MSDOS__
-                                u8"\033[37m"
+                                    u8"\033[37m"
 #else
-                                u8"\033[97m"
+                                    u8"\033[97m"
 #endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
+                                    u8"uwvm: "
+                                    u8"\033[31m"
+                                    u8"[fatal] "
+                                    u8"\033[0m"
 #ifdef __MSDOS__
-                                u8"\033[37m"
+                                    u8"\033[37m"
 #else
-                                u8"\033[97m"
+                                    u8"\033[97m"
 #endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - wasmmod.module_begin),
-                                u8") "
-                                u8"Error control flow type."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
+                                    u8"(offset=",
+                                    ::fast_io::mnp::addrvw(curr - wasmmod.module_begin),
+                                    u8") "
+                                    u8"Error control flow type."
+                                    u8"\n"
+                                    u8"\033[0m"
+                                    u8"Terminate.\n\n");
                                 ::fast_io::fast_terminate();
-                                break;
                             }
                     }
 
@@ -622,16 +626,9 @@ namespace uwvm::vm::interpreter
 
                     curr = reinterpret_cast<::std::byte const*>(next);
 
-                    auto const cbegin{details::ga_flow.container.cbegin()};
-                    auto i{details::ga_flow.container.cend() - 1};
+                    auto const gfsz{details::ga_flow.size()};
 
-                    for(; index; --index)
-                    {
-                        if(i->flow_e == ::uwvm::vm::interpreter::flow_control_t::else_) [[unlikely]] { --i; }
-                        --i;
-                    }
-
-                    if(i < cbegin) [[unlikely]]
+                    if(index >= gfsz) [[unlikely]]
                     {
                         ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -659,7 +656,7 @@ namespace uwvm::vm::interpreter
                         ::fast_io::fast_terminate();
                     }
 
-                    op.ext.end = i->op->ext.end;
+                    op.ext.end = details::ga_flow.container.index_unchecked(gfsz - index - 1).op->ext.end;
 
                     temp.operators.emplace_back(op);
 
@@ -710,16 +707,9 @@ namespace uwvm::vm::interpreter
 
                     curr = reinterpret_cast<::std::byte const*>(next);
 
-                    auto const cbegin{details::ga_flow.container.cbegin()};
-                    auto i{details::ga_flow.container.cend() - 1};
+                    auto const gfsz{details::ga_flow.size()};
 
-                    for(; index; --index)
-                    {
-                        if(i->flow_e == ::uwvm::vm::interpreter::flow_control_t::else_) [[unlikely]] { --i; }
-                        --i;
-                    }
-
-                    if(i < cbegin) [[unlikely]]
+                    if(index >= gfsz) [[unlikely]]
                     {
                         ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -747,7 +737,7 @@ namespace uwvm::vm::interpreter
                         ::fast_io::fast_terminate();
                     }
 
-                    op.ext.end = i->op->ext.end;
+                    op.ext.end = details::ga_flow.container.index_unchecked(gfsz - index - 1).op->ext.end;
 
                     temp.operators.emplace_back(op);
 
@@ -755,7 +745,125 @@ namespace uwvm::vm::interpreter
                 }
                 case ::uwvm::wasm::op_basic::br_table:
                 {
-                    ::uwvm::unfinished();
+                    op.int_func = __builtin_addressof(::uwvm::vm::interpreter::func::br_table);
+
+                    ++curr;
+
+                    ::std::size_t table_size{};
+                    auto const [next, err]{::fast_io::parse_by_scan(reinterpret_cast<char8_t_const_may_alias_ptr>(curr),
+                                                                    reinterpret_cast<char8_t_const_may_alias_ptr>(end),
+                                                                    ::fast_io::mnp::leb128_get(table_size))};
+                    switch(err)
+                    {
+                        case ::fast_io::parse_code::ok: break;
+                        default:
+                            [[unlikely]]
+                            {
+                                ::fast_io::io::perr(::uwvm::u8err,
+                                    u8"\033[0m"
+#ifdef __MSDOS__
+                                    u8"\033[37m"
+#else
+                                    u8"\033[97m"
+#endif
+                                    u8"uwvm: "
+                                    u8"\033[31m"
+                                    u8"[fatal] "
+                                    u8"\033[0m"
+#ifdef __MSDOS__
+                                    u8"\033[37m"
+#else
+                                    u8"\033[97m"
+#endif
+                                    u8"(offset=",
+                                    ::fast_io::mnp::addrvw(curr - wasmmod.module_begin),
+                                    u8") "
+                                    u8"Invalid table length."
+                                    u8"\n"
+                                    u8"\033[0m"
+                                    u8"Terminate.\n\n");
+                                ::fast_io::fast_terminate();
+                            }
+                    }
+
+                    curr = reinterpret_cast<::std::byte const*>(next);
+
+                    auto const gfsz{details::ga_flow.size()};
+
+                    for(::std::size_t i{}; i <= table_size; ++i)
+                    {
+                        ::std::size_t index{};
+                        auto const [next, err]{::fast_io::parse_by_scan(reinterpret_cast<char8_t_const_may_alias_ptr>(curr),
+                                                                        reinterpret_cast<char8_t_const_may_alias_ptr>(end),
+                                                                        ::fast_io::mnp::leb128_get(index))};
+                        switch(err)
+                        {
+                            case ::fast_io::parse_code::ok: break;
+                            default:
+                                [[unlikely]]
+                                {
+                                    ::fast_io::io::perr(::uwvm::u8err,
+                                    u8"\033[0m"
+#ifdef __MSDOS__
+                                    u8"\033[37m"
+#else
+                                    u8"\033[97m"
+#endif
+                                    u8"uwvm: "
+                                    u8"\033[31m"
+                                    u8"[fatal] "
+                                    u8"\033[0m"
+#ifdef __MSDOS__
+                                    u8"\033[37m"
+#else
+                                    u8"\033[97m"
+#endif
+                                    u8"(offset=",
+                                    ::fast_io::mnp::addrvw(curr - wasmmod.module_begin),
+                                    u8") "
+                                    u8"Invalid table length."
+                                    u8"\n"
+                                    u8"\033[0m"
+                                    u8"Terminate.\n\n");
+                                    ::fast_io::fast_terminate();
+                                }
+                        }
+
+                        if(index >= gfsz) [[unlikely]]
+                        {
+                            ::fast_io::io::perr(::uwvm::u8err,
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"uwvm: "
+                                u8"\033[31m"
+                                u8"[fatal] "
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"(offset=",
+                                ::fast_io::mnp::addrvw(curr - wasmmod.module_begin),
+                                u8") "
+                                u8"Invalid br index."
+                                u8"\n"
+                                u8"\033[0m"
+                                u8"Terminate.\n\n");
+                            ::fast_io::fast_terminate();
+                        }
+
+                        // vector push_back
+
+                        curr = reinterpret_cast<::std::byte const*>(next);
+                    }
+
+                    temp.operators.emplace_back(op);
+
                     break;
                 }
                 case ::uwvm::wasm::op_basic::return_:

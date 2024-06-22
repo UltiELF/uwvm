@@ -196,4 +196,12 @@ namespace uwvm::vm::interpreter::func
         else { ++sm.curr_op; }
     }
 
+#if __has_cpp_attribute(__gnu__::__hot__)
+    [[__gnu__::__hot__]]
+#endif
+    inline void
+        br_table(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
+    {
+        ::uwvm::unfinished();
+    }
 }  // namespace uwvm::vm::interpreter::func
