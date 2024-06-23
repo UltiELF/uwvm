@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include <fast_io.h>
 #include <fast_io_dsal/stack.h>
 #include <unfinished.h>
@@ -26,7 +26,7 @@ namespace uwvm::vm::interpreter
 
     // https://pengowray.github.io/wasm-ops/
 
-    inline constexpr ::uwvm::vm::interpreter::ast generate_ast(::uwvm::wasm::function_type const* lft, ::uwvm::wasm::func_body const& fb) noexcept
+    inline ::uwvm::vm::interpreter::ast generate_ast(::uwvm::wasm::function_type const* lft, ::uwvm::wasm::func_body const& fb) noexcept
     {
         // alias def
         using char8_t_may_alias_ptr
@@ -953,12 +953,136 @@ namespace uwvm::vm::interpreter
                 }
                 case ::uwvm::wasm::op_basic::call_indirect:
                 {
-                    ::uwvm::unfinished();
+                    ++curr;
+                    op.int_func = __builtin_addressof(::uwvm::vm::interpreter::func::call_indirect);
+
+                    ::std::size_t index{};
+                    auto const [next, err]{::fast_io::parse_by_scan(reinterpret_cast<char8_t_const_may_alias_ptr>(curr),
+                                                                    reinterpret_cast<char8_t_const_may_alias_ptr>(end),
+                                                                    ::fast_io::mnp::leb128_get(index))};
+                    switch(err)
+                    {
+                        case ::fast_io::parse_code::ok: break;
+                        default:
+                            [[unlikely]]
+                            {
+                                ::fast_io::io::perr(::uwvm::u8err,
+                                    u8"\033[0m"
+#ifdef __MSDOS__
+                                    u8"\033[37m"
+#else
+                                    u8"\033[97m"
+#endif
+                                    u8"uwvm: "
+                                    u8"\033[31m"
+                                    u8"[fatal] "
+                                    u8"\033[0m"
+#ifdef __MSDOS__
+                                    u8"\033[37m"
+#else
+                                    u8"\033[97m"
+#endif
+                                    u8"(offset=",
+                                    ::fast_io::mnp::addrvw(curr - wasmmod.module_begin),
+                                    u8") "
+                                    u8"Invalid table length."
+                                    u8"\n"
+                                    u8"\033[0m"
+                                    u8"Terminate.\n\n");
+                                ::fast_io::fast_terminate();
+                            }
+                    }
+                    
+                    if(index >= wasmmod.typesec.type_count) [[unlikely]]
+                    {
+                        ::fast_io::io::perr(::uwvm::u8err,
+                                    u8"\033[0m"
+#ifdef __MSDOS__
+                                    u8"\033[37m"
+#else
+                                    u8"\033[97m"
+#endif
+                                    u8"uwvm: "
+                                    u8"\033[31m"
+                                    u8"[fatal] "
+                                    u8"\033[0m"
+#ifdef __MSDOS__
+                                    u8"\033[37m"
+#else
+                                    u8"\033[97m"
+#endif
+                                    u8"(offset=",
+                                    ::fast_io::mnp::addrvw(curr - wasmmod.module_begin),
+                                    u8") "
+                                    u8"Invalid type index."
+                                    u8"\n"
+                                    u8"\033[0m"
+                                    u8"Terminate.\n\n");
+                        ::fast_io::fast_terminate();
+                    }
+
+                    using operator_t_const_may_alias_ptr
+#if __has_cpp_attribute(__gnu__::__may_alias__)
+                        [[__gnu__::__may_alias__]]
+#endif
+                        = operator_t const*;
+
+                    op.ext.branch = reinterpret_cast<operator_t_const_may_alias_ptr>(wasmmod.typesec.types.cbegin() + index);
+
+                    curr = reinterpret_cast<::std::byte const*>(next);
+
+                    ::std::uint_fast8_t reserved{};
+                    ::fast_io::freestanding::my_memcpy(__builtin_addressof(reserved), curr, sizeof(::std::uint_fast8_t));
+
+                    if(reserved == 0) 
+                    {
+                        // do nothing
+                    }
+#if 0  // feature 🦄
+                    else if(reserved == 1)
+                    {
+                        // feature
+                        ::uwvm::unfinished();
+                    }
+#endif
+                    else [[unlikely]]
+                    {
+                        ::fast_io::io::perr(::uwvm::u8err,
+                                    u8"\033[0m"
+#ifdef __MSDOS__
+                                    u8"\033[37m"
+#else
+                                    u8"\033[97m"
+#endif
+                                    u8"uwvm: "
+                                    u8"\033[31m"
+                                    u8"[fatal] "
+                                    u8"\033[0m"
+#ifdef __MSDOS__
+                                    u8"\033[37m"
+#else
+                                    u8"\033[97m"
+#endif
+                                    u8"(offset=",
+                                    ::fast_io::mnp::addrvw(curr - wasmmod.module_begin),
+                                    u8") "
+                                    u8"Invalid type index."
+                                    u8"\n"
+                                    u8"\033[0m"
+                                    u8"Terminate.\n\n");
+                        ::fast_io::fast_terminate();
+                    }
+
+                    temp.operators.emplace_back(op);
+                    ++curr;
+
                     break;
                 }
                 case ::uwvm::wasm::op_basic::drop:
                 {
-                    ::uwvm::unfinished();
+                    op.int_func = __builtin_addressof(::uwvm::vm::interpreter::func::drop);
+                    temp.operators.emplace_back(op);
+                    ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::local_get:
