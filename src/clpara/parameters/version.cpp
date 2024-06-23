@@ -282,7 +282,7 @@
     defined(_WIN32_WINDOWS)
                         u8"Microsoft Windows"
     #if defined(_WIN32_WINDOWS)
-                        u8": "
+                        u8" - "
         #if _WIN32_WINDOWS >= 0x0490
                         u8"Windows ME"
         #elif _WIN32_WINDOWS >= 0x0410
@@ -291,7 +291,7 @@
                         u8"Windows 95"
         #endif
     #elif defined(_WIN32_WINNT)
-                        u8": "
+                        u8" - "
         #if _WIN32_WINNT >= 0x0A00
                         u8"Windows 10"
         #elif _WIN32_WINNT >= 0x0603
