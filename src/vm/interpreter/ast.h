@@ -47,7 +47,11 @@ namespace uwvm::vm::interpreter
 #if 0
         ::fast_io::tlc::stack<flow_t, ::fast_io::tlc::vector<flow_t>> flow{};
 #endif
+        operator_t const* begin_op{};
         operator_t const* curr_op{};
+        operator_t const* end_op{};
+
+        ::std::size_t stack_top{}; // Prevent stack expansion
 
         inline static ::std::size_t default_int_stack_size{static_cast<::std::size_t>(1) * 1024 * 1024};
 
@@ -78,6 +82,7 @@ namespace uwvm::vm::interpreter
     struct ast
     {
         ::fast_io::deque<operator_t> operators{};
+        ::uwvm::wasm::function_type const* ft{};
     };
 
 }  // namespace uwvm::vm::interpreter

@@ -8,8 +8,8 @@
 #include "../wasm.h"
 
 #include "ast.h"
-#include "astgen.h"
 #include "aststorge.h"
+#include "astgen.h"
 #include "astrun.h"
 
 namespace uwvm::vm::interpreter
@@ -54,10 +54,11 @@ namespace uwvm::vm::interpreter
         ::uwvm::vm::interpreter::stroage.asts = ::fast_io::vector<::uwvm::vm::interpreter::ast>(local_func_count);
 
         if(::uwvm::vm::start_func >= import_function_count)
-        { 
+        {
             auto const index{::uwvm::vm::start_func - import_function_count};
             auto& start_func{::uwvm::vm::interpreter::stroage.asts.index_unchecked(index)};
-            start_func = ::uwvm::vm::interpreter::generate_ast(wasmmod.codesec.bodies.index_unchecked(index));
+            start_func = ::uwvm::vm::interpreter::generate_ast(wasmmod.functionsec.types.index_unchecked(index).func_type,
+                                                               wasmmod.codesec.bodies.index_unchecked(index));
             ::uwvm::vm::interpreter::run_ast(start_func);
         }
         else [[unlikely]]

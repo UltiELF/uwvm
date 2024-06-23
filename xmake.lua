@@ -495,24 +495,27 @@ target("uwvm")
 	set_kind("binary")
 	defopt()
 
-	--libunwind
+	-- libunwind
 	if not (is_plat("windows") or is_plat("msdosdjgpp")) then
 		add_deps("unwind")
 		add_includedirs("third-parties/libunwind/include/")
 	end
 
-	--fast_io
+	-- fast_io
 	add_includedirs("third-parties/fast_io/include/")
 
-	--uwvm
+	-- uwvm *.h
 	add_includedirs("src/utils/")
 
+	-- win32
 	if is_plat("windows", "mingw") then
 		add_files("src/utils/consolecp/set_native_console_cp.cpp")
 	end
 
+	-- uwvm *.cpp
 	add_files("src/program/uwvm.cpp")
 	add_files("src/clpara/parameters/**.cpp")
+	add_files("src/vm/interpreter/func/**.cpp")
 
 	if is_plat("windows", "mingw") then 
 		add_files("src/program/uwvm.rc")

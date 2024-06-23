@@ -3,6 +3,7 @@
 #include <fast_io_dsal/stack.h>
 #include <unfinished.h>
 #include "ast.h"
+#include "aststorge.h"
 #include "func/func.h"
 
 #include "../../run/features.h"
@@ -25,7 +26,7 @@ namespace uwvm::vm::interpreter
 
     // https://pengowray.github.io/wasm-ops/
 
-    inline constexpr ::uwvm::vm::interpreter::ast generate_ast(::uwvm::wasm::func_body const& fb) noexcept
+    inline constexpr ::uwvm::vm::interpreter::ast generate_ast(::uwvm::wasm::function_type const* lft, ::uwvm::wasm::func_body const& fb) noexcept
     {
         // alias def
         using char8_t_may_alias_ptr
@@ -38,7 +39,6 @@ namespace uwvm::vm::interpreter
             [[__gnu__::__may_alias__]]
 #endif
             = char8_t const*;
-
         details::ga_flow.reserve(static_cast<::std::size_t>(2) * 1024);
 
         auto const& wasmmod{::uwvm::global_wasm_module};
@@ -46,10 +46,16 @@ namespace uwvm::vm::interpreter
         auto const local_count{fb.local_count};
         auto const& locals{fb.locals};
 
+        auto const import_function_count{wasmmod.importsec.func_types.size()};
+        auto const local_func_count{wasmmod.functionsec.function_count};
+        auto const func_count{import_function_count + local_func_count};
+
         auto curr{fb.begin};
         auto const end{fb.end};
 
         ::uwvm::vm::interpreter::ast temp{};
+
+        temp.ft = lft;
 
         for(; curr < end;)
         {
@@ -630,7 +636,9 @@ namespace uwvm::vm::interpreter
 
                     auto const gfsz{details::ga_flow.size()};
 
-                    if(index >= gfsz) [[unlikely]]
+                    ++index;
+
+                    if(index > gfsz) [[unlikely]]
                     {
                         ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -658,7 +666,7 @@ namespace uwvm::vm::interpreter
                         ::fast_io::fast_terminate();
                     }
 
-                    op.ext.end = details::ga_flow.container.index_unchecked(gfsz - index - 1).op->ext.end;
+                    op.ext.end = details::ga_flow.get_container().index_unchecked(gfsz - index).op->ext.end;
 
                     temp.operators.emplace_back(op);
 
@@ -711,7 +719,9 @@ namespace uwvm::vm::interpreter
 
                     auto const gfsz{details::ga_flow.size()};
 
-                    if(index >= gfsz) [[unlikely]]
+                    ++index;
+
+                    if(index > gfsz) [[unlikely]]
                     {
                         ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -739,7 +749,7 @@ namespace uwvm::vm::interpreter
                         ::fast_io::fast_terminate();
                     }
 
-                    op.ext.end = details::ga_flow.container.index_unchecked(gfsz - index - 1).op->ext.end;
+                    op.ext.end = details::ga_flow.get_container().index_unchecked(gfsz - index).op->ext.end;
 
                     temp.operators.emplace_back(op);
 
@@ -837,7 +847,9 @@ namespace uwvm::vm::interpreter
                                 }
                         }
 
-                        if(index >= gfsz) [[unlikely]]
+                        ++index;
+
+                        if(index > gfsz) [[unlikely]]
                         {
                             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -865,7 +877,7 @@ namespace uwvm::vm::interpreter
                             ::fast_io::fast_terminate();
                         }
 
-                        vo.push_back_unchecked(details::ga_flow.container.index_unchecked(gfsz - index - 1).op->ext.end);
+                        vo.push_back_unchecked(details::ga_flow.get_container().index_unchecked(gfsz - index).op->ext.end);
 
                         curr = reinterpret_cast<::std::byte const*>(next);
                     }
@@ -886,12 +898,57 @@ namespace uwvm::vm::interpreter
                 }
                 case ::uwvm::wasm::op_basic::return_:
                 {
-                    ::uwvm::unfinished();
+                    op.int_func = __builtin_addressof(::uwvm::vm::interpreter::func::return_);
+                    temp.operators.emplace_back(op);
+                    ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::call:
                 {
-                    ::uwvm::unfinished();
+                    ++curr;
+                    op.int_func = __builtin_addressof(::uwvm::vm::interpreter::func::call);
+
+                    ::std::size_t index{};
+                    auto const [next, err]{::fast_io::parse_by_scan(reinterpret_cast<char8_t_const_may_alias_ptr>(curr),
+                                                                    reinterpret_cast<char8_t_const_may_alias_ptr>(end),
+                                                                    ::fast_io::mnp::leb128_get(index))};
+                    switch(err)
+                    {
+                        case ::fast_io::parse_code::ok: break;
+                        default:
+                            [[unlikely]]
+                            {
+                                ::fast_io::io::perr(::uwvm::u8err,
+                                    u8"\033[0m"
+#ifdef __MSDOS__
+                                    u8"\033[37m"
+#else
+                                    u8"\033[97m"
+#endif
+                                    u8"uwvm: "
+                                    u8"\033[31m"
+                                    u8"[fatal] "
+                                    u8"\033[0m"
+#ifdef __MSDOS__
+                                    u8"\033[37m"
+#else
+                                    u8"\033[97m"
+#endif
+                                    u8"(offset=",
+                                    ::fast_io::mnp::addrvw(curr - wasmmod.module_begin),
+                                    u8") "
+                                    u8"Invalid table length."
+                                    u8"\n"
+                                    u8"\033[0m"
+                                    u8"Terminate.\n\n");
+                                ::fast_io::fast_terminate();
+                            }
+                    }
+                    op.ext.branch = reinterpret_cast<operator_t const*>(index);
+
+                    temp.operators.emplace_back(op);
+                    curr = reinterpret_cast<::std::byte const*>(next);
+
                     break;
                 }
                 case ::uwvm::wasm::op_basic::call_indirect:
