@@ -7,6 +7,7 @@ namespace uwvm::vm::interpreter
     struct ast_storage_t
     {
         ::fast_io::vector<::uwvm::vm::interpreter::ast> asts{};
+        ::fast_io::deque<::fast_io::vector<operator_t const*>> ext{};
     };
 
     inline ast_storage_t stroage{};

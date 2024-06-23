@@ -471,6 +471,7 @@ namespace uwvm::vm::interpreter
 
                     // set "if" branch
                     f.op->ext.branch = __builtin_addressof(op_ebr);
+                    op_ebr.ext.branch = f.op;
 
                     ++curr;
                     break;
@@ -787,11 +788,17 @@ namespace uwvm::vm::interpreter
                             }
                     }
 
+                    ++table_size;
+
                     curr = reinterpret_cast<::std::byte const*>(next);
 
                     auto const gfsz{details::ga_flow.size()};
 
-                    for(::std::size_t i{}; i <= table_size; ++i)
+                    ::fast_io::vector<operator_t const*> vo{};
+
+                    vo.reserve(table_size);
+
+                    for(::std::size_t i{}; i < table_size; ++i)
                     {
                         ::std::size_t index{};
                         auto const [next, err]{::fast_io::parse_by_scan(reinterpret_cast<char8_t_const_may_alias_ptr>(curr),
@@ -858,10 +865,20 @@ namespace uwvm::vm::interpreter
                             ::fast_io::fast_terminate();
                         }
 
-                        // vector push_back
+                        vo.push_back_unchecked(details::ga_flow.container.index_unchecked(gfsz - index - 1).op->ext.end);
 
                         curr = reinterpret_cast<::std::byte const*>(next);
                     }
+
+                    auto const& vec{::uwvm::vm::interpreter::stroage.ext.emplace_back(::std::move(vo))};
+
+                    using operator_t_const_may_alias_ptr
+#if __has_cpp_attribute(__gnu__::__may_alias__)
+                        [[__gnu__::__may_alias__]]
+#endif
+                        = operator_t const*;
+
+                    op.ext.branch = reinterpret_cast<operator_t_const_may_alias_ptr>(__builtin_addressof(vec));
 
                     temp.operators.emplace_back(op);
 

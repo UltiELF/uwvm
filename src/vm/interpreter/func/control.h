@@ -202,6 +202,73 @@ namespace uwvm::vm::interpreter::func
     inline void
         br_table(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
     {
-        ::uwvm::unfinished();
+        if(sm.stack.empty()) [[unlikely]]
+        {
+            ::fast_io::io::perr(::uwvm::u8err,
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"uwvm: "
+                                u8"\033[31m"
+                                u8"[fatal] "
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"(offset=",
+                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
+                                u8") "
+                                u8"The data stack is empty."
+                                u8"\n"
+                                u8"\033[0m"
+                                u8"Terminate.\n\n");
+            backtrace();
+            ::fast_io::fast_terminate();
+        }
+
+        auto st{sm.stack.pop_element_unchecked()};
+
+        using vec_op_const_p_const_may_alias_ptr
+#if __has_cpp_attribute(__gnu__::__may_alias__)
+            [[__gnu__::__may_alias__]]
+#endif
+            = ::fast_io::vector<operator_t const*> const*;
+
+        auto const& vec{*reinterpret_cast<vec_op_const_p_const_may_alias_ptr>(sm.curr_op->ext.branch)};
+        if(vec.size() <= st.i32) [[unlikely]]
+        {
+            ::fast_io::io::perr(::uwvm::u8err,
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"uwvm: "
+                                u8"\033[31m"
+                                u8"[fatal] "
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"(offset=",
+                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
+                                u8") "
+                                u8"br_table size <= index."
+                                u8"\n"
+                                u8"\033[0m"
+                                u8"Terminate.\n\n");
+            backtrace();
+            ::fast_io::fast_terminate();
+        }
+
+        sm.curr_op = vec.index_unchecked(st.i32)->ext.end + 1;
     }
 }  // namespace uwvm::vm::interpreter::func
