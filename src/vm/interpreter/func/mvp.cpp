@@ -28,6 +28,7 @@ void ::uwvm::vm::interpreter::func::call(::std::byte const* curr, ::uwvm::vm::in
         // to do
         ::uwvm::unfinished();
     }
+    ++sm.curr_op;
 }
 
 #if __has_cpp_attribute(__gnu__::__hot__)
@@ -153,4 +154,5 @@ void ::uwvm::vm::interpreter::func::call_indirect(::std::byte const* curr, ::uwv
         ::uwvm::backtrace();
         ::fast_io::fast_terminate();
     }
+    ++sm.curr_op;
 }

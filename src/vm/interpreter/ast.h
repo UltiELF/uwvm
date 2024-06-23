@@ -3,6 +3,7 @@
 #include <fast_io_dsal/deque.h>
 #include <fast_io_dsal/stack.h>
 #include "../../wasm/module.h"
+#include "../../run/wasm_file.h"
 
 namespace uwvm::vm::interpreter
 {

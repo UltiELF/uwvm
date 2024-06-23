@@ -373,4 +373,17 @@ namespace uwvm::vm::interpreter::func
         ++sm.curr_op;
     }
 
+#if __has_cpp_attribute(__gnu__::__hot__)
+    [[__gnu__::__hot__]]
+#endif
+    inline void
+        local_get(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
+    {
+        auto const index{reinterpret_cast<::std::size_t>(sm.curr_op->ext.branch)};
+        auto& local_storage{*sm.ls_p};
+
+        sm.stack.push(local_storage.locals[index]);
+
+        ++sm.curr_op;
+    }
 }  // namespace uwvm::vm::interpreter::func
