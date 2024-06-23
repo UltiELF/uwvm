@@ -55,8 +55,18 @@ namespace uwvm::vm::interpreter
 
         ::uwvm::vm::interpreter::ast temp{};
 
+        // func type
         temp.ft = lft;
 
+        // func body
+        temp.fb = __builtin_addressof(fb);
+
+        // locals
+        ::std::size_t all_local_count{};
+        for(auto const& i: fb.locals) { all_local_count += i.count; }
+        temp.local_size = all_local_count;
+
+        // ast
         for(; curr < end;)
         {
             ::uwvm::wasm::op_basic ob{};
@@ -992,7 +1002,7 @@ namespace uwvm::vm::interpreter
                                 ::fast_io::fast_terminate();
                             }
                     }
-                    
+
                     if(index >= wasmmod.typesec.type_count) [[unlikely]]
                     {
                         ::fast_io::io::perr(::uwvm::u8err,
@@ -1034,7 +1044,7 @@ namespace uwvm::vm::interpreter
                     ::std::uint_fast8_t reserved{};
                     ::fast_io::freestanding::my_memcpy(__builtin_addressof(reserved), curr, sizeof(::std::uint_fast8_t));
 
-                    if(reserved == 0) 
+                    if(reserved == 0)
                     {
                         // do nothing
                     }

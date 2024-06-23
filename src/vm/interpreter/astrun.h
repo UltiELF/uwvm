@@ -91,12 +91,33 @@ namespace uwvm::vm::interpreter
             auto const last_stack_top{s.stack_top};
             s.stack_top = s.stack.size() - func_type_para_size;
 
+            // local
+            auto const last_local_p{s.ls_p};
+            auto& new_local{s.ls.get_container().emplace_back(a.local_size)};
+#if 1
+            auto local_curr{new_local.locals};
+            for(auto const& i: a.fb->locals)
+            {
+                auto const it{i.type};
+                for(::std::size_t j{}; j < i.count; ++j)
+                {
+                    local_curr->vt = it;
+                    ++local_curr;
+                }
+            }
+#endif
+            s.ls_p = __builtin_addressof(new_local);
+
             // run
             for(s.curr_op = begin_op; s.curr_op != end_op;)
             {
                 if(s.curr_op->int_func) [[likely]] { s.curr_op->int_func(s.curr_op->code_begin, s); }
                 else { ++s.curr_op; }
             }
+
+            // reset local point
+            s.ls.get_container().pop_back_unchecked();
+            s.ls_p = last_local_p;
 
             // check stack
             if(s.stack.size() - func_type_result_size < s.stack_top) [[unlikely]]
@@ -164,6 +185,7 @@ namespace uwvm::vm::interpreter
                 --curr_st;
             }
 
+            // reset stack top
             s.stack_top = last_stack_top;
         }
     }

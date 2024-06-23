@@ -41,9 +41,76 @@ namespace uwvm::vm::interpreter
 
     struct operator_t;
 
+    struct local_storage
+    {
+        using Alloc = ::fast_io::native_typed_thread_local_allocator<stack_t>;
+        stack_t* locals{};
+        ::std::size_t local_size{};
+
+        constexpr local_storage() noexcept = default;
+
+        constexpr local_storage(::std::size_t sz) noexcept : local_size{sz} { locals = Alloc::allocate(sz); }
+
+        constexpr void init(::std::size_t sz) noexcept
+        {
+            if(locals == nullptr)
+            {
+                local_size = sz;
+                locals = Alloc::allocate(sz);
+            }
+        }
+
+        constexpr local_storage(local_storage const& other) noexcept
+        {
+            local_size = other.local_size;
+            locals = Alloc::allocate(local_size);
+            ::fast_io::freestanding::non_overlapped_copy_n(other.locals, local_size, locals);
+        }
+
+        constexpr local_storage& operator= (local_storage const& other) noexcept
+        {
+            clean();
+            local_size = other.local_size;
+            locals = Alloc::allocate(local_size);
+            ::fast_io::freestanding::non_overlapped_copy_n(other.locals, local_size, locals);
+            return *this;
+        }
+
+        constexpr local_storage(local_storage&& other) noexcept
+        {
+            local_size = other.local_size;
+            locals = other.locals;
+            other.local_size = 0;
+            other.locals = nullptr;
+        }
+
+        constexpr local_storage& operator= (local_storage&& other) noexcept
+        {
+            clean();
+            local_size = other.local_size;
+            locals = other.locals;
+            other.local_size = 0;
+            other.locals = nullptr;
+            return *this;
+        }
+
+        constexpr void clean() noexcept
+        {
+            if(locals) [[likely]]
+            {
+                Alloc::deallocate_n(locals, local_size);
+                local_size = 0;
+                locals = nullptr;
+            }
+        }
+
+        constexpr ~local_storage() { clean(); }
+    };
+
     struct stack_machine
     {
         ::fast_io::tlc::stack<stack_t, ::fast_io::tlc::vector<stack_t>> stack{};
+        ::fast_io::tlc::stack<local_storage> ls{};
 #if 0
         ::fast_io::tlc::stack<flow_t, ::fast_io::tlc::vector<flow_t>> flow{};
 #endif
@@ -51,13 +118,15 @@ namespace uwvm::vm::interpreter
         operator_t const* curr_op{};
         operator_t const* end_op{};
 
-        ::std::size_t stack_top{}; // Prevent stack expansion
+        ::std::size_t stack_top{};  // Prevent stack expansion
+        local_storage* ls_p{};
 
         inline static ::std::size_t default_int_stack_size{static_cast<::std::size_t>(1) * 1024 * 1024};
 
         constexpr stack_machine() noexcept
         {
             stack.reserve(default_int_stack_size);
+            stack.reserve(::uwvm::global_wasm_module.functionsec.function_count);
 #if 0
             flow.reserve(static_cast<::std::size_t>(2) * 1024);
 #endif
@@ -83,6 +152,8 @@ namespace uwvm::vm::interpreter
     {
         ::fast_io::deque<operator_t> operators{};
         ::uwvm::wasm::function_type const* ft{};
+        ::uwvm::wasm::func_body const* fb{};
+        ::std::size_t local_size{};
     };
 
 }  // namespace uwvm::vm::interpreter
