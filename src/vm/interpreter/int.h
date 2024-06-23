@@ -9,6 +9,8 @@
 
 #include "ast.h"
 #include "aststorge.h"
+#include "global.h"
+
 #include "astgen.h"
 #include "astrun.h"
 
@@ -51,6 +53,85 @@ namespace uwvm::vm::interpreter
         auto const local_func_count{wasmmod.functionsec.function_count};
         auto const func_count{import_function_count + local_func_count};
 
+        auto const import_global_count{wasmmod.importsec.global_types.size()};
+        auto const local_global_count{wasmmod.globalsec.global_count};
+        auto const global_count{import_global_count + local_global_count};
+
+        // init global
+        ::uwvm::vm::interpreter::globals.init(global_count);
+
+        auto curr_global{::uwvm::vm::interpreter::globals.globals};
+
+        for(auto const i: wasmmod.importsec.global_types)
+        {
+            curr_global->gt = i->extern_type.global;
+            ++curr_global;
+        }
+
+        for(auto const& i: wasmmod.globalsec.types)
+        {
+            curr_global->gt = i.type;
+
+            switch(curr_global->gt.type)
+            {
+                case ::uwvm::wasm::value_type::externref: [[fallthrough]];
+                case ::uwvm::wasm::value_type::funcref:
+                {
+                    curr_global->gt.type = ::uwvm::wasm::value_type::i32;
+                    break;
+                }
+                default: break;
+            }
+
+            // init
+            switch(i.initializer.type_opcode.op)
+            {
+                case ::uwvm::wasm::op_basic::global_get:
+                {
+                    curr_global->value = ::uwvm::vm::interpreter::globals.globals[i.initializer.ref].value;
+                    break;
+                }
+                case ::uwvm::wasm::op_basic::i32_const:
+                {
+                    curr_global->value.i32 = i.initializer.i32;
+                    break;
+                }
+                case ::uwvm::wasm::op_basic::i64_const:
+                {
+                    curr_global->value.i64 = i.initializer.i64;
+                    break;
+                }
+                case ::uwvm::wasm::op_basic::f32_const:
+                {
+                    curr_global->value.f32 = i.initializer.f32;
+                    break;
+                }
+                case ::uwvm::wasm::op_basic::f64_const:
+                {
+                    curr_global->value.f64 = i.initializer.f64;
+                    break;
+                }
+                case ::uwvm::wasm::op_basic::ref_null:
+                {
+                    curr_global->value.i32 = static_cast<::uwvm::wasm::wasm_i32>(i.initializer.null_reftype);
+                    break;
+                }
+                case ::uwvm::wasm::op_basic::ref_func:
+                {
+                    curr_global->value.i32 = static_cast<::uwvm::wasm::wasm_i32>(i.initializer.ref);
+                    break;
+                }
+                case ::uwvm::wasm::op_basic::simd:
+                {
+                    curr_global->value.v128 = i.initializer.v128;
+                    break;
+                }
+                default: ::fast_io::unreachable();
+            }
+            ++curr_global;
+        }
+
+        // init ast
         ::uwvm::vm::interpreter::stroage.asts = ::fast_io::vector<::uwvm::vm::interpreter::ast>(local_func_count);
 
         if(::uwvm::vm::start_func >= import_function_count)

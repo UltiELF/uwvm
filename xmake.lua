@@ -527,6 +527,8 @@ if not (is_plat("windows") or is_plat("msdosdjgpp"))then
 		set_kind("static")
 		defopt()
 
+		add_defines("_LIBUNWIND_IS_NATIVE_ONLY")
+
 		add_includedirs("third-parties/libunwind/include/")
 
 		add_files("third-parties/libunwind/src/**.cpp")

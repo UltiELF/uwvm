@@ -111,7 +111,7 @@ namespace uwvm::vm::interpreter
     struct stack_machine
     {
         ::fast_io::tlc::stack<stack_t, ::fast_io::tlc::vector<stack_t>> stack{};
-        ::fast_io::tlc::stack<local_storage> ls{};
+        ::fast_io::tlc::stack<stack_t, ::fast_io::tlc::vector<stack_t>> local_storages{};
 #if 0
         ::fast_io::tlc::stack<flow_t, ::fast_io::tlc::vector<flow_t>> flow{};
 #endif
@@ -120,14 +120,14 @@ namespace uwvm::vm::interpreter
         operator_t const* end_op{};
 
         ::std::size_t stack_top{};  // Prevent stack expansion
-        local_storage* ls_p{};
+        ::std::size_t local_top{};
 
-        inline static ::std::size_t default_int_stack_size{static_cast<::std::size_t>(1) * 1024 * 1024};
+        inline static ::std::size_t default_int_stack_size{static_cast<::std::size_t>(8) * 1024 * 1024};
 
         constexpr stack_machine() noexcept
         {
             stack.reserve(default_int_stack_size);
-            stack.reserve(::uwvm::global_wasm_module.functionsec.function_count);
+            local_storages.reserve(default_int_stack_size);
 #if 0
             flow.reserve(static_cast<::std::size_t>(2) * 1024);
 #endif
@@ -151,7 +151,7 @@ namespace uwvm::vm::interpreter
 
     struct ast
     {
-        ::fast_io::deque<operator_t> operators{};
+        ::fast_io::vector<operator_t> operators{};
         ::uwvm::wasm::function_type const* ft{};
         ::uwvm::wasm::func_body const* fb{};
         ::std::size_t local_size{};

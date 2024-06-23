@@ -4,6 +4,7 @@
 #include <back_trace.h>
 
 #include "../ast.h"
+#include "../global.h"
 #include "../../../run/wasm_file.h"
 
 namespace uwvm::vm::interpreter::func
@@ -380,9 +381,9 @@ namespace uwvm::vm::interpreter::func
         local_get(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
     {
         auto const index{reinterpret_cast<::std::size_t>(sm.curr_op->ext.branch)};
-        auto const& local_storage{*sm.ls_p};
+        auto const& local{sm.local_storages.get_container().index_unchecked(sm.local_top + index)};
 
-        sm.stack.push(local_storage.locals[index]);
+        sm.stack.push(local);
 
         ++sm.curr_op;
     }
@@ -394,8 +395,7 @@ namespace uwvm::vm::interpreter::func
         local_set(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
     {
         auto const index{reinterpret_cast<::std::size_t>(sm.curr_op->ext.branch)};
-        auto const& local_storage{*sm.ls_p};
-        auto& local{local_storage.locals[index]};
+        auto& local{sm.local_storages.get_container().index_unchecked(sm.local_top + index)};
         auto const local_type{local.vt};
 
         if(sm.stack.size() < sm.stack_top) [[unlikely]]
@@ -469,8 +469,7 @@ namespace uwvm::vm::interpreter::func
         local_tee(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
     {
         auto const index{reinterpret_cast<::std::size_t>(sm.curr_op->ext.branch)};
-        auto const& local_storage{*sm.ls_p};
-        auto& local{local_storage.locals[index]};
+        auto& local{sm.local_storages.get_container().index_unchecked(sm.local_top + index)};
         auto const local_type{local.vt};
 
         if(sm.stack.size() < sm.stack_top) [[unlikely]]
@@ -536,4 +535,32 @@ namespace uwvm::vm::interpreter::func
         local = st;
         ++sm.curr_op;
     }
+
+#if __has_cpp_attribute(__gnu__::__hot__)
+    [[__gnu__::__hot__]]
+#endif
+    inline void
+        global_get(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
+    {
+        auto const& wasmmod{::uwvm::global_wasm_module};
+
+        using int_global_type_const_may_alias_ptr
+#if __has_cpp_attribute(__gnu__::__may_alias__)
+            [[__gnu__::__may_alias__]]
+#endif
+            = ::uwvm::vm::interpreter::int_global_type const*;
+
+        auto const& igt{*reinterpret_cast<int_global_type_const_may_alias_ptr>(sm.curr_op->ext.branch)};
+
+        struct temp_t
+        {
+            ::uwvm::vm::interpreter::int_global_type::value_t value{};
+            ::uwvm::wasm::value_type vt{};
+        };
+
+        sm.stack.push(::std::bit_cast<::uwvm::vm::interpreter::stack_t>(temp_t{.value{igt.value}, .vt{igt.gt.type}}));
+
+        ++sm.curr_op;
+    }
+
 }  // namespace uwvm::vm::interpreter::func

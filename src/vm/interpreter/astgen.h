@@ -4,6 +4,7 @@
 #include <unfinished.h>
 #include "ast.h"
 #include "aststorge.h"
+#include "global.h"
 #include "func/func.h"
 
 #include "../../run/features.h"
@@ -49,6 +50,10 @@ namespace uwvm::vm::interpreter
         auto const import_function_count{wasmmod.importsec.func_types.size()};
         auto const local_func_count{wasmmod.functionsec.function_count};
         auto const func_count{import_function_count + local_func_count};
+        
+        auto const import_global_count{wasmmod.importsec.global_types.size()};
+        auto const local_global_count{wasmmod.globalsec.global_count};
+        auto const global_count{import_global_count + local_global_count};
 
         auto curr{fb.begin};
         auto const end{fb.end};
@@ -67,6 +72,8 @@ namespace uwvm::vm::interpreter
         temp.local_size = all_local_count;
 
         // ast
+        temp.operators.reserve(static_cast<::std::size_t>(fb.end - fb.begin));
+
         for(; curr < end;)
         {
             ::uwvm::wasm::op_basic ob{};
@@ -186,7 +193,7 @@ namespace uwvm::vm::interpreter
                             }
                     }
 
-                    auto& op_ebr{temp.operators.emplace_back(op)};
+                    auto& op_ebr{temp.operators.emplace_back_unchecked(op)};
 
                     details::ga_flow.push({op.code_begin, __builtin_addressof(op_ebr), ::uwvm::vm::interpreter::flow_control_t::block});
 
@@ -300,7 +307,7 @@ namespace uwvm::vm::interpreter
                                 ::fast_io::fast_terminate();
                             }
                     }
-                    auto& op_ebr{temp.operators.emplace_back(op)};
+                    auto& op_ebr{temp.operators.emplace_back_unchecked(op)};
                     details::ga_flow.push({op.code_begin, __builtin_addressof(op_ebr), ::uwvm::vm::interpreter::flow_control_t::loop});
 
                     ++curr;
@@ -416,7 +423,7 @@ namespace uwvm::vm::interpreter
                             }
                     }
 
-                    auto& op_ebr{temp.operators.emplace_back(op)};
+                    auto& op_ebr{temp.operators.emplace_back_unchecked(op)};
                     details::ga_flow.push({op.code_begin, __builtin_addressof(op_ebr), ::uwvm::vm::interpreter::flow_control_t::if_});
 
                     ++curr;
@@ -483,7 +490,7 @@ namespace uwvm::vm::interpreter
 
                     f.flow_e = ::uwvm::vm::interpreter::flow_control_t::else_;
 
-                    auto& op_ebr{temp.operators.emplace_back(op)};
+                    auto& op_ebr{temp.operators.emplace_back_unchecked(op)};
 
                     // set "if" branch
                     f.op->ext.branch = __builtin_addressof(op_ebr);
@@ -522,7 +529,7 @@ namespace uwvm::vm::interpreter
                         ::fast_io::fast_terminate();
                     }
 
-                    auto& op_ebr{temp.operators.emplace_back(op)};
+                    auto& op_ebr{temp.operators.emplace_back_unchecked(op)};
 
                     auto f{details::ga_flow.pop_element_unchecked()};
                     switch(f.flow_e)
@@ -595,7 +602,7 @@ namespace uwvm::vm::interpreter
                 case ::uwvm::wasm::op_basic::unreachable:
                 {
                     op.int_func = __builtin_addressof(::uwvm::vm::interpreter::func::unreachable);
-                    temp.operators.emplace_back(op);
+                    temp.operators.emplace_back_unchecked(op);
                     ++curr;
                     break;
                 }
@@ -678,7 +685,7 @@ namespace uwvm::vm::interpreter
 
                     op.ext.end = details::ga_flow.get_container().index_unchecked(gfsz - index).op->ext.end;
 
-                    temp.operators.emplace_back(op);
+                    temp.operators.emplace_back_unchecked(op);
 
                     break;
                 }
@@ -761,7 +768,7 @@ namespace uwvm::vm::interpreter
 
                     op.ext.end = details::ga_flow.get_container().index_unchecked(gfsz - index).op->ext.end;
 
-                    temp.operators.emplace_back(op);
+                    temp.operators.emplace_back_unchecked(op);
 
                     break;
                 }
@@ -902,14 +909,14 @@ namespace uwvm::vm::interpreter
 
                     op.ext.branch = reinterpret_cast<operator_t_const_may_alias_ptr>(__builtin_addressof(vec));
 
-                    temp.operators.emplace_back(op);
+                    temp.operators.emplace_back_unchecked(op);
 
                     break;
                 }
                 case ::uwvm::wasm::op_basic::return_:
                 {
                     op.int_func = __builtin_addressof(::uwvm::vm::interpreter::func::return_);
-                    temp.operators.emplace_back(op);
+                    temp.operators.emplace_back_unchecked(op);
                     ++curr;
                     break;
                 }
@@ -956,7 +963,7 @@ namespace uwvm::vm::interpreter
                     }
                     op.ext.branch = reinterpret_cast<operator_t const*>(index);
 
-                    temp.operators.emplace_back(op);
+                    temp.operators.emplace_back_unchecked(op);
                     curr = reinterpret_cast<::std::byte const*>(next);
 
                     break;
@@ -1083,7 +1090,7 @@ namespace uwvm::vm::interpreter
                         ::fast_io::fast_terminate();
                     }
 
-                    temp.operators.emplace_back(op);
+                    temp.operators.emplace_back_unchecked(op);
                     ++curr;
 
                     break;
@@ -1091,7 +1098,7 @@ namespace uwvm::vm::interpreter
                 case ::uwvm::wasm::op_basic::drop:
                 {
                     op.int_func = __builtin_addressof(::uwvm::vm::interpreter::func::drop);
-                    temp.operators.emplace_back(op);
+                    temp.operators.emplace_back_unchecked(op);
                     ++curr;
                     break;
                 }
@@ -1167,6 +1174,8 @@ namespace uwvm::vm::interpreter
                     }
 
                     op.ext.branch = reinterpret_cast<operator_t const*>(index);
+                    temp.operators.emplace_back_unchecked(op);
+
                     curr = reinterpret_cast<::std::byte const*>(next);
 
                     break;
@@ -1243,6 +1252,8 @@ namespace uwvm::vm::interpreter
                     }
 
                     op.ext.branch = reinterpret_cast<operator_t const*>(index);
+                    temp.operators.emplace_back_unchecked(op);
+
                     curr = reinterpret_cast<::std::byte const*>(next);
 
                     break;
@@ -1320,13 +1331,94 @@ namespace uwvm::vm::interpreter
                     }
 
                     op.ext.branch = reinterpret_cast<operator_t const*>(index);
+                    temp.operators.emplace_back_unchecked(op);
+
                     curr = reinterpret_cast<::std::byte const*>(next);
 
                     break;
                 }
                 case ::uwvm::wasm::op_basic::global_get:
                 {
-                    ::uwvm::unfinished();
+                    op.int_func = __builtin_addressof(::uwvm::vm::interpreter::func::global_get);
+
+                    ++curr;
+
+                    ::std::size_t index{};
+                    auto const [next, err]{::fast_io::parse_by_scan(reinterpret_cast<char8_t_const_may_alias_ptr>(curr),
+                                                                    reinterpret_cast<char8_t_const_may_alias_ptr>(end),
+                                                                    ::fast_io::mnp::leb128_get(index))};
+                    switch(err)
+                    {
+                        case ::fast_io::parse_code::ok: break;
+                        default:
+                            [[unlikely]]
+                            {
+                                ::fast_io::io::perr(::uwvm::u8err,
+                                    u8"\033[0m"
+#ifdef __MSDOS__
+                                    u8"\033[37m"
+#else
+                                    u8"\033[97m"
+#endif
+                                    u8"uwvm: "
+                                    u8"\033[31m"
+                                    u8"[fatal] "
+                                    u8"\033[0m"
+#ifdef __MSDOS__
+                                    u8"\033[37m"
+#else
+                                    u8"\033[97m"
+#endif
+                                    u8"(offset=",
+                                    ::fast_io::mnp::addrvw(curr - wasmmod.module_begin),
+                                    u8") "
+                                    u8"Invalid table length."
+                                    u8"\n"
+                                    u8"\033[0m"
+                                    u8"Terminate.\n\n");
+                                ::fast_io::fast_terminate();
+                            }
+                    }
+
+                    if(index >= global_count) [[unlikely]]
+                    {
+                        ::fast_io::io::perr(::uwvm::u8err,
+                                    u8"\033[0m"
+#ifdef __MSDOS__
+                                    u8"\033[37m"
+#else
+                                    u8"\033[97m"
+#endif
+                                    u8"uwvm: "
+                                    u8"\033[31m"
+                                    u8"[fatal] "
+                                    u8"\033[0m"
+#ifdef __MSDOS__
+                                    u8"\033[37m"
+#else
+                                    u8"\033[97m"
+#endif
+                                    u8"(offset=",
+                                    ::fast_io::mnp::addrvw(curr - wasmmod.module_begin),
+                                    u8") "
+                                    u8"Invalid global index."
+                                    u8"\n"
+                                    u8"\033[0m"
+                                    u8"Terminate.\n\n");
+                        ::fast_io::fast_terminate();
+                    }
+
+                    using operator_t_const_may_alias_ptr
+#if __has_cpp_attribute(__gnu__::__may_alias__)
+                        [[__gnu__::__may_alias__]]
+#endif
+                        = operator_t const*;
+
+                    op.ext.branch = reinterpret_cast<operator_t_const_may_alias_ptr>(::uwvm::vm::interpreter::globals.globals + index);
+                    temp.operators.emplace_back_unchecked(op);
+
+                    curr = reinterpret_cast<::std::byte const*>(next);
+
                     break;
                 }
                 case ::uwvm::wasm::op_basic::global_set:

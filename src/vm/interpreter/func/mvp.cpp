@@ -15,13 +15,13 @@ void ::uwvm::vm::interpreter::func::call(::std::byte const* curr, ::uwvm::vm::in
     if(all_func_index >= import_function_count)
     {
         auto const index{all_func_index - import_function_count};
-        auto& ast{::uwvm::vm::interpreter::stroage.asts.index_unchecked(index)};
-        if(ast.operators.empty()) [[unlikely]]
+        auto& ast_temp{::uwvm::vm::interpreter::stroage.asts.index_unchecked(index)};
+        if(ast_temp.operators.empty()) [[unlikely]]
         {
-            ast = ::uwvm::vm::interpreter::generate_ast(wasmmod.functionsec.types.index_unchecked(index).func_type,
-                                                        wasmmod.codesec.bodies.index_unchecked(index));
+            ast_temp = ::uwvm::vm::interpreter::generate_ast(wasmmod.functionsec.types.index_unchecked(index).func_type,
+                                                             wasmmod.codesec.bodies.index_unchecked(index));
         }
-        ::uwvm::vm::interpreter::run_ast(ast);
+        ::uwvm::vm::interpreter::run_ast(ast_temp);
     }
     else
     {
@@ -110,21 +110,21 @@ void ::uwvm::vm::interpreter::func::call_indirect(::std::byte const* curr, ::uwv
     auto const local_func_count{wasmmod.functionsec.function_count};
     auto const func_count{import_function_count + local_func_count};
 
-    if(auto const st_sz{static_cast<::std::size_t>(st.i32)}; st_sz < import_function_count) 
+    if(auto const st_sz{static_cast<::std::size_t>(st.i32)}; st_sz < import_function_count)
     {
         // to do
         ::uwvm::unfinished();
     }
-    else if(st_sz < func_count) 
+    else if(st_sz < func_count)
     {
         auto const index{st_sz - import_function_count};
-        auto& ast{::uwvm::vm::interpreter::stroage.asts.index_unchecked(index)};
-        if(ast.operators.empty()) [[unlikely]]
+        auto& ast_temp{::uwvm::vm::interpreter::stroage.asts.index_unchecked(index)};
+        if(ast_temp.operators.empty()) [[unlikely]]
         {
-            ast = ::uwvm::vm::interpreter::generate_ast(wasmmod.functionsec.types.index_unchecked(index).func_type,
-                                                        wasmmod.codesec.bodies.index_unchecked(index));
+            ast_temp = ::uwvm::vm::interpreter::generate_ast(wasmmod.functionsec.types.index_unchecked(index).func_type,
+                                                             wasmmod.codesec.bodies.index_unchecked(index));
         }
-        ::uwvm::vm::interpreter::run_ast(ast);
+        ::uwvm::vm::interpreter::run_ast(ast_temp);
     }
     else [[unlikely]]
     {
