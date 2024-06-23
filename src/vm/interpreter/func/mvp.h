@@ -380,10 +380,160 @@ namespace uwvm::vm::interpreter::func
         local_get(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
     {
         auto const index{reinterpret_cast<::std::size_t>(sm.curr_op->ext.branch)};
-        auto& local_storage{*sm.ls_p};
+        auto const& local_storage{*sm.ls_p};
 
         sm.stack.push(local_storage.locals[index]);
 
+        ++sm.curr_op;
+    }
+
+#if __has_cpp_attribute(__gnu__::__hot__)
+    [[__gnu__::__hot__]]
+#endif
+    inline void
+        local_set(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
+    {
+        auto const index{reinterpret_cast<::std::size_t>(sm.curr_op->ext.branch)};
+        auto const& local_storage{*sm.ls_p};
+        auto& local{local_storage.locals[index]};
+        auto const local_type{local.vt};
+
+        if(sm.stack.size() < sm.stack_top) [[unlikely]]
+        {
+            ::fast_io::io::perr(::uwvm::u8err,
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"uwvm: "
+                                u8"\033[31m"
+                                u8"[fatal] "
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"(offset=",
+                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
+                                u8") "
+                                u8"The data stack is empty."
+                                u8"\n"
+                                u8"\033[0m"
+                                u8"Terminate.\n\n");
+            ::uwvm::backtrace();
+            ::fast_io::fast_terminate();
+        }
+
+        auto st{sm.stack.pop_element_unchecked()};
+
+        if(st.vt != local_type) [[unlikely]]
+        {
+            ::fast_io::io::perr(::uwvm::u8err,
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"uwvm: "
+                                u8"\033[31m"
+                                u8"[fatal] "
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"(offset=",
+                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
+                                u8") "
+                                u8"The data type not match local type."
+                                u8"\n"
+                                u8"\033[0m"
+                                u8"Terminate.\n\n");
+            ::uwvm::backtrace();
+            ::fast_io::fast_terminate();
+        }
+
+        local = st;
+        ++sm.curr_op;
+    }
+
+#if __has_cpp_attribute(__gnu__::__hot__)
+    [[__gnu__::__hot__]]
+#endif
+    inline void
+        local_tee(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
+    {
+        auto const index{reinterpret_cast<::std::size_t>(sm.curr_op->ext.branch)};
+        auto const& local_storage{*sm.ls_p};
+        auto& local{local_storage.locals[index]};
+        auto const local_type{local.vt};
+
+        if(sm.stack.size() < sm.stack_top) [[unlikely]]
+        {
+            ::fast_io::io::perr(::uwvm::u8err,
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"uwvm: "
+                                u8"\033[31m"
+                                u8"[fatal] "
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"(offset=",
+                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
+                                u8") "
+                                u8"The data stack is empty."
+                                u8"\n"
+                                u8"\033[0m"
+                                u8"Terminate.\n\n");
+            ::uwvm::backtrace();
+            ::fast_io::fast_terminate();
+        }
+
+        auto const& st{sm.stack.top_unchecked()};
+
+        if(st.vt != local_type) [[unlikely]]
+        {
+            ::fast_io::io::perr(::uwvm::u8err,
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"uwvm: "
+                                u8"\033[31m"
+                                u8"[fatal] "
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"(offset=",
+                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
+                                u8") "
+                                u8"The data type not match local type."
+                                u8"\n"
+                                u8"\033[0m"
+                                u8"Terminate.\n\n");
+            ::uwvm::backtrace();
+            ::fast_io::fast_terminate();
+        }
+
+        local = st;
         ++sm.curr_op;
     }
 }  // namespace uwvm::vm::interpreter::func
