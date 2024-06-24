@@ -38,8 +38,7 @@
 
     sresp1->type = ::uwvm::cmdline::parameter_parsing_results_type::occupied_arg;
     if(auto s1s{sresp1->str}; s1s == "objdump") { ::uwvm::running_mode = ::uwvm::mode::objdump; }
-    if(auto s1s{sresp1->str}; s1s == "int") { ::uwvm::running_mode = ::uwvm::mode::interpreter; }
-
+    else if(s1s == "int") { ::uwvm::running_mode = ::uwvm::mode::interpreter; }
     else
     {
         ::fast_io::io::perr(::uwvm::u8err,
