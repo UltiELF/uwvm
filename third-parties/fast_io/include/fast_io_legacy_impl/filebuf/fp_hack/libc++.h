@@ -1,7 +1,7 @@
 ﻿#pragma once
 
-#ifdef __GNUC__
-#pragma GCC system_header
+#if defined(__GNUC__) || defined(__clang__)
+    #pragma GCC system_header
 #endif
 
 /*
