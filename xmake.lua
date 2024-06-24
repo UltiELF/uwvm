@@ -506,6 +506,7 @@ target("uwvm")
 		add_defines("FAST_IO_USE_MIMALLOC")
 		add_includedirs("third-parties/mimalloc/include/")
 		add_files("third-parties/mimalloc/src/static.c")
+		add_files("src/utils/new-delete/override.cpp")
 	end
 
 
