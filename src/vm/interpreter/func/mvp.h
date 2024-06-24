@@ -59,7 +59,7 @@ namespace uwvm::vm::interpreter::func
         sm.flow.emplace(curr, ::uwvm::vm::interpreter::flow_control_t::if_);
 #endif
 
-        if(sm.stack.size() < sm.stack_top) [[unlikely]]
+        if(sm.stack.size() <= sm.stack_top) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -142,7 +142,7 @@ namespace uwvm::vm::interpreter::func
     inline void
         br_if(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
     {
-        if(sm.stack.size() < sm.stack_top) [[unlikely]]
+        if(sm.stack.size() <= sm.stack_top) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -212,7 +212,7 @@ namespace uwvm::vm::interpreter::func
     inline void
         br_table(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
     {
-        if(sm.stack.size() < sm.stack_top) [[unlikely]]
+        if(sm.stack.size() <= sm.stack_top) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -340,7 +340,7 @@ namespace uwvm::vm::interpreter::func
         drop(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
     {
 
-        if(sm.stack.size() < sm.stack_top) [[unlikely]]
+        if(sm.stack.size() <= sm.stack_top) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -398,7 +398,7 @@ namespace uwvm::vm::interpreter::func
         auto& local{sm.local_storages.get_container().index_unchecked(sm.local_top + index)};
         auto const local_type{local.vt};
 
-        if(sm.stack.size() < sm.stack_top) [[unlikely]]
+        if(sm.stack.size() <= sm.stack_top) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -472,7 +472,7 @@ namespace uwvm::vm::interpreter::func
         auto& local{sm.local_storages.get_container().index_unchecked(sm.local_top + index)};
         auto const local_type{local.vt};
 
-        if(sm.stack.size() < sm.stack_top) [[unlikely]]
+        if(sm.stack.size() <= sm.stack_top) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -608,7 +608,7 @@ namespace uwvm::vm::interpreter::func
             ::fast_io::fast_terminate();
         }
 
-        if(sm.stack.size() < sm.stack_top) [[unlikely]]
+        if(sm.stack.size() <= sm.stack_top) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -680,4 +680,107 @@ namespace uwvm::vm::interpreter::func
         ++sm.curr_op;
     }
 
+#if __has_cpp_attribute(__gnu__::__hot__)
+    [[__gnu__::__hot__]]
+#endif
+    inline void
+        select(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
+    {
+        if(sm.stack.size() < sm.stack_top + 3) [[unlikely]]
+        {
+            ::fast_io::io::perr(::uwvm::u8err,
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"uwvm: "
+                                u8"\033[31m"
+                                u8"[fatal] "
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"(offset=",
+                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
+                                u8") "
+                                u8"The number of data in the data stack is less than 3."
+                                u8"\n"
+                                u8"\033[0m"
+                                u8"Terminate.\n\n");
+            ::uwvm::backtrace();
+            ::fast_io::fast_terminate();
+        }
+
+        auto const cond{sm.stack.pop_element_unchecked()};
+        auto const i2{sm.stack.pop_element_unchecked()};
+
+        if(cond.vt != ::uwvm::wasm::value_type::i32) [[unlikely]]
+        {
+            ::fast_io::io::perr(::uwvm::u8err,
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"uwvm: "
+                                u8"\033[31m"
+                                u8"[fatal] "
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"(offset=",
+                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
+                                u8") "
+                                u8"The data type is not i32."
+                                u8"\n"
+                                u8"\033[0m"
+                                u8"Terminate.\n\n");
+            ::uwvm::backtrace();
+            ::fast_io::fast_terminate();
+        }
+
+        if(!cond.i32) { sm.stack.get_container().back_unchecked() = i2; }
+
+        ++sm.curr_op;
+    }
+
+#if __has_cpp_attribute(__gnu__::__hot__)
+    [[__gnu__::__hot__]]
+#endif
+    inline void
+        i32_load(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
+    {
+    }
+
+    #if __has_cpp_attribute(__gnu__::__hot__)
+    [[__gnu__::__hot__]]
+#endif
+    inline void
+        i64_load(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
+    {
+    }
+
+    #if __has_cpp_attribute(__gnu__::__hot__)
+    [[__gnu__::__hot__]]
+#endif
+    inline void
+        f32_load(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
+    {
+    }
+
+    #if __has_cpp_attribute(__gnu__::__hot__)
+    [[__gnu__::__hot__]]
+#endif
+    inline void
+        f64_load(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
+    {
+    }
 }  // namespace uwvm::vm::interpreter::func

@@ -57,7 +57,8 @@ namespace uwvm::wasm
         ref_is_null = 0xd1,
 
         // Overloaded
-        select = 0x1c,
+        select = 0x1b,
+        select_t = 0x1c,
 
         // Scalar load/store instructions
         i32_load = 0x28,

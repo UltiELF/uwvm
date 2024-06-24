@@ -501,6 +501,14 @@ target("uwvm")
 		add_includedirs("third-parties/libunwind/include/")
 	end
 
+	-- mimalloc
+	if not (is_plat("msdosdjgpp")) then
+		add_defines("FAST_IO_USE_MIMALLOC")
+		add_includedirs("third-parties/mimalloc/include/")
+		add_files("third-parties/mimalloc/src/static.c")
+	end
+
+
 	-- fast_io
 	add_includedirs("third-parties/fast_io/include/")
 

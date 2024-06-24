@@ -11,5 +11,13 @@
 #pragma comment(linker, "/alternatename:__imp_?RtlGetCurrentPeb@nt@win32@fast_io@@YGPAUpeb@123@XZ=__imp__RtlGetCurrentPeb@0")
 #pragma comment(linker, "/alternatename:__imp_?RtlReAllocateHeap@nt@win32@fast_io@@YGPAXPAXI0I@Z=__imp__RtlReAllocateHeap@16")
 #pragma comment(linker, "/alternatename:__imp_?RtlSizeHeap@nt@win32@fast_io@@YGIPAXI0@Z=__imp__RtlSizeHeap@12")
+#pragma comment(linker, "/alternatename:__imp_?mi_malloc@mimalloc@fast_io@@YAPAXI@Z=_mi_malloc")
+#pragma comment(linker, "/alternatename:__imp_?mi_free@mimalloc@fast_io@@YAXPAX@Z=_mi_free")
+#pragma comment(linker, "/alternatename:__imp_?mi_calloc@mimalloc@fast_io@@YAPAXII@Z=_mi_calloc")
+#pragma comment(linker, "/alternatename:__imp_?mi_realloc@mimalloc@fast_io@@YAPAXPAXI@Z=_mi_realloc")
+#pragma comment(linker, "/alternatename:__imp_?mi_malloc_aligned@mimalloc@fast_io@@YAPAXII@Z=_mi_malloc_aligned")
+#pragma comment(linker, "/alternatename:__imp_?mi_ralloc_aligned@mimalloc@fast_io@@YAPAXPAXII@Z=_mi_ralloc_aligned")
+#pragma comment(linker, "/alternatename:__imp_?mi_calloc_aligned@mimalloc@fast_io@@YAPAXIII@Z=_mi_calloc_aligned")
+#pragma comment(linker, "/alternatename:__imp_?mi_free_aligned@mimalloc@fast_io@@YAPAXPAXI@Z=_mi_free_aligned")
 
 // clang-format on

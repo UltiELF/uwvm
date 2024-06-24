@@ -138,8 +138,20 @@ namespace uwvm::vm::interpreter
 
     struct ext_t
     {
-        operator_t const* end{};
-        operator_t const* branch{};
+        union
+        {
+            struct 
+            {
+                operator_t const* end;
+                operator_t const* branch;
+            };
+
+            ::uwvm::wasm::wasm_i32 i32;
+            ::uwvm::wasm::wasm_i64 i64;
+            ::uwvm::wasm::wasm_f32 f32;
+            ::uwvm::wasm::wasm_f64 f64;
+            ::uwvm::wasm::wasm_v128 v128;
+        };
     };
 
     struct operator_t

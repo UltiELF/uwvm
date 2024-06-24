@@ -21,7 +21,7 @@
 #include "linux_kernel.h"
 #endif
 
-#if (defined(FAST_IO_ENABLE_MIMALLOC) || defined(FAST_IO_USE_MIMALLOC)) && (!defined(_MSC_VER) || defined(__clang__))
+#if (defined(FAST_IO_ENABLE_MIMALLOC) || defined(FAST_IO_USE_MIMALLOC)) && (!defined(__MSDOS__))
 #include "mimalloc_driver.h"
 #endif
 
