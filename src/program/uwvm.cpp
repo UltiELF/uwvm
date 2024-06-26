@@ -7,7 +7,12 @@
 #include <version.h>
 #include <install-paths/storge_argv0.h>
 #include "../clpara/impl.h"
+
+#ifdef UWVM_TEST
+#include "../test/test.h"
+#else
 #include "../run/run.h"
+#endif
 
 int main(int argc, char** argv)
 {
@@ -21,7 +26,11 @@ int main(int argc, char** argv)
         default: ::fast_io::unreachable();
     }
 
+#ifdef UWVM_TEST
+    ::uwvm::test();
+#else
     ::uwvm::run();
+#endif
 
     return 0;
 }

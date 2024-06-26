@@ -1,10 +1,33 @@
+#include <bit>
 #include <fast_io.h>
 #include <io_device.h>
+#include <instrinsic.h>
 #include "../../../wasm/memlimit.h"
 #include "../../../run/wasm_file.h"
 
 namespace uwvm::vm::interpreter::memory
 {
+    namespace details
+    {
+#if __has_cpp_attribute(__gnu__::__const__)
+        [[__gnu__::__const__]]
+#endif
+        inline ::std::size_t
+            get_max_page_size_lg2() noexcept
+        {
+            ::fast_io::win32::system_info si{};
+            ::fast_io::win32::GetSystemInfo(__builtin_addressof(si));
+            return ::uwvm::instrinsic::floor_log2(si.dwPageSize);
+        }
+
+        inline ::std::size_t get_static_max_page_size_lg2() noexcept
+        {
+            static auto const mps{get_max_page_size_lg2()};
+            return mps;
+        }
+
+    }  // namespace details
+
     struct memory_t
     {
         ::std::byte* memory_begin{};
@@ -12,122 +35,94 @@ namespace uwvm::vm::interpreter::memory
 
         inline static ::fast_io::native_mutex mutex{};
         inline static constexpr ::std::size_t page_size{::uwvm::wasm::num_bytes_per_page};
+        inline static ::std::size_t const system_page_size{details::get_static_max_page_size_lg2()};
 
-        constexpr memory_t() noexcept = default;
+        memory_t() noexcept = default;
 
-        constexpr memory_t(::std::size_t sz) noexcept : memory_length{sz * page_size}
+        void init_by_memory_type(::uwvm::wasm::memory_type const& msec) noexcept
         {
-            memory_begin =
-                reinterpret_cast<::std::byte*>(::fast_io::win32::VirtualAlloc(nullptr, memory_length, 0x00002000 /*MEM_RESERVE*/, 0x04 /*PAGE_READWRITE*/));
-        }
+            mutex.lock();
+            auto const mpslg2{system_page_size};
 
-        constexpr void init(::std::size_t sz) noexcept
-        {
-            if(::uwvm::global_wasm_module.memorysec.types.empty()) [[unlikely]]
+            memory_length = msec.limits.min << mpslg2;
+
+            ::std::size_t memory_max_pages{};
+            if(::uwvm::features::enable_memory64)
             {
-                ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"No wasm memory section found."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
-                ::fast_io::fast_terminate();
-            }
+                memory_max_pages = ::std::min(msec.limits.min, ::uwvm::wasm::max_memory64_wasm_pages);
 
-            if(sz == 0) [[unlikely]] { sz = 1; }
-
-            if(memory_begin == nullptr) [[likely]]
-            {
-                mutex.lock();
-                memory_length = sz * page_size;
-                memory_begin =
-                    reinterpret_cast<::std::byte*>(::fast_io::win32::VirtualAlloc(nullptr, memory_length, 0x00002000 /*MEM_RESERVE*/, 0x04 /*PAGE_READWRITE*/));
-                mutex.unlock();
-            }
-        }
-
-        constexpr void init_by_global_wasm_module(::uwvm::wasm::wasm_module const& wasmmod) noexcept
-        {
-            if(!wasmmod.memorysec.types.empty()) [[likely]]
-            {
-                mutex.lock();
-                memory_length = wasmmod.memorysec.types.front_unchecked().limits.min * page_size;
-                memory_begin =
-                    reinterpret_cast<::std::byte*>(::fast_io::win32::VirtualAlloc(nullptr, memory_length, 0x00002000 /*MEM_RESERVE*/, 0x04 /*PAGE_READWRITE*/));
-                mutex.unlock();
+                memory_max_pages <<= ::uwvm::wasm::num_bytes_per_page_log2 - mpslg2;
             }
             else
             {
-                ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"No wasm memory section found."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
-                ::fast_io::fast_terminate();
+                if constexpr(sizeof(::std::size_t) == 8) { memory_max_pages = (static_cast<::std::uint_fast64_t>(4) * 1024 * 1024 * 1024) >> mpslg2; }
+                else { memory_max_pages = (static_cast<::std::uint_fast64_t>(8) * 1024 * 1024 * 1024) >> mpslg2; }
             }
+            constexpr ::std::size_t memory_num_guard_bytes{65536};
+            auto const num_guard_pages = memory_num_guard_bytes >> mpslg2;
+            auto total_pages{memory_max_pages + num_guard_pages};
+
+            auto const vamemory{
+                reinterpret_cast<::std::byte*>(::fast_io::win32::VirtualAlloc(nullptr, total_pages, 0x00002000 /*MEM_RESERVE*/, 0x01 /*PAGE_NOACCESS*/))};
+            if(vamemory == nullptr) [[unlikely]] { ::fast_io::fast_terminate(); }
+            memory_begin = vamemory;
+
+            auto const vamemory2{reinterpret_cast<::std::byte*>(
+                ::fast_io::win32::VirtualAlloc(memory_begin, msec.limits.min << mpslg2, 0x00001000 /*MEM_COMMIT*/, 0x04 /*PAGE_READWRITE*/))};
+            if(vamemory2 != memory_begin) [[unlikely]] { ::fast_io::fast_terminate(); }
+
+            mutex.unlock();
         }
 
-        void grow(::uwvm::wasm::wasm_module const& wasmmod, ::std::size_t sz) noexcept
+        void grow_by_memory_type(::uwvm::wasm::memory_type const& msec, ::std::size_t sz) noexcept
         {
             if(sz == 0) [[unlikely]] { return; }
 
             if(memory_begin == nullptr) [[unlikely]]
             {
-                mutex.lock();
-                memory_length = sz * page_size;
-                memory_begin =
-                    reinterpret_cast<::std::byte*>(::fast_io::win32::VirtualAlloc(nullptr, memory_length, 0x00002000 /*MEM_RESERVE*/, 0x04 /*PAGE_READWRITE*/));
-                mutex.unlock();
+                ::fast_io::io::perr(::uwvm::u8err,
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"uwvm: "
+                                u8"\033[31m"
+                                u8"[fatal] "
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"memory_begin == nullptr."
+                                u8"\n"
+                                u8"\033[0m"
+                                u8"Terminate.\n\n");
+                ::fast_io::fast_terminate();
             }
             else
             {
-                inline const auto max_generate = [&wasmmod]() noexcept -> ::std::size_t
+                auto const max_generate = [&msec]() noexcept -> ::std::size_t
                 {
                     // do sth
-                    return wasmmod.memorysec.types.front().limits.max;
+                    return msec.limits.max;
                 };
 
                 static auto const max{max_generate()};
 
-                if(sz > max || memory_length / page_size > max - sz) [[likely]]
+                auto const mpslg2{system_page_size};
+
+                if(sz <= max && memory_length >> system_page_size <= max - sz) [[likely]]
                 {
                     mutex.lock();
 
-                    [[maybe_unused]] auto const old_length{memory_length};
+                    memory_length += sz << mpslg2;
 
-                    memory_length += sz * page_size;
-
-                    memory_begin = reinterpret_cast<::std::byte*>(
-                        ::fast_io::win32::VirtualAlloc(memory_begin, sz * page_size, 0x00001000 /*MEM_COMMIT*/, 0x04 /*PAGE_READWRITE*/));
+                    auto const vamemory{reinterpret_cast<::std::byte*>(
+                        ::fast_io::win32::VirtualAlloc(memory_begin, sz << mpslg2, 0x00001000 /*MEM_COMMIT*/, 0x04 /*PAGE_READWRITE*/))};
+                    if(vamemory != memory_begin) [[unlikely]] { ::fast_io::fast_terminate(); }
 
                     mutex.unlock();
                 }
@@ -158,25 +153,29 @@ namespace uwvm::vm::interpreter::memory
             }
         }
 
-        constexpr memory_t(memory_t const& other) noexcept
+        memory_t(memory_t const& other) noexcept
         {
             memory_length = other.memory_length;
-            memory_begin =
-                reinterpret_cast<::std::byte*>(::fast_io::win32::VirtualAlloc(nullptr, memory_length, 0x00002000 /*MEM_RESERVE*/, 0x04 /*PAGE_READWRITE*/));
+            auto const vamemory{
+                reinterpret_cast<::std::byte*>(::fast_io::win32::VirtualAlloc(nullptr, memory_length, 0x00002000 /*MEM_RESERVE*/, 0x04 /*PAGE_READWRITE*/))};
+            if(vamemory == nullptr) [[unlikely]] { ::fast_io::fast_terminate(); }
+            memory_begin = vamemory;
             ::fast_io::freestanding::non_overlapped_copy_n(other.memory_begin, memory_length, memory_begin);
         }
 
-        constexpr memory_t& operator= (memory_t const& other) noexcept
+        memory_t& operator= (memory_t const& other) noexcept
         {
             clean();
             memory_length = other.memory_length;
-            memory_begin =
-                reinterpret_cast<::std::byte*>(::fast_io::win32::VirtualAlloc(nullptr, memory_length, 0x00002000 /*MEM_RESERVE*/, 0x04 /*PAGE_READWRITE*/));
+            auto const vamemory{
+                reinterpret_cast<::std::byte*>(::fast_io::win32::VirtualAlloc(nullptr, memory_length, 0x00002000 /*MEM_RESERVE*/, 0x04 /*PAGE_READWRITE*/))};
+            if(vamemory == nullptr) [[unlikely]] { ::fast_io::fast_terminate(); }
+            memory_begin = vamemory;
             ::fast_io::freestanding::non_overlapped_copy_n(other.memory_begin, memory_length, memory_begin);
             return *this;
         }
 
-        constexpr memory_t(memory_t&& other) noexcept
+        memory_t(memory_t&& other) noexcept
         {
             memory_length = other.memory_length;
             memory_begin = other.memory_begin;
@@ -184,7 +183,7 @@ namespace uwvm::vm::interpreter::memory
             other.memory_begin = nullptr;
         }
 
-        constexpr memory_t& operator= (memory_t&& other) noexcept
+        memory_t& operator= (memory_t&& other) noexcept
         {
             clean();
             memory_length = other.memory_length;
@@ -194,17 +193,17 @@ namespace uwvm::vm::interpreter::memory
             return *this;
         }
 
-        constexpr void clean() noexcept
+        void clean() noexcept
         {
             if(memory_begin) [[likely]]
             {
-                ::fast_io::win32::VirtualFree(memory_begin, 0, 0x00008000 /*MEM_RELEASE*/);
+                if(!::fast_io::win32::VirtualFree(memory_begin, 0, 0x00008000 /*MEM_RELEASE*/)) [[unlikely]] { ::fast_io::fast_terminate(); }
                 memory_length = 0;
                 memory_begin = nullptr;
             }
         }
 
-        constexpr ~memory_t() { clean(); }
+        ~memory_t() { clean(); }
     };
 
 }  // namespace uwvm::vm::interpreter::memory

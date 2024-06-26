@@ -388,3 +388,6 @@
 #pragma comment( \
 	linker,      \
 	"/alternatename:__imp_?ZwQueryObject@nt@win32@fast_io@@YAIPEAXW4object_information_class@123@0IPEAI@Z=__imp_ZwQueryObject")
+#pragma comment( \
+	linker,      \
+	"/alternatename:__imp_?GetSystemInfo@win32@fast_io@@YAXPEAUsystem_info@12@@Z=__imp_GetSystemInfo")

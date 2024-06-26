@@ -16,115 +16,61 @@ namespace uwvm::vm::interpreter::memory
 
         inline static ::fast_io::native_mutex mutex{};
         inline static constexpr ::std::size_t page_size{::uwvm::wasm::num_bytes_per_page};
+        inline static constexpr ::std::size_t system_page_size{page_size};
 
-        constexpr memory_t() noexcept = default;
-
-        constexpr memory_t(::std::size_t sz) noexcept : memory_length{sz * page_size}
+        void init_by_memory_type(::uwvm::wasm::memory_type const& msec) noexcept
         {
-            memory_begin = reinterpret_cast<::std::byte*>(Alloc::allocate(sz * page_size));
+            mutex.lock();
+            memory_length = msec.limits.min * system_page_size;
+            memory_begin = reinterpret_cast<::std::byte*>(Alloc::allocate(memory_length));
+            mutex.unlock();
         }
 
-        constexpr void init(::std::size_t sz) noexcept
-        {
-            if(::uwvm::global_wasm_module.memorysec.types.empty()) [[unlikely]]
-            {
-                ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"No wasm memory section found."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
-                ::fast_io::fast_terminate();
-            }
-
-            if(sz == 0) [[unlikely]] { sz = 1; }
-
-            if(memory_begin == nullptr) [[likely]]
-            {
-                mutex.lock();
-                memory_length = sz * page_size;
-                memory_begin = reinterpret_cast<::std::byte*>(Alloc::allocate(sz * page_size));
-                mutex.unlock();
-            }
-        }
-
-        constexpr void init_by_global_wasm_module(::uwvm::wasm::wasm_module const& wasmmod) noexcept
-        {
-            if(!wasmmod.memorysec.types.empty()) [[likely]]
-            {
-                mutex.lock();
-                memory_length = wasmmod.memorysec.types.front_unchecked().limits.min * page_size;
-                memory_begin = reinterpret_cast<::std::byte*>(Alloc::allocate(memory_length));
-                mutex.unlock();
-            }
-            else
-            {
-                ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"No wasm memory section found."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
-                ::fast_io::fast_terminate();
-            }
-        }
-
-        void grow(::uwvm::wasm::wasm_module const& wasmmod, ::std::size_t sz) noexcept
+        void grow_by_memory_type(::uwvm::wasm::memory_type const& msec, ::std::size_t sz) noexcept
         {
             if(sz == 0) [[unlikely]] { return; }
 
             if(memory_begin == nullptr) [[unlikely]]
             {
-                mutex.lock();
-                memory_length = sz * page_size;
-                memory_begin = reinterpret_cast<::std::byte*>(Alloc::allocate(sz * page_size));
-                mutex.unlock();
+                ::fast_io::io::perr(::uwvm::u8err,
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"uwvm: "
+                                u8"\033[31m"
+                                u8"[fatal] "
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"memory_begin == nullptr."
+                                u8"\n"
+                                u8"\033[0m"
+                                u8"Terminate.\n\n");
+                ::fast_io::fast_terminate();
             }
             else
             {
-                inline const auto max_generate = [&wasmmod]() noexcept -> ::std::size_t
+                auto const max_generate = [&msec]() noexcept -> ::std::size_t
                 {
                     // do sth
-                    return wasmmod.memorysec.types.front().limits.max;
+                    return msec.limits.max;
                 };
 
                 static auto const max{max_generate()};
 
-                if(sz > max || memory_length / page_size > max - sz) [[likely]]
+                if(sz <= max && memory_length / system_page_size <= max - sz) [[likely]]
                 {
                     mutex.lock();
 
                     [[maybe_unused]] auto const old_length{memory_length};
 
-                    memory_length += sz * page_size;
+                    memory_length += sz * system_page_size;
 
                     if constexpr(Alloc::has_reallocate_zero)
                     {
@@ -172,14 +118,14 @@ namespace uwvm::vm::interpreter::memory
             }
         }
 
-        constexpr memory_t(memory_t const& other) noexcept
+        memory_t(memory_t const& other) noexcept
         {
             memory_length = other.memory_length;
             memory_begin = reinterpret_cast<::std::byte*>(Alloc::allocate(memory_length));
             ::fast_io::freestanding::non_overlapped_copy_n(other.memory_begin, memory_length, memory_begin);
         }
 
-        constexpr memory_t& operator= (memory_t const& other) noexcept
+        memory_t& operator= (memory_t const& other) noexcept
         {
             clean();
             memory_length = other.memory_length;
@@ -188,7 +134,7 @@ namespace uwvm::vm::interpreter::memory
             return *this;
         }
 
-        constexpr memory_t(memory_t&& other) noexcept
+        memory_t(memory_t&& other) noexcept
         {
             memory_length = other.memory_length;
             memory_begin = other.memory_begin;
@@ -196,7 +142,7 @@ namespace uwvm::vm::interpreter::memory
             other.memory_begin = nullptr;
         }
 
-        constexpr memory_t& operator= (memory_t&& other) noexcept
+        memory_t& operator= (memory_t&& other) noexcept
         {
             clean();
             memory_length = other.memory_length;
@@ -206,7 +152,7 @@ namespace uwvm::vm::interpreter::memory
             return *this;
         }
 
-        constexpr void clean() noexcept
+        void clean() noexcept
         {
             if(memory_begin) [[likely]]
             {
@@ -216,7 +162,7 @@ namespace uwvm::vm::interpreter::memory
             }
         }
 
-        constexpr ~memory_t() { clean(); }
+        ~memory_t() { clean(); }
     };
 
 }  // namespace uwvm::vm::interpreter::memory

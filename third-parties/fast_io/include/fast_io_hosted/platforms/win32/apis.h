@@ -2939,4 +2939,30 @@ extern ::std::uint_least32_t
 #endif
 		;
 
+#if defined(_MSC_VER) && !defined(__clang__)
+__declspec(dllimport)
+#elif (__has_cpp_attribute(__gnu__::__dllimport__) && !defined(__WINE__))
+[[__gnu__::__dllimport__]]
+#endif
+#if (__has_cpp_attribute(__gnu__::__stdcall__) && !defined(__WINE__))
+[[__gnu__::__stdcall__]]
+#endif
+extern void
+#if (!__has_cpp_attribute(__gnu__::__stdcall__) && !defined(__WINE__)) && defined(_MSC_VER)
+	__stdcall
+#endif
+    GetSystemInfo(::fast_io::win32::system_info*) noexcept
+#if defined(__clang__) || defined(__GNUC__)
+#if SIZE_MAX <= UINT_LEAST32_MAX && (defined(__x86__) || defined(_M_IX86) || defined(__i386__))
+#if !defined(__clang__)
+	__asm__("GetSystemInfo@4")
+#else
+	__asm__("_GetSystemInfo@4")
+#endif
+#else
+	__asm__("GetSystemInfo")
+#endif
+#endif
+		;
+
 } // namespace fast_io::win32

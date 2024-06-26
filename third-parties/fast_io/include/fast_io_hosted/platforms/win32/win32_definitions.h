@@ -325,4 +325,29 @@ struct time_zone_information
 	::std::int_least32_t DaylightBias;
 };
 
+struct system_info
+{
+    union
+    {
+        ::std::uint_least32_t dwOemId;  // Obsolete field...do not use
+
+        struct
+        {
+            ::std::uint_least16_t wProcessorArchitecture;
+            ::std::uint_least16_t wReserved;
+        } DUMMYSTRUCTNAME;
+    } DUMMYUNIONNAME;
+
+    ::std::uint_least32_t dwPageSize;
+    void* lpMinimumApplicationAddress;
+    void* lpMaximumApplicationAddress;
+    ::std::size_t dwActiveProcessorMask;
+    ::std::uint_least32_t dwNumberOfProcessors;
+    ::std::uint_least32_t dwProcessorType;
+    ::std::uint_least32_t dwAllocationGranularity;
+    ::std::uint_least16_t wProcessorLevel;
+    ::std::uint_least16_t wProcessorRevision;
+};
+
+
 } // namespace fast_io::win32
