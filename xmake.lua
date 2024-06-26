@@ -350,6 +350,9 @@ function defopt()
 			add_ldflags("-static")
 		end
 
+		add_cxflags("-pthread",{force = true})
+		add_ldflags("-pthread",{force = true})
+
 	elseif is_plat("macosx", "iphoneos", "watchos") then -- unknown-apple-darwin
 		add_cxflags("-fno-rtti")
 		add_cxflags("-fno-unwind-tables")
@@ -374,6 +377,9 @@ function defopt()
 		if static_link then	
 			add_ldflags("-static")
 		end
+
+		add_cxflags("-pthread",{force = true})
+		add_ldflags("-pthread",{force = true})
 
 	elseif is_plat("wasm-wasi", "wasm-wasip1", "wasm-wasip2") then -- wasm-wasi is equivalent to wasm-wasip1
 		set_extension(".wasm")

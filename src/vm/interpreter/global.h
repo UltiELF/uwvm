@@ -34,7 +34,7 @@ namespace uwvm::vm::interpreter
 
         constexpr void init(::std::size_t sz) noexcept
         {
-            if(globals == nullptr)
+            if(globals == nullptr) [[likely]]
             {
                 global_size = sz;
                 globals = Alloc::allocate(sz);
