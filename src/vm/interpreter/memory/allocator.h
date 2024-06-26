@@ -62,9 +62,8 @@ namespace uwvm::vm::interpreter::memory
             }
         }
 
-        constexpr void init_by_global_wasm_module() noexcept
+        constexpr void init_by_global_wasm_module(::uwvm::wasm::wasm_module const& wasmmod) noexcept
         {
-            auto const& wasmmod{::uwvm::global_wasm_module};
             if(!wasmmod.memorysec.types.empty()) [[likely]]
             {
                 mutex.lock();
@@ -98,7 +97,7 @@ namespace uwvm::vm::interpreter::memory
             }
         }
 
-        void grow(::std::size_t sz) noexcept
+        void grow(::uwvm::wasm::wasm_module const& wasmmod, ::std::size_t sz) noexcept
         {
             if(sz == 0) [[unlikely]] { return; }
 
@@ -111,9 +110,8 @@ namespace uwvm::vm::interpreter::memory
             }
             else
             {
-                inline constexpr auto max_generate = []() noexcept -> ::std::size_t
+                inline const auto max_generate = [&wasmmod]() noexcept -> ::std::size_t
                 {
-                    auto const& wasmmod{::uwvm::global_wasm_module};
                     // do sth
                     return wasmmod.memorysec.types.front().limits.max;
                 };
@@ -124,16 +122,26 @@ namespace uwvm::vm::interpreter::memory
                 {
                     mutex.lock();
 
+                    [[maybe_unused]] auto const old_length{memory_length};
+
                     memory_length += sz * page_size;
 
                     if constexpr(Alloc::has_reallocate_zero)
                     {
                         memory_begin = reinterpret_cast<::std::byte*>(Alloc::reallocate_zero(memory_begin, memory_length));
                     }
+                    else if constexpr(Alloc::has_reallocate)
+                    {
+                        memory_begin = reinterpret_cast<::std::byte*>(Alloc::reallocate(memory_begin, memory_length));
+                        ::fast_io::freestanding::bytes_clear_n(memory_begin + old_length, memory_length - old_length);
+                    }
                     else
                     {
-                        Alloc::deallocate_n(memory_begin, memory_length);
-                        memory_begin = reinterpret_cast<::std::byte*>(Alloc::allocate_zero(memory_length));
+                        auto const new_mem{reinterpret_cast<::std::byte*>(Alloc::allocate(memory_length))};
+                        ::fast_io::freestanding::my_memcpy(new_mem, memory_begin, old_length);
+                        ::fast_io::freestanding::bytes_clear_n(new_mem + old_length, memory_length - old_length);
+                        Alloc::deallocate_n(memory_begin, old_length);
+                        memory_begin = new_mem;
                     }
                     mutex.unlock();
                 }
@@ -211,6 +219,20 @@ namespace uwvm::vm::interpreter::memory
         constexpr ~memory_t() { clean(); }
     };
 
-    inline memory_t global_memory{};
-
 }  // namespace uwvm::vm::interpreter::memory
+
+namespace fast_io::freestanding
+{
+    template <>
+    struct is_trivially_relocatable<::uwvm::vm::interpreter::memory::memory_t>
+    {
+        inline static constexpr bool value = true;
+    };
+
+    template <>
+    struct is_zero_default_constructible<::uwvm::vm::interpreter::memory::memory_t>
+    {
+        inline static constexpr bool value = true;
+    };
+
+}  // namespace fast_io::freestanding

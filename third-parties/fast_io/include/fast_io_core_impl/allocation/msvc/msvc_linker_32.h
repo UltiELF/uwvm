@@ -19,5 +19,9 @@
 #pragma comment(linker, "/alternatename:__imp_?mi_ralloc_aligned@mimalloc@fast_io@@YAPAXPAXII@Z=mi_ralloc_aligned")
 #pragma comment(linker, "/alternatename:__imp_?mi_calloc_aligned@mimalloc@fast_io@@YAPAXIII@Z=mi_calloc_aligned")
 #pragma comment(linker, "/alternatename:__imp_?mi_free_aligned@mimalloc@fast_io@@YAPAXPAXI@Z=mi_free_aligned")
+#pragma comment(linker, "/alternatename:__imp_?VirtualAlloc@win32@fast_io@@YAPAXPAXIII@Z=__imp_VirtualAlloc")
+#pragma comment(linker, "/alternatename:__imp_?VirtualProtect@win32@fast_io@@YAHPAXIIPAI@Z=__imp_VirtualProtect")
+#pragma comment(linker, "/alternatename:__imp_?VirtualFree@win32@fast_io@@YAHPAXII@Z=__imp_VirtualFree")
+#pragma comment(linker, "/alternatename:__imp_?VirtualQuery@win32@fast_io@@YAHPBXPAUmemory_basic_information@12@I@Z=__imp_VirtualQuery")
 
 // clang-format on
