@@ -13,6 +13,7 @@
 
 #include "astgen.h"
 #include "astrun.h"
+#include "memory/memory.h"
 
 namespace uwvm::vm::interpreter
 {
@@ -129,6 +130,13 @@ namespace uwvm::vm::interpreter
                 default: ::fast_io::unreachable();
             }
             ++curr_global;
+        }
+
+        // init memory
+        ::uwvm::vm::interpreter::memories.reserve(wasmmod.memorysec.memory_count);
+        for(auto& i: wasmmod.memorysec.types)
+        {
+            ::uwvm::vm::interpreter::memories.emplace_back_unchecked(i);
         }
 
         // init ast

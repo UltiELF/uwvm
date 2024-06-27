@@ -54,6 +54,8 @@ namespace uwvm::vm::interpreter::memory
 
         nt_family_memory_t() noexcept = default;
 
+        nt_family_memory_t(::uwvm::wasm::memory_type const& msec) noexcept { init_by_memory_type(msec); }
+
         void init_by_memory_type(::uwvm::wasm::memory_type const& msec) noexcept
         {
             mutex.lock();
