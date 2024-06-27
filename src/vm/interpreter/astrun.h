@@ -5,7 +5,7 @@
 
 namespace uwvm::vm::interpreter
 {
-    inline thread_local ::uwvm::vm::interpreter::stack_machine s{};
+    extern thread_local ::uwvm::vm::interpreter::stack_machine s;
 
     inline void run_ast(ast const& a) noexcept
     {
