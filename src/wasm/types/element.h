@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include <cstdint>
 #include <fast_io_dsal/vector.h>
 #include "value.h"

@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include "../../section/custom.h"
 #include "../../module.h"
 #include "../../../run/wasm_file.h"

@@ -1,4 +1,4 @@
-#include <bit>
+﻿#include <bit>
 #include <fast_io.h>
 #include <io_device.h>
 #include <instrinsic.h>

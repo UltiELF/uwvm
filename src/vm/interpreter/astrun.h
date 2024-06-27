@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include <back_trace.h>
 #include "ast.h"
 #include "aststorge.h"

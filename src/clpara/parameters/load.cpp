@@ -1,4 +1,4 @@
-#ifdef UWVM_TIMER
+﻿#ifdef UWVM_TIMER
     #include <fast_io_driver/timer.h>
 #endif
 #include "load.h"

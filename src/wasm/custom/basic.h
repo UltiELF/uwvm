@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include "../../run/features.h"
 
 namespace uwvm::wasm::custom

@@ -25,7 +25,7 @@ namespace uwvm::vm::interpreter
         inline thread_local ::fast_io::tlc::stack<d_flow_t, ::fast_io::tlc::vector<d_flow_t>> ga_flow{};
     }  // namespace details
 
-    // https://pengowray.github.io/wasm-ops/
+    // https://pengowray.github.io/wasm-ops/ 
 
     inline ::uwvm::vm::interpreter::ast generate_ast(::uwvm::wasm::function_type const* lft, ::uwvm::wasm::func_body const& fb) noexcept
     {

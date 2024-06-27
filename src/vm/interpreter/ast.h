@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include <fast_io.h>
 #include <fast_io_dsal/deque.h>
 #include <fast_io_dsal/stack.h>

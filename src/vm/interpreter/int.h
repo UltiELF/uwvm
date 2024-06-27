@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #ifdef UWVM_TIMER
     #include <fast_io_driver/timer.h>
 #endif

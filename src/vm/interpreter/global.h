@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include <fast_io.h>
 #include "ast.h"
 #include "../../wasm/types/global.h"
