@@ -20,7 +20,7 @@ namespace uwvm::wasm
     inline constexpr ::std::uint_least64_t num_bytes_per_large_page{static_cast<::std::uint_least64_t>(0x01) << 34};
     inline constexpr ::std::uint_least64_t num_bytes_per_large_page_log2{34};
 
-    inline constexpr ::std::uint_least64_t max_memory64_wasm_bytes{static_cast<::std::uint_least64_t>(0x01) << 48};  // 256TB
+    inline constexpr ::std::uint_least64_t max_memory64_wasm_bytes{static_cast<::std::uint_least64_t>(0x01) << 40};  // 1TB
     inline constexpr ::std::uint_least64_t max_memory64_wasm_pages{max_memory64_wasm_bytes >> num_bytes_per_page_log2};
     inline constexpr ::std::uint_least64_t max_memory64_wasm_mask{max_memory64_wasm_bytes - 1u};
 
