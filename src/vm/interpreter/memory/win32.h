@@ -173,7 +173,7 @@ namespace uwvm::vm::interpreter::memory
             }
 
             auto const vamemory{
-                reinterpret_cast<::std::byte*>(::fast_io::win32::VirtualAlloc(nullptr, memory_max_pages, 0x00002000 /*MEM_RESERVE*/, 0x04 /*PAGE_READWRITE*/))};
+                reinterpret_cast<::std::byte*>(::fast_io::win32::VirtualAlloc(nullptr, memory_max_pages, 0x00002000 /*MEM_RESERVE*/, 0x01 /*PAGE_NOACCESS*/))};
             if(vamemory == nullptr) [[unlikely]] { ::fast_io::fast_terminate(); }
             memory_begin = vamemory;
 
@@ -204,7 +204,7 @@ namespace uwvm::vm::interpreter::memory
             }
 
             auto const vamemory{
-                reinterpret_cast<::std::byte*>(::fast_io::win32::VirtualAlloc(nullptr, memory_max_pages, 0x00002000 /*MEM_RESERVE*/, 0x04 /*PAGE_READWRITE*/))};
+                reinterpret_cast<::std::byte*>(::fast_io::win32::VirtualAlloc(nullptr, memory_max_pages, 0x00002000 /*MEM_RESERVE*/, 0x01 /*PAGE_NOACCESS*/))};
             if(vamemory == nullptr) [[unlikely]] { ::fast_io::fast_terminate(); }
             memory_begin = vamemory;
 

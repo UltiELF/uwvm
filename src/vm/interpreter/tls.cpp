@@ -1,4 +1,5 @@
 // duplicate symbol: thread-local initialization routine
+// https://gcc.gnu.org/bugzilla/show_bug.cgi?id=115686
 
 #include "astgen.h"
 #include "astrun.h"
