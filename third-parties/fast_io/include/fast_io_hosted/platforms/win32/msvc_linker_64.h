@@ -400,3 +400,9 @@
 #pragma comment( \
 	linker,      \
 	"/alternatename:__imp_?ZwFreeVirtualMemory@nt@win32@fast_io@@YAIPEAXPEAPEAXPEA_KI@Z=__imp_ZwFreeVirtualMemory")
+
+#if defined(_DLL)
+    #pragma comment(linker, "/alternatename:__imp_?msvc__RTtypeid@msvc@fast_io@@YAPEAXPEAX@Z=__imp___RTtypeid")
+#else
+    #pragma comment(linker, "/alternatename:?msvc__RTtypeid@msvc@fast_io@@YAPEAXPEAX@Z=__RTtypeid")
+#endif

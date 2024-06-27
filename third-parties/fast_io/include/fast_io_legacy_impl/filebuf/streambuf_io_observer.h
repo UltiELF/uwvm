@@ -1,5 +1,6 @@
 ﻿#pragma once
 
+#include "rtti_hack/impl.h"
 #include "fp_hack/impl.h"
 
 namespace fast_io
@@ -62,6 +63,7 @@ public:
 #endif
 };
 
+
 template <typename T>
 inline constexpr bool operator==(basic_general_streambuf_io_observer<T> a,
 								 basic_general_streambuf_io_observer<T> b) noexcept
@@ -70,7 +72,6 @@ inline constexpr bool operator==(basic_general_streambuf_io_observer<T> a,
 }
 
 #if __cpp_lib_three_way_comparison >= 201907L
-
 template <typename T>
 inline constexpr auto operator<=>(basic_general_streambuf_io_observer<T> a,
 								  basic_general_streambuf_io_observer<T> b) noexcept

@@ -32,20 +32,20 @@ inline constexpr
 #endif
 	to_native_c_mode(open_mode m) noexcept
 {
+/*
+https://docs.microsoft.com/en-us/cpp/c-runtime-library/reference/fdopen-wfdopen?view=vs-2019
+From microsoft's document. _fdopen only supports
+
+"r"	Opens for reading. If the file does not exist or cannot be found, the fopen call fails.
+"w"	Opens an empty file for writing. If the given file exists, its contents are destroyed.
+"a"	Opens for writing at the end of the file (appending). Creates the file if it does not exist.
+"r+"	Opens for both reading and writing. The file must exist.
+"w+"	Opens an empty file for both reading and writing. If the file exists, its contents are destroyed.
+"a+"	Opens for reading and appending. Creates the file if it does not exist.
+
+"x" will throw EINVAL which does not satisfy POSIX, C11 and C++17 standard.
+*/
 #if (defined(_WIN32) && !defined(__WINE__) && !defined(__BIONIC__)) && !defined(__CYGWIN__)
-	/*
-	https://docs.microsoft.com/en-us/cpp/c-runtime-library/reference/fdopen-wfdopen?view=vs-2019
-	From microsoft's document. _fdopen only supports
-
-	"r"	Opens for reading. If the file does not exist or cannot be found, the fopen call fails.
-	"w"	Opens an empty file for writing. If the given file exists, its contents are destroyed.
-	"a"	Opens for writing at the end of the file (appending). Creates the file if it does not exist.
-	"r+"	Opens for both reading and writing. The file must exist.
-	"w+"	Opens an empty file for both reading and writing. If the file exists, its contents are destroyed.
-	"a+"	Opens for reading and appending. Creates the file if it does not exist.
-
-	"x" will throw EINVAL which does not satisfy POSIX, C11 and C++17 standard.
-	*/
 	using utype = typename ::std::underlying_type<open_mode>::type;
 #ifdef _WIN32_WINDOWS
 	switch (static_cast<utype>(native_c_supported(m)))
@@ -855,6 +855,8 @@ inline ::fast_io::intfpos_t io_stream_seek_bytes_define(basic_c_family_io_observ
 	return details::my_c_io_seek_impl<family>(cfhd.fp, offset, s);
 }
 
+#if __cpp_lib_three_way_comparison >= 201907L
+
 template <c_family family, ::std::integral ch_type>
 inline constexpr bool operator==(basic_c_family_io_observer<family, ch_type> a,
 								 basic_c_family_io_observer<family, ch_type> b) noexcept
@@ -862,7 +864,6 @@ inline constexpr bool operator==(basic_c_family_io_observer<family, ch_type> a,
 	return a.fp == b.fp;
 }
 
-#if __cpp_lib_three_way_comparison >= 201907L
 template <c_family family, ::std::integral ch_type>
 inline constexpr auto operator<=>(basic_c_family_io_observer<family, ch_type> a,
 								  basic_c_family_io_observer<family, ch_type> b) noexcept
@@ -1123,7 +1124,7 @@ struct is_zero_default_constructible<basic_c_family_file<fm, char_type>>
 #include "avrlibc.h"
 #include "macros_general.h"
 #else
-#if defined(__LLVM_LIBC__) || defined(__LLVM_LIBC_TYPES_FILE_H__)
+#if defined(__LLVM_LIBC_TYPES_FILE_H__)
 #include "llvm.h"
 #elif defined(__UCLIBC__)
 #if defined(__STDIO_BUFFERS)
