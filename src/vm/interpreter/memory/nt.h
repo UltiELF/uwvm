@@ -316,14 +316,14 @@ namespace uwvm::vm::interpreter::memory
 
 namespace fast_io::freestanding
 {
-    template <>
-    struct is_trivially_relocatable<::uwvm::vm::interpreter::memory::memory_t>
+    template <::fast_io::nt_family family>
+    struct is_trivially_relocatable<::uwvm::vm::interpreter::memory::nt_family_memory_t<family>>
     {
         inline static constexpr bool value = true;
     };
 
-    template <>
-    struct is_zero_default_constructible<::uwvm::vm::interpreter::memory::memory_t>
+    template <::fast_io::nt_family family>
+    struct is_zero_default_constructible<::uwvm::vm::interpreter::memory::nt_family_memory_t<family>>
     {
         inline static constexpr bool value = true;
     };
