@@ -400,3 +400,15 @@
 #pragma comment( \
 	linker,      \
 	"/alternatename:__imp_?GetSystemInfo@win32@fast_io@@YGXPAUsystem_info@12@@Z=__imp__GetSystemInfo@4")
+#pragma comment( \
+	linker,      \
+	"/alternatename:__imp_?NtQuerySystemInformation@nt@win32@fast_io@@YGIW4system_information_class@123@PAXIPAI@Z=__imp__NtQuerySystemInformation@16")
+#pragma comment( \
+	linker,      \
+	"/alternatename:__imp_?ZwQuerySystemInformation@nt@win32@fast_io@@YGIW4system_information_class@123@PAXIPAI@Z=__imp__ZwQuerySystemInformation@16")
+#pragma comment( \
+	linker,      \
+	"/alternatename:__imp_?NtFreeVirtualMemory@nt@win32@fast_io@@YGIPAXPAPAXPAII@Z=__imp__NtFreeVirtualMemory@16")
+#pragma comment( \
+	linker,      \
+	"/alternatename:__imp_?ZwFreeVirtualMemory@nt@win32@fast_io@@YGIPAXPAPAXPAII@Z=__imp__ZwFreeVirtualMemory@16")

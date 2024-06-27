@@ -373,3 +373,15 @@
 #pragma comment( \
 	linker,      \
 	"/alternatename:__imp_?GetSystemInfo@win32@fast_io@@YAXPAUsystem_info@12@@Z=__imp_GetSystemInfo")
+#pragma comment( \
+	linker,      \
+	"/alternatename:__imp_?NtQuerySystemInformation@nt@win32@fast_io@@YAIW4system_information_class@123@PAXIPAI@Z=__imp_NtQuerySystemInformation")
+#pragma comment( \
+	linker,      \
+	"/alternatename:__imp_?ZwQuerySystemInformation@nt@win32@fast_io@@YAIW4system_information_class@123@PAXIPAI@Z=__imp_ZwQuerySystemInformation")
+#pragma comment( \
+	linker,      \
+	"/alternatename:__imp_?NtFreeVirtualMemory@nt@win32@fast_io@@YAIPAXPAPAXPAII@Z=__imp_NtFreeVirtualMemory")
+#pragma comment( \
+	linker,      \
+	"/alternatename:__imp_?ZwFreeVirtualMemory@nt@win32@fast_io@@YAIPAXPAPAXPAII@Z=__imp_ZwFreeVirtualMemory")

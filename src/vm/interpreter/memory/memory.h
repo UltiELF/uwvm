@@ -1,7 +1,7 @@
 #pragma once
 
 #if defined(_WIN32) || defined(__CYGWIN__)
-    #if !defined(__CYGWIN__) && !defined(__WINE__) && !defined(__BIONIC__) && defined(_WIN32_WINDOWS) || true 
+    #if !defined(__CYGWIN__) && !defined(__WINE__) && !defined(__BIONIC__) && defined(_WIN32_WINDOWS)
         #include "win32.h"
     #else
         #include "nt.h"

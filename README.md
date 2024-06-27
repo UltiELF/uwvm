@@ -118,7 +118,7 @@ $ xmake f -m [release|releasedbg|debug] -p [windows|mingw|macosx|linux|iphoneos 
 ```bash 
 --min-win32-sys=[WINME|WIN98|WIN95]
 ```
-* Using the llvm toolchain
+* Using the llvm toolchain (This option must be added to some platforms that use gcc soft connection to clang, such as macos and android)
 ```bash 
 --use-llvm=y|n(default)
 ```
@@ -141,6 +141,10 @@ $ xmake f -m [release|releasedbg|debug] -p [windows|mingw|macosx|linux|iphoneos 
 * Record the time of each step
 ```bash 
 --timer=y|n(default)
+```
+* Use mimalloc as the default allocator
+```bash 
+--use-mimalloc=y|n(default)
 ```
 * Enable Sanitizer
 ```bash 

@@ -9,9 +9,9 @@
 #include "../clpara/impl.h"
 
 #ifdef UWVM_TEST
-#include "../test/test.h"
+    #include "../../test/test.h"
 #else
-#include "../run/run.h"
+    #include "../run/run.h"
 #endif
 
 int main(int argc, char** argv)
@@ -27,7 +27,7 @@ int main(int argc, char** argv)
     }
 
 #ifdef UWVM_TEST
-    ::uwvm::test();
+    ::uwvm::test::test();
 #else
     ::uwvm::run();
 #endif

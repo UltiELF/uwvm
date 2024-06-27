@@ -76,6 +76,18 @@ option("timer")
 	add_defines("UWVM_TIMER")
 option_end()
 
+option("use-mimalloc")
+	set_default(false)
+	set_showmenu(true)
+option_end()
+
+option("uwvm_test")
+	set_default(false)
+	set_showmenu(true)
+	add_defines("UWVM_TEST")
+option_end()
+
+
 function defopt()
 	set_languages("c11", "cxx23")
 
@@ -83,6 +95,7 @@ function defopt()
 		add_options("native")
 	-- end
 	add_options("timer")
+	add_options("uwvm_test")
 
 	set_exceptions("no-cxx")
 
@@ -508,13 +521,15 @@ target("uwvm")
 	end
 
 	-- mimalloc
-	if not (is_plat("msdosdjgpp")) then
-		add_defines("FAST_IO_USE_MIMALLOC")
-		add_includedirs("third-parties/mimalloc/include/")
-		add_files("third-parties/mimalloc/src/static.c")
-		add_files("src/utils/new-delete/override.cpp")
+	local use_mimalloc = get_config("use-mimalloc")
+	if use_mimalloc then	
+		if not (is_plat("msdosdjgpp")) then
+			add_defines("FAST_IO_USE_MIMALLOC")
+			add_includedirs("third-parties/mimalloc/include/")
+			add_files("third-parties/mimalloc/src/static.c")
+			add_files("src/utils/new-delete/override.cpp")
+		end
 	end
-
 
 	-- fast_io
 	add_includedirs("third-parties/fast_io/include/")

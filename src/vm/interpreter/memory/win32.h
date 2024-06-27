@@ -4,6 +4,7 @@
 #include <instrinsic.h>
 #include "../../../wasm/memlimit.h"
 #include "../../../run/wasm_file.h"
+#include "../../../run/features.h"
 
 namespace uwvm::vm::interpreter::memory
 {
@@ -55,8 +56,8 @@ namespace uwvm::vm::interpreter::memory
             }
             else
             {
-                if constexpr(sizeof(::std::size_t) == 8) { memory_max_pages = (static_cast<::std::uint_fast64_t>(4) * 1024 * 1024 * 1024) >> mpslg2; }
-                else { memory_max_pages = (static_cast<::std::uint_fast64_t>(8) * 1024 * 1024 * 1024) >> mpslg2; }
+                if constexpr(sizeof(::std::size_t) == 8) { memory_max_pages = (static_cast<::std::uint_fast64_t>(8) * 1024 * 1024 * 1024) >> mpslg2; }
+                else { memory_max_pages = (static_cast<::std::uint_fast64_t>(2) * 1024 * 1024 * 1024) >> mpslg2; }
             }
             constexpr ::std::size_t memory_num_guard_bytes{65536};
             auto const num_guard_pages = memory_num_guard_bytes >> mpslg2;
@@ -68,7 +69,7 @@ namespace uwvm::vm::interpreter::memory
             memory_begin = vamemory;
 
             auto const vamemory2{reinterpret_cast<::std::byte*>(
-                ::fast_io::win32::VirtualAlloc(memory_begin, msec.limits.min << mpslg2, 0x00001000 /*MEM_COMMIT*/, 0x04 /*PAGE_READWRITE*/))};
+                ::fast_io::win32::VirtualAlloc(memory_begin, memory_length, 0x00001000 /*MEM_COMMIT*/, 0x04 /*PAGE_READWRITE*/))};
             if(vamemory2 != memory_begin) [[unlikely]] { ::fast_io::fast_terminate(); }
 
             mutex.unlock();
@@ -121,7 +122,7 @@ namespace uwvm::vm::interpreter::memory
                     memory_length += sz << mpslg2;
 
                     auto const vamemory{reinterpret_cast<::std::byte*>(
-                        ::fast_io::win32::VirtualAlloc(memory_begin, sz << mpslg2, 0x00001000 /*MEM_COMMIT*/, 0x04 /*PAGE_READWRITE*/))};
+                        ::fast_io::win32::VirtualAlloc(memory_begin, memory_length, 0x00001000 /*MEM_COMMIT*/, 0x04 /*PAGE_READWRITE*/))};
                     if(vamemory != memory_begin) [[unlikely]] { ::fast_io::fast_terminate(); }
 
                     mutex.unlock();
@@ -156,10 +157,30 @@ namespace uwvm::vm::interpreter::memory
         memory_t(memory_t const& other) noexcept
         {
             memory_length = other.memory_length;
+
+            auto const mpslg2{system_page_size};
+
+            ::std::size_t memory_max_pages{};
+            if(::uwvm::features::enable_memory64)
+            {
+                memory_max_pages = ::std::max(memory_length >> mpslg2, (static_cast<::std::uint_fast64_t>(8) * 1024 * 1024 * 1024) >> mpslg2);
+                memory_max_pages <<= ::uwvm::wasm::num_bytes_per_page_log2 - mpslg2;
+            }
+            else
+            {
+                if constexpr(sizeof(::std::size_t) == 8) { memory_max_pages = (static_cast<::std::uint_fast64_t>(8) * 1024 * 1024 * 1024) >> mpslg2; }
+                else { memory_max_pages = (static_cast<::std::uint_fast64_t>(2) * 1024 * 1024 * 1024) >> mpslg2; }
+            }
+
             auto const vamemory{
-                reinterpret_cast<::std::byte*>(::fast_io::win32::VirtualAlloc(nullptr, memory_length, 0x00002000 /*MEM_RESERVE*/, 0x04 /*PAGE_READWRITE*/))};
+                reinterpret_cast<::std::byte*>(::fast_io::win32::VirtualAlloc(nullptr, memory_max_pages, 0x00002000 /*MEM_RESERVE*/, 0x04 /*PAGE_READWRITE*/))};
             if(vamemory == nullptr) [[unlikely]] { ::fast_io::fast_terminate(); }
             memory_begin = vamemory;
+
+            auto const vamemory2{reinterpret_cast<::std::byte*>(
+                ::fast_io::win32::VirtualAlloc(memory_begin, memory_length, 0x00001000 /*MEM_COMMIT*/, 0x04 /*PAGE_READWRITE*/))};
+            if(vamemory2 != memory_begin) [[unlikely]] { ::fast_io::fast_terminate(); }
+
             ::fast_io::freestanding::non_overlapped_copy_n(other.memory_begin, memory_length, memory_begin);
         }
 
@@ -167,10 +188,30 @@ namespace uwvm::vm::interpreter::memory
         {
             clean();
             memory_length = other.memory_length;
+
+            auto const mpslg2{system_page_size};
+
+            ::std::size_t memory_max_pages{};
+            if(::uwvm::features::enable_memory64)
+            {
+                memory_max_pages = ::std::max(memory_length >> mpslg2, (static_cast<::std::uint_fast64_t>(8) * 1024 * 1024 * 1024) >> mpslg2);
+                memory_max_pages <<= ::uwvm::wasm::num_bytes_per_page_log2 - mpslg2;
+            }
+            else
+            {
+                if constexpr(sizeof(::std::size_t) == 8) { memory_max_pages = (static_cast<::std::uint_fast64_t>(8) * 1024 * 1024 * 1024) >> mpslg2; }
+                else { memory_max_pages = (static_cast<::std::uint_fast64_t>(2) * 1024 * 1024 * 1024) >> mpslg2; }
+            }
+
             auto const vamemory{
-                reinterpret_cast<::std::byte*>(::fast_io::win32::VirtualAlloc(nullptr, memory_length, 0x00002000 /*MEM_RESERVE*/, 0x04 /*PAGE_READWRITE*/))};
+                reinterpret_cast<::std::byte*>(::fast_io::win32::VirtualAlloc(nullptr, memory_max_pages, 0x00002000 /*MEM_RESERVE*/, 0x04 /*PAGE_READWRITE*/))};
             if(vamemory == nullptr) [[unlikely]] { ::fast_io::fast_terminate(); }
             memory_begin = vamemory;
+
+            auto const vamemory2{reinterpret_cast<::std::byte*>(
+                ::fast_io::win32::VirtualAlloc(memory_begin, memory_length, 0x00001000 /*MEM_COMMIT*/, 0x04 /*PAGE_READWRITE*/))};
+            if(vamemory2 != memory_begin) [[unlikely]] { ::fast_io::fast_terminate(); }
+
             ::fast_io::freestanding::non_overlapped_copy_n(other.memory_begin, memory_length, memory_begin);
             return *this;
         }

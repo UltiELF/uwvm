@@ -118,7 +118,7 @@ $ xmake f -m [release|releasedbg|debug] -p [windows|mingw|linux|sun|msdosdjgpp|b
 ```bash
 --min-win32-sys=[WINME|WIN98|WIN95]
 ```
-* 使用llvm工具链
+* 使用llvm工具链 (部分使用 gcc 软连接 clang 的平台必须加上这个选项，比如 macos 与 android )
 ```bash 
 --use-llvm=y|n(default)
 ```
@@ -141,6 +141,10 @@ $ xmake f -m [release|releasedbg|debug] -p [windows|mingw|linux|sun|msdosdjgpp|b
 * 记录每一步消耗的时间
 ```bash 
 --timer=y|n(default)
+```
+* 使用mimalloc作为默认分配器
+```bash 
+--use-mimalloc=y|n(default)
 ```
 * 启用清洁器
 ```bash
