@@ -131,10 +131,15 @@ namespace uwvm::vm::interpreter::memory
 
         memory_t& operator= (memory_t const& other) noexcept
         {
+            mutex.lock();
+
             clean();
             memory_length = other.memory_length;
             memory_begin = reinterpret_cast<::std::byte*>(Alloc::allocate(memory_length));
             ::fast_io::freestanding::non_overlapped_copy_n(other.memory_begin, memory_length, memory_begin);
+
+            mutex.unlock();
+
             return *this;
         }
 

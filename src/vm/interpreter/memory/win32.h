@@ -1,4 +1,5 @@
-﻿#include <bit>
+﻿#pragma once
+#include <bit>
 #include <fast_io.h>
 #include <io_device.h>
 #include <instrinsic.h>
@@ -188,6 +189,8 @@ namespace uwvm::vm::interpreter::memory
 
         memory_t& operator= (memory_t const& other) noexcept
         {
+            mutex.lock();
+
             clean();
             memory_length = other.memory_length;
 
@@ -215,6 +218,9 @@ namespace uwvm::vm::interpreter::memory
             if(vamemory2 != memory_begin) [[unlikely]] { ::fast_io::fast_terminate(); }
 
             ::fast_io::freestanding::non_overlapped_copy_n(other.memory_begin, memory_length, memory_begin);
+
+            mutex.unlock();
+
             return *this;
         }
 
