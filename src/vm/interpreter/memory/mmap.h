@@ -20,9 +20,9 @@ namespace uwvm::vm::interpreter::memory
         inline ::std::size_t
             get_max_page_size_lg2() noexcept
         {
-            ::std::uint_least32_t const preferred_virtual_page_size{::fast_io::noexcept_call(::sysconf, _SC_PAGESIZE)};
+            auto const preferred_virtual_page_size{static_cast<::std::uint_least32_t>(::fast_io::noexcept_call(::sysconf, _SC_PAGESIZE))};
             // Verify our assumption that the virtual page size is a power of two.
-            return ::uwvm::instrinsic::floor_log2(preferred_virtual_page_size);
+            return static_cast<::std::size_t>(::uwvm::instrinsic::floor_log2(preferred_virtual_page_size));
         }
 
         inline ::std::size_t get_static_max_page_size_lg2() noexcept
@@ -37,6 +37,7 @@ namespace uwvm::vm::interpreter::memory
     {
         ::std::byte* memory_begin{};
         ::std::size_t memory_length{};
+        ::std::size_t total_pages{};
 
         inline static ::fast_io::native_mutex mutex{};
         inline static constexpr ::std::size_t page_size{::uwvm::wasm::num_bytes_per_page};
@@ -67,7 +68,7 @@ namespace uwvm::vm::interpreter::memory
             }
             constexpr ::std::size_t memory_num_guard_bytes{65536};
             auto const num_guard_pages = memory_num_guard_bytes >> mpslg2;
-            auto total_pages{memory_max_pages + num_guard_pages};
+            total_pages = memory_max_pages + num_guard_pages;
 
             memory_begin = ::fast_io::details::sys_mmap(nullptr, total_pages, PROT_NONE, MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
 
@@ -170,7 +171,7 @@ namespace uwvm::vm::interpreter::memory
                 if constexpr(sizeof(::std::size_t) == 8) { memory_max_pages = (static_cast<::std::uint_fast64_t>(8) * 1024 * 1024 * 1024) >> mpslg2; }
                 else { memory_max_pages = (static_cast<::std::uint_fast64_t>(2) * 1024 * 1024 * 1024) >> mpslg2; }
             }
-
+            total_pages = memory_max_pages;
             memory_begin = ::fast_io::details::sys_mmap(nullptr, memory_max_pages, PROT_NONE, MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
 
             ::fast_io::details::sys_mprotect(memory_begin, memory_length, PROT_READ | PROT_WRITE);
@@ -198,7 +199,7 @@ namespace uwvm::vm::interpreter::memory
                 if constexpr(sizeof(::std::size_t) == 8) { memory_max_pages = (static_cast<::std::uint_fast64_t>(8) * 1024 * 1024 * 1024) >> mpslg2; }
                 else { memory_max_pages = (static_cast<::std::uint_fast64_t>(2) * 1024 * 1024 * 1024) >> mpslg2; }
             }
-
+            total_pages = memory_max_pages;
             memory_begin = ::fast_io::details::sys_mmap(nullptr, memory_max_pages, PROT_NONE, MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
 
             ::fast_io::details::sys_mprotect(memory_begin, memory_length, PROT_READ | PROT_WRITE);
@@ -214,8 +215,11 @@ namespace uwvm::vm::interpreter::memory
         {
             memory_length = other.memory_length;
             memory_begin = other.memory_begin;
+            total_pages = other.total_pages;
+
             other.memory_length = 0;
             other.memory_begin = nullptr;
+            total_pages = 0;
         }
 
         memory_t& operator= (memory_t&& other) noexcept
@@ -223,8 +227,12 @@ namespace uwvm::vm::interpreter::memory
             clean();
             memory_length = other.memory_length;
             memory_begin = other.memory_begin;
+            total_pages = other.total_pages;
+
             other.memory_length = 0;
             other.memory_begin = nullptr;
+            total_pages = 0;
+
             return *this;
         }
 
@@ -232,9 +240,11 @@ namespace uwvm::vm::interpreter::memory
         {
             if(memory_begin) [[likely]]
             {
-                if(!::fast_io::win32::VirtualFree(memory_begin, 0, 0x00008000 /*MEM_RELEASE*/)) [[unlikely]] { ::fast_io::fast_terminate(); }
+                if(::fast_io::details::sys_munmap(memory_begin, total_pages)) [[unlikely]] { ::fast_io::fast_terminate(); }
                 memory_length = 0;
                 memory_begin = nullptr;
+                total_pages = 0;
+
             }
         }
 

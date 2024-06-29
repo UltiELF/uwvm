@@ -261,14 +261,17 @@
     #endif
     #if 0
         #if defined(__AVX512BF16__)
-                          u8"AVX512BF16 "
+                        u8"AVX512BF16 "
         #endif
         #if defined(__AVX512FP16__)
-                          u8"AVX512FP16 "
+                        u8"AVX512FP16 "
         #endif
     #endif
     #if defined(__AVX512VBMI__)
                         u8"AVX512VBMI "
+    #endif
+    #if defined(__APX_F__)
+                        u8"APX "
     #endif
 #elif defined(__VECTOR4DOUBLE__) || defined(__VSX__) || (defined(__ALTIVEC__) || defined(__VEC__))
                         u8"\nSIMD support: PPC SIMD"
