@@ -68,6 +68,7 @@ namespace uwvm::vm::interpreter::memory
             }
             constexpr ::std::size_t memory_num_guard_bytes{65536};
             auto const num_guard_pages = memory_num_guard_bytes >> mpslg2;
+
             total_pages = memory_max_pages + num_guard_pages;
 
             memory_begin = ::fast_io::details::sys_mmap(nullptr, total_pages, PROT_NONE, MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
@@ -219,7 +220,7 @@ namespace uwvm::vm::interpreter::memory
 
             other.memory_length = 0;
             other.memory_begin = nullptr;
-            total_pages = 0;
+            other.total_pages = 0;
         }
 
         memory_t& operator= (memory_t&& other) noexcept
@@ -231,7 +232,7 @@ namespace uwvm::vm::interpreter::memory
 
             other.memory_length = 0;
             other.memory_begin = nullptr;
-            total_pages = 0;
+            other.total_pages = 0;
 
             return *this;
         }

@@ -81,7 +81,7 @@ option("use-mimalloc")
 	set_showmenu(true)
 option_end()
 
-option("uwvm_test")
+option("uwvm-test")
 	set_default(false)
 	set_showmenu(true)
 	add_defines("UWVM_TEST")
@@ -95,7 +95,7 @@ function defopt()
 		add_options("native")
 	-- end
 	add_options("timer")
-	add_options("uwvm_test")
+	add_options("uwvm-test")
 
 	set_exceptions("no-cxx")
 
