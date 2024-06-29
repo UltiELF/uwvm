@@ -19,6 +19,6 @@ jobs:
         run: |
           xmake f -p linux -a x86_64 -m debug --static=n
           xmake -v
-      - name: test-x86_64-linux-gnu
+      - name: Test-x86_64-linux-gnu
         run: |
           xmake run uwvm --version

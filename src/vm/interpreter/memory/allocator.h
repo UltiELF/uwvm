@@ -6,10 +6,10 @@
 
 namespace uwvm::vm::interpreter::memory
 {
-
-    struct memory_t
+    template <typename A>
+    struct basic_memory_t
     {
-        using Alloc = ::fast_io::native_global_allocator;
+        using Alloc = A;
 
         ::std::byte* memory_begin{};
         ::std::size_t memory_length{};
@@ -18,9 +18,9 @@ namespace uwvm::vm::interpreter::memory
         inline static constexpr ::std::size_t page_size{::uwvm::wasm::num_bytes_per_page};
         inline static constexpr ::std::size_t system_page_size{page_size};
 
-        memory_t() noexcept = default;
+        basic_memory_t() noexcept = default;
 
-        memory_t(::uwvm::wasm::memory_type const& msec) noexcept { init_by_memory_type(msec); }
+        basic_memory_t(::uwvm::wasm::memory_type const& msec) noexcept { init_by_memory_type(msec); }
 
         void init_by_memory_type(::uwvm::wasm::memory_type const& msec) noexcept
         {
@@ -122,14 +122,14 @@ namespace uwvm::vm::interpreter::memory
             }
         }
 
-        memory_t(memory_t const& other) noexcept
+        basic_memory_t(basic_memory_t const& other) noexcept
         {
             memory_length = other.memory_length;
             memory_begin = reinterpret_cast<::std::byte*>(Alloc::allocate(memory_length));
             ::fast_io::freestanding::non_overlapped_copy_n(other.memory_begin, memory_length, memory_begin);
         }
 
-        memory_t& operator= (memory_t const& other) noexcept
+        basic_memory_t& operator= (basic_memory_t const& other) noexcept
         {
             mutex.lock();
 
@@ -143,7 +143,7 @@ namespace uwvm::vm::interpreter::memory
             return *this;
         }
 
-        memory_t(memory_t&& other) noexcept
+        basic_memory_t(basic_memory_t&& other) noexcept
         {
             memory_length = other.memory_length;
             memory_begin = other.memory_begin;
@@ -151,7 +151,7 @@ namespace uwvm::vm::interpreter::memory
             other.memory_begin = nullptr;
         }
 
-        memory_t& operator= (memory_t&& other) noexcept
+        basic_memory_t& operator= (basic_memory_t&& other) noexcept
         {
             clean();
             memory_length = other.memory_length;
@@ -171,21 +171,23 @@ namespace uwvm::vm::interpreter::memory
             }
         }
 
-        ~memory_t() { clean(); }
+        ~basic_memory_t() { clean(); }
     };
+
+    using memory_t = basic_memory_t<::fast_io::native_global_allocator>;
 
 }  // namespace uwvm::vm::interpreter::memory
 
 namespace fast_io::freestanding
 {
-    template <>
-    struct is_trivially_relocatable<::uwvm::vm::interpreter::memory::memory_t>
+    template <typename A>
+    struct is_trivially_relocatable<::uwvm::vm::interpreter::memory::basic_memory_t<A>>
     {
         inline static constexpr bool value = true;
     };
 
-    template <>
-    struct is_zero_default_constructible<::uwvm::vm::interpreter::memory::memory_t>
+    template <typename A>
+    struct is_zero_default_constructible<::uwvm::vm::interpreter::memory::basic_memory_t<A>>
     {
         inline static constexpr bool value = true;
     };
