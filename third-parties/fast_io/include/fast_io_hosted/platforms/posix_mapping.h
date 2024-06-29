@@ -53,7 +53,7 @@ inline ::std::byte *sys_mmap(void *addr, ::std::size_t len, int prot, int flags,
 #endif
 }
 
-inline int sys_mprotect(void const* start, ::std::size_t len, int prot)
+inline int sys_mprotect(void* start, ::std::size_t len, int prot)
 {
     auto const result{
 #if defined(__linux__) && defined(__NR_mprotect)
