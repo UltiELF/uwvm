@@ -214,7 +214,7 @@ function defopt()
 			set_extension(".exe")
 		end
 
-		add_cxflags("-fno-rtti")
+		add_cxxflags("-fno-rtti")
 		add_cxflags("-fno-unwind-tables")
 		add_cxflags("-fno-asynchronous-unwind-tables")
 		if is_mode("release", "releasedbg") then
@@ -271,7 +271,7 @@ function defopt()
 		end
 
 	elseif is_plat("linux") then
-		add_cxflags("-fno-rtti")
+		add_cxxflags("-fno-rtti")
 		add_cxflags("-fno-unwind-tables")
 		add_cxflags("-fno-asynchronous-unwind-tables")
 		if is_mode("release", "releasedbg") then
@@ -314,7 +314,7 @@ function defopt()
 		add_ldflags("-pthread",{force = true})
 
 	elseif is_plat("msdosdjgpp") then
-		add_cxflags("-fno-rtti")
+		add_cxxflags("-fno-rtti")
 		add_cxflags("-fno-unwind-tables")
 		add_cxflags("-fno-asynchronous-unwind-tables")
 		if is_mode("release", "releasedbg") then
@@ -339,7 +339,7 @@ function defopt()
 		end
 
 	elseif is_plat("unix", "bsd", "freebsd", "dragonflybsd", "netbsd", "openbsd", "sun") then
-		add_cxflags("-fno-rtti")
+		add_cxxflags("-fno-rtti")
 		add_cxflags("-fno-unwind-tables")
 		add_cxflags("-fno-asynchronous-unwind-tables")
 		if is_mode("release", "releasedbg") then
@@ -367,7 +367,7 @@ function defopt()
 		add_ldflags("-pthread",{force = true})
 
 	elseif is_plat("macosx", "iphoneos", "watchos") then -- unknown-apple-darwin
-		add_cxflags("-fno-rtti")
+		add_cxxflags("-fno-rtti")
 		add_cxflags("-fno-unwind-tables")
 		add_cxflags("-fno-asynchronous-unwind-tables")
 		if is_mode("release", "releasedbg") then
@@ -397,7 +397,7 @@ function defopt()
 	elseif is_plat("wasm-wasi", "wasm-wasip1", "wasm-wasip2") then -- wasm-wasi is equivalent to wasm-wasip1
 		set_extension(".wasm")
 
-		add_cxflags("-fno-rtti")
+		add_cxxflags("-fno-rtti")
 		add_cxflags("-fno-unwind-tables")
 		add_cxflags("-fno-asynchronous-unwind-tables")
 		if is_mode("release", "releasedbg") then
@@ -448,7 +448,7 @@ function defopt()
 		end
 
 	elseif is_plat("cross") then
-		add_cxflags("-fno-rtti")
+		add_cxxflags("-fno-rtti")
 		add_cxflags("-fno-unwind-tables")
 		add_cxflags("-fno-asynchronous-unwind-tables")
 		if is_mode("release", "releasedbg") then
