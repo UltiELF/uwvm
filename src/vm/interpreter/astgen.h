@@ -3214,47 +3214,1073 @@ namespace uwvm::vm::interpreter
                 }
                 case ::uwvm::wasm::op_basic::i32_store:
                 {
-                    ::uwvm::unfinished();
+                    if(wasmmod.memorysec.memory_count == 0) [[unlikely]]
+                    {
+                        ::fast_io::io::perr(::uwvm::u8err,
+                                    u8"\033[0m"
+#ifdef __MSDOS__
+                                    u8"\033[37m"
+#else
+                                    u8"\033[97m"
+#endif
+                                    u8"uwvm: "
+                                    u8"\033[31m"
+                                    u8"[fatal] "
+                                    u8"\033[0m"
+#ifdef __MSDOS__
+                                    u8"\033[37m"
+#else
+                                    u8"\033[97m"
+#endif
+                                    u8"(offset=",
+                                    ::fast_io::mnp::addrvw(curr - wasmmod.module_begin),
+                                    u8") "
+                                    u8"No wasm memory found."
+                                    u8"\n"
+                                    u8"\033[0m"
+                                    u8"Terminate.\n\n");
+                        ::fast_io::fast_terminate();
+                    }
+
+                    op.int_func = __builtin_addressof(::uwvm::vm::interpreter::func::i32_store);
+
+                    ++curr;
+
+                    ::std::size_t alignment{};
+                    auto const [next_a, err_a]{::fast_io::parse_by_scan(reinterpret_cast<char8_t_const_may_alias_ptr>(curr),
+                                                                        reinterpret_cast<char8_t_const_may_alias_ptr>(end),
+                                                                        ::fast_io::mnp::leb128_get(alignment))};
+                    switch(err_a)
+                    {
+                        case ::fast_io::parse_code::ok: break;
+                        default:
+                            [[unlikely]]
+                            {
+                                ::fast_io::io::perr(::uwvm::u8err,
+                                    u8"\033[0m"
+#ifdef __MSDOS__
+                                    u8"\033[37m"
+#else
+                                    u8"\033[97m"
+#endif
+                                    u8"uwvm: "
+                                    u8"\033[31m"
+                                    u8"[fatal] "
+                                    u8"\033[0m"
+#ifdef __MSDOS__
+                                    u8"\033[37m"
+#else
+                                    u8"\033[97m"
+#endif
+                                    u8"(offset=",
+                                    ::fast_io::mnp::addrvw(curr - wasmmod.module_begin),
+                                    u8") "
+                                    u8"Invalid size."
+                                    u8"\n"
+                                    u8"\033[0m"
+                                    u8"Terminate.\n\n");
+                                ::fast_io::fast_terminate();
+                            }
+                    }
+
+                    curr = reinterpret_cast<::std::byte const*>(next_a);
+
+                    ::std::size_t offset{};
+                    auto const [next_o, err_o]{::fast_io::parse_by_scan(reinterpret_cast<char8_t_const_may_alias_ptr>(curr),
+                                                                        reinterpret_cast<char8_t_const_may_alias_ptr>(end),
+                                                                        ::fast_io::mnp::leb128_get(offset))};
+                    switch(err_o)
+                    {
+                        case ::fast_io::parse_code::ok: break;
+                        default:
+                            [[unlikely]]
+                            {
+                                ::fast_io::io::perr(::uwvm::u8err,
+                                    u8"\033[0m"
+#ifdef __MSDOS__
+                                    u8"\033[37m"
+#else
+                                    u8"\033[97m"
+#endif
+                                    u8"uwvm: "
+                                    u8"\033[31m"
+                                    u8"[fatal] "
+                                    u8"\033[0m"
+#ifdef __MSDOS__
+                                    u8"\033[37m"
+#else
+                                    u8"\033[97m"
+#endif
+                                    u8"(offset=",
+                                    ::fast_io::mnp::addrvw(curr - wasmmod.module_begin),
+                                    u8") "
+                                    u8"Invalid size."
+                                    u8"\n"
+                                    u8"\033[0m"
+                                    u8"Terminate.\n\n");
+                                ::fast_io::fast_terminate();
+                            }
+                    }
+
+                    curr = reinterpret_cast<::std::byte const*>(next_o);
+
+                    op.ext.end = reinterpret_cast<operator_t const*>(alignment);
+                    op.ext.branch = reinterpret_cast<operator_t const*>(offset);
+
+                    temp.operators.emplace_back_unchecked(op);
+
                     break;
                 }
                 case ::uwvm::wasm::op_basic::i64_store:
                 {
-                    ::uwvm::unfinished();
+                    if(wasmmod.memorysec.memory_count == 0) [[unlikely]]
+                    {
+                        ::fast_io::io::perr(::uwvm::u8err,
+                                    u8"\033[0m"
+#ifdef __MSDOS__
+                                    u8"\033[37m"
+#else
+                                    u8"\033[97m"
+#endif
+                                    u8"uwvm: "
+                                    u8"\033[31m"
+                                    u8"[fatal] "
+                                    u8"\033[0m"
+#ifdef __MSDOS__
+                                    u8"\033[37m"
+#else
+                                    u8"\033[97m"
+#endif
+                                    u8"(offset=",
+                                    ::fast_io::mnp::addrvw(curr - wasmmod.module_begin),
+                                    u8") "
+                                    u8"No wasm memory found."
+                                    u8"\n"
+                                    u8"\033[0m"
+                                    u8"Terminate.\n\n");
+                        ::fast_io::fast_terminate();
+                    }
+
+                    op.int_func = __builtin_addressof(::uwvm::vm::interpreter::func::i64_store);
+
+                    ++curr;
+
+                    ::std::size_t alignment{};
+                    auto const [next_a, err_a]{::fast_io::parse_by_scan(reinterpret_cast<char8_t_const_may_alias_ptr>(curr),
+                                                                        reinterpret_cast<char8_t_const_may_alias_ptr>(end),
+                                                                        ::fast_io::mnp::leb128_get(alignment))};
+                    switch(err_a)
+                    {
+                        case ::fast_io::parse_code::ok: break;
+                        default:
+                            [[unlikely]]
+                            {
+                                ::fast_io::io::perr(::uwvm::u8err,
+                                    u8"\033[0m"
+#ifdef __MSDOS__
+                                    u8"\033[37m"
+#else
+                                    u8"\033[97m"
+#endif
+                                    u8"uwvm: "
+                                    u8"\033[31m"
+                                    u8"[fatal] "
+                                    u8"\033[0m"
+#ifdef __MSDOS__
+                                    u8"\033[37m"
+#else
+                                    u8"\033[97m"
+#endif
+                                    u8"(offset=",
+                                    ::fast_io::mnp::addrvw(curr - wasmmod.module_begin),
+                                    u8") "
+                                    u8"Invalid size."
+                                    u8"\n"
+                                    u8"\033[0m"
+                                    u8"Terminate.\n\n");
+                                ::fast_io::fast_terminate();
+                            }
+                    }
+
+                    curr = reinterpret_cast<::std::byte const*>(next_a);
+
+                    ::std::size_t offset{};
+                    auto const [next_o, err_o]{::fast_io::parse_by_scan(reinterpret_cast<char8_t_const_may_alias_ptr>(curr),
+                                                                        reinterpret_cast<char8_t_const_may_alias_ptr>(end),
+                                                                        ::fast_io::mnp::leb128_get(offset))};
+                    switch(err_o)
+                    {
+                        case ::fast_io::parse_code::ok: break;
+                        default:
+                            [[unlikely]]
+                            {
+                                ::fast_io::io::perr(::uwvm::u8err,
+                                    u8"\033[0m"
+#ifdef __MSDOS__
+                                    u8"\033[37m"
+#else
+                                    u8"\033[97m"
+#endif
+                                    u8"uwvm: "
+                                    u8"\033[31m"
+                                    u8"[fatal] "
+                                    u8"\033[0m"
+#ifdef __MSDOS__
+                                    u8"\033[37m"
+#else
+                                    u8"\033[97m"
+#endif
+                                    u8"(offset=",
+                                    ::fast_io::mnp::addrvw(curr - wasmmod.module_begin),
+                                    u8") "
+                                    u8"Invalid size."
+                                    u8"\n"
+                                    u8"\033[0m"
+                                    u8"Terminate.\n\n");
+                                ::fast_io::fast_terminate();
+                            }
+                    }
+
+                    curr = reinterpret_cast<::std::byte const*>(next_o);
+
+                    op.ext.end = reinterpret_cast<operator_t const*>(alignment);
+                    op.ext.branch = reinterpret_cast<operator_t const*>(offset);
+
+                    temp.operators.emplace_back_unchecked(op);
+
                     break;
                 }
                 case ::uwvm::wasm::op_basic::f32_store:
                 {
-                    ::uwvm::unfinished();
+                    if(wasmmod.memorysec.memory_count == 0) [[unlikely]]
+                    {
+                        ::fast_io::io::perr(::uwvm::u8err,
+                                    u8"\033[0m"
+#ifdef __MSDOS__
+                                    u8"\033[37m"
+#else
+                                    u8"\033[97m"
+#endif
+                                    u8"uwvm: "
+                                    u8"\033[31m"
+                                    u8"[fatal] "
+                                    u8"\033[0m"
+#ifdef __MSDOS__
+                                    u8"\033[37m"
+#else
+                                    u8"\033[97m"
+#endif
+                                    u8"(offset=",
+                                    ::fast_io::mnp::addrvw(curr - wasmmod.module_begin),
+                                    u8") "
+                                    u8"No wasm memory found."
+                                    u8"\n"
+                                    u8"\033[0m"
+                                    u8"Terminate.\n\n");
+                        ::fast_io::fast_terminate();
+                    }
+
+                    op.int_func = __builtin_addressof(::uwvm::vm::interpreter::func::f32_store);
+
+                    ++curr;
+
+                    ::std::size_t alignment{};
+                    auto const [next_a, err_a]{::fast_io::parse_by_scan(reinterpret_cast<char8_t_const_may_alias_ptr>(curr),
+                                                                        reinterpret_cast<char8_t_const_may_alias_ptr>(end),
+                                                                        ::fast_io::mnp::leb128_get(alignment))};
+                    switch(err_a)
+                    {
+                        case ::fast_io::parse_code::ok: break;
+                        default:
+                            [[unlikely]]
+                            {
+                                ::fast_io::io::perr(::uwvm::u8err,
+                                    u8"\033[0m"
+#ifdef __MSDOS__
+                                    u8"\033[37m"
+#else
+                                    u8"\033[97m"
+#endif
+                                    u8"uwvm: "
+                                    u8"\033[31m"
+                                    u8"[fatal] "
+                                    u8"\033[0m"
+#ifdef __MSDOS__
+                                    u8"\033[37m"
+#else
+                                    u8"\033[97m"
+#endif
+                                    u8"(offset=",
+                                    ::fast_io::mnp::addrvw(curr - wasmmod.module_begin),
+                                    u8") "
+                                    u8"Invalid size."
+                                    u8"\n"
+                                    u8"\033[0m"
+                                    u8"Terminate.\n\n");
+                                ::fast_io::fast_terminate();
+                            }
+                    }
+
+                    curr = reinterpret_cast<::std::byte const*>(next_a);
+
+                    ::std::size_t offset{};
+                    auto const [next_o, err_o]{::fast_io::parse_by_scan(reinterpret_cast<char8_t_const_may_alias_ptr>(curr),
+                                                                        reinterpret_cast<char8_t_const_may_alias_ptr>(end),
+                                                                        ::fast_io::mnp::leb128_get(offset))};
+                    switch(err_o)
+                    {
+                        case ::fast_io::parse_code::ok: break;
+                        default:
+                            [[unlikely]]
+                            {
+                                ::fast_io::io::perr(::uwvm::u8err,
+                                    u8"\033[0m"
+#ifdef __MSDOS__
+                                    u8"\033[37m"
+#else
+                                    u8"\033[97m"
+#endif
+                                    u8"uwvm: "
+                                    u8"\033[31m"
+                                    u8"[fatal] "
+                                    u8"\033[0m"
+#ifdef __MSDOS__
+                                    u8"\033[37m"
+#else
+                                    u8"\033[97m"
+#endif
+                                    u8"(offset=",
+                                    ::fast_io::mnp::addrvw(curr - wasmmod.module_begin),
+                                    u8") "
+                                    u8"Invalid size."
+                                    u8"\n"
+                                    u8"\033[0m"
+                                    u8"Terminate.\n\n");
+                                ::fast_io::fast_terminate();
+                            }
+                    }
+
+                    curr = reinterpret_cast<::std::byte const*>(next_o);
+
+                    op.ext.end = reinterpret_cast<operator_t const*>(alignment);
+                    op.ext.branch = reinterpret_cast<operator_t const*>(offset);
+
+                    temp.operators.emplace_back_unchecked(op);
+
                     break;
                 }
                 case ::uwvm::wasm::op_basic::f64_store:
                 {
-                    ::uwvm::unfinished();
+                    if(wasmmod.memorysec.memory_count == 0) [[unlikely]]
+                    {
+                        ::fast_io::io::perr(::uwvm::u8err,
+                                    u8"\033[0m"
+#ifdef __MSDOS__
+                                    u8"\033[37m"
+#else
+                                    u8"\033[97m"
+#endif
+                                    u8"uwvm: "
+                                    u8"\033[31m"
+                                    u8"[fatal] "
+                                    u8"\033[0m"
+#ifdef __MSDOS__
+                                    u8"\033[37m"
+#else
+                                    u8"\033[97m"
+#endif
+                                    u8"(offset=",
+                                    ::fast_io::mnp::addrvw(curr - wasmmod.module_begin),
+                                    u8") "
+                                    u8"No wasm memory found."
+                                    u8"\n"
+                                    u8"\033[0m"
+                                    u8"Terminate.\n\n");
+                        ::fast_io::fast_terminate();
+                    }
+
+                    op.int_func = __builtin_addressof(::uwvm::vm::interpreter::func::f64_store);
+
+                    ++curr;
+
+                    ::std::size_t alignment{};
+                    auto const [next_a, err_a]{::fast_io::parse_by_scan(reinterpret_cast<char8_t_const_may_alias_ptr>(curr),
+                                                                        reinterpret_cast<char8_t_const_may_alias_ptr>(end),
+                                                                        ::fast_io::mnp::leb128_get(alignment))};
+                    switch(err_a)
+                    {
+                        case ::fast_io::parse_code::ok: break;
+                        default:
+                            [[unlikely]]
+                            {
+                                ::fast_io::io::perr(::uwvm::u8err,
+                                    u8"\033[0m"
+#ifdef __MSDOS__
+                                    u8"\033[37m"
+#else
+                                    u8"\033[97m"
+#endif
+                                    u8"uwvm: "
+                                    u8"\033[31m"
+                                    u8"[fatal] "
+                                    u8"\033[0m"
+#ifdef __MSDOS__
+                                    u8"\033[37m"
+#else
+                                    u8"\033[97m"
+#endif
+                                    u8"(offset=",
+                                    ::fast_io::mnp::addrvw(curr - wasmmod.module_begin),
+                                    u8") "
+                                    u8"Invalid size."
+                                    u8"\n"
+                                    u8"\033[0m"
+                                    u8"Terminate.\n\n");
+                                ::fast_io::fast_terminate();
+                            }
+                    }
+
+                    curr = reinterpret_cast<::std::byte const*>(next_a);
+
+                    ::std::size_t offset{};
+                    auto const [next_o, err_o]{::fast_io::parse_by_scan(reinterpret_cast<char8_t_const_may_alias_ptr>(curr),
+                                                                        reinterpret_cast<char8_t_const_may_alias_ptr>(end),
+                                                                        ::fast_io::mnp::leb128_get(offset))};
+                    switch(err_o)
+                    {
+                        case ::fast_io::parse_code::ok: break;
+                        default:
+                            [[unlikely]]
+                            {
+                                ::fast_io::io::perr(::uwvm::u8err,
+                                    u8"\033[0m"
+#ifdef __MSDOS__
+                                    u8"\033[37m"
+#else
+                                    u8"\033[97m"
+#endif
+                                    u8"uwvm: "
+                                    u8"\033[31m"
+                                    u8"[fatal] "
+                                    u8"\033[0m"
+#ifdef __MSDOS__
+                                    u8"\033[37m"
+#else
+                                    u8"\033[97m"
+#endif
+                                    u8"(offset=",
+                                    ::fast_io::mnp::addrvw(curr - wasmmod.module_begin),
+                                    u8") "
+                                    u8"Invalid size."
+                                    u8"\n"
+                                    u8"\033[0m"
+                                    u8"Terminate.\n\n");
+                                ::fast_io::fast_terminate();
+                            }
+                    }
+
+                    curr = reinterpret_cast<::std::byte const*>(next_o);
+
+                    op.ext.end = reinterpret_cast<operator_t const*>(alignment);
+                    op.ext.branch = reinterpret_cast<operator_t const*>(offset);
+
+                    temp.operators.emplace_back_unchecked(op);
+
                     break;
                 }
                 case ::uwvm::wasm::op_basic::i32_store8:
                 {
-                    ::uwvm::unfinished();
+                    if(wasmmod.memorysec.memory_count == 0) [[unlikely]]
+                    {
+                        ::fast_io::io::perr(::uwvm::u8err,
+                                    u8"\033[0m"
+#ifdef __MSDOS__
+                                    u8"\033[37m"
+#else
+                                    u8"\033[97m"
+#endif
+                                    u8"uwvm: "
+                                    u8"\033[31m"
+                                    u8"[fatal] "
+                                    u8"\033[0m"
+#ifdef __MSDOS__
+                                    u8"\033[37m"
+#else
+                                    u8"\033[97m"
+#endif
+                                    u8"(offset=",
+                                    ::fast_io::mnp::addrvw(curr - wasmmod.module_begin),
+                                    u8") "
+                                    u8"No wasm memory found."
+                                    u8"\n"
+                                    u8"\033[0m"
+                                    u8"Terminate.\n\n");
+                        ::fast_io::fast_terminate();
+                    }
+
+                    op.int_func = __builtin_addressof(::uwvm::vm::interpreter::func::i32_store8);
+
+                    ++curr;
+
+                    ::std::size_t alignment{};
+                    auto const [next_a, err_a]{::fast_io::parse_by_scan(reinterpret_cast<char8_t_const_may_alias_ptr>(curr),
+                                                                        reinterpret_cast<char8_t_const_may_alias_ptr>(end),
+                                                                        ::fast_io::mnp::leb128_get(alignment))};
+                    switch(err_a)
+                    {
+                        case ::fast_io::parse_code::ok: break;
+                        default:
+                            [[unlikely]]
+                            {
+                                ::fast_io::io::perr(::uwvm::u8err,
+                                    u8"\033[0m"
+#ifdef __MSDOS__
+                                    u8"\033[37m"
+#else
+                                    u8"\033[97m"
+#endif
+                                    u8"uwvm: "
+                                    u8"\033[31m"
+                                    u8"[fatal] "
+                                    u8"\033[0m"
+#ifdef __MSDOS__
+                                    u8"\033[37m"
+#else
+                                    u8"\033[97m"
+#endif
+                                    u8"(offset=",
+                                    ::fast_io::mnp::addrvw(curr - wasmmod.module_begin),
+                                    u8") "
+                                    u8"Invalid size."
+                                    u8"\n"
+                                    u8"\033[0m"
+                                    u8"Terminate.\n\n");
+                                ::fast_io::fast_terminate();
+                            }
+                    }
+
+                    curr = reinterpret_cast<::std::byte const*>(next_a);
+
+                    ::std::size_t offset{};
+                    auto const [next_o, err_o]{::fast_io::parse_by_scan(reinterpret_cast<char8_t_const_may_alias_ptr>(curr),
+                                                                        reinterpret_cast<char8_t_const_may_alias_ptr>(end),
+                                                                        ::fast_io::mnp::leb128_get(offset))};
+                    switch(err_o)
+                    {
+                        case ::fast_io::parse_code::ok: break;
+                        default:
+                            [[unlikely]]
+                            {
+                                ::fast_io::io::perr(::uwvm::u8err,
+                                    u8"\033[0m"
+#ifdef __MSDOS__
+                                    u8"\033[37m"
+#else
+                                    u8"\033[97m"
+#endif
+                                    u8"uwvm: "
+                                    u8"\033[31m"
+                                    u8"[fatal] "
+                                    u8"\033[0m"
+#ifdef __MSDOS__
+                                    u8"\033[37m"
+#else
+                                    u8"\033[97m"
+#endif
+                                    u8"(offset=",
+                                    ::fast_io::mnp::addrvw(curr - wasmmod.module_begin),
+                                    u8") "
+                                    u8"Invalid size."
+                                    u8"\n"
+                                    u8"\033[0m"
+                                    u8"Terminate.\n\n");
+                                ::fast_io::fast_terminate();
+                            }
+                    }
+
+                    curr = reinterpret_cast<::std::byte const*>(next_o);
+
+                    op.ext.end = reinterpret_cast<operator_t const*>(alignment);
+                    op.ext.branch = reinterpret_cast<operator_t const*>(offset);
+
+                    temp.operators.emplace_back_unchecked(op);
+
                     break;
                 }
                 case ::uwvm::wasm::op_basic::i32_store16:
                 {
-                    ::uwvm::unfinished();
+                    if(wasmmod.memorysec.memory_count == 0) [[unlikely]]
+                    {
+                        ::fast_io::io::perr(::uwvm::u8err,
+                                    u8"\033[0m"
+#ifdef __MSDOS__
+                                    u8"\033[37m"
+#else
+                                    u8"\033[97m"
+#endif
+                                    u8"uwvm: "
+                                    u8"\033[31m"
+                                    u8"[fatal] "
+                                    u8"\033[0m"
+#ifdef __MSDOS__
+                                    u8"\033[37m"
+#else
+                                    u8"\033[97m"
+#endif
+                                    u8"(offset=",
+                                    ::fast_io::mnp::addrvw(curr - wasmmod.module_begin),
+                                    u8") "
+                                    u8"No wasm memory found."
+                                    u8"\n"
+                                    u8"\033[0m"
+                                    u8"Terminate.\n\n");
+                        ::fast_io::fast_terminate();
+                    }
+
+                    op.int_func = __builtin_addressof(::uwvm::vm::interpreter::func::i32_store16);
+
+                    ++curr;
+
+                    ::std::size_t alignment{};
+                    auto const [next_a, err_a]{::fast_io::parse_by_scan(reinterpret_cast<char8_t_const_may_alias_ptr>(curr),
+                                                                        reinterpret_cast<char8_t_const_may_alias_ptr>(end),
+                                                                        ::fast_io::mnp::leb128_get(alignment))};
+                    switch(err_a)
+                    {
+                        case ::fast_io::parse_code::ok: break;
+                        default:
+                            [[unlikely]]
+                            {
+                                ::fast_io::io::perr(::uwvm::u8err,
+                                    u8"\033[0m"
+#ifdef __MSDOS__
+                                    u8"\033[37m"
+#else
+                                    u8"\033[97m"
+#endif
+                                    u8"uwvm: "
+                                    u8"\033[31m"
+                                    u8"[fatal] "
+                                    u8"\033[0m"
+#ifdef __MSDOS__
+                                    u8"\033[37m"
+#else
+                                    u8"\033[97m"
+#endif
+                                    u8"(offset=",
+                                    ::fast_io::mnp::addrvw(curr - wasmmod.module_begin),
+                                    u8") "
+                                    u8"Invalid size."
+                                    u8"\n"
+                                    u8"\033[0m"
+                                    u8"Terminate.\n\n");
+                                ::fast_io::fast_terminate();
+                            }
+                    }
+
+                    curr = reinterpret_cast<::std::byte const*>(next_a);
+
+                    ::std::size_t offset{};
+                    auto const [next_o, err_o]{::fast_io::parse_by_scan(reinterpret_cast<char8_t_const_may_alias_ptr>(curr),
+                                                                        reinterpret_cast<char8_t_const_may_alias_ptr>(end),
+                                                                        ::fast_io::mnp::leb128_get(offset))};
+                    switch(err_o)
+                    {
+                        case ::fast_io::parse_code::ok: break;
+                        default:
+                            [[unlikely]]
+                            {
+                                ::fast_io::io::perr(::uwvm::u8err,
+                                    u8"\033[0m"
+#ifdef __MSDOS__
+                                    u8"\033[37m"
+#else
+                                    u8"\033[97m"
+#endif
+                                    u8"uwvm: "
+                                    u8"\033[31m"
+                                    u8"[fatal] "
+                                    u8"\033[0m"
+#ifdef __MSDOS__
+                                    u8"\033[37m"
+#else
+                                    u8"\033[97m"
+#endif
+                                    u8"(offset=",
+                                    ::fast_io::mnp::addrvw(curr - wasmmod.module_begin),
+                                    u8") "
+                                    u8"Invalid size."
+                                    u8"\n"
+                                    u8"\033[0m"
+                                    u8"Terminate.\n\n");
+                                ::fast_io::fast_terminate();
+                            }
+                    }
+
+                    curr = reinterpret_cast<::std::byte const*>(next_o);
+
+                    op.ext.end = reinterpret_cast<operator_t const*>(alignment);
+                    op.ext.branch = reinterpret_cast<operator_t const*>(offset);
+
+                    temp.operators.emplace_back_unchecked(op);
+
                     break;
                 }
                 case ::uwvm::wasm::op_basic::i64_store8:
                 {
-                    ::uwvm::unfinished();
+                    if(wasmmod.memorysec.memory_count == 0) [[unlikely]]
+                    {
+                        ::fast_io::io::perr(::uwvm::u8err,
+                                    u8"\033[0m"
+#ifdef __MSDOS__
+                                    u8"\033[37m"
+#else
+                                    u8"\033[97m"
+#endif
+                                    u8"uwvm: "
+                                    u8"\033[31m"
+                                    u8"[fatal] "
+                                    u8"\033[0m"
+#ifdef __MSDOS__
+                                    u8"\033[37m"
+#else
+                                    u8"\033[97m"
+#endif
+                                    u8"(offset=",
+                                    ::fast_io::mnp::addrvw(curr - wasmmod.module_begin),
+                                    u8") "
+                                    u8"No wasm memory found."
+                                    u8"\n"
+                                    u8"\033[0m"
+                                    u8"Terminate.\n\n");
+                        ::fast_io::fast_terminate();
+                    }
+
+                    op.int_func = __builtin_addressof(::uwvm::vm::interpreter::func::i64_store8);
+
+                    ++curr;
+
+                    ::std::size_t alignment{};
+                    auto const [next_a, err_a]{::fast_io::parse_by_scan(reinterpret_cast<char8_t_const_may_alias_ptr>(curr),
+                                                                        reinterpret_cast<char8_t_const_may_alias_ptr>(end),
+                                                                        ::fast_io::mnp::leb128_get(alignment))};
+                    switch(err_a)
+                    {
+                        case ::fast_io::parse_code::ok: break;
+                        default:
+                            [[unlikely]]
+                            {
+                                ::fast_io::io::perr(::uwvm::u8err,
+                                    u8"\033[0m"
+#ifdef __MSDOS__
+                                    u8"\033[37m"
+#else
+                                    u8"\033[97m"
+#endif
+                                    u8"uwvm: "
+                                    u8"\033[31m"
+                                    u8"[fatal] "
+                                    u8"\033[0m"
+#ifdef __MSDOS__
+                                    u8"\033[37m"
+#else
+                                    u8"\033[97m"
+#endif
+                                    u8"(offset=",
+                                    ::fast_io::mnp::addrvw(curr - wasmmod.module_begin),
+                                    u8") "
+                                    u8"Invalid size."
+                                    u8"\n"
+                                    u8"\033[0m"
+                                    u8"Terminate.\n\n");
+                                ::fast_io::fast_terminate();
+                            }
+                    }
+
+                    curr = reinterpret_cast<::std::byte const*>(next_a);
+
+                    ::std::size_t offset{};
+                    auto const [next_o, err_o]{::fast_io::parse_by_scan(reinterpret_cast<char8_t_const_may_alias_ptr>(curr),
+                                                                        reinterpret_cast<char8_t_const_may_alias_ptr>(end),
+                                                                        ::fast_io::mnp::leb128_get(offset))};
+                    switch(err_o)
+                    {
+                        case ::fast_io::parse_code::ok: break;
+                        default:
+                            [[unlikely]]
+                            {
+                                ::fast_io::io::perr(::uwvm::u8err,
+                                    u8"\033[0m"
+#ifdef __MSDOS__
+                                    u8"\033[37m"
+#else
+                                    u8"\033[97m"
+#endif
+                                    u8"uwvm: "
+                                    u8"\033[31m"
+                                    u8"[fatal] "
+                                    u8"\033[0m"
+#ifdef __MSDOS__
+                                    u8"\033[37m"
+#else
+                                    u8"\033[97m"
+#endif
+                                    u8"(offset=",
+                                    ::fast_io::mnp::addrvw(curr - wasmmod.module_begin),
+                                    u8") "
+                                    u8"Invalid size."
+                                    u8"\n"
+                                    u8"\033[0m"
+                                    u8"Terminate.\n\n");
+                                ::fast_io::fast_terminate();
+                            }
+                    }
+
+                    curr = reinterpret_cast<::std::byte const*>(next_o);
+
+                    op.ext.end = reinterpret_cast<operator_t const*>(alignment);
+                    op.ext.branch = reinterpret_cast<operator_t const*>(offset);
+
+                    temp.operators.emplace_back_unchecked(op);
+
                     break;
                 }
                 case ::uwvm::wasm::op_basic::i64_store16:
                 {
-                    ::uwvm::unfinished();
+                    if(wasmmod.memorysec.memory_count == 0) [[unlikely]]
+                    {
+                        ::fast_io::io::perr(::uwvm::u8err,
+                                    u8"\033[0m"
+#ifdef __MSDOS__
+                                    u8"\033[37m"
+#else
+                                    u8"\033[97m"
+#endif
+                                    u8"uwvm: "
+                                    u8"\033[31m"
+                                    u8"[fatal] "
+                                    u8"\033[0m"
+#ifdef __MSDOS__
+                                    u8"\033[37m"
+#else
+                                    u8"\033[97m"
+#endif
+                                    u8"(offset=",
+                                    ::fast_io::mnp::addrvw(curr - wasmmod.module_begin),
+                                    u8") "
+                                    u8"No wasm memory found."
+                                    u8"\n"
+                                    u8"\033[0m"
+                                    u8"Terminate.\n\n");
+                        ::fast_io::fast_terminate();
+                    }
+
+                    op.int_func = __builtin_addressof(::uwvm::vm::interpreter::func::i64_store16);
+
+                    ++curr;
+
+                    ::std::size_t alignment{};
+                    auto const [next_a, err_a]{::fast_io::parse_by_scan(reinterpret_cast<char8_t_const_may_alias_ptr>(curr),
+                                                                        reinterpret_cast<char8_t_const_may_alias_ptr>(end),
+                                                                        ::fast_io::mnp::leb128_get(alignment))};
+                    switch(err_a)
+                    {
+                        case ::fast_io::parse_code::ok: break;
+                        default:
+                            [[unlikely]]
+                            {
+                                ::fast_io::io::perr(::uwvm::u8err,
+                                    u8"\033[0m"
+#ifdef __MSDOS__
+                                    u8"\033[37m"
+#else
+                                    u8"\033[97m"
+#endif
+                                    u8"uwvm: "
+                                    u8"\033[31m"
+                                    u8"[fatal] "
+                                    u8"\033[0m"
+#ifdef __MSDOS__
+                                    u8"\033[37m"
+#else
+                                    u8"\033[97m"
+#endif
+                                    u8"(offset=",
+                                    ::fast_io::mnp::addrvw(curr - wasmmod.module_begin),
+                                    u8") "
+                                    u8"Invalid size."
+                                    u8"\n"
+                                    u8"\033[0m"
+                                    u8"Terminate.\n\n");
+                                ::fast_io::fast_terminate();
+                            }
+                    }
+
+                    curr = reinterpret_cast<::std::byte const*>(next_a);
+
+                    ::std::size_t offset{};
+                    auto const [next_o, err_o]{::fast_io::parse_by_scan(reinterpret_cast<char8_t_const_may_alias_ptr>(curr),
+                                                                        reinterpret_cast<char8_t_const_may_alias_ptr>(end),
+                                                                        ::fast_io::mnp::leb128_get(offset))};
+                    switch(err_o)
+                    {
+                        case ::fast_io::parse_code::ok: break;
+                        default:
+                            [[unlikely]]
+                            {
+                                ::fast_io::io::perr(::uwvm::u8err,
+                                    u8"\033[0m"
+#ifdef __MSDOS__
+                                    u8"\033[37m"
+#else
+                                    u8"\033[97m"
+#endif
+                                    u8"uwvm: "
+                                    u8"\033[31m"
+                                    u8"[fatal] "
+                                    u8"\033[0m"
+#ifdef __MSDOS__
+                                    u8"\033[37m"
+#else
+                                    u8"\033[97m"
+#endif
+                                    u8"(offset=",
+                                    ::fast_io::mnp::addrvw(curr - wasmmod.module_begin),
+                                    u8") "
+                                    u8"Invalid size."
+                                    u8"\n"
+                                    u8"\033[0m"
+                                    u8"Terminate.\n\n");
+                                ::fast_io::fast_terminate();
+                            }
+                    }
+
+                    curr = reinterpret_cast<::std::byte const*>(next_o);
+
+                    op.ext.end = reinterpret_cast<operator_t const*>(alignment);
+                    op.ext.branch = reinterpret_cast<operator_t const*>(offset);
+
+                    temp.operators.emplace_back_unchecked(op);
+
                     break;
                 }
                 case ::uwvm::wasm::op_basic::i64_store32:
                 {
-                    ::uwvm::unfinished();
+                    if(wasmmod.memorysec.memory_count == 0) [[unlikely]]
+                    {
+                        ::fast_io::io::perr(::uwvm::u8err,
+                                    u8"\033[0m"
+#ifdef __MSDOS__
+                                    u8"\033[37m"
+#else
+                                    u8"\033[97m"
+#endif
+                                    u8"uwvm: "
+                                    u8"\033[31m"
+                                    u8"[fatal] "
+                                    u8"\033[0m"
+#ifdef __MSDOS__
+                                    u8"\033[37m"
+#else
+                                    u8"\033[97m"
+#endif
+                                    u8"(offset=",
+                                    ::fast_io::mnp::addrvw(curr - wasmmod.module_begin),
+                                    u8") "
+                                    u8"No wasm memory found."
+                                    u8"\n"
+                                    u8"\033[0m"
+                                    u8"Terminate.\n\n");
+                        ::fast_io::fast_terminate();
+                    }
+
+                    op.int_func = __builtin_addressof(::uwvm::vm::interpreter::func::i64_store32);
+
+                    ++curr;
+
+                    ::std::size_t alignment{};
+                    auto const [next_a, err_a]{::fast_io::parse_by_scan(reinterpret_cast<char8_t_const_may_alias_ptr>(curr),
+                                                                        reinterpret_cast<char8_t_const_may_alias_ptr>(end),
+                                                                        ::fast_io::mnp::leb128_get(alignment))};
+                    switch(err_a)
+                    {
+                        case ::fast_io::parse_code::ok: break;
+                        default:
+                            [[unlikely]]
+                            {
+                                ::fast_io::io::perr(::uwvm::u8err,
+                                    u8"\033[0m"
+#ifdef __MSDOS__
+                                    u8"\033[37m"
+#else
+                                    u8"\033[97m"
+#endif
+                                    u8"uwvm: "
+                                    u8"\033[31m"
+                                    u8"[fatal] "
+                                    u8"\033[0m"
+#ifdef __MSDOS__
+                                    u8"\033[37m"
+#else
+                                    u8"\033[97m"
+#endif
+                                    u8"(offset=",
+                                    ::fast_io::mnp::addrvw(curr - wasmmod.module_begin),
+                                    u8") "
+                                    u8"Invalid size."
+                                    u8"\n"
+                                    u8"\033[0m"
+                                    u8"Terminate.\n\n");
+                                ::fast_io::fast_terminate();
+                            }
+                    }
+
+                    curr = reinterpret_cast<::std::byte const*>(next_a);
+
+                    ::std::size_t offset{};
+                    auto const [next_o, err_o]{::fast_io::parse_by_scan(reinterpret_cast<char8_t_const_may_alias_ptr>(curr),
+                                                                        reinterpret_cast<char8_t_const_may_alias_ptr>(end),
+                                                                        ::fast_io::mnp::leb128_get(offset))};
+                    switch(err_o)
+                    {
+                        case ::fast_io::parse_code::ok: break;
+                        default:
+                            [[unlikely]]
+                            {
+                                ::fast_io::io::perr(::uwvm::u8err,
+                                    u8"\033[0m"
+#ifdef __MSDOS__
+                                    u8"\033[37m"
+#else
+                                    u8"\033[97m"
+#endif
+                                    u8"uwvm: "
+                                    u8"\033[31m"
+                                    u8"[fatal] "
+                                    u8"\033[0m"
+#ifdef __MSDOS__
+                                    u8"\033[37m"
+#else
+                                    u8"\033[97m"
+#endif
+                                    u8"(offset=",
+                                    ::fast_io::mnp::addrvw(curr - wasmmod.module_begin),
+                                    u8") "
+                                    u8"Invalid size."
+                                    u8"\n"
+                                    u8"\033[0m"
+                                    u8"Terminate.\n\n");
+                                ::fast_io::fast_terminate();
+                            }
+                    }
+
+                    curr = reinterpret_cast<::std::byte const*>(next_o);
+
+                    op.ext.end = reinterpret_cast<operator_t const*>(alignment);
+                    op.ext.branch = reinterpret_cast<operator_t const*>(offset);
+
+                    temp.operators.emplace_back_unchecked(op);
+
                     break;
                 }
                 case ::uwvm::wasm::op_basic::memory_size:

@@ -793,7 +793,7 @@ namespace uwvm::vm::interpreter::func
 
         auto const st{sm.stack.pop_element_unchecked()};
 
-        ::std::size_t mem{};
+        auto mem{reinterpret_cast<::std::size_t>(::uwvm::vm::interpreter::memories.front_unchecked().memory_begin)};
 
         switch(st.vt)
         {
@@ -843,7 +843,7 @@ namespace uwvm::vm::interpreter::func
 
         ::std::uint_least32_t ml{};
 
-        ::fast_io::freestanding::my_memcpy(__builtin_addressof(ml), ::uwvm::vm::interpreter::memories.front_unchecked().memory_begin, sizeof(ml));
+        ::fast_io::freestanding::my_memcpy(__builtin_addressof(ml), reinterpret_cast<void*>(mem), sizeof(ml));
         auto const pl{static_cast<::std::int_least32_t>(::fast_io::little_endian(ml))};
 
         sm.stack.push_unchecked(stack_t{.i32{pl}, .vt{::uwvm::wasm::value_type::i32}});
@@ -891,7 +891,7 @@ namespace uwvm::vm::interpreter::func
 
         auto const st{sm.stack.pop_element_unchecked()};
 
-        ::std::size_t mem{};
+        auto mem{reinterpret_cast<::std::size_t>(::uwvm::vm::interpreter::memories.front_unchecked().memory_begin)};
 
         switch(st.vt)
         {
@@ -941,7 +941,7 @@ namespace uwvm::vm::interpreter::func
 
         ::std::uint_least64_t ml{};
 
-        ::fast_io::freestanding::my_memcpy(__builtin_addressof(ml), ::uwvm::vm::interpreter::memories.front_unchecked().memory_begin, sizeof(ml));
+        ::fast_io::freestanding::my_memcpy(__builtin_addressof(ml), reinterpret_cast<void*>(mem), sizeof(ml));
         auto const pl{static_cast<::std::int_least64_t>(::fast_io::little_endian(ml))};
 
         sm.stack.push_unchecked(stack_t{.i64{pl}, .vt{::uwvm::wasm::value_type::i64}});
@@ -989,7 +989,7 @@ namespace uwvm::vm::interpreter::func
 
         auto const st{sm.stack.pop_element_unchecked()};
 
-        ::std::size_t mem{};
+        auto mem{reinterpret_cast<::std::size_t>(::uwvm::vm::interpreter::memories.front_unchecked().memory_begin)};
 
         switch(st.vt)
         {
@@ -1039,7 +1039,7 @@ namespace uwvm::vm::interpreter::func
 
         ::std::uint_least32_t ml{};
 
-        ::fast_io::freestanding::my_memcpy(__builtin_addressof(ml), ::uwvm::vm::interpreter::memories.front_unchecked().memory_begin, sizeof(ml));
+        ::fast_io::freestanding::my_memcpy(__builtin_addressof(ml), reinterpret_cast<void*>(mem), sizeof(ml));
         auto const pl{::std::bit_cast<::uwvm::wasm::wasm_f32>(::fast_io::little_endian(ml))};
 
         sm.stack.push_unchecked(stack_t{.f32{pl}, .vt{::uwvm::wasm::value_type::f32}});
@@ -1087,7 +1087,7 @@ namespace uwvm::vm::interpreter::func
 
         auto const st{sm.stack.pop_element_unchecked()};
 
-        ::std::size_t mem{};
+        auto mem{reinterpret_cast<::std::size_t>(::uwvm::vm::interpreter::memories.front_unchecked().memory_begin)};
 
         switch(st.vt)
         {
@@ -1137,7 +1137,7 @@ namespace uwvm::vm::interpreter::func
 
         ::std::uint_least64_t ml{};
 
-        ::fast_io::freestanding::my_memcpy(__builtin_addressof(ml), ::uwvm::vm::interpreter::memories.front_unchecked().memory_begin, sizeof(ml));
+        ::fast_io::freestanding::my_memcpy(__builtin_addressof(ml), reinterpret_cast<void*>(mem), sizeof(ml));
         auto const pl{::std::bit_cast<::uwvm::wasm::wasm_f64>(::fast_io::little_endian(ml))};
 
         sm.stack.push_unchecked(stack_t{.f64{pl}, .vt{::uwvm::wasm::value_type::f64}});
@@ -1185,7 +1185,7 @@ namespace uwvm::vm::interpreter::func
 
         auto const st{sm.stack.pop_element_unchecked()};
 
-        ::std::size_t mem{};
+        auto mem{reinterpret_cast<::std::size_t>(::uwvm::vm::interpreter::memories.front_unchecked().memory_begin)};
 
         switch(st.vt)
         {
@@ -1235,7 +1235,7 @@ namespace uwvm::vm::interpreter::func
 
         ::std::uint_least8_t ml{};
 
-        ::fast_io::freestanding::my_memcpy(__builtin_addressof(ml), ::uwvm::vm::interpreter::memories.front_unchecked().memory_begin, sizeof(ml));
+        ::fast_io::freestanding::my_memcpy(__builtin_addressof(ml), reinterpret_cast<void*>(mem), sizeof(ml));
         auto const pl{static_cast<::std::int_least8_t>(::fast_io::little_endian(ml))};
 
         sm.stack.push_unchecked(stack_t{.i32{static_cast<::std::int_least32_t>(pl)}, .vt{::uwvm::wasm::value_type::i32}});
@@ -1282,7 +1282,7 @@ namespace uwvm::vm::interpreter::func
 
         auto const st{sm.stack.pop_element_unchecked()};
 
-        ::std::size_t mem{};
+        auto mem{reinterpret_cast<::std::size_t>(::uwvm::vm::interpreter::memories.front_unchecked().memory_begin)};
 
         switch(st.vt)
         {
@@ -1332,7 +1332,7 @@ namespace uwvm::vm::interpreter::func
 
         ::std::uint_least8_t ml{};
 
-        ::fast_io::freestanding::my_memcpy(__builtin_addressof(ml), ::uwvm::vm::interpreter::memories.front_unchecked().memory_begin, sizeof(ml));
+        ::fast_io::freestanding::my_memcpy(__builtin_addressof(ml), reinterpret_cast<void*>(mem), sizeof(ml));
         auto const pl{static_cast<::std::uint_least8_t>(::fast_io::little_endian(ml))};
 
         sm.stack.push_unchecked(stack_t{.i32{static_cast<::std::int_least32_t>(pl)}, .vt{::uwvm::wasm::value_type::i32}});
@@ -1379,7 +1379,7 @@ namespace uwvm::vm::interpreter::func
 
         auto const st{sm.stack.pop_element_unchecked()};
 
-        ::std::size_t mem{};
+        auto mem{reinterpret_cast<::std::size_t>(::uwvm::vm::interpreter::memories.front_unchecked().memory_begin)};
 
         switch(st.vt)
         {
@@ -1429,7 +1429,7 @@ namespace uwvm::vm::interpreter::func
 
         ::std::uint_least16_t ml{};
 
-        ::fast_io::freestanding::my_memcpy(__builtin_addressof(ml), ::uwvm::vm::interpreter::memories.front_unchecked().memory_begin, sizeof(ml));
+        ::fast_io::freestanding::my_memcpy(__builtin_addressof(ml), reinterpret_cast<void*>(mem), sizeof(ml));
         auto const pl{static_cast<::std::int_least16_t>(::fast_io::little_endian(ml))};
 
         sm.stack.push_unchecked(stack_t{.i32{static_cast<::std::int_least32_t>(pl)}, .vt{::uwvm::wasm::value_type::i32}});
@@ -1476,7 +1476,7 @@ namespace uwvm::vm::interpreter::func
 
         auto const st{sm.stack.pop_element_unchecked()};
 
-        ::std::size_t mem{};
+        auto mem{reinterpret_cast<::std::size_t>(::uwvm::vm::interpreter::memories.front_unchecked().memory_begin)};
 
         switch(st.vt)
         {
@@ -1526,7 +1526,7 @@ namespace uwvm::vm::interpreter::func
 
         ::std::uint_least16_t ml{};
 
-        ::fast_io::freestanding::my_memcpy(__builtin_addressof(ml), ::uwvm::vm::interpreter::memories.front_unchecked().memory_begin, sizeof(ml));
+        ::fast_io::freestanding::my_memcpy(__builtin_addressof(ml), reinterpret_cast<void*>(mem), sizeof(ml));
         auto const pl{static_cast<::std::uint_least16_t>(::fast_io::little_endian(ml))};
 
         sm.stack.push_unchecked(stack_t{.i32{static_cast<::std::int_least32_t>(pl)}, .vt{::uwvm::wasm::value_type::i32}});
@@ -1573,7 +1573,7 @@ namespace uwvm::vm::interpreter::func
 
         auto const st{sm.stack.pop_element_unchecked()};
 
-        ::std::size_t mem{};
+        auto mem{reinterpret_cast<::std::size_t>(::uwvm::vm::interpreter::memories.front_unchecked().memory_begin)};
 
         switch(st.vt)
         {
@@ -1623,7 +1623,7 @@ namespace uwvm::vm::interpreter::func
 
         ::std::uint_least8_t ml{};
 
-        ::fast_io::freestanding::my_memcpy(__builtin_addressof(ml), ::uwvm::vm::interpreter::memories.front_unchecked().memory_begin, sizeof(ml));
+        ::fast_io::freestanding::my_memcpy(__builtin_addressof(ml), reinterpret_cast<void*>(mem), sizeof(ml));
         auto const pl{static_cast<::std::int_least8_t>(::fast_io::little_endian(ml))};
 
         sm.stack.push_unchecked(stack_t{.i64{static_cast<::std::int_least64_t>(pl)}, .vt{::uwvm::wasm::value_type::i64}});
@@ -1670,7 +1670,7 @@ namespace uwvm::vm::interpreter::func
 
         auto const st{sm.stack.pop_element_unchecked()};
 
-        ::std::size_t mem{};
+        auto mem{reinterpret_cast<::std::size_t>(::uwvm::vm::interpreter::memories.front_unchecked().memory_begin)};
 
         switch(st.vt)
         {
@@ -1720,7 +1720,7 @@ namespace uwvm::vm::interpreter::func
 
         ::std::uint_least8_t ml{};
 
-        ::fast_io::freestanding::my_memcpy(__builtin_addressof(ml), ::uwvm::vm::interpreter::memories.front_unchecked().memory_begin, sizeof(ml));
+        ::fast_io::freestanding::my_memcpy(__builtin_addressof(ml), reinterpret_cast<void*>(mem), sizeof(ml));
         auto const pl{static_cast<::std::uint_least8_t>(::fast_io::little_endian(ml))};
 
         sm.stack.push_unchecked(stack_t{.i64{static_cast<::std::int_least64_t>(pl)}, .vt{::uwvm::wasm::value_type::i64}});
@@ -1766,7 +1766,7 @@ namespace uwvm::vm::interpreter::func
 
         auto const st{sm.stack.pop_element_unchecked()};
 
-        ::std::size_t mem{};
+        auto mem{reinterpret_cast<::std::size_t>(::uwvm::vm::interpreter::memories.front_unchecked().memory_begin)};
 
         switch(st.vt)
         {
@@ -1816,7 +1816,7 @@ namespace uwvm::vm::interpreter::func
 
         ::std::uint_least16_t ml{};
 
-        ::fast_io::freestanding::my_memcpy(__builtin_addressof(ml), ::uwvm::vm::interpreter::memories.front_unchecked().memory_begin, sizeof(ml));
+        ::fast_io::freestanding::my_memcpy(__builtin_addressof(ml), reinterpret_cast<void*>(mem), sizeof(ml));
         auto const pl{static_cast<::std::int_least16_t>(::fast_io::little_endian(ml))};
 
         sm.stack.push_unchecked(stack_t{.i64{static_cast<::std::int_least64_t>(pl)}, .vt{::uwvm::wasm::value_type::i64}});
@@ -1863,7 +1863,7 @@ namespace uwvm::vm::interpreter::func
 
         auto const st{sm.stack.pop_element_unchecked()};
 
-        ::std::size_t mem{};
+        auto mem{reinterpret_cast<::std::size_t>(::uwvm::vm::interpreter::memories.front_unchecked().memory_begin)};
 
         switch(st.vt)
         {
@@ -1913,7 +1913,7 @@ namespace uwvm::vm::interpreter::func
 
         ::std::uint_least16_t ml{};
 
-        ::fast_io::freestanding::my_memcpy(__builtin_addressof(ml), ::uwvm::vm::interpreter::memories.front_unchecked().memory_begin, sizeof(ml));
+        ::fast_io::freestanding::my_memcpy(__builtin_addressof(ml), reinterpret_cast<void*>(mem), sizeof(ml));
         auto const pl{static_cast<::std::uint_least16_t>(::fast_io::little_endian(ml))};
 
         sm.stack.push_unchecked(stack_t{.i64{static_cast<::std::int_least64_t>(pl)}, .vt{::uwvm::wasm::value_type::i64}});
@@ -1960,7 +1960,7 @@ namespace uwvm::vm::interpreter::func
 
         auto const st{sm.stack.pop_element_unchecked()};
 
-        ::std::size_t mem{};
+        auto mem{reinterpret_cast<::std::size_t>(::uwvm::vm::interpreter::memories.front_unchecked().memory_begin)};
 
         switch(st.vt)
         {
@@ -2010,7 +2010,7 @@ namespace uwvm::vm::interpreter::func
 
         ::std::uint_least32_t ml{};
 
-        ::fast_io::freestanding::my_memcpy(__builtin_addressof(ml), ::uwvm::vm::interpreter::memories.front_unchecked().memory_begin, sizeof(ml));
+        ::fast_io::freestanding::my_memcpy(__builtin_addressof(ml), reinterpret_cast<void*>(mem), sizeof(ml));
         auto const pl{static_cast<::std::int_least32_t>(::fast_io::little_endian(ml))};
 
         sm.stack.push_unchecked(stack_t{.i64{static_cast<::std::int_least64_t>(pl)}, .vt{::uwvm::wasm::value_type::i64}});
@@ -2057,7 +2057,7 @@ namespace uwvm::vm::interpreter::func
 
         auto const st{sm.stack.pop_element_unchecked()};
 
-        ::std::size_t mem{};
+        auto mem{reinterpret_cast<::std::size_t>(::uwvm::vm::interpreter::memories.front_unchecked().memory_begin)};
 
         switch(st.vt)
         {
@@ -2107,10 +2107,1144 @@ namespace uwvm::vm::interpreter::func
 
         ::std::uint_least32_t ml{};
 
-        ::fast_io::freestanding::my_memcpy(__builtin_addressof(ml), ::uwvm::vm::interpreter::memories.front_unchecked().memory_begin, sizeof(ml));
+        ::fast_io::freestanding::my_memcpy(__builtin_addressof(ml), reinterpret_cast<void*>(mem), sizeof(ml));
         auto const pl{static_cast<::std::uint_least32_t>(::fast_io::little_endian(ml))};
 
         sm.stack.push_unchecked(stack_t{.i64{static_cast<::std::int_least64_t>(pl)}, .vt{::uwvm::wasm::value_type::i64}});
+        ++sm.curr_op;
+    }
+
+#if __has_cpp_attribute(__gnu__::__hot__)
+    [[__gnu__::__hot__]]
+#endif
+    inline void
+        i32_store(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
+    {
+        auto const aligment{reinterpret_cast<::std::size_t>(sm.curr_op->ext.end)};
+        auto const offset{reinterpret_cast<::std::size_t>(sm.curr_op->ext.branch)};
+
+        if(sm.stack.size() < sm.stack_top + 2) [[unlikely]]
+        {
+            ::fast_io::io::perr(::uwvm::u8err,
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"uwvm: "
+                                u8"\033[31m"
+                                u8"[fatal] "
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"(offset=",
+                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
+                                u8") "
+                                u8"The data stack is empty."
+                                u8"\n"
+                                u8"\033[0m"
+                                u8"Terminate.\n\n");
+            ::uwvm::backtrace();
+            ::fast_io::fast_terminate();
+        }
+
+        auto const num{sm.stack.pop_element_unchecked()};
+
+        if(num.vt != ::uwvm::wasm::value_type::i32) [[unlikely]]
+        {
+            ::fast_io::io::perr(::uwvm::u8err,
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"uwvm: "
+                                u8"\033[31m"
+                                u8"[fatal] "
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"(offset=",
+                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
+                                u8") "
+                                u8"The data type is not i32."
+                                u8"\n"
+                                u8"\033[0m"
+                                u8"Terminate.\n\n");
+            ::uwvm::backtrace();
+            ::fast_io::fast_terminate();
+        }
+
+        auto const st{sm.stack.pop_element_unchecked()};
+
+        auto mem{reinterpret_cast<::std::size_t>(::uwvm::vm::interpreter::memories.front_unchecked().memory_begin)};
+
+        switch(st.vt)
+        {
+            case ::uwvm::wasm::value_type::i32:
+            {
+                mem = static_cast<::std::size_t>(st.i32);
+                break;
+            }
+            case ::uwvm::wasm::value_type::i64:
+            {
+                mem = static_cast<::std::size_t>(st.i64);
+                break;
+            }
+            default:
+                [[unlikely]]
+                {
+                    ::fast_io::io::perr(::uwvm::u8err,
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"uwvm: "
+                                u8"\033[31m"
+                                u8"[fatal] "
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"(offset=",
+                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
+                                u8") "
+                                u8"The data type not match local type."
+                                u8"\n"
+                                u8"\033[0m"
+                                u8"Terminate.\n\n");
+                    ::uwvm::backtrace();
+                    ::fast_io::fast_terminate();
+                }
+        }
+
+        mem += offset;
+        mem = ((mem + (static_cast<::std::size_t>(1) << aligment) - 1) >> aligment) << aligment;
+
+        auto const ml{::fast_io::little_endian(static_cast<::std::uint_least32_t>(num.i32))};
+
+        ::fast_io::freestanding::my_memcpy(reinterpret_cast<void*>(mem), __builtin_addressof(ml), sizeof(ml));
+
+        ++sm.curr_op;
+    }
+
+#if __has_cpp_attribute(__gnu__::__hot__)
+    [[__gnu__::__hot__]]
+#endif
+    inline void
+        i64_store(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
+    {
+        auto const aligment{reinterpret_cast<::std::size_t>(sm.curr_op->ext.end)};
+        auto const offset{reinterpret_cast<::std::size_t>(sm.curr_op->ext.branch)};
+
+        if(sm.stack.size() < sm.stack_top + 2) [[unlikely]]
+        {
+            ::fast_io::io::perr(::uwvm::u8err,
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"uwvm: "
+                                u8"\033[31m"
+                                u8"[fatal] "
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"(offset=",
+                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
+                                u8") "
+                                u8"The data stack is empty."
+                                u8"\n"
+                                u8"\033[0m"
+                                u8"Terminate.\n\n");
+            ::uwvm::backtrace();
+            ::fast_io::fast_terminate();
+        }
+
+        auto const num{sm.stack.pop_element_unchecked()};
+
+        if(num.vt != ::uwvm::wasm::value_type::i64) [[unlikely]]
+        {
+            ::fast_io::io::perr(::uwvm::u8err,
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"uwvm: "
+                                u8"\033[31m"
+                                u8"[fatal] "
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"(offset=",
+                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
+                                u8") "
+                                u8"The data type is not i64."
+                                u8"\n"
+                                u8"\033[0m"
+                                u8"Terminate.\n\n");
+            ::uwvm::backtrace();
+            ::fast_io::fast_terminate();
+        }
+
+        auto const st{sm.stack.pop_element_unchecked()};
+
+        auto mem{reinterpret_cast<::std::size_t>(::uwvm::vm::interpreter::memories.front_unchecked().memory_begin)};
+
+        switch(st.vt)
+        {
+            case ::uwvm::wasm::value_type::i32:
+            {
+                mem = static_cast<::std::size_t>(st.i32);
+                break;
+            }
+            case ::uwvm::wasm::value_type::i64:
+            {
+                mem = static_cast<::std::size_t>(st.i64);
+                break;
+            }
+            default:
+                [[unlikely]]
+                {
+                    ::fast_io::io::perr(::uwvm::u8err,
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"uwvm: "
+                                u8"\033[31m"
+                                u8"[fatal] "
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"(offset=",
+                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
+                                u8") "
+                                u8"The data type not match local type."
+                                u8"\n"
+                                u8"\033[0m"
+                                u8"Terminate.\n\n");
+                    ::uwvm::backtrace();
+                    ::fast_io::fast_terminate();
+                }
+        }
+
+        mem += offset;
+        mem = ((mem + (static_cast<::std::size_t>(1) << aligment) - 1) >> aligment) << aligment;
+
+        auto const ml{::fast_io::little_endian(static_cast<::std::uint_least64_t>(num.i64))};
+
+        ::fast_io::freestanding::my_memcpy(reinterpret_cast<void*>(mem), __builtin_addressof(ml), sizeof(ml));
+
+        ++sm.curr_op;
+    }
+
+#if __has_cpp_attribute(__gnu__::__hot__)
+    [[__gnu__::__hot__]]
+#endif
+    inline void
+        f32_store(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
+    {
+        auto const aligment{reinterpret_cast<::std::size_t>(sm.curr_op->ext.end)};
+        auto const offset{reinterpret_cast<::std::size_t>(sm.curr_op->ext.branch)};
+
+        if(sm.stack.size() < sm.stack_top + 2) [[unlikely]]
+        {
+            ::fast_io::io::perr(::uwvm::u8err,
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"uwvm: "
+                                u8"\033[31m"
+                                u8"[fatal] "
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"(offset=",
+                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
+                                u8") "
+                                u8"The data stack is empty."
+                                u8"\n"
+                                u8"\033[0m"
+                                u8"Terminate.\n\n");
+            ::uwvm::backtrace();
+            ::fast_io::fast_terminate();
+        }
+
+        auto const num{sm.stack.pop_element_unchecked()};
+
+        if(num.vt != ::uwvm::wasm::value_type::f32) [[unlikely]]
+        {
+            ::fast_io::io::perr(::uwvm::u8err,
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"uwvm: "
+                                u8"\033[31m"
+                                u8"[fatal] "
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"(offset=",
+                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
+                                u8") "
+                                u8"The data type is not f32."
+                                u8"\n"
+                                u8"\033[0m"
+                                u8"Terminate.\n\n");
+            ::uwvm::backtrace();
+            ::fast_io::fast_terminate();
+        }
+
+        auto const st{sm.stack.pop_element_unchecked()};
+
+        auto mem{reinterpret_cast<::std::size_t>(::uwvm::vm::interpreter::memories.front_unchecked().memory_begin)};
+
+        switch(st.vt)
+        {
+            case ::uwvm::wasm::value_type::i32:
+            {
+                mem = static_cast<::std::size_t>(st.i32);
+                break;
+            }
+            case ::uwvm::wasm::value_type::i64:
+            {
+                mem = static_cast<::std::size_t>(st.i64);
+                break;
+            }
+            default:
+                [[unlikely]]
+                {
+                    ::fast_io::io::perr(::uwvm::u8err,
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"uwvm: "
+                                u8"\033[31m"
+                                u8"[fatal] "
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"(offset=",
+                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
+                                u8") "
+                                u8"The data type not match local type."
+                                u8"\n"
+                                u8"\033[0m"
+                                u8"Terminate.\n\n");
+                    ::uwvm::backtrace();
+                    ::fast_io::fast_terminate();
+                }
+        }
+
+        mem += offset;
+        mem = ((mem + (static_cast<::std::size_t>(1) << aligment) - 1) >> aligment) << aligment;
+
+        auto const ml{::fast_io::little_endian(::std::bit_cast<::std::uint_least32_t>(num.f32))};
+
+        ::fast_io::freestanding::my_memcpy(reinterpret_cast<void*>(mem), __builtin_addressof(ml), sizeof(ml));
+
+        ++sm.curr_op;
+    }
+
+#if __has_cpp_attribute(__gnu__::__hot__)
+    [[__gnu__::__hot__]]
+#endif
+    inline void
+        f64_store(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
+    {
+        auto const aligment{reinterpret_cast<::std::size_t>(sm.curr_op->ext.end)};
+        auto const offset{reinterpret_cast<::std::size_t>(sm.curr_op->ext.branch)};
+
+        if(sm.stack.size() < sm.stack_top + 2) [[unlikely]]
+        {
+            ::fast_io::io::perr(::uwvm::u8err,
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"uwvm: "
+                                u8"\033[31m"
+                                u8"[fatal] "
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"(offset=",
+                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
+                                u8") "
+                                u8"The data stack is empty."
+                                u8"\n"
+                                u8"\033[0m"
+                                u8"Terminate.\n\n");
+            ::uwvm::backtrace();
+            ::fast_io::fast_terminate();
+        }
+
+        auto const num{sm.stack.pop_element_unchecked()};
+
+        if(num.vt != ::uwvm::wasm::value_type::f64) [[unlikely]]
+        {
+            ::fast_io::io::perr(::uwvm::u8err,
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"uwvm: "
+                                u8"\033[31m"
+                                u8"[fatal] "
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"(offset=",
+                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
+                                u8") "
+                                u8"The data type is not f64."
+                                u8"\n"
+                                u8"\033[0m"
+                                u8"Terminate.\n\n");
+            ::uwvm::backtrace();
+            ::fast_io::fast_terminate();
+        }
+
+        auto const st{sm.stack.pop_element_unchecked()};
+
+        auto mem{reinterpret_cast<::std::size_t>(::uwvm::vm::interpreter::memories.front_unchecked().memory_begin)};
+
+        switch(st.vt)
+        {
+            case ::uwvm::wasm::value_type::i32:
+            {
+                mem = static_cast<::std::size_t>(st.i32);
+                break;
+            }
+            case ::uwvm::wasm::value_type::i64:
+            {
+                mem = static_cast<::std::size_t>(st.i64);
+                break;
+            }
+            default:
+                [[unlikely]]
+                {
+                    ::fast_io::io::perr(::uwvm::u8err,
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"uwvm: "
+                                u8"\033[31m"
+                                u8"[fatal] "
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"(offset=",
+                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
+                                u8") "
+                                u8"The data type not match local type."
+                                u8"\n"
+                                u8"\033[0m"
+                                u8"Terminate.\n\n");
+                    ::uwvm::backtrace();
+                    ::fast_io::fast_terminate();
+                }
+        }
+
+        mem += offset;
+        mem = ((mem + (static_cast<::std::size_t>(1) << aligment) - 1) >> aligment) << aligment;
+
+        auto const ml{::fast_io::little_endian(::std::bit_cast<::std::uint_least64_t>(num.f64))};
+
+        ::fast_io::freestanding::my_memcpy(reinterpret_cast<void*>(mem), __builtin_addressof(ml), sizeof(ml));
+
+        ++sm.curr_op;
+    }
+
+#if __has_cpp_attribute(__gnu__::__hot__)
+    [[__gnu__::__hot__]]
+#endif
+    inline void
+        i32_store8(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
+    {
+        auto const aligment{reinterpret_cast<::std::size_t>(sm.curr_op->ext.end)};
+        auto const offset{reinterpret_cast<::std::size_t>(sm.curr_op->ext.branch)};
+
+        if(sm.stack.size() < sm.stack_top + 2) [[unlikely]]
+        {
+            ::fast_io::io::perr(::uwvm::u8err,
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"uwvm: "
+                                u8"\033[31m"
+                                u8"[fatal] "
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"(offset=",
+                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
+                                u8") "
+                                u8"The data stack is empty."
+                                u8"\n"
+                                u8"\033[0m"
+                                u8"Terminate.\n\n");
+            ::uwvm::backtrace();
+            ::fast_io::fast_terminate();
+        }
+
+        auto const num{sm.stack.pop_element_unchecked()};
+
+        if(num.vt != ::uwvm::wasm::value_type::i32) [[unlikely]]
+        {
+            ::fast_io::io::perr(::uwvm::u8err,
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"uwvm: "
+                                u8"\033[31m"
+                                u8"[fatal] "
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"(offset=",
+                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
+                                u8") "
+                                u8"The data type is not i32."
+                                u8"\n"
+                                u8"\033[0m"
+                                u8"Terminate.\n\n");
+            ::uwvm::backtrace();
+            ::fast_io::fast_terminate();
+        }
+
+        auto const st{sm.stack.pop_element_unchecked()};
+
+        auto mem{reinterpret_cast<::std::size_t>(::uwvm::vm::interpreter::memories.front_unchecked().memory_begin)};
+
+        switch(st.vt)
+        {
+            case ::uwvm::wasm::value_type::i32:
+            {
+                mem = static_cast<::std::size_t>(st.i32);
+                break;
+            }
+            case ::uwvm::wasm::value_type::i64:
+            {
+                mem = static_cast<::std::size_t>(st.i64);
+                break;
+            }
+            default:
+                [[unlikely]]
+                {
+                    ::fast_io::io::perr(::uwvm::u8err,
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"uwvm: "
+                                u8"\033[31m"
+                                u8"[fatal] "
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"(offset=",
+                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
+                                u8") "
+                                u8"The data type not match local type."
+                                u8"\n"
+                                u8"\033[0m"
+                                u8"Terminate.\n\n");
+                    ::uwvm::backtrace();
+                    ::fast_io::fast_terminate();
+                }
+        }
+
+        mem += offset;
+        mem = ((mem + (static_cast<::std::size_t>(1) << aligment) - 1) >> aligment) << aligment;
+
+        auto const ml{::fast_io::little_endian(static_cast<::std::uint_least8_t>(static_cast<::std::uint_least32_t>(num.i32)))};
+
+        ::fast_io::freestanding::my_memcpy(reinterpret_cast<void*>(mem), __builtin_addressof(ml), sizeof(ml));
+
+        ++sm.curr_op;
+    }
+
+#if __has_cpp_attribute(__gnu__::__hot__)
+    [[__gnu__::__hot__]]
+#endif
+    inline void
+        i32_store16(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
+    {
+        auto const aligment{reinterpret_cast<::std::size_t>(sm.curr_op->ext.end)};
+        auto const offset{reinterpret_cast<::std::size_t>(sm.curr_op->ext.branch)};
+
+        if(sm.stack.size() < sm.stack_top + 2) [[unlikely]]
+        {
+            ::fast_io::io::perr(::uwvm::u8err,
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"uwvm: "
+                                u8"\033[31m"
+                                u8"[fatal] "
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"(offset=",
+                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
+                                u8") "
+                                u8"The data stack is empty."
+                                u8"\n"
+                                u8"\033[0m"
+                                u8"Terminate.\n\n");
+            ::uwvm::backtrace();
+            ::fast_io::fast_terminate();
+        }
+
+        auto const num{sm.stack.pop_element_unchecked()};
+
+        if(num.vt != ::uwvm::wasm::value_type::i32) [[unlikely]]
+        {
+            ::fast_io::io::perr(::uwvm::u8err,
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"uwvm: "
+                                u8"\033[31m"
+                                u8"[fatal] "
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"(offset=",
+                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
+                                u8") "
+                                u8"The data type is not i32."
+                                u8"\n"
+                                u8"\033[0m"
+                                u8"Terminate.\n\n");
+            ::uwvm::backtrace();
+            ::fast_io::fast_terminate();
+        }
+
+        auto const st{sm.stack.pop_element_unchecked()};
+
+        auto mem{reinterpret_cast<::std::size_t>(::uwvm::vm::interpreter::memories.front_unchecked().memory_begin)};
+
+        switch(st.vt)
+        {
+            case ::uwvm::wasm::value_type::i32:
+            {
+                mem = static_cast<::std::size_t>(st.i32);
+                break;
+            }
+            case ::uwvm::wasm::value_type::i64:
+            {
+                mem = static_cast<::std::size_t>(st.i64);
+                break;
+            }
+            default:
+                [[unlikely]]
+                {
+                    ::fast_io::io::perr(::uwvm::u8err,
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"uwvm: "
+                                u8"\033[31m"
+                                u8"[fatal] "
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"(offset=",
+                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
+                                u8") "
+                                u8"The data type not match local type."
+                                u8"\n"
+                                u8"\033[0m"
+                                u8"Terminate.\n\n");
+                    ::uwvm::backtrace();
+                    ::fast_io::fast_terminate();
+                }
+        }
+
+        mem += offset;
+        mem = ((mem + (static_cast<::std::size_t>(1) << aligment) - 1) >> aligment) << aligment;
+
+        auto const ml{::fast_io::little_endian(static_cast<::std::uint_least16_t>(static_cast<::std::uint_least32_t>(num.i32)))};
+
+        ::fast_io::freestanding::my_memcpy(reinterpret_cast<void*>(mem), __builtin_addressof(ml), sizeof(ml));
+
+        ++sm.curr_op;
+    }
+
+#if __has_cpp_attribute(__gnu__::__hot__)
+    [[__gnu__::__hot__]]
+#endif
+    inline void
+        i64_store8(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
+    {
+        auto const aligment{reinterpret_cast<::std::size_t>(sm.curr_op->ext.end)};
+        auto const offset{reinterpret_cast<::std::size_t>(sm.curr_op->ext.branch)};
+
+        if(sm.stack.size() < sm.stack_top + 2) [[unlikely]]
+        {
+            ::fast_io::io::perr(::uwvm::u8err,
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"uwvm: "
+                                u8"\033[31m"
+                                u8"[fatal] "
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"(offset=",
+                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
+                                u8") "
+                                u8"The data stack is empty."
+                                u8"\n"
+                                u8"\033[0m"
+                                u8"Terminate.\n\n");
+            ::uwvm::backtrace();
+            ::fast_io::fast_terminate();
+        }
+
+        auto const num{sm.stack.pop_element_unchecked()};
+
+        if(num.vt != ::uwvm::wasm::value_type::i64) [[unlikely]]
+        {
+            ::fast_io::io::perr(::uwvm::u8err,
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"uwvm: "
+                                u8"\033[31m"
+                                u8"[fatal] "
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"(offset=",
+                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
+                                u8") "
+                                u8"The data type is not i64."
+                                u8"\n"
+                                u8"\033[0m"
+                                u8"Terminate.\n\n");
+            ::uwvm::backtrace();
+            ::fast_io::fast_terminate();
+        }
+
+        auto const st{sm.stack.pop_element_unchecked()};
+
+        auto mem{reinterpret_cast<::std::size_t>(::uwvm::vm::interpreter::memories.front_unchecked().memory_begin)};
+
+        switch(st.vt)
+        {
+            case ::uwvm::wasm::value_type::i32:
+            {
+                mem = static_cast<::std::size_t>(st.i32);
+                break;
+            }
+            case ::uwvm::wasm::value_type::i64:
+            {
+                mem = static_cast<::std::size_t>(st.i64);
+                break;
+            }
+            default:
+                [[unlikely]]
+                {
+                    ::fast_io::io::perr(::uwvm::u8err,
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"uwvm: "
+                                u8"\033[31m"
+                                u8"[fatal] "
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"(offset=",
+                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
+                                u8") "
+                                u8"The data type not match local type."
+                                u8"\n"
+                                u8"\033[0m"
+                                u8"Terminate.\n\n");
+                    ::uwvm::backtrace();
+                    ::fast_io::fast_terminate();
+                }
+        }
+
+        mem += offset;
+        mem = ((mem + (static_cast<::std::size_t>(1) << aligment) - 1) >> aligment) << aligment;
+
+        auto const ml{::fast_io::little_endian(static_cast<::std::uint_least8_t>(static_cast<::std::uint_least64_t>(num.i64)))};
+
+        ::fast_io::freestanding::my_memcpy(reinterpret_cast<void*>(mem), __builtin_addressof(ml), sizeof(ml));
+
+        ++sm.curr_op;
+    }
+
+#if __has_cpp_attribute(__gnu__::__hot__)
+    [[__gnu__::__hot__]]
+#endif
+    inline void
+        i64_store16(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
+    {
+        auto const aligment{reinterpret_cast<::std::size_t>(sm.curr_op->ext.end)};
+        auto const offset{reinterpret_cast<::std::size_t>(sm.curr_op->ext.branch)};
+
+        if(sm.stack.size() < sm.stack_top + 2) [[unlikely]]
+        {
+            ::fast_io::io::perr(::uwvm::u8err,
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"uwvm: "
+                                u8"\033[31m"
+                                u8"[fatal] "
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"(offset=",
+                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
+                                u8") "
+                                u8"The data stack is empty."
+                                u8"\n"
+                                u8"\033[0m"
+                                u8"Terminate.\n\n");
+            ::uwvm::backtrace();
+            ::fast_io::fast_terminate();
+        }
+
+        auto const num{sm.stack.pop_element_unchecked()};
+
+        if(num.vt != ::uwvm::wasm::value_type::i64) [[unlikely]]
+        {
+            ::fast_io::io::perr(::uwvm::u8err,
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"uwvm: "
+                                u8"\033[31m"
+                                u8"[fatal] "
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"(offset=",
+                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
+                                u8") "
+                                u8"The data type is not i64."
+                                u8"\n"
+                                u8"\033[0m"
+                                u8"Terminate.\n\n");
+            ::uwvm::backtrace();
+            ::fast_io::fast_terminate();
+        }
+
+        auto const st{sm.stack.pop_element_unchecked()};
+
+        auto mem{reinterpret_cast<::std::size_t>(::uwvm::vm::interpreter::memories.front_unchecked().memory_begin)};
+
+        switch(st.vt)
+        {
+            case ::uwvm::wasm::value_type::i32:
+            {
+                mem = static_cast<::std::size_t>(st.i32);
+                break;
+            }
+            case ::uwvm::wasm::value_type::i64:
+            {
+                mem = static_cast<::std::size_t>(st.i64);
+                break;
+            }
+            default:
+                [[unlikely]]
+                {
+                    ::fast_io::io::perr(::uwvm::u8err,
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"uwvm: "
+                                u8"\033[31m"
+                                u8"[fatal] "
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"(offset=",
+                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
+                                u8") "
+                                u8"The data type not match local type."
+                                u8"\n"
+                                u8"\033[0m"
+                                u8"Terminate.\n\n");
+                    ::uwvm::backtrace();
+                    ::fast_io::fast_terminate();
+                }
+        }
+
+        mem += offset;
+        mem = ((mem + (static_cast<::std::size_t>(1) << aligment) - 1) >> aligment) << aligment;
+
+        auto const ml{::fast_io::little_endian(static_cast<::std::uint_least16_t>(static_cast<::std::uint_least64_t>(num.i64)))};
+
+        ::fast_io::freestanding::my_memcpy(reinterpret_cast<void*>(mem), __builtin_addressof(ml), sizeof(ml));
+
+        ++sm.curr_op;
+    }
+
+#if __has_cpp_attribute(__gnu__::__hot__)
+    [[__gnu__::__hot__]]
+#endif
+    inline void
+        i64_store32(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
+    {
+        auto const aligment{reinterpret_cast<::std::size_t>(sm.curr_op->ext.end)};
+        auto const offset{reinterpret_cast<::std::size_t>(sm.curr_op->ext.branch)};
+
+        if(sm.stack.size() < sm.stack_top + 2) [[unlikely]]
+        {
+            ::fast_io::io::perr(::uwvm::u8err,
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"uwvm: "
+                                u8"\033[31m"
+                                u8"[fatal] "
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"(offset=",
+                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
+                                u8") "
+                                u8"The data stack is empty."
+                                u8"\n"
+                                u8"\033[0m"
+                                u8"Terminate.\n\n");
+            ::uwvm::backtrace();
+            ::fast_io::fast_terminate();
+        }
+
+        auto const num{sm.stack.pop_element_unchecked()};
+
+        if(num.vt != ::uwvm::wasm::value_type::i64) [[unlikely]]
+        {
+            ::fast_io::io::perr(::uwvm::u8err,
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"uwvm: "
+                                u8"\033[31m"
+                                u8"[fatal] "
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"(offset=",
+                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
+                                u8") "
+                                u8"The data type is not i64."
+                                u8"\n"
+                                u8"\033[0m"
+                                u8"Terminate.\n\n");
+            ::uwvm::backtrace();
+            ::fast_io::fast_terminate();
+        }
+
+        auto const st{sm.stack.pop_element_unchecked()};
+
+        auto mem{reinterpret_cast<::std::size_t>(::uwvm::vm::interpreter::memories.front_unchecked().memory_begin)};
+
+        switch(st.vt)
+        {
+            case ::uwvm::wasm::value_type::i32:
+            {
+                mem = static_cast<::std::size_t>(st.i32);
+                break;
+            }
+            case ::uwvm::wasm::value_type::i64:
+            {
+                mem = static_cast<::std::size_t>(st.i64);
+                break;
+            }
+            default:
+                [[unlikely]]
+                {
+                    ::fast_io::io::perr(::uwvm::u8err,
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"uwvm: "
+                                u8"\033[31m"
+                                u8"[fatal] "
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"(offset=",
+                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
+                                u8") "
+                                u8"The data type not match local type."
+                                u8"\n"
+                                u8"\033[0m"
+                                u8"Terminate.\n\n");
+                    ::uwvm::backtrace();
+                    ::fast_io::fast_terminate();
+                }
+        }
+
+        mem += offset;
+        mem = ((mem + (static_cast<::std::size_t>(1) << aligment) - 1) >> aligment) << aligment;
+
+        auto const ml{::fast_io::little_endian(static_cast<::std::uint_least32_t>(static_cast<::std::uint_least64_t>(num.i64)))};
+
+        ::fast_io::freestanding::my_memcpy(reinterpret_cast<void*>(mem), __builtin_addressof(ml), sizeof(ml));
+
         ++sm.curr_op;
     }
 
