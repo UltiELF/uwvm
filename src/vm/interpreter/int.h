@@ -11,9 +11,10 @@
 #include "aststorge.h"
 #include "global.h"
 
+#include "memory/memory.h"
+
 #include "astgen.h"
 #include "astrun.h"
-#include "memory/memory.h"
 
 namespace uwvm::vm::interpreter
 {

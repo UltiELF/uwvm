@@ -5,6 +5,7 @@
 
 #include "../ast.h"
 #include "../global.h"
+#include "../memory/memory.h"
 #include "../../../run/wasm_file.h"
 
 namespace uwvm::vm::interpreter::func
