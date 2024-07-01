@@ -25,7 +25,7 @@ namespace uwvm::vm::interpreter::memory
         void init_by_memory_type(::uwvm::wasm::memory_type const& msec) noexcept
         {
             mutex.lock();
-            memory_length = msec.limits.min * system_page_size;
+            memory_length = msec.limits.min * page_size;
             memory_begin = reinterpret_cast<::std::byte*>(Alloc::allocate(memory_length));
             mutex.unlock();
         }
@@ -68,13 +68,13 @@ namespace uwvm::vm::interpreter::memory
 
                 static auto const max{max_generate()};
 
-                if(sz <= max && memory_length / system_page_size <= max - sz) [[likely]]
+                if(sz <= max && memory_length / page_size <= max - sz) [[likely]]
                 {
                     mutex.lock();
 
                     [[maybe_unused]] auto const old_length{memory_length};
 
-                    memory_length += sz * system_page_size;
+                    memory_length += sz * page_size;
 
                     if constexpr(Alloc::has_reallocate_zero)
                     {
@@ -121,6 +121,8 @@ namespace uwvm::vm::interpreter::memory
                 }
             }
         }
+
+        ::std::size_t get_page_size() const noexcept { return memory_length / page_size; }
 
         basic_memory_t(basic_memory_t const& other) noexcept
         {

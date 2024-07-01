@@ -7,11 +7,11 @@
 #include "../../run/wasm_file.h"
 #include "../wasm.h"
 
+#include "memory/memory.h"
+
 #include "ast.h"
 #include "aststorge.h"
 #include "global.h"
-
-#include "memory/memory.h"
 
 #include "astgen.h"
 #include "astrun.h"

@@ -843,7 +843,7 @@ namespace uwvm::vm::interpreter::func
 
         ::std::uint_least32_t ml{};
 
-        ::fast_io::freestanding::my_memcpy(__builtin_addressof(ml), reinterpret_cast<void*>(mem), sizeof(ml));
+        ::fast_io::freestanding::my_memcpy(__builtin_addressof(ml), reinterpret_cast<void const*>(mem), sizeof(ml));
         auto const pl{static_cast<::std::int_least32_t>(::fast_io::little_endian(ml))};
 
         sm.stack.push_unchecked(stack_t{.i32{pl}, .vt{::uwvm::wasm::value_type::i32}});
@@ -941,7 +941,7 @@ namespace uwvm::vm::interpreter::func
 
         ::std::uint_least64_t ml{};
 
-        ::fast_io::freestanding::my_memcpy(__builtin_addressof(ml), reinterpret_cast<void*>(mem), sizeof(ml));
+        ::fast_io::freestanding::my_memcpy(__builtin_addressof(ml), reinterpret_cast<void const*>(mem), sizeof(ml));
         auto const pl{static_cast<::std::int_least64_t>(::fast_io::little_endian(ml))};
 
         sm.stack.push_unchecked(stack_t{.i64{pl}, .vt{::uwvm::wasm::value_type::i64}});
@@ -1039,7 +1039,7 @@ namespace uwvm::vm::interpreter::func
 
         ::std::uint_least32_t ml{};
 
-        ::fast_io::freestanding::my_memcpy(__builtin_addressof(ml), reinterpret_cast<void*>(mem), sizeof(ml));
+        ::fast_io::freestanding::my_memcpy(__builtin_addressof(ml), reinterpret_cast<void const*>(mem), sizeof(ml));
         auto const pl{::std::bit_cast<::uwvm::wasm::wasm_f32>(::fast_io::little_endian(ml))};
 
         sm.stack.push_unchecked(stack_t{.f32{pl}, .vt{::uwvm::wasm::value_type::f32}});
@@ -1137,7 +1137,7 @@ namespace uwvm::vm::interpreter::func
 
         ::std::uint_least64_t ml{};
 
-        ::fast_io::freestanding::my_memcpy(__builtin_addressof(ml), reinterpret_cast<void*>(mem), sizeof(ml));
+        ::fast_io::freestanding::my_memcpy(__builtin_addressof(ml), reinterpret_cast<void const*>(mem), sizeof(ml));
         auto const pl{::std::bit_cast<::uwvm::wasm::wasm_f64>(::fast_io::little_endian(ml))};
 
         sm.stack.push_unchecked(stack_t{.f64{pl}, .vt{::uwvm::wasm::value_type::f64}});
@@ -1235,7 +1235,7 @@ namespace uwvm::vm::interpreter::func
 
         ::std::uint_least8_t ml{};
 
-        ::fast_io::freestanding::my_memcpy(__builtin_addressof(ml), reinterpret_cast<void*>(mem), sizeof(ml));
+        ::fast_io::freestanding::my_memcpy(__builtin_addressof(ml), reinterpret_cast<void const*>(mem), sizeof(ml));
         auto const pl{static_cast<::std::int_least8_t>(::fast_io::little_endian(ml))};
 
         sm.stack.push_unchecked(stack_t{.i32{static_cast<::std::int_least32_t>(pl)}, .vt{::uwvm::wasm::value_type::i32}});
@@ -1332,7 +1332,7 @@ namespace uwvm::vm::interpreter::func
 
         ::std::uint_least8_t ml{};
 
-        ::fast_io::freestanding::my_memcpy(__builtin_addressof(ml), reinterpret_cast<void*>(mem), sizeof(ml));
+        ::fast_io::freestanding::my_memcpy(__builtin_addressof(ml), reinterpret_cast<void const*>(mem), sizeof(ml));
         auto const pl{static_cast<::std::uint_least8_t>(::fast_io::little_endian(ml))};
 
         sm.stack.push_unchecked(stack_t{.i32{static_cast<::std::int_least32_t>(pl)}, .vt{::uwvm::wasm::value_type::i32}});
@@ -1429,7 +1429,7 @@ namespace uwvm::vm::interpreter::func
 
         ::std::uint_least16_t ml{};
 
-        ::fast_io::freestanding::my_memcpy(__builtin_addressof(ml), reinterpret_cast<void*>(mem), sizeof(ml));
+        ::fast_io::freestanding::my_memcpy(__builtin_addressof(ml), reinterpret_cast<void const*>(mem), sizeof(ml));
         auto const pl{static_cast<::std::int_least16_t>(::fast_io::little_endian(ml))};
 
         sm.stack.push_unchecked(stack_t{.i32{static_cast<::std::int_least32_t>(pl)}, .vt{::uwvm::wasm::value_type::i32}});
@@ -1526,7 +1526,7 @@ namespace uwvm::vm::interpreter::func
 
         ::std::uint_least16_t ml{};
 
-        ::fast_io::freestanding::my_memcpy(__builtin_addressof(ml), reinterpret_cast<void*>(mem), sizeof(ml));
+        ::fast_io::freestanding::my_memcpy(__builtin_addressof(ml), reinterpret_cast<void const*>(mem), sizeof(ml));
         auto const pl{static_cast<::std::uint_least16_t>(::fast_io::little_endian(ml))};
 
         sm.stack.push_unchecked(stack_t{.i32{static_cast<::std::int_least32_t>(pl)}, .vt{::uwvm::wasm::value_type::i32}});
@@ -1623,7 +1623,7 @@ namespace uwvm::vm::interpreter::func
 
         ::std::uint_least8_t ml{};
 
-        ::fast_io::freestanding::my_memcpy(__builtin_addressof(ml), reinterpret_cast<void*>(mem), sizeof(ml));
+        ::fast_io::freestanding::my_memcpy(__builtin_addressof(ml), reinterpret_cast<void const*>(mem), sizeof(ml));
         auto const pl{static_cast<::std::int_least8_t>(::fast_io::little_endian(ml))};
 
         sm.stack.push_unchecked(stack_t{.i64{static_cast<::std::int_least64_t>(pl)}, .vt{::uwvm::wasm::value_type::i64}});
@@ -1720,7 +1720,7 @@ namespace uwvm::vm::interpreter::func
 
         ::std::uint_least8_t ml{};
 
-        ::fast_io::freestanding::my_memcpy(__builtin_addressof(ml), reinterpret_cast<void*>(mem), sizeof(ml));
+        ::fast_io::freestanding::my_memcpy(__builtin_addressof(ml), reinterpret_cast<void const*>(mem), sizeof(ml));
         auto const pl{static_cast<::std::uint_least8_t>(::fast_io::little_endian(ml))};
 
         sm.stack.push_unchecked(stack_t{.i64{static_cast<::std::int_least64_t>(pl)}, .vt{::uwvm::wasm::value_type::i64}});
@@ -1816,7 +1816,7 @@ namespace uwvm::vm::interpreter::func
 
         ::std::uint_least16_t ml{};
 
-        ::fast_io::freestanding::my_memcpy(__builtin_addressof(ml), reinterpret_cast<void*>(mem), sizeof(ml));
+        ::fast_io::freestanding::my_memcpy(__builtin_addressof(ml), reinterpret_cast<void const*>(mem), sizeof(ml));
         auto const pl{static_cast<::std::int_least16_t>(::fast_io::little_endian(ml))};
 
         sm.stack.push_unchecked(stack_t{.i64{static_cast<::std::int_least64_t>(pl)}, .vt{::uwvm::wasm::value_type::i64}});
@@ -1913,7 +1913,7 @@ namespace uwvm::vm::interpreter::func
 
         ::std::uint_least16_t ml{};
 
-        ::fast_io::freestanding::my_memcpy(__builtin_addressof(ml), reinterpret_cast<void*>(mem), sizeof(ml));
+        ::fast_io::freestanding::my_memcpy(__builtin_addressof(ml), reinterpret_cast<void const*>(mem), sizeof(ml));
         auto const pl{static_cast<::std::uint_least16_t>(::fast_io::little_endian(ml))};
 
         sm.stack.push_unchecked(stack_t{.i64{static_cast<::std::int_least64_t>(pl)}, .vt{::uwvm::wasm::value_type::i64}});
@@ -2010,7 +2010,7 @@ namespace uwvm::vm::interpreter::func
 
         ::std::uint_least32_t ml{};
 
-        ::fast_io::freestanding::my_memcpy(__builtin_addressof(ml), reinterpret_cast<void*>(mem), sizeof(ml));
+        ::fast_io::freestanding::my_memcpy(__builtin_addressof(ml), reinterpret_cast<void const*>(mem), sizeof(ml));
         auto const pl{static_cast<::std::int_least32_t>(::fast_io::little_endian(ml))};
 
         sm.stack.push_unchecked(stack_t{.i64{static_cast<::std::int_least64_t>(pl)}, .vt{::uwvm::wasm::value_type::i64}});
@@ -2107,7 +2107,7 @@ namespace uwvm::vm::interpreter::func
 
         ::std::uint_least32_t ml{};
 
-        ::fast_io::freestanding::my_memcpy(__builtin_addressof(ml), reinterpret_cast<void*>(mem), sizeof(ml));
+        ::fast_io::freestanding::my_memcpy(__builtin_addressof(ml), reinterpret_cast<void const*>(mem), sizeof(ml));
         auto const pl{static_cast<::std::uint_least32_t>(::fast_io::little_endian(ml))};
 
         sm.stack.push_unchecked(stack_t{.i64{static_cast<::std::int_least64_t>(pl)}, .vt{::uwvm::wasm::value_type::i64}});
@@ -3244,6 +3244,24 @@ namespace uwvm::vm::interpreter::func
         auto const ml{::fast_io::little_endian(static_cast<::std::uint_least32_t>(static_cast<::std::uint_least64_t>(num.i64)))};
 
         ::fast_io::freestanding::my_memcpy(reinterpret_cast<void*>(mem), __builtin_addressof(ml), sizeof(ml));
+
+        ++sm.curr_op;
+    }
+
+#if __has_cpp_attribute(__gnu__::__hot__)
+    [[__gnu__::__hot__]]
+#endif
+    inline void
+        memory_size(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
+    {
+        using memory_t_const_may_alias_ptr
+#if __has_cpp_attribute(__gnu__::__may_alias__)
+            [[__gnu__::__may_alias__]]
+#endif
+            = ::uwvm::vm::interpreter::memory::memory_t const*;
+        auto const mem{reinterpret_cast<memory_t_const_may_alias_ptr>(sm.curr_op->ext.branch)};
+
+        sm.stack.push(stack_t{.i32{static_cast<::std::int_least32_t>(mem->get_page_size())}, .vt{::uwvm::wasm::value_type::i32}});
 
         ++sm.curr_op;
     }

@@ -25,7 +25,7 @@ namespace uwvm::vm::interpreter::memory
                                                                                     nullptr)};
             if(status) [[unlikely]]
             {
-                ::fast_io::io::perrln( uwvm::u8out,::fast_io::error{::fast_io::nt_domain_value, status});
+                ::fast_io::io::perrln(uwvm::u8out, ::fast_io::error{::fast_io::nt_domain_value, status});
                 constexpr ::std::size_t ps{::uwvm::instrinsic::floor_log2(static_cast<::std::size_t>(4096))};
                 return ps;
             }
@@ -62,7 +62,7 @@ namespace uwvm::vm::interpreter::memory
             mutex.lock();
             auto const mpslg2{system_page_size};
 
-            memory_length = msec.limits.min << mpslg2;
+            memory_length = msec.limits.min * page_size;
 
             ::std::size_t memory_max_pages{};
             if(::uwvm::features::enable_memory64)
@@ -78,13 +78,14 @@ namespace uwvm::vm::interpreter::memory
             }
             constexpr ::std::size_t memory_num_guard_bytes{65536};
             auto const num_guard_pages = memory_num_guard_bytes >> mpslg2;
-            auto total_pages{memory_max_pages + num_guard_pages};
+            auto const total_pages{memory_max_pages + num_guard_pages};
+            auto total_pages_bytes{total_pages << mpslg2};
 
             ::std::byte* vamemory{};
             auto status{::fast_io::win32::nt::nt_allocate_virtual_memory<zw>(reinterpret_cast<void*>(-1),
                                                                              reinterpret_cast<void**>(__builtin_addressof(vamemory)),
                                                                              0,
-                                                                             __builtin_addressof(total_pages),
+                                                                             __builtin_addressof(total_pages_bytes),
                                                                              0x00002000 /*MEM_RESERVE*/,
                                                                              0x01 /*PAGE_NOACCESS*/)};
 
@@ -144,11 +145,11 @@ namespace uwvm::vm::interpreter::memory
 
                 auto const mpslg2{system_page_size};
 
-                if(sz <= max && memory_length >> system_page_size <= max - sz) [[likely]]
+                if(sz <= max && memory_length / page_size <= max - sz) [[likely]]
                 {
                     mutex.lock();
 
-                    memory_length += sz << mpslg2;
+                    memory_length += sz * page_size;
 
                     ::std::byte* vamemory{memory_begin};
                     auto const status{::fast_io::win32::nt::nt_allocate_virtual_memory<zw>(reinterpret_cast<void*>(-1),
@@ -189,6 +190,8 @@ namespace uwvm::vm::interpreter::memory
             }
         }
 
+        ::std::size_t get_page_size() const noexcept { return memory_length / page_size; }
+
         nt_family_memory_t(nt_family_memory_t const& other) noexcept
         {
             memory_length = other.memory_length;
@@ -196,15 +199,11 @@ namespace uwvm::vm::interpreter::memory
             auto const mpslg2{system_page_size};
 
             ::std::size_t memory_max_pages{};
-            if(::uwvm::features::enable_memory64)
-            {
-                memory_max_pages = ::std::max(memory_length >> mpslg2, (static_cast<::std::uint_fast64_t>(8) * 1024 * 1024 * 1024) >> mpslg2);
-                memory_max_pages <<= ::uwvm::wasm::num_bytes_per_page_log2 - mpslg2;
-            }
+            if(::uwvm::features::enable_memory64) { memory_max_pages = ::std::max(memory_length, (static_cast<::std::uint_fast64_t>(8) * 1024 * 1024 * 1024)); }
             else
             {
-                if constexpr(sizeof(::std::size_t) == 8) { memory_max_pages = (static_cast<::std::uint_fast64_t>(8) * 1024 * 1024 * 1024) >> mpslg2; }
-                else { memory_max_pages = (static_cast<::std::uint_fast64_t>(2) * 1024 * 1024 * 1024) >> mpslg2; }
+                if constexpr(sizeof(::std::size_t) == 8) { memory_max_pages = (static_cast<::std::uint_fast64_t>(8) * 1024 * 1024 * 1024); }
+                else { memory_max_pages = (static_cast<::std::uint_fast64_t>(2) * 1024 * 1024 * 1024); }
             }
 
             ::std::byte* vamemory{};
@@ -241,15 +240,11 @@ namespace uwvm::vm::interpreter::memory
             auto const mpslg2{system_page_size};
 
             ::std::size_t memory_max_pages{};
-            if(::uwvm::features::enable_memory64)
-            {
-                memory_max_pages = ::std::max(memory_length >> mpslg2, (static_cast<::std::uint_fast64_t>(8) * 1024 * 1024 * 1024) >> mpslg2);
-                memory_max_pages <<= ::uwvm::wasm::num_bytes_per_page_log2 - mpslg2;
-            }
+            if(::uwvm::features::enable_memory64) { memory_max_pages = ::std::max(memory_length, (static_cast<::std::uint_fast64_t>(8) * 1024 * 1024 * 1024)); }
             else
             {
-                if constexpr(sizeof(::std::size_t) == 8) { memory_max_pages = (static_cast<::std::uint_fast64_t>(8) * 1024 * 1024 * 1024) >> mpslg2; }
-                else { memory_max_pages = (static_cast<::std::uint_fast64_t>(2) * 1024 * 1024 * 1024) >> mpslg2; }
+                if constexpr(sizeof(::std::size_t) == 8) { memory_max_pages = (static_cast<::std::uint_fast64_t>(8) * 1024 * 1024 * 1024); }
+                else { memory_max_pages = (static_cast<::std::uint_fast64_t>(2) * 1024 * 1024 * 1024); }
             }
 
             ::std::byte* vamemory{};
@@ -305,9 +300,9 @@ namespace uwvm::vm::interpreter::memory
                 ::std::byte* vfmemory{memory_begin};
                 ::std::size_t free_type{0};
                 if(::fast_io::win32::nt::nt_free_virtual_memory<zw>(reinterpret_cast<void*>(-1),
-                                                                     reinterpret_cast<void**>(__builtin_addressof(vfmemory)),
-                                                                     __builtin_addressof(free_type),
-                                                                     0x00008000 /*MEM_RELEASE*/)) [[unlikely]]
+                                                                    reinterpret_cast<void**>(__builtin_addressof(vfmemory)),
+                                                                    __builtin_addressof(free_type),
+                                                                    0x00008000 /*MEM_RELEASE*/)) [[unlikely]]
                 {
                     ::fast_io::fast_terminate();
                 }
