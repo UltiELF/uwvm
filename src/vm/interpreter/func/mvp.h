@@ -381,7 +381,7 @@ namespace uwvm::vm::interpreter::func
     inline void
         local_get(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
     {
-        auto const index{reinterpret_cast<::std::size_t>(sm.curr_op->ext.branch)};
+        auto const index{sm.curr_op->ext.sz2};
         auto const& local{sm.local_storages.get_container().index_unchecked(sm.local_top + index)};
 
         sm.stack.push(local);
@@ -395,7 +395,7 @@ namespace uwvm::vm::interpreter::func
     inline void
         local_set(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
     {
-        auto const index{reinterpret_cast<::std::size_t>(sm.curr_op->ext.branch)};
+        auto const index{sm.curr_op->ext.sz2};
         auto& local{sm.local_storages.get_container().index_unchecked(sm.local_top + index)};
         auto const local_type{local.vt};
 
@@ -469,7 +469,7 @@ namespace uwvm::vm::interpreter::func
     inline void
         local_tee(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
     {
-        auto const index{reinterpret_cast<::std::size_t>(sm.curr_op->ext.branch)};
+        auto const index{sm.curr_op->ext.sz2};
         auto& local{sm.local_storages.get_container().index_unchecked(sm.local_top + index)};
         auto const local_type{local.vt};
 
@@ -759,8 +759,8 @@ namespace uwvm::vm::interpreter::func
     inline void
         i32_load(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
     {
-        auto const aligment{reinterpret_cast<::std::size_t>(sm.curr_op->ext.end)};
-        auto const offset{reinterpret_cast<::std::size_t>(sm.curr_op->ext.branch)};
+        auto const aligment{sm.curr_op->ext.sz1};
+        auto const offset{sm.curr_op->ext.sz2};
 
         if(sm.stack.size() <= sm.stack_top) [[unlikely]]
         {
@@ -857,8 +857,8 @@ namespace uwvm::vm::interpreter::func
     inline void
         i64_load(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
     {
-        auto const aligment{reinterpret_cast<::std::size_t>(sm.curr_op->ext.end)};
-        auto const offset{reinterpret_cast<::std::size_t>(sm.curr_op->ext.branch)};
+        auto const aligment{sm.curr_op->ext.sz1};
+        auto const offset{sm.curr_op->ext.sz2};
 
         if(sm.stack.size() <= sm.stack_top) [[unlikely]]
         {
@@ -955,8 +955,8 @@ namespace uwvm::vm::interpreter::func
     inline void
         f32_load(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
     {
-        auto const aligment{reinterpret_cast<::std::size_t>(sm.curr_op->ext.end)};
-        auto const offset{reinterpret_cast<::std::size_t>(sm.curr_op->ext.branch)};
+        auto const aligment{sm.curr_op->ext.sz1};
+        auto const offset{sm.curr_op->ext.sz2};
 
         if(sm.stack.size() <= sm.stack_top) [[unlikely]]
         {
@@ -1053,8 +1053,8 @@ namespace uwvm::vm::interpreter::func
     inline void
         f64_load(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
     {
-        auto const aligment{reinterpret_cast<::std::size_t>(sm.curr_op->ext.end)};
-        auto const offset{reinterpret_cast<::std::size_t>(sm.curr_op->ext.branch)};
+        auto const aligment{sm.curr_op->ext.sz1};
+        auto const offset{sm.curr_op->ext.sz2};
 
         if(sm.stack.size() <= sm.stack_top) [[unlikely]]
         {
@@ -1151,8 +1151,8 @@ namespace uwvm::vm::interpreter::func
     inline void
         i32_load8_s(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
     {
-        auto const aligment{reinterpret_cast<::std::size_t>(sm.curr_op->ext.end)};
-        auto const offset{reinterpret_cast<::std::size_t>(sm.curr_op->ext.branch)};
+        auto const aligment{sm.curr_op->ext.sz1};
+        auto const offset{sm.curr_op->ext.sz2};
 
         if(sm.stack.size() <= sm.stack_top) [[unlikely]]
         {
@@ -1248,8 +1248,8 @@ namespace uwvm::vm::interpreter::func
     inline void
         i32_load8_u(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
     {
-        auto const aligment{reinterpret_cast<::std::size_t>(sm.curr_op->ext.end)};
-        auto const offset{reinterpret_cast<::std::size_t>(sm.curr_op->ext.branch)};
+        auto const aligment{sm.curr_op->ext.sz1};
+        auto const offset{sm.curr_op->ext.sz2};
 
         if(sm.stack.size() <= sm.stack_top) [[unlikely]]
         {
@@ -1345,8 +1345,8 @@ namespace uwvm::vm::interpreter::func
     inline void
         i32_load16_s(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
     {
-        auto const aligment{reinterpret_cast<::std::size_t>(sm.curr_op->ext.end)};
-        auto const offset{reinterpret_cast<::std::size_t>(sm.curr_op->ext.branch)};
+        auto const aligment{sm.curr_op->ext.sz1};
+        auto const offset{sm.curr_op->ext.sz2};
 
         if(sm.stack.size() <= sm.stack_top) [[unlikely]]
         {
@@ -1442,8 +1442,8 @@ namespace uwvm::vm::interpreter::func
     inline void
         i32_load16_u(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
     {
-        auto const aligment{reinterpret_cast<::std::size_t>(sm.curr_op->ext.end)};
-        auto const offset{reinterpret_cast<::std::size_t>(sm.curr_op->ext.branch)};
+        auto const aligment{sm.curr_op->ext.sz1};
+        auto const offset{sm.curr_op->ext.sz2};
 
         if(sm.stack.size() <= sm.stack_top) [[unlikely]]
         {
@@ -1539,8 +1539,8 @@ namespace uwvm::vm::interpreter::func
     inline void
         i64_load8_s(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
     {
-        auto const aligment{reinterpret_cast<::std::size_t>(sm.curr_op->ext.end)};
-        auto const offset{reinterpret_cast<::std::size_t>(sm.curr_op->ext.branch)};
+        auto const aligment{sm.curr_op->ext.sz1};
+        auto const offset{sm.curr_op->ext.sz2};
 
         if(sm.stack.size() <= sm.stack_top) [[unlikely]]
         {
@@ -1636,8 +1636,8 @@ namespace uwvm::vm::interpreter::func
     inline void
         i64_load8_u(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
     {
-        auto const aligment{reinterpret_cast<::std::size_t>(sm.curr_op->ext.end)};
-        auto const offset{reinterpret_cast<::std::size_t>(sm.curr_op->ext.branch)};
+        auto const aligment{sm.curr_op->ext.sz1};
+        auto const offset{sm.curr_op->ext.sz2};
 
         if(sm.stack.size() <= sm.stack_top) [[unlikely]]
         {
@@ -1732,8 +1732,8 @@ namespace uwvm::vm::interpreter::func
     inline void
         i64_load16_s(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
     {
-        auto const aligment{reinterpret_cast<::std::size_t>(sm.curr_op->ext.end)};
-        auto const offset{reinterpret_cast<::std::size_t>(sm.curr_op->ext.branch)};
+        auto const aligment{sm.curr_op->ext.sz1};
+        auto const offset{sm.curr_op->ext.sz2};
 
         if(sm.stack.size() <= sm.stack_top) [[unlikely]]
         {
@@ -1829,8 +1829,8 @@ namespace uwvm::vm::interpreter::func
     inline void
         i64_load16_u(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
     {
-        auto const aligment{reinterpret_cast<::std::size_t>(sm.curr_op->ext.end)};
-        auto const offset{reinterpret_cast<::std::size_t>(sm.curr_op->ext.branch)};
+        auto const aligment{sm.curr_op->ext.sz1};
+        auto const offset{sm.curr_op->ext.sz2};
 
         if(sm.stack.size() <= sm.stack_top) [[unlikely]]
         {
@@ -1926,8 +1926,8 @@ namespace uwvm::vm::interpreter::func
     inline void
         i64_load32_s(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
     {
-        auto const aligment{reinterpret_cast<::std::size_t>(sm.curr_op->ext.end)};
-        auto const offset{reinterpret_cast<::std::size_t>(sm.curr_op->ext.branch)};
+        auto const aligment{sm.curr_op->ext.sz1};
+        auto const offset{sm.curr_op->ext.sz2};
 
         if(sm.stack.size() <= sm.stack_top) [[unlikely]]
         {
@@ -2023,8 +2023,8 @@ namespace uwvm::vm::interpreter::func
     inline void
         i64_load32_u(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
     {
-        auto const aligment{reinterpret_cast<::std::size_t>(sm.curr_op->ext.end)};
-        auto const offset{reinterpret_cast<::std::size_t>(sm.curr_op->ext.branch)};
+        auto const aligment{sm.curr_op->ext.sz1};
+        auto const offset{sm.curr_op->ext.sz2};
 
         if(sm.stack.size() <= sm.stack_top) [[unlikely]]
         {
@@ -2120,8 +2120,8 @@ namespace uwvm::vm::interpreter::func
     inline void
         i32_store(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
     {
-        auto const aligment{reinterpret_cast<::std::size_t>(sm.curr_op->ext.end)};
-        auto const offset{reinterpret_cast<::std::size_t>(sm.curr_op->ext.branch)};
+        auto const aligment{sm.curr_op->ext.sz1};
+        auto const offset{sm.curr_op->ext.sz2};
 
         if(sm.stack.size() < sm.stack_top + 2) [[unlikely]]
         {
@@ -2246,8 +2246,8 @@ namespace uwvm::vm::interpreter::func
     inline void
         i64_store(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
     {
-        auto const aligment{reinterpret_cast<::std::size_t>(sm.curr_op->ext.end)};
-        auto const offset{reinterpret_cast<::std::size_t>(sm.curr_op->ext.branch)};
+        auto const aligment{sm.curr_op->ext.sz1};
+        auto const offset{sm.curr_op->ext.sz2};
 
         if(sm.stack.size() < sm.stack_top + 2) [[unlikely]]
         {
@@ -2372,8 +2372,8 @@ namespace uwvm::vm::interpreter::func
     inline void
         f32_store(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
     {
-        auto const aligment{reinterpret_cast<::std::size_t>(sm.curr_op->ext.end)};
-        auto const offset{reinterpret_cast<::std::size_t>(sm.curr_op->ext.branch)};
+        auto const aligment{sm.curr_op->ext.sz1};
+        auto const offset{sm.curr_op->ext.sz2};
 
         if(sm.stack.size() < sm.stack_top + 2) [[unlikely]]
         {
@@ -2498,8 +2498,8 @@ namespace uwvm::vm::interpreter::func
     inline void
         f64_store(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
     {
-        auto const aligment{reinterpret_cast<::std::size_t>(sm.curr_op->ext.end)};
-        auto const offset{reinterpret_cast<::std::size_t>(sm.curr_op->ext.branch)};
+        auto const aligment{sm.curr_op->ext.sz1};
+        auto const offset{sm.curr_op->ext.sz2};
 
         if(sm.stack.size() < sm.stack_top + 2) [[unlikely]]
         {
@@ -2624,8 +2624,8 @@ namespace uwvm::vm::interpreter::func
     inline void
         i32_store8(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
     {
-        auto const aligment{reinterpret_cast<::std::size_t>(sm.curr_op->ext.end)};
-        auto const offset{reinterpret_cast<::std::size_t>(sm.curr_op->ext.branch)};
+        auto const aligment{sm.curr_op->ext.sz1};
+        auto const offset{sm.curr_op->ext.sz2};
 
         if(sm.stack.size() < sm.stack_top + 2) [[unlikely]]
         {
@@ -2750,8 +2750,8 @@ namespace uwvm::vm::interpreter::func
     inline void
         i32_store16(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
     {
-        auto const aligment{reinterpret_cast<::std::size_t>(sm.curr_op->ext.end)};
-        auto const offset{reinterpret_cast<::std::size_t>(sm.curr_op->ext.branch)};
+        auto const aligment{sm.curr_op->ext.sz1};
+        auto const offset{sm.curr_op->ext.sz2};
 
         if(sm.stack.size() < sm.stack_top + 2) [[unlikely]]
         {
@@ -2876,8 +2876,8 @@ namespace uwvm::vm::interpreter::func
     inline void
         i64_store8(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
     {
-        auto const aligment{reinterpret_cast<::std::size_t>(sm.curr_op->ext.end)};
-        auto const offset{reinterpret_cast<::std::size_t>(sm.curr_op->ext.branch)};
+        auto const aligment{sm.curr_op->ext.sz1};
+        auto const offset{sm.curr_op->ext.sz2};
 
         if(sm.stack.size() < sm.stack_top + 2) [[unlikely]]
         {
@@ -3002,8 +3002,8 @@ namespace uwvm::vm::interpreter::func
     inline void
         i64_store16(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
     {
-        auto const aligment{reinterpret_cast<::std::size_t>(sm.curr_op->ext.end)};
-        auto const offset{reinterpret_cast<::std::size_t>(sm.curr_op->ext.branch)};
+        auto const aligment{sm.curr_op->ext.sz1};
+        auto const offset{sm.curr_op->ext.sz2};
 
         if(sm.stack.size() < sm.stack_top + 2) [[unlikely]]
         {
@@ -3128,8 +3128,8 @@ namespace uwvm::vm::interpreter::func
     inline void
         i64_store32(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
     {
-        auto const aligment{reinterpret_cast<::std::size_t>(sm.curr_op->ext.end)};
-        auto const offset{reinterpret_cast<::std::size_t>(sm.curr_op->ext.branch)};
+        auto const aligment{sm.curr_op->ext.sz1};
+        auto const offset{sm.curr_op->ext.sz2};
 
         if(sm.stack.size() < sm.stack_top + 2) [[unlikely]]
         {
@@ -3266,4 +3266,131 @@ namespace uwvm::vm::interpreter::func
         ++sm.curr_op;
     }
 
+#if __has_cpp_attribute(__gnu__::__hot__)
+    [[__gnu__::__hot__]]
+#endif
+    inline void
+        memory_grow(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
+    {
+        using memory_t_may_alias_ptr
+#if __has_cpp_attribute(__gnu__::__may_alias__)
+            [[__gnu__::__may_alias__]]
+#endif
+            = ::uwvm::vm::interpreter::memory::memory_t*;
+        auto mem{reinterpret_cast<memory_t_may_alias_ptr>(const_cast<::uwvm::vm::interpreter::operator_t*>(sm.curr_op->ext.branch))};
+
+        if(sm.stack.size() <= sm.stack_top) [[unlikely]]
+        {
+            ::fast_io::io::perr(::uwvm::u8err,
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"uwvm: "
+                                u8"\033[31m"
+                                u8"[fatal] "
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"(offset=",
+                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
+                                u8") "
+                                u8"The data stack is empty."
+                                u8"\n"
+                                u8"\033[0m"
+                                u8"Terminate.\n\n");
+            ::uwvm::backtrace();
+            ::fast_io::fast_terminate();
+        }
+
+        auto const num{sm.stack.pop_element_unchecked()};
+
+        if(num.vt != ::uwvm::wasm::value_type::i32) [[unlikely]]
+        {
+            ::fast_io::io::perr(::uwvm::u8err,
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"uwvm: "
+                                u8"\033[31m"
+                                u8"[fatal] "
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"(offset=",
+                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
+                                u8") "
+                                u8"The data type is not i32."
+                                u8"\n"
+                                u8"\033[0m"
+                                u8"Terminate.\n\n");
+            ::uwvm::backtrace();
+            ::fast_io::fast_terminate();
+        }
+
+        // Due to the overcommit mechanism, failure situations are not considered
+
+        sm.stack.push_unchecked(stack_t{.i32{static_cast<::std::int_least32_t>(mem->get_page_size())}, .vt{::uwvm::wasm::value_type::i32}});
+
+        using memory_type_const_may_alias_ptr
+#if __has_cpp_attribute(__gnu__::__may_alias__)
+            [[__gnu__::__may_alias__]]
+#endif
+            = ::uwvm::wasm::memory_type const*;
+
+        mem->grow_by_memory_type(*reinterpret_cast<memory_type_const_may_alias_ptr>(sm.curr_op->ext.end), static_cast<::std::size_t>(num.i32));
+
+        ++sm.curr_op;
+    }
+
+#if __has_cpp_attribute(__gnu__::__hot__)
+    [[__gnu__::__hot__]]
+#endif
+    inline void
+        i32_const(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
+    {
+        sm.stack.push(stack_t{.i32{sm.curr_op->ext.i32}, .vt{::uwvm::wasm::value_type::i32}});
+        ++sm.curr_op;
+    }
+
+#if __has_cpp_attribute(__gnu__::__hot__)
+    [[__gnu__::__hot__]]
+#endif
+    inline void
+        i64_const(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
+    {
+        sm.stack.push(stack_t{.i64{sm.curr_op->ext.i64}, .vt{::uwvm::wasm::value_type::i64}});
+        ++sm.curr_op;
+    }
+
+#if __has_cpp_attribute(__gnu__::__hot__)
+    [[__gnu__::__hot__]]
+#endif
+    inline void
+        f32_const(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
+    {
+        sm.stack.push(stack_t{.f32{sm.curr_op->ext.f32}, .vt{::uwvm::wasm::value_type::f32}});
+        ++sm.curr_op;
+    }
+
+#if __has_cpp_attribute(__gnu__::__hot__)
+    [[__gnu__::__hot__]]
+#endif
+    inline void
+        f64_const(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
+    {
+        sm.stack.push(stack_t{.f64{sm.curr_op->ext.f64}, .vt{::uwvm::wasm::value_type::f64}});
+        ++sm.curr_op;
+    }
 }  // namespace uwvm::vm::interpreter::func

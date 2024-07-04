@@ -140,17 +140,27 @@ namespace uwvm::vm::interpreter
     {
         union
         {
+            // pointers
             struct 
             {
                 operator_t const* end;
                 operator_t const* branch;
             };
 
+            // size_t
+            struct
+            {
+                ::std::size_t sz1; // end
+                ::std::size_t sz2; // branch
+            };
+
+            // value
             ::uwvm::wasm::wasm_i32 i32;
             ::uwvm::wasm::wasm_i64 i64;
             ::uwvm::wasm::wasm_f32 f32;
             ::uwvm::wasm::wasm_f64 f64;
             ::uwvm::wasm::wasm_v128 v128;
+
         };
     };
 

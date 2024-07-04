@@ -961,7 +961,7 @@ namespace uwvm::vm::interpreter
                                 ::fast_io::fast_terminate();
                             }
                     }
-                    op.ext.branch = reinterpret_cast<operator_t const*>(index);
+                    op.ext.sz2 = index;
 
                     temp.operators.emplace_back_unchecked(op);
                     curr = reinterpret_cast<::std::byte const*>(next);
@@ -1173,7 +1173,7 @@ namespace uwvm::vm::interpreter
                         ::fast_io::fast_terminate();
                     }
 
-                    op.ext.branch = reinterpret_cast<operator_t const*>(index);
+                    op.ext.sz2 = index;
                     temp.operators.emplace_back_unchecked(op);
 
                     curr = reinterpret_cast<::std::byte const*>(next);
@@ -1251,7 +1251,7 @@ namespace uwvm::vm::interpreter
                         ::fast_io::fast_terminate();
                     }
 
-                    op.ext.branch = reinterpret_cast<operator_t const*>(index);
+                    op.ext.sz2 = index;
                     temp.operators.emplace_back_unchecked(op);
 
                     curr = reinterpret_cast<::std::byte const*>(next);
@@ -1329,7 +1329,7 @@ namespace uwvm::vm::interpreter
                         ::fast_io::fast_terminate();
                     }
 
-                    op.ext.branch = reinterpret_cast<operator_t const*>(index);
+                    op.ext.sz2 = index;
                     temp.operators.emplace_back_unchecked(op);
 
                     curr = reinterpret_cast<::std::byte const*>(next);
@@ -1658,8 +1658,8 @@ namespace uwvm::vm::interpreter
 
                     curr = reinterpret_cast<::std::byte const*>(next_o);
 
-                    op.ext.end = reinterpret_cast<operator_t const*>(alignment);
-                    op.ext.branch = reinterpret_cast<operator_t const*>(offset);
+                    op.ext.sz1 = alignment;
+                    op.ext.sz2 = offset;
 
                     temp.operators.emplace_back_unchecked(op);
 
@@ -1777,8 +1777,8 @@ namespace uwvm::vm::interpreter
 
                     curr = reinterpret_cast<::std::byte const*>(next_o);
 
-                    op.ext.end = reinterpret_cast<operator_t const*>(alignment);
-                    op.ext.branch = reinterpret_cast<operator_t const*>(offset);
+                    op.ext.sz1 = alignment;
+                    op.ext.sz2 = offset;
 
                     temp.operators.emplace_back_unchecked(op);
 
@@ -1896,8 +1896,8 @@ namespace uwvm::vm::interpreter
 
                     curr = reinterpret_cast<::std::byte const*>(next_o);
 
-                    op.ext.end = reinterpret_cast<operator_t const*>(alignment);
-                    op.ext.branch = reinterpret_cast<operator_t const*>(offset);
+                    op.ext.sz1 = alignment;
+                    op.ext.sz2 = offset;
 
                     temp.operators.emplace_back_unchecked(op);
 
@@ -2015,8 +2015,8 @@ namespace uwvm::vm::interpreter
 
                     curr = reinterpret_cast<::std::byte const*>(next_o);
 
-                    op.ext.end = reinterpret_cast<operator_t const*>(alignment);
-                    op.ext.branch = reinterpret_cast<operator_t const*>(offset);
+                    op.ext.sz1 = alignment;
+                    op.ext.sz2 = offset;
 
                     temp.operators.emplace_back_unchecked(op);
 
@@ -2134,8 +2134,8 @@ namespace uwvm::vm::interpreter
 
                     curr = reinterpret_cast<::std::byte const*>(next_o);
 
-                    op.ext.end = reinterpret_cast<operator_t const*>(alignment);
-                    op.ext.branch = reinterpret_cast<operator_t const*>(offset);
+                    op.ext.sz1 = alignment;
+                    op.ext.sz2 = offset;
 
                     temp.operators.emplace_back_unchecked(op);
 
@@ -2253,8 +2253,8 @@ namespace uwvm::vm::interpreter
 
                     curr = reinterpret_cast<::std::byte const*>(next_o);
 
-                    op.ext.end = reinterpret_cast<operator_t const*>(alignment);
-                    op.ext.branch = reinterpret_cast<operator_t const*>(offset);
+                    op.ext.sz1 = alignment;
+                    op.ext.sz2 = offset;
 
                     temp.operators.emplace_back_unchecked(op);
 
@@ -2372,8 +2372,8 @@ namespace uwvm::vm::interpreter
 
                     curr = reinterpret_cast<::std::byte const*>(next_o);
 
-                    op.ext.end = reinterpret_cast<operator_t const*>(alignment);
-                    op.ext.branch = reinterpret_cast<operator_t const*>(offset);
+                    op.ext.sz1 = alignment;
+                    op.ext.sz2 = offset;
 
                     temp.operators.emplace_back_unchecked(op);
 
@@ -2491,8 +2491,8 @@ namespace uwvm::vm::interpreter
 
                     curr = reinterpret_cast<::std::byte const*>(next_o);
 
-                    op.ext.end = reinterpret_cast<operator_t const*>(alignment);
-                    op.ext.branch = reinterpret_cast<operator_t const*>(offset);
+                    op.ext.sz1 = alignment;
+                    op.ext.sz2 = offset;
 
                     temp.operators.emplace_back_unchecked(op);
 
@@ -2610,8 +2610,8 @@ namespace uwvm::vm::interpreter
 
                     curr = reinterpret_cast<::std::byte const*>(next_o);
 
-                    op.ext.end = reinterpret_cast<operator_t const*>(alignment);
-                    op.ext.branch = reinterpret_cast<operator_t const*>(offset);
+                    op.ext.sz1 = alignment;
+                    op.ext.sz2 = offset;
 
                     temp.operators.emplace_back_unchecked(op);
 
@@ -2729,8 +2729,8 @@ namespace uwvm::vm::interpreter
 
                     curr = reinterpret_cast<::std::byte const*>(next_o);
 
-                    op.ext.end = reinterpret_cast<operator_t const*>(alignment);
-                    op.ext.branch = reinterpret_cast<operator_t const*>(offset);
+                    op.ext.sz1 = alignment;
+                    op.ext.sz2 = offset;
 
                     temp.operators.emplace_back_unchecked(op);
 
@@ -2848,8 +2848,8 @@ namespace uwvm::vm::interpreter
 
                     curr = reinterpret_cast<::std::byte const*>(next_o);
 
-                    op.ext.end = reinterpret_cast<operator_t const*>(alignment);
-                    op.ext.branch = reinterpret_cast<operator_t const*>(offset);
+                    op.ext.sz1 = alignment;
+                    op.ext.sz2 = offset;
 
                     temp.operators.emplace_back_unchecked(op);
 
@@ -2967,8 +2967,8 @@ namespace uwvm::vm::interpreter
 
                     curr = reinterpret_cast<::std::byte const*>(next_o);
 
-                    op.ext.end = reinterpret_cast<operator_t const*>(alignment);
-                    op.ext.branch = reinterpret_cast<operator_t const*>(offset);
+                    op.ext.sz1 = alignment;
+                    op.ext.sz2 = offset;
 
                     temp.operators.emplace_back_unchecked(op);
 
@@ -3086,8 +3086,8 @@ namespace uwvm::vm::interpreter
 
                     curr = reinterpret_cast<::std::byte const*>(next_o);
 
-                    op.ext.end = reinterpret_cast<operator_t const*>(alignment);
-                    op.ext.branch = reinterpret_cast<operator_t const*>(offset);
+                    op.ext.sz1 = alignment;
+                    op.ext.sz2 = offset;
 
                     temp.operators.emplace_back_unchecked(op);
 
@@ -3205,8 +3205,8 @@ namespace uwvm::vm::interpreter
 
                     curr = reinterpret_cast<::std::byte const*>(next_o);
 
-                    op.ext.end = reinterpret_cast<operator_t const*>(alignment);
-                    op.ext.branch = reinterpret_cast<operator_t const*>(offset);
+                    op.ext.sz1 = alignment;
+                    op.ext.sz2 = offset;
 
                     temp.operators.emplace_back_unchecked(op);
 
@@ -3324,8 +3324,8 @@ namespace uwvm::vm::interpreter
 
                     curr = reinterpret_cast<::std::byte const*>(next_o);
 
-                    op.ext.end = reinterpret_cast<operator_t const*>(alignment);
-                    op.ext.branch = reinterpret_cast<operator_t const*>(offset);
+                    op.ext.sz1 = alignment;
+                    op.ext.sz2 = offset;
 
                     temp.operators.emplace_back_unchecked(op);
 
@@ -3443,8 +3443,8 @@ namespace uwvm::vm::interpreter
 
                     curr = reinterpret_cast<::std::byte const*>(next_o);
 
-                    op.ext.end = reinterpret_cast<operator_t const*>(alignment);
-                    op.ext.branch = reinterpret_cast<operator_t const*>(offset);
+                    op.ext.sz1 = alignment;
+                    op.ext.sz2 = offset;
 
                     temp.operators.emplace_back_unchecked(op);
 
@@ -3562,8 +3562,8 @@ namespace uwvm::vm::interpreter
 
                     curr = reinterpret_cast<::std::byte const*>(next_o);
 
-                    op.ext.end = reinterpret_cast<operator_t const*>(alignment);
-                    op.ext.branch = reinterpret_cast<operator_t const*>(offset);
+                    op.ext.sz1 = alignment;
+                    op.ext.sz2 = offset;
 
                     temp.operators.emplace_back_unchecked(op);
 
@@ -3681,8 +3681,8 @@ namespace uwvm::vm::interpreter
 
                     curr = reinterpret_cast<::std::byte const*>(next_o);
 
-                    op.ext.end = reinterpret_cast<operator_t const*>(alignment);
-                    op.ext.branch = reinterpret_cast<operator_t const*>(offset);
+                    op.ext.sz1 = alignment;
+                    op.ext.sz2 = offset;
 
                     temp.operators.emplace_back_unchecked(op);
 
@@ -3800,8 +3800,8 @@ namespace uwvm::vm::interpreter
 
                     curr = reinterpret_cast<::std::byte const*>(next_o);
 
-                    op.ext.end = reinterpret_cast<operator_t const*>(alignment);
-                    op.ext.branch = reinterpret_cast<operator_t const*>(offset);
+                    op.ext.sz1 = alignment;
+                    op.ext.sz2 = offset;
 
                     temp.operators.emplace_back_unchecked(op);
 
@@ -3919,8 +3919,8 @@ namespace uwvm::vm::interpreter
 
                     curr = reinterpret_cast<::std::byte const*>(next_o);
 
-                    op.ext.end = reinterpret_cast<operator_t const*>(alignment);
-                    op.ext.branch = reinterpret_cast<operator_t const*>(offset);
+                    op.ext.sz1 = alignment;
+                    op.ext.sz2 = offset;
 
                     temp.operators.emplace_back_unchecked(op);
 
@@ -4038,8 +4038,8 @@ namespace uwvm::vm::interpreter
 
                     curr = reinterpret_cast<::std::byte const*>(next_o);
 
-                    op.ext.end = reinterpret_cast<operator_t const*>(alignment);
-                    op.ext.branch = reinterpret_cast<operator_t const*>(offset);
+                    op.ext.sz1 = alignment;
+                    op.ext.sz2 = offset;
 
                     temp.operators.emplace_back_unchecked(op);
 
@@ -4157,8 +4157,8 @@ namespace uwvm::vm::interpreter
 
                     curr = reinterpret_cast<::std::byte const*>(next_o);
 
-                    op.ext.end = reinterpret_cast<operator_t const*>(alignment);
-                    op.ext.branch = reinterpret_cast<operator_t const*>(offset);
+                    op.ext.sz1 = alignment;
+                    op.ext.sz2 = offset;
 
                     temp.operators.emplace_back_unchecked(op);
 
@@ -4276,8 +4276,8 @@ namespace uwvm::vm::interpreter
 
                     curr = reinterpret_cast<::std::byte const*>(next_o);
 
-                    op.ext.end = reinterpret_cast<operator_t const*>(alignment);
-                    op.ext.branch = reinterpret_cast<operator_t const*>(offset);
+                    op.ext.sz1 = alignment;
+                    op.ext.sz2 = offset;
 
                     temp.operators.emplace_back_unchecked(op);
 
@@ -4368,7 +4368,93 @@ namespace uwvm::vm::interpreter
                 }
                 case ::uwvm::wasm::op_basic::memory_grow:
                 {
-                    ::uwvm::unfinished();
+                    op.int_func = __builtin_addressof(::uwvm::vm::interpreter::func::memory_grow);
+
+                    ++curr;
+
+                    ::std::size_t index{};
+                    auto const [next, err]{::fast_io::parse_by_scan(reinterpret_cast<char8_t_const_may_alias_ptr>(curr),
+                                                                    reinterpret_cast<char8_t_const_may_alias_ptr>(end),
+                                                                    ::fast_io::mnp::leb128_get(index))};
+                    switch(err)
+                    {
+                        case ::fast_io::parse_code::ok: break;
+                        default:
+                            [[unlikely]]
+                            {
+                                ::fast_io::io::perr(::uwvm::u8err,
+                                    u8"\033[0m"
+#ifdef __MSDOS__
+                                    u8"\033[37m"
+#else
+                                    u8"\033[97m"
+#endif
+                                    u8"uwvm: "
+                                    u8"\033[31m"
+                                    u8"[fatal] "
+                                    u8"\033[0m"
+#ifdef __MSDOS__
+                                    u8"\033[37m"
+#else
+                                    u8"\033[97m"
+#endif
+                                    u8"(offset=",
+                                    ::fast_io::mnp::addrvw(curr - wasmmod.module_begin),
+                                    u8") "
+                                    u8"Invalid table length."
+                                    u8"\n"
+                                    u8"\033[0m"
+                                    u8"Terminate.\n\n");
+                                ::fast_io::fast_terminate();
+                            }
+                    }
+
+                    if(index >= ::uwvm::vm::interpreter::memories.size()) [[unlikely]]
+                    {
+                        ::fast_io::io::perr(::uwvm::u8err,
+                                    u8"\033[0m"
+#ifdef __MSDOS__
+                                    u8"\033[37m"
+#else
+                                    u8"\033[97m"
+#endif
+                                    u8"uwvm: "
+                                    u8"\033[31m"
+                                    u8"[fatal] "
+                                    u8"\033[0m"
+#ifdef __MSDOS__
+                                    u8"\033[37m"
+#else
+                                    u8"\033[97m"
+#endif
+                                    u8"(offset=",
+                                    ::fast_io::mnp::addrvw(curr - wasmmod.module_begin),
+                                    u8") "
+                                    u8"Invalid memory index."
+                                    u8"\n"
+                                    u8"\033[0m"
+                                    u8"Terminate.\n\n");
+                        ::fast_io::fast_terminate();
+                    }
+
+                    using operator_t_const_may_alias_ptr
+#if __has_cpp_attribute(__gnu__::__may_alias__)
+                        [[__gnu__::__may_alias__]]
+#endif
+                        = operator_t const*;
+
+                    op.ext.branch = reinterpret_cast<operator_t_const_may_alias_ptr>(::uwvm::vm::interpreter::memories.cbegin() + index);
+
+                    if(auto const imtsize{wasmmod.importsec.memory_types.size()}; index < imtsize)
+                    {
+                        op.ext.end = reinterpret_cast<operator_t_const_may_alias_ptr>(
+                            __builtin_addressof(wasmmod.importsec.memory_types.index_unchecked(index)->extern_type.memory));
+                    }
+                    else { op.ext.end = reinterpret_cast<operator_t_const_may_alias_ptr>(wasmmod.memorysec.types.cbegin() + (index - imtsize)); }
+
+                    temp.operators.emplace_back_unchecked(op);
+
+                    curr = reinterpret_cast<::std::byte const*>(next);
                     break;
                 }
                 case ::uwvm::wasm::op_basic::nop:
@@ -4378,22 +4464,138 @@ namespace uwvm::vm::interpreter
                 }
                 case ::uwvm::wasm::op_basic::i32_const:
                 {
-                    ::uwvm::unfinished();
+                    op.int_func = __builtin_addressof(::uwvm::vm::interpreter::func::i32_const);
+
+                    ++curr;
+
+                    ::std::int_least32_t ci32{};
+                    auto const [next, err]{::fast_io::parse_by_scan(reinterpret_cast<char8_t_const_may_alias_ptr>(curr),
+                                                                    reinterpret_cast<char8_t_const_may_alias_ptr>(end),
+                                                                    ::fast_io::mnp::leb128_get(ci32))};
+                    switch(err)
+                    {
+                        case ::fast_io::parse_code::ok: break;
+                        default:
+                            [[unlikely]]
+                            {
+                                ::fast_io::io::perr(::uwvm::u8err,
+                                    u8"\033[0m"
+#ifdef __MSDOS__
+                                    u8"\033[37m"
+#else
+                                    u8"\033[97m"
+#endif
+                                    u8"uwvm: "
+                                    u8"\033[31m"
+                                    u8"[fatal] "
+                                    u8"\033[0m"
+#ifdef __MSDOS__
+                                    u8"\033[37m"
+#else
+                                    u8"\033[97m"
+#endif
+                                    u8"(offset=",
+                                    ::fast_io::mnp::addrvw(curr - wasmmod.module_begin),
+                                    u8") "
+                                    u8"Invalid i32."
+                                    u8"\n"
+                                    u8"\033[0m"
+                                    u8"Terminate.\n\n");
+                                ::fast_io::fast_terminate();
+                            }
+                    }
+
+                    op.ext.i32 = ci32;
+
+                    temp.operators.emplace_back_unchecked(op);
+
+                    curr = reinterpret_cast<::std::byte const*>(next);
                     break;
                 }
                 case ::uwvm::wasm::op_basic::i64_const:
                 {
-                    ::uwvm::unfinished();
+                    op.int_func = __builtin_addressof(::uwvm::vm::interpreter::func::i64_const);
+
+                    ++curr;
+
+                    ::std::int_least64_t ci64{};
+                    auto const [next, err]{::fast_io::parse_by_scan(reinterpret_cast<char8_t_const_may_alias_ptr>(curr),
+                                                                    reinterpret_cast<char8_t_const_may_alias_ptr>(end),
+                                                                    ::fast_io::mnp::leb128_get(ci64))};
+                    switch(err)
+                    {
+                        case ::fast_io::parse_code::ok: break;
+                        default:
+                            [[unlikely]]
+                            {
+                                ::fast_io::io::perr(::uwvm::u8err,
+                                    u8"\033[0m"
+#ifdef __MSDOS__
+                                    u8"\033[37m"
+#else
+                                    u8"\033[97m"
+#endif
+                                    u8"uwvm: "
+                                    u8"\033[31m"
+                                    u8"[fatal] "
+                                    u8"\033[0m"
+#ifdef __MSDOS__
+                                    u8"\033[37m"
+#else
+                                    u8"\033[97m"
+#endif
+                                    u8"(offset=",
+                                    ::fast_io::mnp::addrvw(curr - wasmmod.module_begin),
+                                    u8") "
+                                    u8"Invalid i64."
+                                    u8"\n"
+                                    u8"\033[0m"
+                                    u8"Terminate.\n\n");
+                                ::fast_io::fast_terminate();
+                            }
+                    }
+
+                    op.ext.i64 = ci64;
+
+                    temp.operators.emplace_back_unchecked(op);
+
+                    curr = reinterpret_cast<::std::byte const*>(next);
                     break;
                 }
                 case ::uwvm::wasm::op_basic::f32_const:
                 {
-                    ::uwvm::unfinished();
+                    op.int_func = __builtin_addressof(::uwvm::vm::interpreter::func::f32_const);
+
+                    ++curr;
+
+                    ::std::uint_least32_t b4{};
+                    ::fast_io::freestanding::my_memcpy(__builtin_addressof(b4), curr, sizeof(b4));
+                    b4 = ::fast_io::little_endian(b4);
+
+                    op.ext.f32 = ::std::bit_cast<::uwvm::wasm::wasm_f32>(b4);
+
+                    temp.operators.emplace_back_unchecked(op);
+
+                    curr += sizeof(b4);
+
                     break;
                 }
                 case ::uwvm::wasm::op_basic::f64_const:
                 {
-                    ::uwvm::unfinished();
+                    op.int_func = __builtin_addressof(::uwvm::vm::interpreter::func::f64_const);
+
+                    ++curr;
+
+                    ::std::uint_least64_t b8{};
+                    ::fast_io::freestanding::my_memcpy(__builtin_addressof(b8), curr, sizeof(b8));
+                    b8 = ::fast_io::little_endian(b8);
+
+                    op.ext.f64 = ::std::bit_cast<::uwvm::wasm::wasm_f64>(b8);
+
+                    temp.operators.emplace_back_unchecked(op);
+
+                    curr += sizeof(b8);
+
                     break;
                 }
                 case ::uwvm::wasm::op_basic::i32_eqz:
