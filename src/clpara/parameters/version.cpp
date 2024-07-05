@@ -141,6 +141,8 @@
                         u8"System/370"
 #elif defined(__s390__) || defined(__s390x__)
                         u8"System/390"
+#elif defined(__pdp11)
+                        u8"PDP11"
 #elif defined(__powerpc64__) || defined(__ppc64__) || defined(__PPC64__) || defined(_ARCH_PPC64)
                         u8"PowerPC64"
     #if defined(_LITTLE_ENDIAN)
