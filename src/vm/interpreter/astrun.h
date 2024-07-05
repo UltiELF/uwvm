@@ -11,6 +11,11 @@ namespace uwvm::vm::interpreter
     {
         if(!a.operators.empty()) [[likely]]
         {
+            // storage last op
+            auto const last_begin_op{s.begin_op};
+            auto const last_curr_op{s.curr_op};
+            auto const last_end_op{s.end_op};
+
             // prepare
             auto const begin_op{::std::to_address(a.operators.begin())};
             auto const end_op{::std::to_address(a.operators.end())};
@@ -51,8 +56,8 @@ namespace uwvm::vm::interpreter
                 ::fast_io::fast_terminate();
             }
 
-            auto curr_st{s.stack.get_container().cend()};
-            for(auto curr{func_type.parameter_end}; curr != func_type.parameter_begin; --curr)
+            auto curr_st{s.stack.get_container().cend() - 1};
+            for(auto curr{func_type.parameter_end - 1}; curr != func_type.parameter_begin - 1; --curr)
             {
                 auto const curr_vt{*curr};
                 auto const curr_st_vt{curr_st->vt};
@@ -89,7 +94,7 @@ namespace uwvm::vm::interpreter
 
             // stack top
             auto const last_stack_top{s.stack_top};
-            s.stack_top = s.stack.size() - func_type_para_size;
+            s.stack_top = s.stack.size();
 
             // local
             auto& local_storage_c{s.local_storages.get_container()};
@@ -112,6 +117,13 @@ namespace uwvm::vm::interpreter
             // local check
 #if 1
             auto local_curr_temp{local_curr};
+            auto const stack_cend{s.stack.get_container().cend()};
+            for(auto i{stack_cend - func_type_para_size}; i != stack_cend; ++i)
+            {
+                *local_curr_temp = *i;
+                ++local_curr_temp;
+            }
+
             for(auto const& i: a.fb->locals)
             {
                 auto const it{i.type};
@@ -164,8 +176,8 @@ namespace uwvm::vm::interpreter
                 ::fast_io::fast_terminate();
             }
 
-            curr_st = s.stack.get_container().cend();
-            for(auto curr{func_type.result_end}; curr != func_type.result_begin; --curr)
+            curr_st = s.stack.get_container().cend() - 1;
+            for(auto curr{func_type.result_end - 1}; curr != func_type.result_begin - 1; --curr)
             {
                 auto const curr_vt{*curr};
                 auto const curr_st_vt{curr_st->vt};
@@ -202,6 +214,11 @@ namespace uwvm::vm::interpreter
 
             // reset stack top
             s.stack_top = last_stack_top;
+
+            // reset op
+            s.begin_op = last_begin_op;
+            s.curr_op = last_curr_op;
+            s.end_op = last_end_op;
         }
     }
 }  // namespace uwvm::vm::interpreter

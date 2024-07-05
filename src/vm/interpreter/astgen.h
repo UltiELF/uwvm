@@ -20,8 +20,31 @@ namespace uwvm::vm::interpreter
             ::std::byte const* flow_p{};
             ::uwvm::vm::interpreter::operator_t* op{};
             ::uwvm::vm::interpreter::flow_control_t flow_e{};
+            ::fast_io::vector<::uwvm::vm::interpreter::operator_t*> brs{};
         };
+    }  // namespace details
+}  // namespace uwvm::vm::interpreter
 
+namespace fast_io::freestanding
+{
+    template <>
+    struct is_trivially_relocatable<::uwvm::vm::interpreter::details::d_flow_t>
+    {
+        inline static constexpr bool value = true;
+    };
+
+    template <>
+    struct is_zero_default_constructible<::uwvm::vm::interpreter::details::d_flow_t>
+    {
+        inline static constexpr bool value = true;
+    };
+
+}  // namespace fast_io::freestanding
+
+namespace uwvm::vm::interpreter
+{
+    namespace details
+    {
         extern thread_local ::fast_io::tlc::stack<d_flow_t, ::fast_io::tlc::vector<d_flow_t>> ga_flow;
     }  // namespace details
 
@@ -67,12 +90,15 @@ namespace uwvm::vm::interpreter
         temp.fb = __builtin_addressof(fb);
 
         // locals
-        ::std::size_t all_local_count{};
+        ::std::size_t all_local_count{static_cast<::std::size_t>(lft->parameter_end - lft->parameter_begin)};
         for(auto const& i: fb.locals) { all_local_count += i.count; }
         temp.local_size = all_local_count;
 
         // ast
         temp.operators.reserve(static_cast<::std::size_t>(fb.end - fb.begin));
+
+        // func flow
+        details::ga_flow.push({curr, nullptr, ::uwvm::vm::interpreter::flow_control_t::func});
 
         for(; curr < end;)
         {
@@ -534,6 +560,38 @@ namespace uwvm::vm::interpreter
                     auto f{details::ga_flow.pop_element_unchecked()};
                     switch(f.flow_e)
                     {
+                        case ::uwvm::vm::interpreter::flow_control_t::func:
+                        {
+                            ++curr;
+                            if(curr != end) [[unlikely]]
+                            {
+                                ::fast_io::io::perr(::uwvm::u8err,
+                                    u8"\033[0m"
+#ifdef __MSDOS__
+                                    u8"\033[37m"
+#else
+                                    u8"\033[97m"
+#endif
+                                    u8"uwvm: "
+                                    u8"\033[31m"
+                                    u8"[fatal] "
+                                    u8"\033[0m"
+#ifdef __MSDOS__
+                                    u8"\033[37m"
+#else
+                                    u8"\033[97m"
+#endif
+                                    u8"(offset=",
+                                    ::fast_io::mnp::addrvw(curr - wasmmod.module_begin),
+                                    u8") "
+                                    u8"The function body ends but current is not equal to end."
+                                    u8"\n"
+                                    u8"\033[0m"
+                                    u8"Terminate.\n\n");
+                                ::fast_io::fast_terminate();
+                            }
+                            continue;
+                        }
                         case ::uwvm::vm::interpreter::flow_control_t::block: [[fallthrough]];
                         case ::uwvm::vm::interpreter::flow_control_t::loop: [[fallthrough]];
                         case ::uwvm::vm::interpreter::flow_control_t::if_: break;
@@ -572,6 +630,8 @@ namespace uwvm::vm::interpreter
                                 ::fast_io::fast_terminate();
                             }
                     }
+
+                    for(auto const i: f.brs) { i->ext.end = __builtin_addressof(op_ebr); }
 
                     f.op->ext.end = __builtin_addressof(op_ebr);
                     op_ebr.ext.branch = f.op;
@@ -683,9 +743,9 @@ namespace uwvm::vm::interpreter
                         ::fast_io::fast_terminate();
                     }
 
-                    op.ext.end = details::ga_flow.get_container().index_unchecked(gfsz - index).op->ext.end;
+                    auto& brop{temp.operators.emplace_back_unchecked(op)};
 
-                    temp.operators.emplace_back_unchecked(op);
+                    details::ga_flow.get_container().index_unchecked(gfsz - index).brs.push_back(__builtin_addressof(brop));
 
                     break;
                 }
@@ -766,9 +826,9 @@ namespace uwvm::vm::interpreter
                         ::fast_io::fast_terminate();
                     }
 
-                    op.ext.end = details::ga_flow.get_container().index_unchecked(gfsz - index).op->ext.end;
+                    auto& brop{temp.operators.emplace_back_unchecked(op)};
 
-                    temp.operators.emplace_back_unchecked(op);
+                    details::ga_flow.get_container().index_unchecked(gfsz - index).brs.push_back(__builtin_addressof(brop));
 
                     break;
                 }
@@ -821,9 +881,16 @@ namespace uwvm::vm::interpreter
 
                     auto const gfsz{details::ga_flow.size()};
 
-                    ::fast_io::vector<operator_t const*> vo{};
+                    auto& vec{::uwvm::vm::interpreter::stroage.ext.emplace_back(table_size)};
 
-                    vo.reserve(table_size);
+                    using operator_t_const_may_alias_ptr
+#if __has_cpp_attribute(__gnu__::__may_alias__)
+                        [[__gnu__::__may_alias__]]
+#endif
+                        = operator_t const*;
+
+                    op.ext.branch =
+                        reinterpret_cast<operator_t_const_may_alias_ptr>(const_cast<::fast_io::vector<operator_t*> const*>(__builtin_addressof(vec)));
 
                     for(::std::size_t i{}; i < table_size; ++i)
                     {
@@ -894,20 +961,10 @@ namespace uwvm::vm::interpreter
                             ::fast_io::fast_terminate();
                         }
 
-                        vo.push_back_unchecked(details::ga_flow.get_container().index_unchecked(gfsz - index).op->ext.end);
+                        details::ga_flow.get_container().index_unchecked(gfsz - index).brs.push_back(vec.index_unchecked(i));
 
                         curr = reinterpret_cast<::std::byte const*>(next);
                     }
-
-                    auto const& vec{::uwvm::vm::interpreter::stroage.ext.emplace_back(::std::move(vo))};
-
-                    using operator_t_const_may_alias_ptr
-#if __has_cpp_attribute(__gnu__::__may_alias__)
-                        [[__gnu__::__may_alias__]]
-#endif
-                        = operator_t const*;
-
-                    op.ext.branch = reinterpret_cast<operator_t_const_may_alias_ptr>(__builtin_addressof(vec));
 
                     temp.operators.emplace_back_unchecked(op);
 
@@ -4600,642 +4657,898 @@ namespace uwvm::vm::interpreter
                 }
                 case ::uwvm::wasm::op_basic::i32_eqz:
                 {
-                    ::uwvm::unfinished();
+                    op.int_func = __builtin_addressof(::uwvm::vm::interpreter::func::i32_eqz);
+                    temp.operators.emplace_back_unchecked(op);
+                    ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::i32_eq:
                 {
-                    ::uwvm::unfinished();
+                    op.int_func = __builtin_addressof(::uwvm::vm::interpreter::func::i32_eq);
+                    temp.operators.emplace_back_unchecked(op);
+                    ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::i32_ne:
                 {
-                    ::uwvm::unfinished();
+                    op.int_func = __builtin_addressof(::uwvm::vm::interpreter::func::i32_ne);
+                    temp.operators.emplace_back_unchecked(op);
+                    ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::i32_lt_s:
                 {
-                    ::uwvm::unfinished();
+                    op.int_func = __builtin_addressof(::uwvm::vm::interpreter::func::i32_lt_s);
+                    temp.operators.emplace_back_unchecked(op);
+                    ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::i32_lt_u:
                 {
-                    ::uwvm::unfinished();
+                    op.int_func = __builtin_addressof(::uwvm::vm::interpreter::func::i32_lt_u);
+                    temp.operators.emplace_back_unchecked(op);
+                    ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::i32_gt_s:
                 {
-                    ::uwvm::unfinished();
+                    op.int_func = __builtin_addressof(::uwvm::vm::interpreter::func::i32_gt_s);
+                    temp.operators.emplace_back_unchecked(op);
+                    ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::i32_gt_u:
                 {
-                    ::uwvm::unfinished();
+                    op.int_func = __builtin_addressof(::uwvm::vm::interpreter::func::i32_gt_u);
+                    temp.operators.emplace_back_unchecked(op);
+                    ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::i32_le_s:
                 {
-                    ::uwvm::unfinished();
+                    op.int_func = __builtin_addressof(::uwvm::vm::interpreter::func::i32_le_s);
+                    temp.operators.emplace_back_unchecked(op);
+                    ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::i32_le_u:
                 {
-                    ::uwvm::unfinished();
+                    op.int_func = __builtin_addressof(::uwvm::vm::interpreter::func::i32_le_u);
+                    temp.operators.emplace_back_unchecked(op);
+                    ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::i32_ge_s:
                 {
-                    ::uwvm::unfinished();
+                    op.int_func = __builtin_addressof(::uwvm::vm::interpreter::func::i32_ge_s);
+                    temp.operators.emplace_back_unchecked(op);
+                    ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::i32_ge_u:
                 {
-                    ::uwvm::unfinished();
+                    op.int_func = __builtin_addressof(::uwvm::vm::interpreter::func::i32_ge_u);
+                    temp.operators.emplace_back_unchecked(op);
+                    ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::i64_eqz:
                 {
-                    ::uwvm::unfinished();
+                    op.int_func = __builtin_addressof(::uwvm::vm::interpreter::func::i64_eqz);
+                    temp.operators.emplace_back_unchecked(op);
+                    ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::i64_eq:
                 {
-                    ::uwvm::unfinished();
+                    op.int_func = __builtin_addressof(::uwvm::vm::interpreter::func::i64_eq);
+                    temp.operators.emplace_back_unchecked(op);
+                    ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::i64_ne:
                 {
-                    ::uwvm::unfinished();
+                    op.int_func = __builtin_addressof(::uwvm::vm::interpreter::func::i64_ne);
+                    temp.operators.emplace_back_unchecked(op);
+                    ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::i64_lt_s:
                 {
-                    ::uwvm::unfinished();
+                    op.int_func = __builtin_addressof(::uwvm::vm::interpreter::func::i64_lt_s);
+                    temp.operators.emplace_back_unchecked(op);
+                    ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::i64_lt_u:
                 {
-                    ::uwvm::unfinished();
+                    op.int_func = __builtin_addressof(::uwvm::vm::interpreter::func::i64_lt_u);
+                    temp.operators.emplace_back_unchecked(op);
+                    ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::i64_gt_s:
                 {
-                    ::uwvm::unfinished();
+                    op.int_func = __builtin_addressof(::uwvm::vm::interpreter::func::i64_gt_s);
+                    temp.operators.emplace_back_unchecked(op);
+                    ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::i64_gt_u:
                 {
-                    ::uwvm::unfinished();
+                    op.int_func = __builtin_addressof(::uwvm::vm::interpreter::func::i64_gt_u);
+                    temp.operators.emplace_back_unchecked(op);
+                    ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::i64_le_s:
                 {
-                    ::uwvm::unfinished();
+                    op.int_func = __builtin_addressof(::uwvm::vm::interpreter::func::i64_le_s);
+                    temp.operators.emplace_back_unchecked(op);
+                    ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::i64_le_u:
                 {
-                    ::uwvm::unfinished();
+                    op.int_func = __builtin_addressof(::uwvm::vm::interpreter::func::i64_le_u);
+                    temp.operators.emplace_back_unchecked(op);
+                    ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::i64_ge_s:
                 {
-                    ::uwvm::unfinished();
+                    op.int_func = __builtin_addressof(::uwvm::vm::interpreter::func::i64_ge_s);
+                    temp.operators.emplace_back_unchecked(op);
+                    ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::i64_ge_u:
                 {
-                    ::uwvm::unfinished();
+                    op.int_func = __builtin_addressof(::uwvm::vm::interpreter::func::i64_ge_u);
+                    temp.operators.emplace_back_unchecked(op);
+                    ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::f32_eq:
                 {
-                    ::uwvm::unfinished();
+                    op.int_func = __builtin_addressof(::uwvm::vm::interpreter::func::f32_eq);
+                    temp.operators.emplace_back_unchecked(op);
+                    ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::f32_ne:
                 {
-                    ::uwvm::unfinished();
+                    op.int_func = __builtin_addressof(::uwvm::vm::interpreter::func::f32_ne);
+                    temp.operators.emplace_back_unchecked(op);
+                    ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::f32_lt:
                 {
-                    ::uwvm::unfinished();
+                    op.int_func = __builtin_addressof(::uwvm::vm::interpreter::func::f32_lt);
+                    temp.operators.emplace_back_unchecked(op);
+                    ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::f32_gt:
                 {
-                    ::uwvm::unfinished();
+                    op.int_func = __builtin_addressof(::uwvm::vm::interpreter::func::f32_gt);
+                    temp.operators.emplace_back_unchecked(op);
+                    ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::f32_le:
                 {
-                    ::uwvm::unfinished();
+                    op.int_func = __builtin_addressof(::uwvm::vm::interpreter::func::f32_le);
+                    temp.operators.emplace_back_unchecked(op);
+                    ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::f32_ge:
                 {
-                    ::uwvm::unfinished();
+                    op.int_func = __builtin_addressof(::uwvm::vm::interpreter::func::f32_ge);
+                    temp.operators.emplace_back_unchecked(op);
+                    ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::f64_eq:
                 {
-                    ::uwvm::unfinished();
+                    op.int_func = __builtin_addressof(::uwvm::vm::interpreter::func::f64_eq);
+                    temp.operators.emplace_back_unchecked(op);
+                    ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::f64_ne:
                 {
-                    ::uwvm::unfinished();
+                    op.int_func = __builtin_addressof(::uwvm::vm::interpreter::func::f64_ne);
+                    temp.operators.emplace_back_unchecked(op);
+                    ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::f64_lt:
                 {
-                    ::uwvm::unfinished();
+                    op.int_func = __builtin_addressof(::uwvm::vm::interpreter::func::f64_lt);
+                    temp.operators.emplace_back_unchecked(op);
+                    ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::f64_gt:
                 {
-                    ::uwvm::unfinished();
+                    op.int_func = __builtin_addressof(::uwvm::vm::interpreter::func::f64_gt);
+                    temp.operators.emplace_back_unchecked(op);
+                    ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::f64_le:
                 {
-                    ::uwvm::unfinished();
+                    op.int_func = __builtin_addressof(::uwvm::vm::interpreter::func::f64_le);
+                    temp.operators.emplace_back_unchecked(op);
+                    ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::f64_ge:
                 {
-                    ::uwvm::unfinished();
+                    op.int_func = __builtin_addressof(::uwvm::vm::interpreter::func::f64_ge);
+                    temp.operators.emplace_back_unchecked(op);
+                    ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::i32_clz:
                 {
-                    ::uwvm::unfinished();
+                    op.int_func = __builtin_addressof(::uwvm::vm::interpreter::func::i32_clz);
+                    temp.operators.emplace_back_unchecked(op);
+                    ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::i32_ctz:
                 {
-                    ::uwvm::unfinished();
+                    op.int_func = __builtin_addressof(::uwvm::vm::interpreter::func::i32_ctz);  // todo
+                    temp.operators.emplace_back_unchecked(op);
+                    ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::i32_popcnt:
                 {
-                    ::uwvm::unfinished();
+                    op.int_func = __builtin_addressof(::uwvm::vm::interpreter::func::i32_popcnt);
+                    temp.operators.emplace_back_unchecked(op);
+                    ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::i32_add:
                 {
-                    ::uwvm::unfinished();
+                    op.int_func = __builtin_addressof(::uwvm::vm::interpreter::func::i32_add);
+                    temp.operators.emplace_back_unchecked(op);
+                    ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::i32_sub:
                 {
-                    ::uwvm::unfinished();
+                    op.int_func = __builtin_addressof(::uwvm::vm::interpreter::func::i32_sub);
+                    temp.operators.emplace_back_unchecked(op);
+                    ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::i32_mul:
                 {
-                    ::uwvm::unfinished();
+                    op.int_func = __builtin_addressof(::uwvm::vm::interpreter::func::i32_mul);
+                    temp.operators.emplace_back_unchecked(op);
+                    ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::i32_div_s:
                 {
-                    ::uwvm::unfinished();
+                    op.int_func = __builtin_addressof(::uwvm::vm::interpreter::func::i32_div_s);
+                    temp.operators.emplace_back_unchecked(op);
+                    ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::i32_div_u:
                 {
-                    ::uwvm::unfinished();
+                    op.int_func = __builtin_addressof(::uwvm::vm::interpreter::func::i32_div_u);
+                    temp.operators.emplace_back_unchecked(op);
+                    ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::i32_rem_s:
                 {
-                    ::uwvm::unfinished();
+                    op.int_func = __builtin_addressof(::uwvm::vm::interpreter::func::i32_rem_s);
+                    temp.operators.emplace_back_unchecked(op);
+                    ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::i32_rem_u:
                 {
-                    ::uwvm::unfinished();
+                    op.int_func = __builtin_addressof(::uwvm::vm::interpreter::func::i32_rem_u);
+                    temp.operators.emplace_back_unchecked(op);
+                    ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::i32_and:
                 {
-                    ::uwvm::unfinished();
+                    op.int_func = __builtin_addressof(::uwvm::vm::interpreter::func::i32_and);
+                    temp.operators.emplace_back_unchecked(op);
+                    ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::i32_or:
                 {
-                    ::uwvm::unfinished();
+                    op.int_func = __builtin_addressof(::uwvm::vm::interpreter::func::i32_or);
+                    temp.operators.emplace_back_unchecked(op);
+                    ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::i32_xor:
                 {
-                    ::uwvm::unfinished();
+                    op.int_func = __builtin_addressof(::uwvm::vm::interpreter::func::i32_xor);
+                    temp.operators.emplace_back_unchecked(op);
+                    ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::i32_shl:
                 {
-                    ::uwvm::unfinished();
+                    op.int_func = __builtin_addressof(::uwvm::vm::interpreter::func::i32_shl);
+                    temp.operators.emplace_back_unchecked(op);
+                    ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::i32_shr_s:
                 {
-                    ::uwvm::unfinished();
+                    op.int_func = __builtin_addressof(::uwvm::vm::interpreter::func::i32_shr_s);
+                    temp.operators.emplace_back_unchecked(op);
+                    ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::i32_shr_u:
                 {
-                    ::uwvm::unfinished();
+                    op.int_func = __builtin_addressof(::uwvm::vm::interpreter::func::i32_shr_u);
+                    temp.operators.emplace_back_unchecked(op);
+                    ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::i32_rotl:
                 {
-                    ::uwvm::unfinished();
+                    op.int_func = __builtin_addressof(::uwvm::vm::interpreter::func::i32_rotl);
+                    temp.operators.emplace_back_unchecked(op);
+                    ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::i32_rotr:
                 {
-                    ::uwvm::unfinished();
+                    op.int_func = __builtin_addressof(::uwvm::vm::interpreter::func::i32_rotr);
+                    temp.operators.emplace_back_unchecked(op);
+                    ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::i64_clz:
                 {
-                    ::uwvm::unfinished();
+                    op.int_func = __builtin_addressof(::uwvm::vm::interpreter::func::i64_clz);
+                    temp.operators.emplace_back_unchecked(op);
+                    ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::i64_ctz:
                 {
-                    ::uwvm::unfinished();
+                    op.int_func = __builtin_addressof(::uwvm::vm::interpreter::func::i64_ctz);
+                    temp.operators.emplace_back_unchecked(op);
+                    ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::i64_popcnt:
                 {
-                    ::uwvm::unfinished();
+                    op.int_func = __builtin_addressof(::uwvm::vm::interpreter::func::i64_popcnt);
+                    temp.operators.emplace_back_unchecked(op);
+                    ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::i64_add:
                 {
-                    ::uwvm::unfinished();
+                    op.int_func = __builtin_addressof(::uwvm::vm::interpreter::func::i64_add);
+                    temp.operators.emplace_back_unchecked(op);
+                    ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::i64_sub:
                 {
-                    ::uwvm::unfinished();
+                    op.int_func = __builtin_addressof(::uwvm::vm::interpreter::func::i64_sub);
+                    temp.operators.emplace_back_unchecked(op);
+                    ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::i64_mul:
                 {
-                    ::uwvm::unfinished();
+                    op.int_func = __builtin_addressof(::uwvm::vm::interpreter::func::i64_mul);
+                    temp.operators.emplace_back_unchecked(op);
+                    ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::i64_div_s:
                 {
-                    ::uwvm::unfinished();
+                    op.int_func = __builtin_addressof(::uwvm::vm::interpreter::func::i64_div_s);
+                    temp.operators.emplace_back_unchecked(op);
+                    ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::i64_div_u:
                 {
-                    ::uwvm::unfinished();
+                    op.int_func = __builtin_addressof(::uwvm::vm::interpreter::func::i64_div_u);
+                    temp.operators.emplace_back_unchecked(op);
+                    ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::i64_rem_s:
                 {
-                    ::uwvm::unfinished();
+                    op.int_func = __builtin_addressof(::uwvm::vm::interpreter::func::i64_rem_s);
+                    temp.operators.emplace_back_unchecked(op);
+                    ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::i64_rem_u:
                 {
-                    ::uwvm::unfinished();
+                    op.int_func = __builtin_addressof(::uwvm::vm::interpreter::func::i64_rem_u);
+                    temp.operators.emplace_back_unchecked(op);
+                    ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::i64_and:
                 {
-                    ::uwvm::unfinished();
+                    op.int_func = __builtin_addressof(::uwvm::vm::interpreter::func::i64_and);
+                    temp.operators.emplace_back_unchecked(op);
+                    ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::i64_or:
                 {
-                    ::uwvm::unfinished();
+                    op.int_func = __builtin_addressof(::uwvm::vm::interpreter::func::i64_or);
+                    temp.operators.emplace_back_unchecked(op);
+                    ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::i64_xor:
                 {
-                    ::uwvm::unfinished();
+                    op.int_func = __builtin_addressof(::uwvm::vm::interpreter::func::i64_xor);
+                    temp.operators.emplace_back_unchecked(op);
+                    ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::i64_shl:
                 {
-                    ::uwvm::unfinished();
+                    op.int_func = __builtin_addressof(::uwvm::vm::interpreter::func::i64_shl);
+                    temp.operators.emplace_back_unchecked(op);
+                    ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::i64_shr_s:
                 {
-                    ::uwvm::unfinished();
+                    op.int_func = __builtin_addressof(::uwvm::vm::interpreter::func::i64_shr_s);
+                    temp.operators.emplace_back_unchecked(op);
+                    ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::i64_shr_u:
                 {
-                    ::uwvm::unfinished();
+                    op.int_func = __builtin_addressof(::uwvm::vm::interpreter::func::i64_shr_u);
+                    temp.operators.emplace_back_unchecked(op);
+                    ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::i64_rotl:
                 {
-                    ::uwvm::unfinished();
+                    op.int_func = __builtin_addressof(::uwvm::vm::interpreter::func::i64_rotl);
+                    temp.operators.emplace_back_unchecked(op);
+                    ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::i64_rotr:
                 {
-                    ::uwvm::unfinished();
+                    op.int_func = __builtin_addressof(::uwvm::vm::interpreter::func::i64_rotr);
+                    temp.operators.emplace_back_unchecked(op);
+                    ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::f32_abs:
                 {
-                    ::uwvm::unfinished();
+                    op.int_func = __builtin_addressof(::uwvm::vm::interpreter::func::f32_abs);
+                    temp.operators.emplace_back_unchecked(op);
+                    ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::f32_neg:
                 {
-                    ::uwvm::unfinished();
+                    op.int_func = __builtin_addressof(::uwvm::vm::interpreter::func::f32_neg);
+                    temp.operators.emplace_back_unchecked(op);
+                    ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::f32_ceil:
                 {
-                    ::uwvm::unfinished();
+                    op.int_func = __builtin_addressof(::uwvm::vm::interpreter::func::f32_ceil);
+                    temp.operators.emplace_back_unchecked(op);
+                    ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::f32_floor:
                 {
-                    ::uwvm::unfinished();
+                    op.int_func = __builtin_addressof(::uwvm::vm::interpreter::func::f32_floor);
+                    temp.operators.emplace_back_unchecked(op);
+                    ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::f32_trunc:
                 {
-                    ::uwvm::unfinished();
+                    op.int_func = __builtin_addressof(::uwvm::vm::interpreter::func::f32_trunc);
+                    temp.operators.emplace_back_unchecked(op);
+                    ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::f32_nearest:
                 {
-                    ::uwvm::unfinished();
+                    op.int_func = __builtin_addressof(::uwvm::vm::interpreter::func::f32_nearest);
+                    temp.operators.emplace_back_unchecked(op);
+                    ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::f32_sqrt:
                 {
-                    ::uwvm::unfinished();
+                    op.int_func = __builtin_addressof(::uwvm::vm::interpreter::func::f32_sqrt);
+                    temp.operators.emplace_back_unchecked(op);
+                    ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::f32_add:
                 {
-                    ::uwvm::unfinished();
+                    op.int_func = __builtin_addressof(::uwvm::vm::interpreter::func::f32_add);
+                    temp.operators.emplace_back_unchecked(op);
+                    ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::f32_sub:
                 {
-                    ::uwvm::unfinished();
+                    op.int_func = __builtin_addressof(::uwvm::vm::interpreter::func::f32_sub);
+                    temp.operators.emplace_back_unchecked(op);
+                    ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::f32_mul:
                 {
-                    ::uwvm::unfinished();
+                    op.int_func = __builtin_addressof(::uwvm::vm::interpreter::func::f32_mul);
+                    temp.operators.emplace_back_unchecked(op);
+                    ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::f32_div:
                 {
-                    ::uwvm::unfinished();
+                    op.int_func = __builtin_addressof(::uwvm::vm::interpreter::func::f32_div);
+                    temp.operators.emplace_back_unchecked(op);
+                    ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::f32_min:
                 {
-                    ::uwvm::unfinished();
+                    op.int_func = __builtin_addressof(::uwvm::vm::interpreter::func::f32_min);
+                    temp.operators.emplace_back_unchecked(op);
+                    ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::f32_max:
                 {
-                    ::uwvm::unfinished();
+                    op.int_func = __builtin_addressof(::uwvm::vm::interpreter::func::f32_max);
+                    temp.operators.emplace_back_unchecked(op);
+                    ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::f32_copysign:
                 {
-                    ::uwvm::unfinished();
+                    op.int_func = __builtin_addressof(::uwvm::vm::interpreter::func::f32_copysign);
+                    temp.operators.emplace_back_unchecked(op);
+                    ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::f64_abs:
                 {
-                    ::uwvm::unfinished();
+                    op.int_func = __builtin_addressof(::uwvm::vm::interpreter::func::f64_abs);
+                    temp.operators.emplace_back_unchecked(op);
+                    ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::f64_neg:
                 {
-                    ::uwvm::unfinished();
+                    op.int_func = __builtin_addressof(::uwvm::vm::interpreter::func::f64_neg);
+                    temp.operators.emplace_back_unchecked(op);
+                    ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::f64_ceil:
                 {
-                    ::uwvm::unfinished();
+                    op.int_func = __builtin_addressof(::uwvm::vm::interpreter::func::f64_ceil);
+                    temp.operators.emplace_back_unchecked(op);
+                    ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::f64_floor:
                 {
-                    ::uwvm::unfinished();
+                    op.int_func = __builtin_addressof(::uwvm::vm::interpreter::func::f64_floor);
+                    temp.operators.emplace_back_unchecked(op);
+                    ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::f64_trunc:
                 {
-                    ::uwvm::unfinished();
+                    op.int_func = __builtin_addressof(::uwvm::vm::interpreter::func::f64_trunc);
+                    temp.operators.emplace_back_unchecked(op);
+                    ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::f64_nearest:
                 {
-                    ::uwvm::unfinished();
+                    op.int_func = __builtin_addressof(::uwvm::vm::interpreter::func::f64_nearest);
+                    temp.operators.emplace_back_unchecked(op);
+                    ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::f64_sqrt:
                 {
-                    ::uwvm::unfinished();
+                    op.int_func = __builtin_addressof(::uwvm::vm::interpreter::func::f64_sqrt);
+                    temp.operators.emplace_back_unchecked(op);
+                    ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::f64_add:
                 {
-                    ::uwvm::unfinished();
+                    op.int_func = __builtin_addressof(::uwvm::vm::interpreter::func::f64_add);
+                    temp.operators.emplace_back_unchecked(op);
+                    ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::f64_sub:
                 {
-                    ::uwvm::unfinished();
+                    op.int_func = __builtin_addressof(::uwvm::vm::interpreter::func::f64_sub);
+                    temp.operators.emplace_back_unchecked(op);
+                    ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::f64_mul:
                 {
-                    ::uwvm::unfinished();
+                    op.int_func = __builtin_addressof(::uwvm::vm::interpreter::func::f64_mul);
+                    temp.operators.emplace_back_unchecked(op);
+                    ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::f64_div:
                 {
-                    ::uwvm::unfinished();
+                    op.int_func = __builtin_addressof(::uwvm::vm::interpreter::func::f64_div);
+                    temp.operators.emplace_back_unchecked(op);
+                    ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::f64_min:
                 {
-                    ::uwvm::unfinished();
+                    op.int_func = __builtin_addressof(::uwvm::vm::interpreter::func::f64_min);
+                    temp.operators.emplace_back_unchecked(op);
+                    ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::f64_max:
                 {
-                    ::uwvm::unfinished();
+                    op.int_func = __builtin_addressof(::uwvm::vm::interpreter::func::f64_max);
+                    temp.operators.emplace_back_unchecked(op);
+                    ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::f64_copysign:
                 {
-                    ::uwvm::unfinished();
+                    op.int_func = __builtin_addressof(::uwvm::vm::interpreter::func::f64_copysign);
+                    temp.operators.emplace_back_unchecked(op);
+                    ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::i32_wrap_i64:
                 {
-                    ::uwvm::unfinished();
+                    op.int_func = __builtin_addressof(::uwvm::vm::interpreter::func::i32_wrap_i64);
+                    temp.operators.emplace_back_unchecked(op);
+                    ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::i32_trunc_f32_s:
                 {
-                    ::uwvm::unfinished();
+                    op.int_func = __builtin_addressof(::uwvm::vm::interpreter::func::i32_trunc_f32_s);
+                    temp.operators.emplace_back_unchecked(op);
+                    ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::i32_trunc_f32_u:
                 {
-                    ::uwvm::unfinished();
+                    op.int_func = __builtin_addressof(::uwvm::vm::interpreter::func::i32_trunc_f32_u);
+                    temp.operators.emplace_back_unchecked(op);
+                    ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::i32_trunc_f64_s:
                 {
-                    ::uwvm::unfinished();
+                    op.int_func = __builtin_addressof(::uwvm::vm::interpreter::func::i32_trunc_f64_s);
+                    temp.operators.emplace_back_unchecked(op);
+                    ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::i32_trunc_f64_u:
                 {
-                    ::uwvm::unfinished();
+                    op.int_func = __builtin_addressof(::uwvm::vm::interpreter::func::i32_trunc_f64_u);
+                    temp.operators.emplace_back_unchecked(op);
+                    ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::i64_extend_i32_s:
                 {
-                    ::uwvm::unfinished();
+                    op.int_func = __builtin_addressof(::uwvm::vm::interpreter::func::i64_extend_i32_s);
+                    temp.operators.emplace_back_unchecked(op);
+                    ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::i64_extend_i32_u:
                 {
-                    ::uwvm::unfinished();
+                    op.int_func = __builtin_addressof(::uwvm::vm::interpreter::func::i64_extend_i32_u);
+                    temp.operators.emplace_back_unchecked(op);
+                    ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::i64_trunc_f32_s:
                 {
-                    ::uwvm::unfinished();
+                    op.int_func = __builtin_addressof(::uwvm::vm::interpreter::func::i64_trunc_f32_s);
+                    temp.operators.emplace_back_unchecked(op);
+                    ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::i64_trunc_f32_u:
                 {
-                    ::uwvm::unfinished();
+                    op.int_func = __builtin_addressof(::uwvm::vm::interpreter::func::i64_trunc_f32_u);
+                    temp.operators.emplace_back_unchecked(op);
+                    ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::i64_trunc_f64_s:
                 {
-                    ::uwvm::unfinished();
+                    op.int_func = __builtin_addressof(::uwvm::vm::interpreter::func::i64_trunc_f64_s);
+                    temp.operators.emplace_back_unchecked(op);
+                    ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::i64_trunc_f64_u:
                 {
-                    ::uwvm::unfinished();
+                    op.int_func = __builtin_addressof(::uwvm::vm::interpreter::func::i64_trunc_f64_u);
+                    temp.operators.emplace_back_unchecked(op);
+                    ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::f32_convert_i32_s:
                 {
-                    ::uwvm::unfinished();
+                    op.int_func = __builtin_addressof(::uwvm::vm::interpreter::func::f32_convert_i32_s);
+                    temp.operators.emplace_back_unchecked(op);
+                    ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::f32_convert_i32_u:
                 {
-                    ::uwvm::unfinished();
+                    op.int_func = __builtin_addressof(::uwvm::vm::interpreter::func::f32_convert_i32_u);
+                    temp.operators.emplace_back_unchecked(op);
+                    ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::f32_convert_i64_s:
                 {
-                    ::uwvm::unfinished();
+                    op.int_func = __builtin_addressof(::uwvm::vm::interpreter::func::f32_convert_i64_s);
+                    temp.operators.emplace_back_unchecked(op);
+                    ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::f32_convert_i64_u:
                 {
-                    ::uwvm::unfinished();
+                    op.int_func = __builtin_addressof(::uwvm::vm::interpreter::func::f32_convert_i64_u);
+                    temp.operators.emplace_back_unchecked(op);
+                    ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::f32_demote_f64:
                 {
-                    ::uwvm::unfinished();
+                    op.int_func = __builtin_addressof(::uwvm::vm::interpreter::func::f32_demote_f64);
+                    temp.operators.emplace_back_unchecked(op);
+                    ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::f64_convert_i32_s:
                 {
-                    ::uwvm::unfinished();
+                    op.int_func = __builtin_addressof(::uwvm::vm::interpreter::func::f64_convert_i32_s);
+                    temp.operators.emplace_back_unchecked(op);
+                    ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::f64_convert_i32_u:
                 {
-                    ::uwvm::unfinished();
+                    op.int_func = __builtin_addressof(::uwvm::vm::interpreter::func::f64_convert_i32_u);
+                    temp.operators.emplace_back_unchecked(op);
+                    ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::f64_convert_i64_s:
                 {
-                    ::uwvm::unfinished();
+                    op.int_func = __builtin_addressof(::uwvm::vm::interpreter::func::f64_convert_i64_s);
+                    temp.operators.emplace_back_unchecked(op);
+                    ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::f64_convert_i64_u:
                 {
-                    ::uwvm::unfinished();
+                    op.int_func = __builtin_addressof(::uwvm::vm::interpreter::func::f64_convert_i64_u);
+                    temp.operators.emplace_back_unchecked(op);
+                    ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::f64_promote_f32:
                 {
-                    ::uwvm::unfinished();
+                    op.int_func = __builtin_addressof(::uwvm::vm::interpreter::func::f64_promote_f32);
+                    temp.operators.emplace_back_unchecked(op);
+                    ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::i32_reinterpret_f32:
                 {
-                    ::uwvm::unfinished();
+                    op.int_func = __builtin_addressof(::uwvm::vm::interpreter::func::i32_reinterpret_f32);
+                    temp.operators.emplace_back_unchecked(op);
+                    ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::i64_reinterpret_f64:
                 {
-                    ::uwvm::unfinished();
+                    op.int_func = __builtin_addressof(::uwvm::vm::interpreter::func::i64_reinterpret_f64);
+                    temp.operators.emplace_back_unchecked(op);
+                    ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::f32_reinterpret_i32:
                 {
-                    ::uwvm::unfinished();
+                    op.int_func = __builtin_addressof(::uwvm::vm::interpreter::func::f32_reinterpret_i32);
+                    temp.operators.emplace_back_unchecked(op);
+                    ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::f64_reinterpret_i64:
                 {
-                    ::uwvm::unfinished();
+                    op.int_func = __builtin_addressof(::uwvm::vm::interpreter::func::f64_reinterpret_i64);
+                    temp.operators.emplace_back_unchecked(op);
+                    ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::i32_extend8_s:
                 {
-                    ::uwvm::unfinished();
+                    op.int_func = __builtin_addressof(::uwvm::vm::interpreter::func::i32_extend8_s);
+                    temp.operators.emplace_back_unchecked(op);
+                    ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::i32_extend16_s:
                 {
-                    ::uwvm::unfinished();
+                    op.int_func = __builtin_addressof(::uwvm::vm::interpreter::func::i32_extend16_s);
+                    temp.operators.emplace_back_unchecked(op);
+                    ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::i64_extend8_s:
                 {
-                    ::uwvm::unfinished();
+                    op.int_func = __builtin_addressof(::uwvm::vm::interpreter::func::i64_extend8_s);
+                    temp.operators.emplace_back_unchecked(op);
+                    ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::i64_extend16_s:
                 {
-                    ::uwvm::unfinished();
+                    op.int_func = __builtin_addressof(::uwvm::vm::interpreter::func::i64_extend16_s);
+                    temp.operators.emplace_back_unchecked(op);
+                    ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::i64_extend32_s:
                 {
-                    ::uwvm::unfinished();
+                    op.int_func = __builtin_addressof(::uwvm::vm::interpreter::func::i64_extend32_s);
+                    temp.operators.emplace_back_unchecked(op);
+                    ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::ref_func:

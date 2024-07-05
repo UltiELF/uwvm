@@ -23,6 +23,7 @@ namespace uwvm::vm::interpreter
 
     enum class flow_control_t : ::std::uint_fast8_t
     {
+        func,
         block,
         loop,
         if_,
