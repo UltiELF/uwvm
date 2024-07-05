@@ -1,4 +1,5 @@
 ﻿#pragma once
+#include <cmath>
 #include <fast_io.h>
 #include <io_device.h>
 #include <back_trace.h>
