@@ -37,7 +37,7 @@
     }
  
     sresp1->type = ::uwvm::cmdline::parameter_parsing_results_type::occupied_arg;
-    if(auto s1s{sresp1->str}; s1s == "bare") { ::uwvm::wasm_abi = ::uwvm::wasm::abi::bare; }
+    if(auto const s1s{sresp1->str}; s1s == "bare") { ::uwvm::wasm_abi = ::uwvm::wasm::abi::bare; }
     else if(s1s == "emscripten") { ::uwvm::wasm_abi = ::uwvm::wasm::abi::emscripten; }
     else if(s1s == "wasip1") { ::uwvm::wasm_abi = ::uwvm::wasm::abi::wasip1; }
     else if(s1s == "wasip2") { ::uwvm::wasm_abi = ::uwvm::wasm::abi::wasip2; }
