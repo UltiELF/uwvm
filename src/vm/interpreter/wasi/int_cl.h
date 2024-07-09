@@ -3,100 +3,342 @@
 #include <fast_io_dsal/string_view.h>
 #include <map>  // !
 #include "../import.h"
+#include "wasi.h"
 
 namespace uwvm::vm::interpreter::wasi
 {
     // interpreter compatibility layer
 
-    void int_args_get(::uwvm::vm::interpreter::stack_t const* begin, ::uwvm::vm::interpreter::stack_machine& sm) noexcept {}
+    void int_args_get(::uwvm::vm::interpreter::stack_t const* begin, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
+    {
+        ::std::int_least32_t ret{::uwvm::vm::interpreter::wasi::args_get(begin[0].i32, begin[1].i32)};
+        sm.stack.get_container().imp.curr_ptr = const_cast<::uwvm::vm::interpreter::stack_t*>(begin);
+        sm.stack.push_unchecked(::uwvm::vm::interpreter::stack_t{.i32{ret}, .vt{::uwvm::wasm::value_type::i32}});
+    }
 
-    void int_args_sizes_get(::uwvm::vm::interpreter::stack_t const* begin, ::uwvm::vm::interpreter::stack_machine& sm) noexcept {}
+    void int_args_sizes_get(::uwvm::vm::interpreter::stack_t const* begin, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
+    {
+        ::std::int_least32_t ret{::uwvm::vm::interpreter::wasi::args_sizes_get(begin[0].i32, begin[1].i32)};
+        sm.stack.get_container().imp.curr_ptr = const_cast<::uwvm::vm::interpreter::stack_t*>(begin);
+        sm.stack.push_unchecked(::uwvm::vm::interpreter::stack_t{.i32{ret}, .vt{::uwvm::wasm::value_type::i32}});
+    }
 
-    void int_environ_get(::uwvm::vm::interpreter::stack_t const* begin, ::uwvm::vm::interpreter::stack_machine& sm) noexcept {}
+    void int_environ_get(::uwvm::vm::interpreter::stack_t const* begin, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
+    {
+        ::std::int_least32_t ret{::uwvm::vm::interpreter::wasi::environ_get(begin[0].i32, begin[1].i32)};
+        sm.stack.get_container().imp.curr_ptr = const_cast<::uwvm::vm::interpreter::stack_t*>(begin);
+        sm.stack.push_unchecked(::uwvm::vm::interpreter::stack_t{.i32{ret}, .vt{::uwvm::wasm::value_type::i32}});
+    }
 
-    void int_environ_sizes_get(::uwvm::vm::interpreter::stack_t const* begin, ::uwvm::vm::interpreter::stack_machine& sm) noexcept {}
+    void int_environ_sizes_get(::uwvm::vm::interpreter::stack_t const* begin, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
+    {
+        ::std::int_least32_t ret{::uwvm::vm::interpreter::wasi::environ_sizes_get(begin[0].i32, begin[1].i32)};
+        sm.stack.get_container().imp.curr_ptr = const_cast<::uwvm::vm::interpreter::stack_t*>(begin);
+        sm.stack.push_unchecked(::uwvm::vm::interpreter::stack_t{.i32{ret}, .vt{::uwvm::wasm::value_type::i32}});
+    }
 
-    void int_clock_res_get(::uwvm::vm::interpreter::stack_t const* begin, ::uwvm::vm::interpreter::stack_machine& sm) noexcept {}
+    void int_clock_res_get(::uwvm::vm::interpreter::stack_t const* begin, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
+    {
+        ::std::int_least32_t ret{::uwvm::vm::interpreter::wasi::clock_res_get(begin[0].i32, begin[1].i32)};
+        sm.stack.get_container().imp.curr_ptr = const_cast<::uwvm::vm::interpreter::stack_t*>(begin);
+        sm.stack.push_unchecked(::uwvm::vm::interpreter::stack_t{.i32{ret}, .vt{::uwvm::wasm::value_type::i32}});
+    }
 
-    void int_clock_time_get(::uwvm::vm::interpreter::stack_t const* begin, ::uwvm::vm::interpreter::stack_machine& sm) noexcept {}
+    void int_clock_time_get(::uwvm::vm::interpreter::stack_t const* begin, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
+    {
+        ::std::int_least32_t ret{::uwvm::vm::interpreter::wasi::clock_time_get(begin[0].i32, begin[1].i64, begin[2].i32)};
+        sm.stack.get_container().imp.curr_ptr = const_cast<::uwvm::vm::interpreter::stack_t*>(begin);
+        sm.stack.push_unchecked(::uwvm::vm::interpreter::stack_t{.i32{ret}, .vt{::uwvm::wasm::value_type::i32}});
+    }
 
-    void int_fd_advise(::uwvm::vm::interpreter::stack_t const* begin, ::uwvm::vm::interpreter::stack_machine& sm) noexcept {}
+    void int_fd_advise(::uwvm::vm::interpreter::stack_t const* begin, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
+    {
+        ::std::int_least32_t ret{::uwvm::vm::interpreter::wasi::fd_advise(begin[0].i32, begin[1].i64, begin[2].i64, begin[3].i32)};
+        sm.stack.get_container().imp.curr_ptr = const_cast<::uwvm::vm::interpreter::stack_t*>(begin);
+        sm.stack.push_unchecked(::uwvm::vm::interpreter::stack_t{.i32{ret}, .vt{::uwvm::wasm::value_type::i32}});
+    }
 
-    void int_fd_allocate(::uwvm::vm::interpreter::stack_t const* begin, ::uwvm::vm::interpreter::stack_machine& sm) noexcept {}
+    void int_fd_allocate(::uwvm::vm::interpreter::stack_t const* begin, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
+    {
+        ::std::int_least32_t ret{::uwvm::vm::interpreter::wasi::fd_allocate(begin[0].i32, begin[1].i64, begin[2].i64)};
+        sm.stack.get_container().imp.curr_ptr = const_cast<::uwvm::vm::interpreter::stack_t*>(begin);
+        sm.stack.push_unchecked(::uwvm::vm::interpreter::stack_t{.i32{ret}, .vt{::uwvm::wasm::value_type::i32}});
+    }
 
-    void int_fd_close(::uwvm::vm::interpreter::stack_t const* begin, ::uwvm::vm::interpreter::stack_machine& sm) noexcept {}
+    void int_fd_close(::uwvm::vm::interpreter::stack_t const* begin, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
+    {
+        ::std::int_least32_t ret{::uwvm::vm::interpreter::wasi::fd_close(begin[0].i32)};
+        sm.stack.get_container().imp.curr_ptr = const_cast<::uwvm::vm::interpreter::stack_t*>(begin);
+        sm.stack.push_unchecked(::uwvm::vm::interpreter::stack_t{.i32{ret}, .vt{::uwvm::wasm::value_type::i32}});
+    }
 
-    void int_fd_datasync(::uwvm::vm::interpreter::stack_t const* begin, ::uwvm::vm::interpreter::stack_machine& sm) noexcept {}
+    void int_fd_datasync(::uwvm::vm::interpreter::stack_t const* begin, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
+    {
+        ::std::int_least32_t ret{::uwvm::vm::interpreter::wasi::fd_datasync(begin[0].i32)};
+        sm.stack.get_container().imp.curr_ptr = const_cast<::uwvm::vm::interpreter::stack_t*>(begin);
+        sm.stack.push_unchecked(::uwvm::vm::interpreter::stack_t{.i32{ret}, .vt{::uwvm::wasm::value_type::i32}});
+    }
 
-    void int_fd_fdstat_get(::uwvm::vm::interpreter::stack_t const* begin, ::uwvm::vm::interpreter::stack_machine& sm) noexcept {}
+    void int_fd_fdstat_get(::uwvm::vm::interpreter::stack_t const* begin, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
+    {
+        ::std::int_least32_t ret{::uwvm::vm::interpreter::wasi::fd_fdstat_get(begin[0].i32, begin[1].i32)};
+        sm.stack.get_container().imp.curr_ptr = const_cast<::uwvm::vm::interpreter::stack_t*>(begin);
+        sm.stack.push_unchecked(::uwvm::vm::interpreter::stack_t{.i32{ret}, .vt{::uwvm::wasm::value_type::i32}});
+    }
 
-    void int_fd_fdstat_set_flags(::uwvm::vm::interpreter::stack_t const* begin, ::uwvm::vm::interpreter::stack_machine& sm) noexcept {}
+    void int_fd_fdstat_set_flags(::uwvm::vm::interpreter::stack_t const* begin, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
+    {
+        ::std::int_least32_t ret{::uwvm::vm::interpreter::wasi::fd_fdstat_set_flags(begin[0].i32, begin[1].i32)};
+        sm.stack.get_container().imp.curr_ptr = const_cast<::uwvm::vm::interpreter::stack_t*>(begin);
+        sm.stack.push_unchecked(::uwvm::vm::interpreter::stack_t{.i32{ret}, .vt{::uwvm::wasm::value_type::i32}});
+    }
 
-    void int_fd_fdstat_set_rights(::uwvm::vm::interpreter::stack_t const* begin, ::uwvm::vm::interpreter::stack_machine& sm) noexcept {}
+    void int_fd_fdstat_set_rights(::uwvm::vm::interpreter::stack_t const* begin, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
+    {
+        ::std::int_least32_t ret{::uwvm::vm::interpreter::wasi::fd_fdstat_set_rights(begin[0].i32, begin[1].i64, begin[2].i64)};
+        sm.stack.get_container().imp.curr_ptr = const_cast<::uwvm::vm::interpreter::stack_t*>(begin);
+        sm.stack.push_unchecked(::uwvm::vm::interpreter::stack_t{.i32{ret}, .vt{::uwvm::wasm::value_type::i32}});
+    }
 
-    void int_fd_filestat_get(::uwvm::vm::interpreter::stack_t const* begin, ::uwvm::vm::interpreter::stack_machine& sm) noexcept {}
+    void int_fd_filestat_get(::uwvm::vm::interpreter::stack_t const* begin, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
+    {
+        ::std::int_least32_t ret{::uwvm::vm::interpreter::wasi::fd_filestat_get(begin[0].i32, begin[1].i32)};
+        sm.stack.get_container().imp.curr_ptr = const_cast<::uwvm::vm::interpreter::stack_t*>(begin);
+        sm.stack.push_unchecked(::uwvm::vm::interpreter::stack_t{.i32{ret}, .vt{::uwvm::wasm::value_type::i32}});
+    }
 
-    void int_fd_filestat_set_size(::uwvm::vm::interpreter::stack_t const* begin, ::uwvm::vm::interpreter::stack_machine& sm) noexcept {}
+    void int_fd_filestat_set_size(::uwvm::vm::interpreter::stack_t const* begin, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
+    {
+        ::std::int_least32_t ret{::uwvm::vm::interpreter::wasi::fd_filestat_set_size(begin[0].i32, begin[1].i64)};
+        sm.stack.get_container().imp.curr_ptr = const_cast<::uwvm::vm::interpreter::stack_t*>(begin);
+        sm.stack.push_unchecked(::uwvm::vm::interpreter::stack_t{.i32{ret}, .vt{::uwvm::wasm::value_type::i32}});
+    }
 
-    void int_fd_filestat_set_times(::uwvm::vm::interpreter::stack_t const* begin, ::uwvm::vm::interpreter::stack_machine& sm) noexcept {}
+    void int_fd_filestat_set_times(::uwvm::vm::interpreter::stack_t const* begin, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
+    {
+        ::std::int_least32_t ret{::uwvm::vm::interpreter::wasi::fd_filestat_set_times(begin[0].i32, begin[1].i64, begin[2].i64, begin[3].i32)};
+        sm.stack.get_container().imp.curr_ptr = const_cast<::uwvm::vm::interpreter::stack_t*>(begin);
+        sm.stack.push_unchecked(::uwvm::vm::interpreter::stack_t{.i32{ret}, .vt{::uwvm::wasm::value_type::i32}});
+    }
 
-    void int_fd_pread(::uwvm::vm::interpreter::stack_t const* begin, ::uwvm::vm::interpreter::stack_machine& sm) noexcept {}
+    void int_fd_pread(::uwvm::vm::interpreter::stack_t const* begin, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
+    {
+        ::std::int_least32_t ret{::uwvm::vm::interpreter::wasi::fd_pread(begin[0].i32, begin[1].i32, begin[2].i32, begin[3].i64, begin[4].i32)};
+        sm.stack.get_container().imp.curr_ptr = const_cast<::uwvm::vm::interpreter::stack_t*>(begin);
+        sm.stack.push_unchecked(::uwvm::vm::interpreter::stack_t{.i32{ret}, .vt{::uwvm::wasm::value_type::i32}});
+    }
 
-    void int_fd_prestat_get(::uwvm::vm::interpreter::stack_t const* begin, ::uwvm::vm::interpreter::stack_machine& sm) noexcept {}
+    void int_fd_prestat_get(::uwvm::vm::interpreter::stack_t const* begin, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
+    {
+        ::std::int_least32_t ret{::uwvm::vm::interpreter::wasi::fd_prestat_get(begin[0].i32, begin[1].i32)};
+        sm.stack.get_container().imp.curr_ptr = const_cast<::uwvm::vm::interpreter::stack_t*>(begin);
+        sm.stack.push_unchecked(::uwvm::vm::interpreter::stack_t{.i32{ret}, .vt{::uwvm::wasm::value_type::i32}});
+    }
 
-    void int_fd_prestat_dir_name(::uwvm::vm::interpreter::stack_t const* begin, ::uwvm::vm::interpreter::stack_machine& sm) noexcept {}
+    void int_fd_prestat_dir_name(::uwvm::vm::interpreter::stack_t const* begin, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
+    {
+        ::std::int_least32_t ret{::uwvm::vm::interpreter::wasi::fd_prestat_dir_name(begin[0].i32, begin[1].i32, begin[2].i32)};
+        sm.stack.get_container().imp.curr_ptr = const_cast<::uwvm::vm::interpreter::stack_t*>(begin);
+        sm.stack.push_unchecked(::uwvm::vm::interpreter::stack_t{.i32{ret}, .vt{::uwvm::wasm::value_type::i32}});
+    }
 
-    void int_fd_pwrite(::uwvm::vm::interpreter::stack_t const* begin, ::uwvm::vm::interpreter::stack_machine& sm) noexcept {}
+    void int_fd_pwrite(::uwvm::vm::interpreter::stack_t const* begin, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
+    {
+        ::std::int_least32_t ret{::uwvm::vm::interpreter::wasi::fd_pwrite(begin[0].i32, begin[1].i32, begin[2].i32, begin[3].i64, begin[4].i32)};
+        sm.stack.get_container().imp.curr_ptr = const_cast<::uwvm::vm::interpreter::stack_t*>(begin);
+        sm.stack.push_unchecked(::uwvm::vm::interpreter::stack_t{.i32{ret}, .vt{::uwvm::wasm::value_type::i32}});
+    }
 
-    void int_fd_read(::uwvm::vm::interpreter::stack_t const* begin, ::uwvm::vm::interpreter::stack_machine& sm) noexcept {}
+    void int_fd_read(::uwvm::vm::interpreter::stack_t const* begin, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
+    {
+        ::std::int_least32_t ret{::uwvm::vm::interpreter::wasi::fd_read(begin[0].i32, begin[1].i32, begin[2].i32, begin[3].i32)};
+        sm.stack.get_container().imp.curr_ptr = const_cast<::uwvm::vm::interpreter::stack_t*>(begin);
+        sm.stack.push_unchecked(::uwvm::vm::interpreter::stack_t{.i32{ret}, .vt{::uwvm::wasm::value_type::i32}});
+    }
 
-    void int_fd_readdir(::uwvm::vm::interpreter::stack_t const* begin, ::uwvm::vm::interpreter::stack_machine& sm) noexcept {}
+    void int_fd_readdir(::uwvm::vm::interpreter::stack_t const* begin, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
+    {
+        ::std::int_least32_t ret{::uwvm::vm::interpreter::wasi::fd_readdir(begin[0].i32, begin[1].i32, begin[2].i32, begin[3].i64, begin[4].i32)};
+        sm.stack.get_container().imp.curr_ptr = const_cast<::uwvm::vm::interpreter::stack_t*>(begin);
+        sm.stack.push_unchecked(::uwvm::vm::interpreter::stack_t{.i32{ret}, .vt{::uwvm::wasm::value_type::i32}});
+    }
 
-    void int_fd_renumber(::uwvm::vm::interpreter::stack_t const* begin, ::uwvm::vm::interpreter::stack_machine& sm) noexcept {}
+    void int_fd_renumber(::uwvm::vm::interpreter::stack_t const* begin, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
+    {
+        ::std::int_least32_t ret{::uwvm::vm::interpreter::wasi::fd_renumber(begin[0].i32, begin[1].i32)};
+        sm.stack.get_container().imp.curr_ptr = const_cast<::uwvm::vm::interpreter::stack_t*>(begin);
+        sm.stack.push_unchecked(::uwvm::vm::interpreter::stack_t{.i32{ret}, .vt{::uwvm::wasm::value_type::i32}});
+    }
 
-    void int_fd_seek(::uwvm::vm::interpreter::stack_t const* begin, ::uwvm::vm::interpreter::stack_machine& sm) noexcept {}
+    void int_fd_seek(::uwvm::vm::interpreter::stack_t const* begin, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
+    {
+        ::std::int_least32_t ret{::uwvm::vm::interpreter::wasi::fd_seek(begin[0].i32, begin[1].i64, begin[2].i32, begin[3].i32)};
+        sm.stack.get_container().imp.curr_ptr = const_cast<::uwvm::vm::interpreter::stack_t*>(begin);
+        sm.stack.push_unchecked(::uwvm::vm::interpreter::stack_t{.i32{ret}, .vt{::uwvm::wasm::value_type::i32}});
+    }
 
-    void int_fd_sync(::uwvm::vm::interpreter::stack_t const* begin, ::uwvm::vm::interpreter::stack_machine& sm) noexcept {}
+    void int_fd_sync(::uwvm::vm::interpreter::stack_t const* begin, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
+    {
+        ::std::int_least32_t ret{::uwvm::vm::interpreter::wasi::fd_sync(begin[0].i32)};
+        sm.stack.get_container().imp.curr_ptr = const_cast<::uwvm::vm::interpreter::stack_t*>(begin);
+        sm.stack.push_unchecked(::uwvm::vm::interpreter::stack_t{.i32{ret}, .vt{::uwvm::wasm::value_type::i32}});
+    }
 
-    void int_fd_tell(::uwvm::vm::interpreter::stack_t const* begin, ::uwvm::vm::interpreter::stack_machine& sm) noexcept {}
+    void int_fd_tell(::uwvm::vm::interpreter::stack_t const* begin, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
+    {
+        ::std::int_least32_t ret{::uwvm::vm::interpreter::wasi::fd_tell(begin[0].i32, begin[1].i32)};
+        sm.stack.get_container().imp.curr_ptr = const_cast<::uwvm::vm::interpreter::stack_t*>(begin);
+        sm.stack.push_unchecked(::uwvm::vm::interpreter::stack_t{.i32{ret}, .vt{::uwvm::wasm::value_type::i32}});
+    }
 
-    void int_fd_write(::uwvm::vm::interpreter::stack_t const* begin, ::uwvm::vm::interpreter::stack_machine& sm) noexcept {}
+    void int_fd_write(::uwvm::vm::interpreter::stack_t const* begin, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
+    {
+        ::std::int_least32_t ret{::uwvm::vm::interpreter::wasi::fd_write(begin[0].i32, begin[1].i32, begin[2].i32, begin[3].i32)};
+        sm.stack.get_container().imp.curr_ptr = const_cast<::uwvm::vm::interpreter::stack_t*>(begin);
+        sm.stack.push_unchecked(::uwvm::vm::interpreter::stack_t{.i32{ret}, .vt{::uwvm::wasm::value_type::i32}});
+    }
 
-    void int_path_create_directory(::uwvm::vm::interpreter::stack_t const* begin, ::uwvm::vm::interpreter::stack_machine& sm) noexcept {}
+    void int_path_create_directory(::uwvm::vm::interpreter::stack_t const* begin, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
+    {
+        ::std::int_least32_t ret{::uwvm::vm::interpreter::wasi::path_create_directory(begin[0].i32, begin[1].i32, begin[2].i32)};
+        sm.stack.get_container().imp.curr_ptr = const_cast<::uwvm::vm::interpreter::stack_t*>(begin);
+        sm.stack.push_unchecked(::uwvm::vm::interpreter::stack_t{.i32{ret}, .vt{::uwvm::wasm::value_type::i32}});
+    }
 
-    void int_path_filestat_get(::uwvm::vm::interpreter::stack_t const* begin, ::uwvm::vm::interpreter::stack_machine& sm) noexcept {}
+    void int_path_filestat_get(::uwvm::vm::interpreter::stack_t const* begin, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
+    {
+        ::std::int_least32_t ret{::uwvm::vm::interpreter::wasi::path_filestat_get(begin[0].i32, begin[1].i32, begin[2].i32, begin[3].i32, begin[4].i32)};
+        sm.stack.get_container().imp.curr_ptr = const_cast<::uwvm::vm::interpreter::stack_t*>(begin);
+        sm.stack.push_unchecked(::uwvm::vm::interpreter::stack_t{.i32{ret}, .vt{::uwvm::wasm::value_type::i32}});
+    }
 
-    void int_path_filestat_set_times(::uwvm::vm::interpreter::stack_t const* begin, ::uwvm::vm::interpreter::stack_machine& sm) noexcept {}
+    void int_path_filestat_set_times(::uwvm::vm::interpreter::stack_t const* begin, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
+    {
+        ::std::int_least32_t ret{::uwvm::vm::interpreter::wasi::path_filestat_set_times(begin[0].i32,
+                                                                                        begin[1].i32,
+                                                                                        begin[2].i32,
+                                                                                        begin[3].i32,
+                                                                                        begin[4].i64,
+                                                                                        begin[5].i64,
+                                                                                        begin[6].i32)};
+        sm.stack.get_container().imp.curr_ptr = const_cast<::uwvm::vm::interpreter::stack_t*>(begin);
+        sm.stack.push_unchecked(::uwvm::vm::interpreter::stack_t{.i32{ret}, .vt{::uwvm::wasm::value_type::i32}});
+    }
 
-    void int_path_link(::uwvm::vm::interpreter::stack_t const* begin, ::uwvm::vm::interpreter::stack_machine& sm) noexcept {}
+    void int_path_link(::uwvm::vm::interpreter::stack_t const* begin, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
+    {
+        ::std::int_least32_t ret{
+            ::uwvm::vm::interpreter::wasi::path_link(begin[0].i32, begin[1].i32, begin[2].i32, begin[3].i32, begin[4].i32, begin[5].i32, begin[6].i32)};
+        sm.stack.get_container().imp.curr_ptr = const_cast<::uwvm::vm::interpreter::stack_t*>(begin);
+        sm.stack.push_unchecked(::uwvm::vm::interpreter::stack_t{.i32{ret}, .vt{::uwvm::wasm::value_type::i32}});
+    }
 
-    void int_path_open(::uwvm::vm::interpreter::stack_t const* begin, ::uwvm::vm::interpreter::stack_machine& sm) noexcept {}
+    void int_path_open(::uwvm::vm::interpreter::stack_t const* begin, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
+    {
+        ::std::int_least32_t ret{::uwvm::vm::interpreter::wasi::path_open(begin[0].i32,
+                                                                          begin[1].i32,
+                                                                          begin[2].i32,
+                                                                          begin[3].i32,
+                                                                          begin[4].i32,
+                                                                          begin[5].i64,
+                                                                          begin[6].i64,
+                                                                          begin[7].i32,
+                                                                          begin[8].i32)};
+        sm.stack.get_container().imp.curr_ptr = const_cast<::uwvm::vm::interpreter::stack_t*>(begin);
+        sm.stack.push_unchecked(::uwvm::vm::interpreter::stack_t{.i32{ret}, .vt{::uwvm::wasm::value_type::i32}});
+    }
 
-    void int_path_readlink(::uwvm::vm::interpreter::stack_t const* begin, ::uwvm::vm::interpreter::stack_machine& sm) noexcept {}
+    void int_path_readlink(::uwvm::vm::interpreter::stack_t const* begin, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
+    {
+        ::std::int_least32_t ret{
+            ::uwvm::vm::interpreter::wasi::path_readlink(begin[0].i32, begin[1].i32, begin[2].i32, begin[3].i32, begin[4].i32, begin[5].i32)};
+        sm.stack.get_container().imp.curr_ptr = const_cast<::uwvm::vm::interpreter::stack_t*>(begin);
+        sm.stack.push_unchecked(::uwvm::vm::interpreter::stack_t{.i32{ret}, .vt{::uwvm::wasm::value_type::i32}});
+    }
 
-    void int_path_remove_directory(::uwvm::vm::interpreter::stack_t const* begin, ::uwvm::vm::interpreter::stack_machine& sm) noexcept {}
+    void int_path_remove_directory(::uwvm::vm::interpreter::stack_t const* begin, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
+    {
+        ::std::int_least32_t ret{::uwvm::vm::interpreter::wasi::path_remove_directory(begin[0].i32, begin[1].i32, begin[2].i32)};
+        sm.stack.get_container().imp.curr_ptr = const_cast<::uwvm::vm::interpreter::stack_t*>(begin);
+        sm.stack.push_unchecked(::uwvm::vm::interpreter::stack_t{.i32{ret}, .vt{::uwvm::wasm::value_type::i32}});
+    }
 
-    void int_path_rename(::uwvm::vm::interpreter::stack_t const* begin, ::uwvm::vm::interpreter::stack_machine& sm) noexcept {}
+    void int_path_rename(::uwvm::vm::interpreter::stack_t const* begin, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
+    {
+        ::std::int_least32_t ret{
+            ::uwvm::vm::interpreter::wasi::path_rename(begin[0].i32, begin[1].i32, begin[2].i32, begin[3].i32, begin[4].i32, begin[5].i32)};
+        sm.stack.get_container().imp.curr_ptr = const_cast<::uwvm::vm::interpreter::stack_t*>(begin);
+        sm.stack.push_unchecked(::uwvm::vm::interpreter::stack_t{.i32{ret}, .vt{::uwvm::wasm::value_type::i32}});
+    }
 
-    void int_path_symlink(::uwvm::vm::interpreter::stack_t const* begin, ::uwvm::vm::interpreter::stack_machine& sm) noexcept {}
+    void int_path_symlink(::uwvm::vm::interpreter::stack_t const* begin, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
+    {
+        ::std::int_least32_t ret{::uwvm::vm::interpreter::wasi::path_symlink(begin[0].i32, begin[1].i32, begin[2].i32, begin[3].i32, begin[4].i32)};
+        sm.stack.get_container().imp.curr_ptr = const_cast<::uwvm::vm::interpreter::stack_t*>(begin);
+        sm.stack.push_unchecked(::uwvm::vm::interpreter::stack_t{.i32{ret}, .vt{::uwvm::wasm::value_type::i32}});
+    }
 
-    void int_path_unlink_file(::uwvm::vm::interpreter::stack_t const* begin, ::uwvm::vm::interpreter::stack_machine& sm) noexcept {}
+    void int_path_unlink_file(::uwvm::vm::interpreter::stack_t const* begin, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
+    {
+        ::std::int_least32_t ret{::uwvm::vm::interpreter::wasi::path_unlink_file(begin[0].i32, begin[1].i32, begin[2].i32)};
+        sm.stack.get_container().imp.curr_ptr = const_cast<::uwvm::vm::interpreter::stack_t*>(begin);
+        sm.stack.push_unchecked(::uwvm::vm::interpreter::stack_t{.i32{ret}, .vt{::uwvm::wasm::value_type::i32}});
+    }
 
-    void int_poll_oneoff(::uwvm::vm::interpreter::stack_t const* begin, ::uwvm::vm::interpreter::stack_machine& sm) noexcept {}
+    void int_poll_oneoff(::uwvm::vm::interpreter::stack_t const* begin, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
+    {
+        ::std::int_least32_t ret{::uwvm::vm::interpreter::wasi::poll_oneoff(begin[0].i32, begin[1].i32, begin[2].i32, begin[3].i32)};
+        sm.stack.get_container().imp.curr_ptr = const_cast<::uwvm::vm::interpreter::stack_t*>(begin);
+        sm.stack.push_unchecked(::uwvm::vm::interpreter::stack_t{.i32{ret}, .vt{::uwvm::wasm::value_type::i32}});
+    }
 
-    void int_proc_exit(::uwvm::vm::interpreter::stack_t const* begin, ::uwvm::vm::interpreter::stack_machine& sm) noexcept {}
+    void int_proc_exit(::uwvm::vm::interpreter::stack_t const* begin, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
+    {
+        ::uwvm::vm::interpreter::wasi::proc_exit(begin[0].i32);
+        sm.stack.get_container().imp.curr_ptr = const_cast<::uwvm::vm::interpreter::stack_t*>(begin);
+    }
 
-    void int_sched_yield(::uwvm::vm::interpreter::stack_t const* begin, ::uwvm::vm::interpreter::stack_machine& sm) noexcept {}
+    void int_sched_yield(::uwvm::vm::interpreter::stack_t const* begin, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
+    {
+        ::std::int_least32_t ret{::uwvm::vm::interpreter::wasi::sched_yield()};
+        sm.stack.get_container().imp.curr_ptr = const_cast<::uwvm::vm::interpreter::stack_t*>(begin);
+        sm.stack.push_unchecked(::uwvm::vm::interpreter::stack_t{.i32{ret}, .vt{::uwvm::wasm::value_type::i32}});
+    }
 
-    void int_random_get(::uwvm::vm::interpreter::stack_t const* begin, ::uwvm::vm::interpreter::stack_machine& sm) noexcept {}
+    void int_random_get(::uwvm::vm::interpreter::stack_t const* begin, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
+    {
+        ::std::int_least32_t ret{::uwvm::vm::interpreter::wasi::random_get(begin[0].i32, begin[1].i32)};
+        sm.stack.get_container().imp.curr_ptr = const_cast<::uwvm::vm::interpreter::stack_t*>(begin);
+        sm.stack.push_unchecked(::uwvm::vm::interpreter::stack_t{.i32{ret}, .vt{::uwvm::wasm::value_type::i32}});
+    }
 
-    void int_sock_accept(::uwvm::vm::interpreter::stack_t const* begin, ::uwvm::vm::interpreter::stack_machine& sm) noexcept {}
+    void int_sock_accept(::uwvm::vm::interpreter::stack_t const* begin, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
+    {
+        ::std::int_least32_t ret{::uwvm::vm::interpreter::wasi::sock_accept(begin[0].i32, begin[1].i32, begin[2].i32)};
+        sm.stack.get_container().imp.curr_ptr = const_cast<::uwvm::vm::interpreter::stack_t*>(begin);
+        sm.stack.push_unchecked(::uwvm::vm::interpreter::stack_t{.i32{ret}, .vt{::uwvm::wasm::value_type::i32}});
+    }
 
-    void int_sock_recv(::uwvm::vm::interpreter::stack_t const* begin, ::uwvm::vm::interpreter::stack_machine& sm) noexcept {}
+    void int_sock_recv(::uwvm::vm::interpreter::stack_t const* begin, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
+    {
+        ::std::int_least32_t ret{::uwvm::vm::interpreter::wasi::sock_recv(begin[0].i32, begin[1].i32, begin[2].i32, begin[3].i32, begin[4].i32, begin[5].i32)};
+        sm.stack.get_container().imp.curr_ptr = const_cast<::uwvm::vm::interpreter::stack_t*>(begin);
+        sm.stack.push_unchecked(::uwvm::vm::interpreter::stack_t{.i32{ret}, .vt{::uwvm::wasm::value_type::i32}});
+    }
 
-    void int_sock_send(::uwvm::vm::interpreter::stack_t const* begin, ::uwvm::vm::interpreter::stack_machine& sm) noexcept {}
+    void int_sock_send(::uwvm::vm::interpreter::stack_t const* begin, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
+    {
+        ::std::int_least32_t ret{::uwvm::vm::interpreter::wasi::sock_send(begin[0].i32, begin[1].i32, begin[2].i32, begin[3].i32, begin[4].i32)};
+        sm.stack.get_container().imp.curr_ptr = const_cast<::uwvm::vm::interpreter::stack_t*>(begin);
+        sm.stack.push_unchecked(::uwvm::vm::interpreter::stack_t{.i32{ret}, .vt{::uwvm::wasm::value_type::i32}});
+    }
 
-    void int_sock_shutdown(::uwvm::vm::interpreter::stack_t const* begin, ::uwvm::vm::interpreter::stack_machine& sm) noexcept {}
+    void int_sock_shutdown(::uwvm::vm::interpreter::stack_t const* begin, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
+    {
+        ::std::int_least32_t ret{::uwvm::vm::interpreter::wasi::sock_shutdown(begin[0].i32, begin[1].i32)};
+        sm.stack.get_container().imp.curr_ptr = const_cast<::uwvm::vm::interpreter::stack_t*>(begin);
+        sm.stack.push_unchecked(::uwvm::vm::interpreter::stack_t{.i32{ret}, .vt{::uwvm::wasm::value_type::i32}});
+    }
 
     ::std::map<::fast_io::u8string_view, ::uwvm::vm::interpreter::int_import_func_p> wasi_map{
 

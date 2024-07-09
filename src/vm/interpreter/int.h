@@ -67,7 +67,7 @@ namespace uwvm::vm::interpreter
                 ::fast_io::fast_terminate();
             }
         }
-        else 
+        else
         {
             if(::uwvm::vm::start_func - import_function_count >= local_func_count) [[unlikely]]
             {
@@ -91,7 +91,7 @@ namespace uwvm::vm::interpreter
                                 u8"\033[0m"
                                 u8"Terminate.\n\n");
                 ::fast_io::fast_terminate();
-            }        
+            }
         }
 
         // init global
@@ -170,9 +170,40 @@ namespace uwvm::vm::interpreter
 
         // init memory
         ::uwvm::vm::interpreter::memories.reserve(wasmmod.memorysec.memory_count);
-        for(auto& i: wasmmod.memorysec.types)
+        for(auto const& i: wasmmod.memorysec.types) { ::uwvm::vm::interpreter::memories.emplace_back_unchecked(i); }
+
+        // init data
+        for(auto const& i: wasmmod.datasec.entries)
         {
-            ::uwvm::vm::interpreter::memories.emplace_back_unchecked(i);
+            auto const size{i.size};
+            auto const& mem{::uwvm::vm::interpreter::memories.index_unchecked(i.index)};
+            auto const begin{mem.memory_begin + static_cast<::std::size_t>(i.offset.i32)};
+            if(begin + size >= mem.memory_begin + mem.memory_length) [[unlikely]]
+            {
+                ::fast_io::io::perr(::uwvm::u8err,
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"uwvm: "
+                                u8"\033[31m"
+                                u8"[fatal] "
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"Writing data out of bounds.\n"
+                                u8"\033[0m"
+                                u8"Terminate.\n\n");
+                ::fast_io::fast_terminate();
+            }
+
+            ::fast_io::freestanding::my_memcpy(begin, i.data_begin, size);
+
         }
 
         // init ast
