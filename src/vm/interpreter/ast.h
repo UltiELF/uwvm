@@ -123,7 +123,13 @@ namespace uwvm::vm::interpreter
         ::std::size_t stack_top{};  // Prevent stack expansion
         ::std::size_t local_top{};
 
-        inline static ::std::size_t default_int_stack_size{static_cast<::std::size_t>(8) * 1024 * 1024};
+        inline static ::std::size_t default_int_stack_size{
+#ifdef __MSDOS__
+            static_cast<::std::size_t>(64)
+#else
+            static_cast<::std::size_t>(512)
+#endif  // __MSDOS__
+            * 1024};
 
         constexpr stack_machine() noexcept
         {
@@ -142,7 +148,7 @@ namespace uwvm::vm::interpreter
         union
         {
             // pointers
-            struct 
+            struct
             {
                 operator_t const* end;
                 operator_t const* branch;
@@ -151,8 +157,8 @@ namespace uwvm::vm::interpreter
             // size_t
             struct
             {
-                ::std::size_t sz1; // end
-                ::std::size_t sz2; // branch
+                ::std::size_t sz1;  // end
+                ::std::size_t sz2;  // branch
             };
 
             // value
@@ -161,7 +167,6 @@ namespace uwvm::vm::interpreter
             ::uwvm::wasm::wasm_f32 f32;
             ::uwvm::wasm::wasm_f64 f64;
             ::uwvm::wasm::wasm_v128 v128;
-
         };
     };
 

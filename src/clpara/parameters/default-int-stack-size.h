@@ -12,7 +12,7 @@ namespace uwvm::parameter
     namespace details
     {
         inline bool default_int_stack_size_is_exist{};
-        inline constexpr ::fast_io::string_view default_int_stack_size_alias{"-Sms"};
+        inline constexpr ::fast_io::string_view default_int_stack_size_alias{"-defss"};
 
         inline ::uwvm::cmdline::parameter_return_type
             default_int_stack_size_callback(::uwvm::cmdline::parameter_parsing_results* sres,
@@ -72,23 +72,29 @@ namespace uwvm::parameter
 #endif
                             u8"Usage: "
                             u8"\033[36m"
-                            u8"[--istack-size|-Sms] "
+                            u8"[--default-stack-size|-defss] "
                             u8"\033[32m"
-                            u8"<bytes>"
+                            u8"<size_t>"
                             u8"\033[0m"
                             u8"\n\n");
                 return ::uwvm::cmdline::parameter_return_type::return_m1_imme;
             }
 
-            ::uwvm::vm::interpreter::stack_machine::default_int_stack_size = diss / sizeof(::uwvm::vm::interpreter::stack_machine);
+            ::uwvm::vm::interpreter::stack_machine::default_int_stack_size = diss;
 
             return ::uwvm::cmdline::parameter_return_type::def;
         }
     }  // namespace details
 
     inline constexpr ::uwvm::cmdline::parameter default_int_stack_size{
-        .name{::fast_io::string_view{"--istack-size"}},
-        .describe{::fast_io::u8string_view{u8"Set the initial data stack size of wasm interpreter (unit byte). Usage: [--istack-size|-Sms] <bytes>"}},
+        .name{::fast_io::string_view{"--default-stack-size"}},
+        .describe{::fast_io::u8string_view{u8"Set the initial stack and local size of the interpreter (unit stack, default="
+#ifdef __MSDOS
+                                           u8"65536"
+#else
+                                           u8"524288"
+#endif
+                                           u8"). Usage: [--default-stack-size|-defss] <size_t>"}},
         .alias{::uwvm::cmdline::kns_str_scatter_t{__builtin_addressof(details::default_int_stack_size_alias), 1}},
         .callback{__builtin_addressof(details::default_int_stack_size_callback)},
         .is_exist{__builtin_addressof(details::default_int_stack_size_is_exist)},

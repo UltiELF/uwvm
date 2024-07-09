@@ -26,7 +26,7 @@ namespace uwvm::vm::interpreter::memory
         {
             mutex.lock();
             memory_length = msec.limits.min * page_size;
-            memory_begin = reinterpret_cast<::std::byte*>(Alloc::allocate(memory_length));
+            memory_begin = reinterpret_cast<::std::byte*>(Alloc::allocate_zero(memory_length));
             mutex.unlock();
         }
 
