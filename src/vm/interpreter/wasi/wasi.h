@@ -91,22 +91,26 @@ namespace uwvm::vm::interpreter::wasi
     {
         // No need to check the memory of wasm
         ::fast_io::posix_io_observer pfd{static_cast<int>(arg0)};
-        ::uwvm::vm::interpreter::wasi::ciovec_t cvt{};
+
         ::std::byte* memory_begin{::uwvm::vm::interpreter::memories.front().memory_begin};
 
-        ::std::byte const* cvt_begin{memory_begin + static_cast<::std::size_t>(arg1)};
-        ::fast_io::freestanding::my_memcpy(__builtin_addressof(cvt), cvt_begin, sizeof(cvt));
+        ::uwvm::vm::interpreter::wasi::wasi_void_ptr_t wpt_buf{};
+        ::uwvm::vm::interpreter::wasi::wasi_size_t wsz_buf_len{};
 
-        auto const cvt_buf_off{static_cast<::std::size_t>(static_cast<::std::uint_least32_t>(cvt.buf))};
+        ::std::byte const* cvt_begin{memory_begin + static_cast<::std::size_t>(arg1)};
+        ::fast_io::freestanding::my_memcpy(__builtin_addressof(wpt_buf), cvt_begin, sizeof(wpt_buf));
+        ::fast_io::freestanding::my_memcpy(__builtin_addressof(wsz_buf_len), cvt_begin + 4, sizeof(wsz_buf_len));
+
+        auto const cvt_buf_off{static_cast<::std::size_t>(static_cast<::std::uint_least32_t>(wpt_buf))};
         auto const cvt_buf_begin{memory_begin + cvt_buf_off};
-        if(static_cast<::std::uint_least32_t>(cvt.buf_len) == 0) [[unlikely]]
+        if(static_cast<::std::uint_least32_t>(wsz_buf_len) == 0) [[unlikely]]
         {
             return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::efault);
         }
-        auto const cvt_buf_write_end{::fast_io::operations::write_some_bytes(pfd, cvt_buf_begin, cvt_buf_begin + static_cast<::std::size_t>(cvt.buf_len))};
+        auto const cvt_buf_write_end{::fast_io::operations::write_some_bytes(pfd, cvt_buf_begin, cvt_buf_begin + static_cast<::std::size_t>(wsz_buf_len))};
 
         auto const cvt_buf_write_sz{static_cast<::std::size_t>(cvt_buf_write_end - cvt_buf_begin)};
-        if(cvt_buf_write_sz != static_cast<::std::size_t>(cvt.buf_len)) [[unlikely]]
+        if(cvt_buf_write_sz != static_cast<::std::size_t>(wsz_buf_len)) [[unlikely]]
         {
             return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::efault);
         }

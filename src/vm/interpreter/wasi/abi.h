@@ -24,7 +24,7 @@ namespace uwvm::vm::interpreter::wasi
 
     };
 
-
+#if 0
     static_assert(alignof(::std::int_least8_t) == 1, "non-wasi data layout");
     static_assert(alignof(::std::uint_least8_t) == 1, "non-wasi data layout");
     static_assert(alignof(::std::int_least16_t) == 2, "non-wasi data layout");
@@ -33,6 +33,7 @@ namespace uwvm::vm::interpreter::wasi
     static_assert(alignof(::std::uint_least32_t) == 4, "non-wasi data layout");
     static_assert(alignof(::std::int_least64_t) == 8, "non-wasi data layout");
     static_assert(alignof(::std::uint_least64_t) == 8, "non-wasi data layout");
+#endif
 
     enum class advice_t : ::std::uint_least8_t
     {
@@ -352,6 +353,7 @@ namespace uwvm::vm::interpreter::wasi
         preopentype_dir
     };
 
+#if 0
     struct dirent_t
     {
         dircookie_t d_next{};
@@ -509,6 +511,5 @@ namespace uwvm::vm::interpreter::wasi
     static_assert(__builtin_offsetof(subscription_t, u.fd_readwrite.fd) == 16, "non-wasi data layout");
     static_assert(sizeof(subscription_t) == 48, "non-wasi data layout");
     static_assert(alignof(subscription_t) == 8, "non-wasi data layout");
-
-
+#endif
 }  // namespace uwvm::vm::interpreter::wasi
