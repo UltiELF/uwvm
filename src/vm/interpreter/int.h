@@ -11,7 +11,9 @@
 
 #include "ast.h"
 #include "aststorge.h"
+
 #include "global.h"
+#include "../abi.h"
 
 #include "astgen.h"
 #include "astrun.h"
@@ -25,11 +27,25 @@ namespace uwvm::vm::interpreter
 #endif
         auto const& wasmmod{::uwvm::global_wasm_module};
 
-        ::uwvm::vm::start_func = ::uwvm::vm::get_start_func(wasmmod);
+        auto const import_function_count{wasmmod.importsec.func_types.size()};
+        auto const local_func_count{wasmmod.functionsec.function_count};
+        auto const func_count{import_function_count + local_func_count};
 
-        if(::uwvm::vm::start_func == static_cast<::std::size_t>(-1)) [[unlikely]]
+        auto const import_global_count{wasmmod.importsec.global_types.size()};
+        auto const local_global_count{wasmmod.globalsec.global_count};
+        auto const global_count{import_global_count + local_global_count};
+
+        // init import
+        ::uwvm::vm::abi_detect();
+
+        // get start func
+        if(::uwvm::vm::start_func == static_cast<::std::size_t>(-1)) [[likely]]
         {
-            ::fast_io::io::perr(::uwvm::u8err,
+            ::uwvm::vm::start_func = ::uwvm::vm::get_start_func(wasmmod);
+
+            if(::uwvm::vm::start_func == static_cast<::std::size_t>(-1)) [[unlikely]]
+            {
+                ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
 #ifdef __MSDOS__
                                 u8"\033[37m"
@@ -48,16 +64,35 @@ namespace uwvm::vm::interpreter
                                 u8"Cannot find function: start.\n"
                                 u8"\033[0m"
                                 u8"Terminate.\n\n");
-            ::fast_io::fast_terminate();
+                ::fast_io::fast_terminate();
+            }
         }
-
-        auto const import_function_count{wasmmod.importsec.func_types.size()};
-        auto const local_func_count{wasmmod.functionsec.function_count};
-        auto const func_count{import_function_count + local_func_count};
-
-        auto const import_global_count{wasmmod.importsec.global_types.size()};
-        auto const local_global_count{wasmmod.globalsec.global_count};
-        auto const global_count{import_global_count + local_global_count};
+        else 
+        {
+            if(::uwvm::vm::start_func - import_function_count >= local_func_count) [[unlikely]]
+            {
+                ::fast_io::io::perr(::uwvm::u8err,
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"uwvm: "
+                                u8"\033[31m"
+                                u8"[fatal] "
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"Incorrect start function index.\n"
+                                u8"\033[0m"
+                                u8"Terminate.\n\n");
+                ::fast_io::fast_terminate();
+            }        
+        }
 
         // init global
         ::uwvm::vm::interpreter::globals.init(global_count);

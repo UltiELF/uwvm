@@ -1,6 +1,7 @@
 ﻿#include "mvp.h"
 #include "../astgen.h"
 #include "../astrun.h"
+#include "call_import.h"
 
 #if __has_cpp_attribute(__gnu__::__hot__)
 [[__gnu__::__hot__]]
@@ -23,11 +24,7 @@ void ::uwvm::vm::interpreter::func::call(::std::byte const* curr, ::uwvm::vm::in
         }
         ::uwvm::vm::interpreter::run_ast(ast_temp);
     }
-    else
-    {
-        // to do
-        ::uwvm::unfinished();
-    }
+    else { ::uwvm::vm::interpreter::call_import_func(all_func_index, sm); }
     ++sm.curr_op;
 }
 
@@ -110,11 +107,7 @@ void ::uwvm::vm::interpreter::func::call_indirect(::std::byte const* curr, ::uwv
     auto const local_func_count{wasmmod.functionsec.function_count};
     auto const func_count{import_function_count + local_func_count};
 
-    if(auto const st_sz{static_cast<::std::size_t>(st.i32)}; st_sz < import_function_count)
-    {
-        // to do
-        ::uwvm::unfinished();
-    }
+    if(auto const st_sz{static_cast<::std::size_t>(st.i32)}; st_sz < import_function_count) { ::uwvm::vm::interpreter::call_import_func(st_sz, sm); }
     else if(st_sz < func_count)
     {
         auto const index{st_sz - import_function_count};

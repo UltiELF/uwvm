@@ -92,10 +92,6 @@ namespace uwvm::vm::interpreter
                 --curr_st;
             }
 
-            // stack top
-            auto const last_stack_top{s.stack_top};
-            s.stack_top = s.stack.size();
-
             // local
             auto& local_storage_c{s.local_storages.get_container()};
             auto local_curr{local_storage_c.imp.curr_ptr};
@@ -114,8 +110,6 @@ namespace uwvm::vm::interpreter
             s.local_top = static_cast<::std::size_t>(local_curr - local_storage_c.imp.begin_ptr);
             local_storage_c.imp.curr_ptr += a.local_size;
 
-            // local check
-#if 1
             auto local_curr_temp{local_curr};
             auto const stack_cend{s.stack.get_container().cend()};
             for(auto i{stack_cend - func_type_para_size}; i != stack_cend; ++i)
@@ -124,6 +118,7 @@ namespace uwvm::vm::interpreter
                 ++local_curr_temp;
             }
 
+            // set local value_type
             for(auto const& i: a.fb->locals)
             {
                 auto const it{i.type};
@@ -133,7 +128,13 @@ namespace uwvm::vm::interpreter
                     ++local_curr_temp;
                 }
             }
-#endif
+
+            // set stack curr
+            s.stack.get_container().imp.curr_ptr -= func_type_para_size;
+
+            // stack top
+            auto const last_stack_top{s.stack_top};
+            s.stack_top = s.stack.size();
 
             // run
             for(s.curr_op = begin_op; s.curr_op != end_op;)

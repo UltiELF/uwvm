@@ -55,7 +55,7 @@ $ uwvm <param1> <param2> ... --run <file> <argv1> <argv2> ...
 ```
 * 加载 WASM ABI (默认自动检测)
 ```bash
---abi [bare|emscripten|wasip1|wasip2]
+--abi [bare|emscripten|wasi]
 ```
 
 ## 特征

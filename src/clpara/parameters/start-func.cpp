@@ -1,12 +1,9 @@
-﻿#include "abi.h"
-#include "../../run/wasm_file.h"
-#include <io_device.h>
+#include "start-func.h"
+#include "../../vm/wasm.h"
 
-#if __has_cpp_attribute(__gnu__::__cold__)
-[[__gnu__::__cold__]]
-#endif
-::uwvm::cmdline::parameter_return_type(::uwvm::parameter::details::abi_callback)(::uwvm::cmdline::parameter_parsing_results* sres,
-                                                                                 ::fast_io::vector<::uwvm::cmdline::parameter_parsing_results>& pres) noexcept
+::uwvm::cmdline::parameter_return_type(::uwvm::parameter::details::start_func_callback)(
+    ::uwvm::cmdline::parameter_parsing_results* sres,
+    ::fast_io::vector<::uwvm::cmdline::parameter_parsing_results>& pres) noexcept
 {
     auto sresp1{sres + 1};
     if(sresp1 == pres.cend() || sresp1->type != ::uwvm::cmdline::parameter_parsing_results_type::arg) [[unlikely]]
@@ -28,20 +25,21 @@
 #endif
                             u8"Usage: "
                             u8"\033[36m"
-                            u8"[--abi|-a] "
+                            u8"[--start-func|-sf] "
                             u8"\033[32m"
-                            u8"[bare|emscripten|wasi]"
+                            u8"<size_t>"
                             u8"\033[0m"
                             u8"\n\n");
         return ::uwvm::cmdline::parameter_return_type::return_m1_imme;
     }
- 
+
     sresp1->type = ::uwvm::cmdline::parameter_parsing_results_type::occupied_arg;
 
-    if(auto const s1s{sresp1->str}; s1s == "bare") { ::uwvm::wasm_abi = ::uwvm::wasm::abi::bare; }
-    else if(s1s == "emscripten") { ::uwvm::wasm_abi = ::uwvm::wasm::abi::emscripten; }
-    else if(s1s == "wasi") { ::uwvm::wasm_abi = ::uwvm::wasm::abi::wasi; }
-    else
+    ::std::size_t func{};
+
+    auto const [next, err]{::fast_io::parse_by_scan(sresp1->str.cbegin(), sresp1->str.cend(), func)};
+
+    if(next != sresp1->str.cend() || err != ::fast_io::parse_code::ok) [[unlikely]]
     {
         ::fast_io::io::perr(::uwvm::u8err,
                             u8"\033[0m"
@@ -58,28 +56,17 @@
 #else
                             u8"\033[97m"
 #endif
-                            u8"Unsupported ABI (\""
-#ifdef __MSDOS__
-                            u8"\033[35m"
-#else
-                            u8"\033[95m"
-#endif
-                            ,
-                            ::fast_io::mnp::code_cvt(s1s),
-#ifdef __MSDOS__
-                            u8"\033[37m"
-#else
-                            u8"\033[97m"
-#endif
-                            u8"\"). "
                             u8"Usage: "
                             u8"\033[36m"
-                            u8"[--abi|-a] "
+                            u8"[--start-func|-sf] "
                             u8"\033[32m"
-                            u8"[bare|emscripten|wasi]"
+                            u8"<size_t>"
                             u8"\033[0m"
                             u8"\n\n");
         return ::uwvm::cmdline::parameter_return_type::return_m1_imme;
     }
+
+    ::uwvm::vm::start_func = func;
+
     return ::uwvm::cmdline::parameter_return_type::def;
 }

@@ -8843,7 +8843,7 @@ namespace uwvm::vm::interpreter::func
             ::fast_io::fast_terminate();
         }
 
-        sm.stack.push_unchecked(stack_t{.f32{::std::trunc(num.f32)}, .vt{::uwvm::wasm::value_type::f32}});
+        sm.stack.push_unchecked(stack_t{.f32{::truncf(num.f32)}, .vt{::uwvm::wasm::value_type::f32}});
 
         ++sm.curr_op;
     }
@@ -8914,7 +8914,7 @@ namespace uwvm::vm::interpreter::func
             ::fast_io::fast_terminate();
         }
 
-        sm.stack.push_unchecked(stack_t{.f32{::std::round(num.f32)}, .vt{::uwvm::wasm::value_type::f32}});
+        sm.stack.push_unchecked(stack_t{.f32{::roundf(num.f32)}, .vt{::uwvm::wasm::value_type::f32}});
 
         ++sm.curr_op;
     }
@@ -9489,7 +9489,7 @@ namespace uwvm::vm::interpreter::func
             ::fast_io::fast_terminate();
         }
 
-        sm.stack.push_unchecked(stack_t{.f32{::std::copysign(num1.f32, num2.f32)}, .vt{::uwvm::wasm::value_type::f32}});
+        sm.stack.push_unchecked(stack_t{.f32{::copysignf(num1.f32, num2.f32)}, .vt{::uwvm::wasm::value_type::f32}});
 
         ++sm.curr_op;
     }
@@ -9844,7 +9844,7 @@ namespace uwvm::vm::interpreter::func
             ::fast_io::fast_terminate();
         }
 
-        sm.stack.push_unchecked(stack_t{.f64{::std::trunc(num.f64)}, .vt{::uwvm::wasm::value_type::f64}});
+        sm.stack.push_unchecked(stack_t{.f64{::trunc(num.f64)}, .vt{::uwvm::wasm::value_type::f64}});
 
         ++sm.curr_op;
     }
@@ -9915,7 +9915,7 @@ namespace uwvm::vm::interpreter::func
             ::fast_io::fast_terminate();
         }
 
-        sm.stack.push_unchecked(stack_t{.f64{::std::round(num.f64)}, .vt{::uwvm::wasm::value_type::f64}});
+        sm.stack.push_unchecked(stack_t{.f64{::round(num.f64)}, .vt{::uwvm::wasm::value_type::f64}});
 
         ++sm.curr_op;
     }
@@ -10490,7 +10490,7 @@ namespace uwvm::vm::interpreter::func
             ::fast_io::fast_terminate();
         }
 
-        sm.stack.push_unchecked(stack_t{.f64{::std::copysign(num1.f64, num2.f64)}, .vt{::uwvm::wasm::value_type::f64}});
+        sm.stack.push_unchecked(stack_t{.f64{::copysign(num1.f64, num2.f64)}, .vt{::uwvm::wasm::value_type::f64}});
 
         ++sm.curr_op;
     }

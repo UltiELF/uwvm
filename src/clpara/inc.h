@@ -9,6 +9,7 @@
 #include "parameters/load.h"
 #include "parameters/default-int-stack-size.h"
 #include "parameters/wasi-mount-root.h"
+#include "parameters/start-func.h"
 
 // features
 #include "parameters/enable-multi-value.h"

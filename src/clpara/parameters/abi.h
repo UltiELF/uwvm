@@ -19,7 +19,7 @@ namespace uwvm::parameter
 
     inline constexpr ::uwvm::cmdline::parameter abi{
         .name{::fast_io::string_view{"--abi"}},
-        .describe{::fast_io::u8string_view{u8"Specifies the ABI used by the WASM module. Usage: [--abi|-a] [bare|emscripten|wasip1|wasip2]"}},
+        .describe{::fast_io::u8string_view{u8"Specifies the ABI used by the WASM module. Usage: [--abi|-a] [bare|emscripten|wasi]"}},
         .alias{::uwvm::cmdline::kns_str_scatter_t{__builtin_addressof(details::abi_alias), 1}},
         .callback{__builtin_addressof(details::abi_callback)},
         .is_exist{__builtin_addressof(details::abi_is_exist)},

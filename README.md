@@ -55,7 +55,7 @@ $ uwvm <param1> <param2> ... --run <file> <argv1> <argv2> ...
 ```
 * Loading WASM ABI (default auto detection)
 ```bash
---abi [bare|emscripten|wasip1|wasip2]
+--abi [bare|emscripten|wasi]
 ```
 
 ## Features
