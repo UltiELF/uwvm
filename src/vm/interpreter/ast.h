@@ -125,7 +125,11 @@ namespace uwvm::vm::interpreter
 
         inline static ::std::size_t default_int_stack_size{
 #ifdef __MSDOS__
+    #ifdef __DJGPP__
             static_cast<::std::size_t>(64)
+    #else
+            static_cast<::std::size_t>(1)
+    #endif
 #else
             static_cast<::std::size_t>(512)
 #endif  // __MSDOS__

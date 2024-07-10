@@ -89,8 +89,12 @@ namespace uwvm::parameter
     inline constexpr ::uwvm::cmdline::parameter default_int_stack_size{
         .name{::fast_io::string_view{"--default-stack-size"}},
         .describe{::fast_io::u8string_view{u8"Set the initial stack and local size of the interpreter (unit stack, default="
-#ifdef __MSDOS
+#ifdef __MSDOS__
+    #ifdef __DJGPP__
                                            u8"65536"
+    #else
+                                           u8"1024"
+    #endif
 #else
                                            u8"524288"
 #endif
