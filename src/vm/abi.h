@@ -32,7 +32,6 @@ namespace uwvm::vm
                     break;
                 }
             }
-
         }
 
         // init import
@@ -70,10 +69,9 @@ namespace uwvm::vm
             }
             return;
         }
-        
+
         // init import
         auto ft_p{wasmmod.importsec.func_types.cbegin()};
-        auto const wasi_map_cend{::uwvm::vm::interpreter::wasi::wasi_map.cend()};
         for(auto& i: ::uwvm::vm::interpreter::imports)
         {
             ::fast_io::u8string_view const module_name{(*ft_p)->module_begin, static_cast<::std::size_t>((*ft_p)->module_end - (*ft_p)->module_begin)};
@@ -81,9 +79,10 @@ namespace uwvm::vm
 
             if(module_name.contains(u8"wasi"))
             {
-                auto const f{::uwvm::vm::interpreter::wasi::wasi_map.find(sub_name)};
-                if(f != wasi_map_cend) [[likely]] { i = f->second; }
-                else 
+                auto const f{::uwvm::vm::interpreter::find_from_hash_table(::uwvm::vm::interpreter::wasi::wasi_hash_table, sub_name)};
+
+                if(f != nullptr) [[likely]] { i = f; }
+                else
                 {
                     ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -108,10 +107,7 @@ namespace uwvm::vm
                     ::fast_io::fast_terminate();
                 }
             }
-            else 
-            { 
-                ::uwvm::unfinished();
-            }
+            else { ::uwvm::unfinished(); }
 
             ++ft_p;
         }

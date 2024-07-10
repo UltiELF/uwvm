@@ -223,6 +223,7 @@ namespace uwvm
                 if(!c) { return {hash_size, extra_size}; }
             }
             ::fast_io::fast_terminate();  // error
+            return {};
         }
 
         struct ht_para_cpos

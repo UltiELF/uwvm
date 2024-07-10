@@ -1,9 +1,9 @@
 #pragma once
 #include <fast_io.h>
 #include <fast_io_dsal/string_view.h>
-#include <map>  // !
 #include "../import.h"
 #include "wasi.h"
+#include "../hash_table.h"
 
 namespace uwvm::vm::interpreter::wasi
 {
@@ -340,7 +340,7 @@ namespace uwvm::vm::interpreter::wasi
         sm.stack.push_unchecked(::uwvm::vm::interpreter::stack_t{.i32{ret}, .vt{::uwvm::wasm::value_type::i32}});
     }
 
-    ::std::map<::fast_io::u8string_view, ::uwvm::vm::interpreter::int_import_func_p> wasi_map{
+    inline constexpr ::uwvm::vm::interpreter::import_pair wasi_int_pair[]{
 
         {::fast_io::u8string_view{u8"args_get"},                __builtin_addressof(int_args_get)               },
 
@@ -432,4 +432,13 @@ namespace uwvm::vm::interpreter::wasi
 
         {::fast_io::u8string_view{u8"sock_shutdown"},           __builtin_addressof(int_sock_shutdown)          },
     };
+
+    inline constexpr auto basic_wasi_array{::uwvm::vm::interpreter::check_import(wasi_int_pair)};
+
+    inline constexpr auto wasi_hash_table_size{::uwvm::vm::interpreter::generate_hash_table_size(basic_wasi_array)};
+    inline constexpr auto wasi_hash_table{
+        ::uwvm::vm::interpreter::generate_hash_table<wasi_hash_table_size.size, wasi_hash_table_size.extra_size>(basic_wasi_array)};
+
+    inline constexpr auto sizeof_wasi_hash_table{sizeof(wasi_hash_table)};
+
 }  // namespace uwvm::vm::interpreter::wasi
