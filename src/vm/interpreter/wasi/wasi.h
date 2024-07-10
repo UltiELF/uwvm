@@ -92,31 +92,62 @@ namespace uwvm::vm::interpreter::wasi
         // No need to check the memory of wasm
         ::fast_io::posix_io_observer pfd{static_cast<int>(arg0)};
 
-        ::std::byte* memory_begin{::uwvm::vm::interpreter::memories.front().memory_begin};
-
-        ::uwvm::vm::interpreter::wasi::wasi_void_ptr_t wpt_buf{};
-        ::uwvm::vm::interpreter::wasi::wasi_size_t wsz_buf_len{};
+        auto& memory{::uwvm::vm::interpreter::memories.front()};
+        auto const memory_begin{memory.memory_begin};
+        auto const memory_length{memory.memory_length};
+        auto const memory_end{memory_begin + memory_length};
 
         ::std::byte const* cvt_begin{memory_begin + static_cast<::std::size_t>(arg1)};
-        ::fast_io::freestanding::my_memcpy(__builtin_addressof(wpt_buf), cvt_begin, sizeof(wpt_buf));
-        ::fast_io::freestanding::my_memcpy(__builtin_addressof(wsz_buf_len), cvt_begin + 4, sizeof(wsz_buf_len));
 
-        auto const cvt_buf_off{static_cast<::std::size_t>(static_cast<::std::uint_least32_t>(wpt_buf))};
-        auto const cvt_buf_begin{memory_begin + cvt_buf_off};
-        if(static_cast<::std::uint_least32_t>(wsz_buf_len) == 0) [[unlikely]]
-        {
-            return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::efault);
-        }
-        auto const cvt_buf_write_end{::fast_io::operations::write_some_bytes(pfd, cvt_buf_begin, cvt_buf_begin + static_cast<::std::size_t>(wsz_buf_len))};
+        if(cvt_begin + 8 * arg2 >= memory_end) [[unlikely]] { return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::efault); }
 
-        auto const cvt_buf_write_sz{static_cast<::std::size_t>(cvt_buf_write_end - cvt_buf_begin)};
-        if(cvt_buf_write_sz != static_cast<::std::size_t>(wsz_buf_len)) [[unlikely]]
+        ::std::size_t all_written_size{};
+
+        for(::std::size_t i{}; i < static_cast<::std::size_t>(arg2); ++i)
         {
-            return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::efault);
+            ::uwvm::vm::interpreter::wasi::wasi_void_ptr_t wpt_buf{};
+            ::uwvm::vm::interpreter::wasi::wasi_size_t wsz_buf_len{};
+
+            ::std::uint_least32_t le_wpt_buf{};
+            ::fast_io::freestanding::my_memcpy(__builtin_addressof(le_wpt_buf), cvt_begin, sizeof(le_wpt_buf));
+            wpt_buf = static_cast<decltype(wpt_buf)>(::fast_io::little_endian( le_wpt_buf));
+            cvt_begin += 4;
+
+             ::std::uint_least32_t le_wsz_buf_len{};
+            ::fast_io::freestanding::my_memcpy(__builtin_addressof(le_wsz_buf_len), cvt_begin, sizeof(le_wsz_buf_len));
+             wsz_buf_len = static_cast<decltype(wsz_buf_len)>(::fast_io::little_endian(le_wsz_buf_len));
+             cvt_begin += 4;
+
+            auto const cvt_buf_off{static_cast<::std::size_t>(static_cast<::std::uint_least32_t>(wpt_buf))};
+            auto const cvt_buf_begin{memory_begin + cvt_buf_off};
+
+            if(cvt_buf_begin + static_cast<::std::size_t>(static_cast<::std::uint_least32_t>(wsz_buf_len)) >= memory_end) [[unlikely]]
+            {
+                return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::efault);
+            }
+
+            if(static_cast<::std::uint_least32_t>(wsz_buf_len) == 0) [[unlikely]]
+            {
+                return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::efault);
+            }
+
+            auto const cvt_buf_write_end{
+                ::fast_io::operations::write_some_bytes(pfd,
+                                                        cvt_buf_begin,
+                                                        cvt_buf_begin + static_cast<::std::size_t>(static_cast<::std::uint_least32_t>(wsz_buf_len)))};
+
+            auto const cvt_buf_write_sz{static_cast<::std::size_t>(cvt_buf_write_end - cvt_buf_begin)};
+
+            all_written_size += cvt_buf_write_sz;
+
+            if(cvt_buf_write_sz != static_cast<::std::size_t>(wsz_buf_len)) [[unlikely]]
+            {
+                return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::efault);
+            }
         }
 
         ::std::byte* number_begin{memory_begin + static_cast<::std::size_t>(arg3)};
-        ::std::uint_least32_t le32{::fast_io::little_endian(static_cast<::std::uint_least32_t>(cvt_buf_write_sz))};
+        ::std::uint_least32_t le32{::fast_io::little_endian(static_cast<::std::uint_least32_t>(all_written_size))};
         ::fast_io::freestanding::my_memcpy(number_begin, __builtin_addressof(le32), sizeof(le32));
 
         return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::esuccess);

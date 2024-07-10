@@ -21,3 +21,7 @@
 #include "parameters/enable-reference-types.h"
 #include "parameters/enable-thread.h"
 #include "parameters/enable-custom-page-sizes.h"
+#include "parameters/enable-sign-extension-ops.h"
+
+// features collection
+#include "parameters/enable-regular-extension.h"

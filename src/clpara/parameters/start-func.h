@@ -19,7 +19,7 @@ namespace uwvm::parameter
 
     inline constexpr ::uwvm::cmdline::parameter start_func{
         .name{::fast_io::string_view{"--start-func"}},
-        .describe{::fast_io::u8string_view{u8"Set the startup function for wasi. Usage: [--start-func|-sf] <size_t>"}},
+        .describe{::fast_io::u8string_view{u8"Set the startup function for wasm. Usage: [--start-func|-sf] <size_t>"}},
         .alias{::uwvm::cmdline::kns_str_scatter_t{__builtin_addressof(details::start_func_alias), 1}},
         .callback{__builtin_addressof(details::start_func_callback)},
         .is_exist{__builtin_addressof(details::start_func_is_exist)},

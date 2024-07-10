@@ -111,6 +111,10 @@ namespace uwvm::vm::interpreter
 
             switch(ob)
             {
+                    /*
+                     *  MVP
+                     */
+
                 case ::uwvm::wasm::op_basic::block:
                 {
                     ++curr;
@@ -5516,8 +5520,40 @@ namespace uwvm::vm::interpreter
                     ++curr;
                     break;
                 }
+
+                    /*
+                     *  Sign-extension operators
+                     */
+
                 case ::uwvm::wasm::op_basic::i32_extend8_s:
                 {
+                    if(!::uwvm::features::enable_sign_extension_ops) [[unlikely]]
+                    {
+                        ::fast_io::io::perr(::uwvm::u8err,
+                                        u8"\033[0m"
+#ifdef __MSDOS__
+                                        u8"\033[37m"
+#else
+                                        u8"\033[97m"
+#endif
+                                        u8"uwvm: "
+                                        u8"\033[31m"
+                                        u8"[fatal] "
+                                        u8"\033[0m"
+#ifdef __MSDOS__
+                                        u8"\033[37m"
+#else
+                                        u8"\033[97m"
+#endif
+                                        u8"(offset=",
+                                        ::fast_io::mnp::addrvw(curr - wasmmod.module_begin),
+                                        u8") "
+                                        u8"Enter parameter --enable-sign-extension-ops to enable wasm sign extension operators."
+                                        u8"\n"
+                                        u8"\033[0m"
+                                        u8"Terminate.\n\n");
+                        ::fast_io::fast_terminate();
+                    }
                     op.int_func = __builtin_addressof(::uwvm::vm::interpreter::func::i32_extend8_s);
                     temp.operators.emplace_back_unchecked(op);
                     ++curr;
@@ -5525,6 +5561,33 @@ namespace uwvm::vm::interpreter
                 }
                 case ::uwvm::wasm::op_basic::i32_extend16_s:
                 {
+                    if(!::uwvm::features::enable_sign_extension_ops) [[unlikely]]
+                    {
+                        ::fast_io::io::perr(::uwvm::u8err,
+                                        u8"\033[0m"
+#ifdef __MSDOS__
+                                        u8"\033[37m"
+#else
+                                        u8"\033[97m"
+#endif
+                                        u8"uwvm: "
+                                        u8"\033[31m"
+                                        u8"[fatal] "
+                                        u8"\033[0m"
+#ifdef __MSDOS__
+                                        u8"\033[37m"
+#else
+                                        u8"\033[97m"
+#endif
+                                        u8"(offset=",
+                                        ::fast_io::mnp::addrvw(curr - wasmmod.module_begin),
+                                        u8") "
+                                        u8"Enter parameter --enable-sign-extension-ops to enable wasm sign extension operators."
+                                        u8"\n"
+                                        u8"\033[0m"
+                                        u8"Terminate.\n\n");
+                        ::fast_io::fast_terminate();
+                    }
                     op.int_func = __builtin_addressof(::uwvm::vm::interpreter::func::i32_extend16_s);
                     temp.operators.emplace_back_unchecked(op);
                     ++curr;
@@ -5532,6 +5595,33 @@ namespace uwvm::vm::interpreter
                 }
                 case ::uwvm::wasm::op_basic::i64_extend8_s:
                 {
+                    if(!::uwvm::features::enable_sign_extension_ops) [[unlikely]]
+                    {
+                        ::fast_io::io::perr(::uwvm::u8err,
+                                        u8"\033[0m"
+#ifdef __MSDOS__
+                                        u8"\033[37m"
+#else
+                                        u8"\033[97m"
+#endif
+                                        u8"uwvm: "
+                                        u8"\033[31m"
+                                        u8"[fatal] "
+                                        u8"\033[0m"
+#ifdef __MSDOS__
+                                        u8"\033[37m"
+#else
+                                        u8"\033[97m"
+#endif
+                                        u8"(offset=",
+                                        ::fast_io::mnp::addrvw(curr - wasmmod.module_begin),
+                                        u8") "
+                                        u8"Enter parameter --enable-sign-extension-ops to enable wasm sign extension operators."
+                                        u8"\n"
+                                        u8"\033[0m"
+                                        u8"Terminate.\n\n");
+                        ::fast_io::fast_terminate();
+                    }
                     op.int_func = __builtin_addressof(::uwvm::vm::interpreter::func::i64_extend8_s);
                     temp.operators.emplace_back_unchecked(op);
                     ++curr;
@@ -5539,6 +5629,33 @@ namespace uwvm::vm::interpreter
                 }
                 case ::uwvm::wasm::op_basic::i64_extend16_s:
                 {
+                    if(!::uwvm::features::enable_sign_extension_ops) [[unlikely]]
+                    {
+                        ::fast_io::io::perr(::uwvm::u8err,
+                                        u8"\033[0m"
+#ifdef __MSDOS__
+                                        u8"\033[37m"
+#else
+                                        u8"\033[97m"
+#endif
+                                        u8"uwvm: "
+                                        u8"\033[31m"
+                                        u8"[fatal] "
+                                        u8"\033[0m"
+#ifdef __MSDOS__
+                                        u8"\033[37m"
+#else
+                                        u8"\033[97m"
+#endif
+                                        u8"(offset=",
+                                        ::fast_io::mnp::addrvw(curr - wasmmod.module_begin),
+                                        u8") "
+                                        u8"Enter parameter --enable-sign-extension-ops to enable wasm sign extension operators."
+                                        u8"\n"
+                                        u8"\033[0m"
+                                        u8"Terminate.\n\n");
+                        ::fast_io::fast_terminate();
+                    }
                     op.int_func = __builtin_addressof(::uwvm::vm::interpreter::func::i64_extend16_s);
                     temp.operators.emplace_back_unchecked(op);
                     ++curr;
@@ -5546,6 +5663,33 @@ namespace uwvm::vm::interpreter
                 }
                 case ::uwvm::wasm::op_basic::i64_extend32_s:
                 {
+                    if(!::uwvm::features::enable_sign_extension_ops) [[unlikely]]
+                    {
+                        ::fast_io::io::perr(::uwvm::u8err,
+                                        u8"\033[0m"
+#ifdef __MSDOS__
+                                        u8"\033[37m"
+#else
+                                        u8"\033[97m"
+#endif
+                                        u8"uwvm: "
+                                        u8"\033[31m"
+                                        u8"[fatal] "
+                                        u8"\033[0m"
+#ifdef __MSDOS__
+                                        u8"\033[37m"
+#else
+                                        u8"\033[97m"
+#endif
+                                        u8"(offset=",
+                                        ::fast_io::mnp::addrvw(curr - wasmmod.module_begin),
+                                        u8") "
+                                        u8"Enter parameter --enable-sign-extension-ops to enable wasm sign extension operators."
+                                        u8"\n"
+                                        u8"\033[0m"
+                                        u8"Terminate.\n\n");
+                        ::fast_io::fast_terminate();
+                    }
                     op.int_func = __builtin_addressof(::uwvm::vm::interpreter::func::i64_extend32_s);
                     temp.operators.emplace_back_unchecked(op);
                     ++curr;
