@@ -6,9 +6,13 @@
     // features
     __builtin_addressof(::uwvm::parameter::enable_multi_value), __builtin_addressof(::uwvm::parameter::enable_relaxed_simd),
     __builtin_addressof(::uwvm::parameter::enable_exception_handling), __builtin_addressof(::uwvm::parameter::enable_multi_memory),
-    __builtin_addressof(::uwvm::parameter::enable_fixed_width_simd), __builtin_addressof(::uwvm::parameter::enable_mutable_globals),
-    __builtin_addressof(::uwvm::parameter::enable_reference_types), __builtin_addressof(::uwvm::parameter::enable_thread),
-    __builtin_addressof(::uwvm::parameter::enable_custom_page_sizes), __builtin_addressof(::uwvm::parameter::enable_sign_extension_ops),
+    __builtin_addressof(::uwvm::parameter::enable_fixed_width_simd), __builtin_addressof(::uwvm::parameter::enable_thread),
+    __builtin_addressof(::uwvm::parameter::enable_custom_page_sizes),
 
+#if 0
+    __builtin_addressof(::uwvm::parameter::enable_sign_extension_ops),
+    __builtin_addressof(::uwvm::parameter::enable_mutable_globals), 
+    __builtin_addressof(::uwvm::parameter::enable_reference_types), 
     // features collection
     __builtin_addressof(::uwvm::parameter::enable_regular_extension),
+#endif

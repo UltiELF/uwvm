@@ -14,7 +14,7 @@ namespace uwvm::parameter
         inline constexpr ::fast_io::string_view enable_sign_extension_ops_alias{"-Eseops"};
     }  // namespace details
 
-    inline constexpr ::uwvm::cmdline::parameter enable_sign_extension_ops{
+    inline constexpr ::uwvm::cmdline::parameter enable_sign_extension_ops{ // default
         .name{::fast_io::string_view{"--enable-sign-extension-ops"}},
         .describe{::fast_io::u8string_view{
             u8"Enable sign extension operators for WebAssembly (https://github.com/WebAssembly/sign-extension-ops/blob/master/proposals/sign-extension-ops/Overview.md). Usage: [--enable-sign-extension-ops|-Eseops]"}},
