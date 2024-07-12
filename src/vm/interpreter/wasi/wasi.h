@@ -110,13 +110,13 @@ namespace uwvm::vm::interpreter::wasi
 
             ::std::uint_least32_t le_wpt_buf{};
             ::fast_io::freestanding::my_memcpy(__builtin_addressof(le_wpt_buf), cvt_begin, sizeof(le_wpt_buf));
-            wpt_buf = static_cast<decltype(wpt_buf)>(::fast_io::little_endian( le_wpt_buf));
+            wpt_buf = static_cast<decltype(wpt_buf)>(::fast_io::little_endian(le_wpt_buf));
             cvt_begin += 4;
 
-             ::std::uint_least32_t le_wsz_buf_len{};
+            ::std::uint_least32_t le_wsz_buf_len{};
             ::fast_io::freestanding::my_memcpy(__builtin_addressof(le_wsz_buf_len), cvt_begin, sizeof(le_wsz_buf_len));
-             wsz_buf_len = static_cast<decltype(wsz_buf_len)>(::fast_io::little_endian(le_wsz_buf_len));
-             cvt_begin += 4;
+            wsz_buf_len = static_cast<decltype(wsz_buf_len)>(::fast_io::little_endian(le_wsz_buf_len));
+            cvt_begin += 4;
 
             auto const cvt_buf_off{static_cast<::std::size_t>(static_cast<::std::uint_least32_t>(wpt_buf))};
             auto const cvt_buf_begin{memory_begin + cvt_buf_off};

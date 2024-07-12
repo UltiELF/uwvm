@@ -1604,7 +1604,9 @@ namespace uwvm::vm::interpreter
                 }
                 case ::uwvm::wasm::op_basic::select_t:
                 {
-                    ::uwvm::unfinished();
+                    op.int_func = __builtin_addressof(::uwvm::vm::interpreter::func::select_t);
+                    temp.operators.emplace_back_unchecked(op);
+                    ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::i32_load:

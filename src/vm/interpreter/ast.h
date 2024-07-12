@@ -16,6 +16,8 @@ namespace uwvm::vm::interpreter
             ::uwvm::wasm::wasm_f32 f32;
             ::uwvm::wasm::wasm_f64 f64;
             ::uwvm::wasm::wasm_v128 v128;
+            ::std::size_t ref; 
+            ::uwvm::wasm::value_type null_reftype;
         };
 
         ::uwvm::wasm::value_type vt{};
