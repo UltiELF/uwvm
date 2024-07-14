@@ -9,6 +9,12 @@ namespace uwvm::vm::interpreter
 
     inline void run_ast(ast const& a) noexcept
     {
+        if(s.stack.empty()) [[unlikely]]
+        {
+            // Just checking the stack is enough
+            s.init();
+        }
+
         if(!a.operators.empty()) [[likely]]
         {
             // storage last op
@@ -27,7 +33,7 @@ namespace uwvm::vm::interpreter
             auto const func_type_para_size{static_cast<::std::size_t>(func_type.parameter_end - func_type.parameter_begin)};
             auto const func_type_result_size{static_cast<::std::size_t>(func_type.result_end - func_type.result_begin)};
 
-            if(s.stack.size() - func_type_para_size < s.stack_top) [[unlikely]]
+            if(s.stack.size() < func_type_para_size) [[unlikely]]
             {
                 ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -132,10 +138,6 @@ namespace uwvm::vm::interpreter
             // set stack curr
             s.stack.get_container().imp.curr_ptr -= func_type_para_size;
 
-            // stack top
-            auto const last_stack_top{s.stack_top};
-            s.stack_top = s.stack.size();
-
             // run
             for(s.curr_op = begin_op; s.curr_op != end_op;)
             {
@@ -148,7 +150,7 @@ namespace uwvm::vm::interpreter
             s.local_top = last_local_top;
 
             // check stack
-            if(s.stack.size() - func_type_result_size < s.stack_top) [[unlikely]]
+            if(s.stack.size() < func_type_result_size) [[unlikely]]
             {
                 ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -212,9 +214,6 @@ namespace uwvm::vm::interpreter
                 }
                 --curr_st;
             }
-
-            // reset stack top
-            s.stack_top = last_stack_top;
 
             // reset op
             s.begin_op = last_begin_op;

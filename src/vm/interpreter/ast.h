@@ -16,7 +16,7 @@ namespace uwvm::vm::interpreter
             ::uwvm::wasm::wasm_f32 f32;
             ::uwvm::wasm::wasm_f64 f64;
             ::uwvm::wasm::wasm_v128 v128;
-            ::std::size_t ref; 
+            ::std::size_t ref;
             ::uwvm::wasm::value_type null_reftype;
         };
 
@@ -122,28 +122,22 @@ namespace uwvm::vm::interpreter
         operator_t const* curr_op{};
         operator_t const* end_op{};
 
-        ::std::size_t stack_top{};  // Prevent stack expansion
         ::std::size_t local_top{};
 
-        inline static ::std::size_t default_int_stack_size{
-#ifdef __MSDOS__
-    #ifdef __DJGPP__
+        inline static ::std::size_t default_int_stack_size{1024};
+
+        inline static ::std::size_t default_local_size{
+#ifdef __DJGPP__
             static_cast<::std::size_t>(64)
-    #else
-            static_cast<::std::size_t>(1)
-    #endif
 #else
-            static_cast<::std::size_t>(512)
-#endif  // __MSDOS__
+            static_cast<::std::size_t>(1)
+#endif
             * 1024};
 
-        constexpr stack_machine() noexcept
+        constexpr void init() noexcept
         {
             stack.reserve(default_int_stack_size);
-            local_storages.reserve(default_int_stack_size);
-#if 0
-            flow.reserve(static_cast<::std::size_t>(2) * 1024);
-#endif
+            local_storages.reserve(default_local_size);
         }
     };
 

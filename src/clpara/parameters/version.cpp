@@ -12,10 +12,7 @@
                                                                                      ::fast_io::vector<::uwvm::cmdline::parameter_parsing_results>&) noexcept
 {
 #if defined(UWVM_SUPPORT_INSTALL_PATH)
-    if(::uwvm::path::module_install_path_df == ::fast_io::dir_file{}) 
-    {
-        ::uwvm::path::init_install_path(::uwvm::path::argv0);
-    }
+    if(::uwvm::path::module_install_path_df == ::fast_io::dir_file{}) { ::uwvm::path::init_install_path(::uwvm::path::argv0); }
 #endif
 
     ::fast_io::io::perr(::uwvm::u8err,
@@ -66,7 +63,6 @@
 #else
                         u8"Unknown C++ compiler"
 #endif
-
                         // std Lib
                         u8"\nC++ STD Library: "
 #if defined(_LIBCPP_VERSION)
@@ -214,7 +210,7 @@
     #if defined(__ARM_FEATURE_SVE2)
                         u8"SVE2 "
     #endif
-#elif(defined(__x86_64__) || defined(_M_AMD64) || defined(__i386__) || defined(_M_IX86)) && defined(__MMX__)
+#elif (defined(__x86_64__) || defined(_M_AMD64) || defined(__i386__) || defined(_M_IX86)) && defined(__MMX__)
                         u8"\nSIMD support: "
     #if defined(__MMX__)
                         u8"MMX "
@@ -367,7 +363,7 @@
                         u8"WASI"
 #elif defined(__MINGW32__) && !defined(_UCRT) && !defined(__BIONIC__)
                         u8"MSVCRT"
-#elif(defined(_MSC_VER) || defined(_UCRT)) && !defined(__WINE__) && !defined(__CYGWIN__) && !defined(__BIONIC__)
+#elif (defined(_MSC_VER) || defined(_UCRT)) && !defined(__WINE__) && !defined(__CYGWIN__) && !defined(__BIONIC__)
                         u8"UCRT"
 #elif defined(__APPLE__) || defined(__DARWIN_C_LEVEL)
                         u8"Darwin"
@@ -410,10 +406,10 @@
                         u8"custom global"
 #elif defined(FAST_IO_USE_MIMALLOC)
                         u8"mimalloc"
-#elif(defined(__linux__) && defined(__KERNEL__)) || defined(FAST_IO_USE_LINUX_KERNEL_ALLOCATOR)
+#elif (defined(__linux__) && defined(__KERNEL__)) || defined(FAST_IO_USE_LINUX_KERNEL_ALLOCATOR)
                         u8"linux kmalloc"
-#elif((__STDC_HOSTED__ == 1 && (!defined(_GLIBCXX_HOSTED) || _GLIBCXX_HOSTED == 1) && !defined(_LIBCPP_FREESTANDING)) ||                                       \
-      defined(FAST_IO_ENABLE_HOSTED_FEATURES))
+#elif ((__STDC_HOSTED__ == 1 && (!defined(_GLIBCXX_HOSTED) || _GLIBCXX_HOSTED == 1) && !defined(_LIBCPP_FREESTANDING)) ||                                      \
+       defined(FAST_IO_ENABLE_HOSTED_FEATURES))
     #if defined(_WIN32) && !defined(__CYGWIN__) && !defined(__WINE__) && !defined(FAST_IO_USE_C_MALLOC)
         #if defined(_DEBUG) && defined(_MSC_VER)
                         u8"wincrt malloc dbg"
@@ -434,7 +430,30 @@
 #else
                         u8"custom global"
 #endif
-                        u8"\n\n"  // endl
+                        u8"\n"
+#if defined(_MSC_VER) && !defined(__clang__)
+    #ifdef __MSDOS__
+                        u8"\033[37m"
+    #else
+                        u8"\033[97m"
+    #endif
+                        u8"uwvm: "
+    #ifdef __MSDOS__
+                        u8"\033[31m"
+    #else
+                        u8"\033[91m"
+    #endif
+                        u8"[warnging] "
+    #ifdef __MSDOS__
+                        u8"\033[37m"
+    #else
+                        u8"\033[97m"
+    #endif
+                        u8"Some features of uwvm compiled using MSVC compiler may not be supported, please use GCC or clang compiler for compilation!"
+                        u8"\033[0m"
+                        u8"\n"
+#endif
+                        u8"\n"  // endl
     );
 
     return ::uwvm::cmdline::parameter_return_type::return_imme;

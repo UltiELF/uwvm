@@ -1,6 +1,8 @@
 ﻿#include "mvp.h"
 #include "../astgen.h"
 #include "../astrun.h"
+#include "../table/table.h"
+
 #include "call_import.h"
 
 #if __has_cpp_attribute(__gnu__::__hot__)
@@ -35,7 +37,11 @@ void ::uwvm::vm::interpreter::func::call_indirect(::std::byte const* curr, ::uwv
 {
     auto const& wasmmod{::uwvm::global_wasm_module};
 
-    if(sm.stack.size() < sm.stack_top) [[unlikely]]
+    auto const import_function_count{wasmmod.importsec.func_types.size()};
+    auto const local_func_count{wasmmod.functionsec.function_count};
+    auto const func_count{import_function_count + local_func_count};
+
+    if(sm.stack.empty()) [[unlikely]]
     {
         ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -103,19 +109,107 @@ void ::uwvm::vm::interpreter::func::call_indirect(::std::byte const* curr, ::uwv
 
     auto const type_p{reinterpret_cast<function_type_const_may_alias_ptr>(sm.curr_op->ext.branch)};
 
-    auto const import_function_count{wasmmod.importsec.func_types.size()};
-    auto const local_func_count{wasmmod.functionsec.function_count};
-    auto const func_count{import_function_count + local_func_count};
-
-    if(auto const st_sz{static_cast<::std::size_t>(st.i32)}; st_sz < import_function_count) { ::uwvm::vm::interpreter::call_import_func(st_sz, sm); }
-    else if(st_sz < func_count)
+    auto& table{::uwvm::vm::interpreter::table::table_enum.front_unchecked()};
+    auto const st_sz{static_cast<::std::size_t>(st.i32)};
+    if(st_sz >= table.size()) [[unlikely]]
     {
-        auto const index{st_sz - import_function_count};
+        ::fast_io::io::perr(::uwvm::u8err,
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"uwvm: "
+                                u8"\033[31m"
+                                u8"[fatal] "
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"(offset=",
+                                ::fast_io::mnp::addrvw(curr - wasmmod.module_begin),
+                                u8") "
+                                u8"Invalid table index."
+                                u8"\n"
+                                u8"\033[0m"
+                                u8"Terminate.\n\n");
+        ::uwvm::backtrace();
+        ::fast_io::fast_terminate();
+    }
+    auto const func_index{table.index_unchecked(st_sz)};
+
+    if(func_index < import_function_count)
+    {
+        if(type_p != wasmmod.importsec.func_types.index_unchecked(func_index)->extern_type.function) [[unlikely]]
+        {
+            ::fast_io::io::perr(::uwvm::u8err,
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"uwvm: "
+                                u8"\033[31m"
+                                u8"[fatal] "
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"(offset=",
+                                ::fast_io::mnp::addrvw(curr - wasmmod.module_begin),
+                                u8") "
+                                u8"Unmatched func type."
+                                u8"\n"
+                                u8"\033[0m"
+                                u8"Terminate.\n\n");
+            ::uwvm::backtrace();
+            ::fast_io::fast_terminate();
+        }
+        ::uwvm::vm::interpreter::call_import_func(func_index, sm);
+    }
+    else if(func_index < func_count)
+    {
+        auto const index{func_index - import_function_count};
+        auto const func_type{wasmmod.functionsec.types.index_unchecked(index).func_type};
+        if(type_p != func_type) [[unlikely]]
+        {
+            ::fast_io::io::perr(::uwvm::u8err,
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"uwvm: "
+                                u8"\033[31m"
+                                u8"[fatal] "
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"(offset=",
+                                ::fast_io::mnp::addrvw(curr - wasmmod.module_begin),
+                                u8") "
+                                u8"Unmatched func type."
+                                u8"\n"
+                                u8"\033[0m"
+                                u8"Terminate.\n\n");
+            ::uwvm::backtrace();
+            ::fast_io::fast_terminate();
+        }
+
         auto& ast_temp{::uwvm::vm::interpreter::stroage.asts.index_unchecked(index)};
         if(ast_temp.operators.empty()) [[unlikely]]
         {
-            ast_temp = ::uwvm::vm::interpreter::generate_ast(wasmmod.functionsec.types.index_unchecked(index).func_type,
-                                                             wasmmod.codesec.bodies.index_unchecked(index));
+            ast_temp = ::uwvm::vm::interpreter::generate_ast(func_type, wasmmod.codesec.bodies.index_unchecked(index));
         }
         ::uwvm::vm::interpreter::run_ast(ast_temp);
     }

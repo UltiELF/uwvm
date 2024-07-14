@@ -162,7 +162,13 @@ namespace uwvm
 #else
                                             u8"\033[97m"
 #endif
-                                            u8"uwvm: " u8"\033[91m",
+                                            u8"uwvm: " 
+#ifdef __MSDOS__
+                                            u8"\033[31m"
+#else
+                                            u8"\033[91m"
+#endif
+                                            ,
                                             u8"[warning] "
 #ifdef __MSDOS__
                                             u8"\033[37m"

@@ -13,7 +13,7 @@ namespace uwvm::vm::interpreter
         auto const func_type_para_size{static_cast<::std::size_t>(func_type.parameter_end - func_type.parameter_begin)};
         auto const func_type_result_size{static_cast<::std::size_t>(func_type.result_end - func_type.result_begin)};
 
-        if(sm.stack.size() - func_type_para_size < sm.stack_top) [[unlikely]]
+        if(sm.stack.size() < func_type_para_size) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -85,7 +85,7 @@ namespace uwvm::vm::interpreter
         // Func handles the return value on its own
 
         // check return value
-        if(sm.stack.size() - func_type_result_size < sm.stack_top) [[unlikely]]
+        if(sm.stack.size() < func_type_result_size) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"

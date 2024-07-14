@@ -8,6 +8,7 @@
 #include "../wasm.h"
 
 #include "memory/memory.h"
+#include "table/table.h"
 
 #include "ast.h"
 #include "aststorge.h"
@@ -34,6 +35,10 @@ namespace uwvm::vm::interpreter
         auto const import_global_count{wasmmod.importsec.global_types.size()};
         auto const local_global_count{wasmmod.globalsec.global_count};
         auto const global_count{import_global_count + local_global_count};
+
+        auto const import_table_count{wasmmod.importsec.table_types.size()};
+        auto const local_table_count{wasmmod.tablesec.table_count};
+        auto const table_count{import_table_count + local_table_count};
 
         // init import
         ::uwvm::vm::abi_detect();
@@ -203,7 +208,58 @@ namespace uwvm::vm::interpreter
             }
 
             ::fast_io::freestanding::my_memcpy(begin, i.data_begin, size);
+        }
 
+        // init table
+        ::uwvm::vm::interpreter::table::table_enum = ::fast_io::vector<::fast_io::vector<::std::size_t>>(table_count);
+
+        // enum to table
+
+        if(local_table_count != 0) [[likely]]
+        {
+            auto& table{::uwvm::vm::interpreter::table::table_enum.front_unchecked()};
+            auto const& local_table{wasmmod.tablesec.types.front_unchecked()};
+            ::std::size_t all_sz{};
+            for(auto const& i: wasmmod.elemsec.elem_segments) { all_sz += i.elem_count; }
+
+            table = ::fast_io::vector<::std::size_t>(::std::max(all_sz, local_table.limits.min));
+
+            if(local_table.limits.present_max)
+            {
+                if(all_sz > local_table.limits.max) [[unlikely]]
+                {
+                    ::fast_io::io::perr(::uwvm::u8err,
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"uwvm: "
+                                u8"\033[31m"
+                                u8"[fatal] "
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"Writing data out of table's boundary.\n"
+                                u8"\033[0m"
+                                u8"Terminate.\n\n");
+                    ::fast_io::fast_terminate();
+                }
+
+                // reserve
+                table.reserve(local_table.limits.max);
+            }
+
+            ::std::size_t counter{};
+            for(auto const& i: wasmmod.elemsec.elem_segments)
+            {
+                ++counter;
+                for(auto const j: i.elems) { table.index_unchecked(counter++) = j; }
+            }
         }
 
         // init ast

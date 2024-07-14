@@ -764,7 +764,7 @@ public:
 			grow_back();
 		}
 		auto currptr{controller.back_block.curr_ptr};
-		if constexpr (::std::is_trivially_constructible_v<value_type>)
+		if constexpr (!::std::is_trivially_constructible_v<value_type>)
 		{
 			::std::construct_at(currptr, ::std::forward<Args>(args)...);
 		}
@@ -842,7 +842,7 @@ public:
 		{
 			grow_front();
 		}
-		if constexpr (::std::is_trivially_constructible_v<value_type>)
+		if constexpr (!::std::is_trivially_constructible_v<value_type>)
 		{
 			::std::construct_at(--controller.front_block.curr_ptr, ::std::forward<Args>(args)...);
 		}

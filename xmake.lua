@@ -87,6 +87,11 @@ option("uwvm-test")
 	add_defines("UWVM_TEST")
 option_end()
 
+option("uwvm-default-mvp")
+	set_default(false)
+	set_showmenu(true)
+	add_defines("UWVM_DEFAULT_MVP")
+option_end()
 
 function defopt()
 	set_languages("c11", "cxx23")

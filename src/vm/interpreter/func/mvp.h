@@ -52,6 +52,187 @@ namespace uwvm::vm::interpreter::func
         ::fast_io::fast_terminate();
     }
 
+#if __has_cpp_attribute(__gnu__::__cold__)
+    [[__gnu__::__cold__]]
+#endif
+    inline void
+        end(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
+    {
+        if(sm.curr_op->ext.branch)
+        {
+            ::uwvm::wasm::value_type vt{};
+            ::fast_io::freestanding::my_memcpy(__builtin_addressof(vt), sm.curr_op->ext.branch->code_begin + 1, sizeof(vt));
+            switch(vt)
+            {
+                case ::uwvm::wasm::value_type::resulttype:
+                {
+                    if(!sm.stack.empty()) [[unlikely]]
+                    {
+                        ::fast_io::io::perr(::uwvm::u8err,
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"uwvm: "
+                                u8"\033[31m"
+                                u8"[fatal] "
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"(offset=",
+                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
+                                u8") "
+                                u8"The result type of the instructions did not match the blocktype."
+                                u8"\n"
+                                u8"\033[0m"
+                                u8"Terminate.\n\n");
+                        ::uwvm::backtrace();
+                        ::fast_io::fast_terminate();
+                    }
+                    break;
+                }
+                case ::uwvm::wasm::value_type::i32:
+                {
+                    if(sm.stack.size() != 1 && sm.stack.top_unchecked().vt != ::uwvm::wasm::value_type::i32) [[unlikely]]
+                    {
+                        ::fast_io::io::perr(::uwvm::u8err,
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"uwvm: "
+                                u8"\033[31m"
+                                u8"[fatal] "
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"(offset=",
+                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
+                                u8") "
+                                u8"The result type of the instructions did not match the blocktype."
+                                u8"\n"
+                                u8"\033[0m"
+                                u8"Terminate.\n\n");
+                        ::uwvm::backtrace();
+                        ::fast_io::fast_terminate();
+                    }
+                    break;
+                }
+                case ::uwvm::wasm::value_type::i64:
+                {
+                    if(sm.stack.size() != 1 && sm.stack.top_unchecked().vt != ::uwvm::wasm::value_type::i64) [[unlikely]]
+                    {
+                        ::fast_io::io::perr(::uwvm::u8err,
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"uwvm: "
+                                u8"\033[31m"
+                                u8"[fatal] "
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"(offset=",
+                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
+                                u8") "
+                                u8"The result type of the instructions did not match the blocktype."
+                                u8"\n"
+                                u8"\033[0m"
+                                u8"Terminate.\n\n");
+                        ::uwvm::backtrace();
+                        ::fast_io::fast_terminate();
+                    }
+
+                    break;
+                }
+                case ::uwvm::wasm::value_type::f32:
+                {
+                    if(sm.stack.size() != 1 && sm.stack.top_unchecked().vt != ::uwvm::wasm::value_type::f32) [[unlikely]]
+                    {
+                        ::fast_io::io::perr(::uwvm::u8err,
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"uwvm: "
+                                u8"\033[31m"
+                                u8"[fatal] "
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"(offset=",
+                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
+                                u8") "
+                                u8"The result type of the instructions did not match the blocktype."
+                                u8"\n"
+                                u8"\033[0m"
+                                u8"Terminate.\n\n");
+                        ::uwvm::backtrace();
+                        ::fast_io::fast_terminate();
+                    }
+
+                    break;
+                }
+                case ::uwvm::wasm::value_type::f64:
+                {
+                    if(sm.stack.size() != 1 && sm.stack.top_unchecked().vt != ::uwvm::wasm::value_type::f64) [[unlikely]]
+                    {
+                        ::fast_io::io::perr(::uwvm::u8err,
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"uwvm: "
+                                u8"\033[31m"
+                                u8"[fatal] "
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"(offset=",
+                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
+                                u8") "
+                                u8"The result type of the instructions did not match the blocktype."
+                                u8"\n"
+                                u8"\033[0m"
+                                u8"Terminate.\n\n");
+                        ::uwvm::backtrace();
+                        ::fast_io::fast_terminate();
+                    }
+
+                    break;
+                }
+                default: ::fast_io::unreachable();
+            }
+        }
+        ++sm.curr_op;
+    }
+
 #if __has_cpp_attribute(__gnu__::__hot__)
     [[__gnu__::__hot__]]
 #endif
@@ -62,7 +243,7 @@ namespace uwvm::vm::interpreter::func
         sm.flow.emplace(curr, ::uwvm::vm::interpreter::flow_control_t::if_);
 #endif
 
-        if(sm.stack.size() <= sm.stack_top) [[unlikely]]
+        if(sm.stack.empty()) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -145,7 +326,7 @@ namespace uwvm::vm::interpreter::func
     inline void
         br_if(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
     {
-        if(sm.stack.size() <= sm.stack_top) [[unlikely]]
+        if(sm.stack.empty()) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -215,7 +396,7 @@ namespace uwvm::vm::interpreter::func
     inline void
         br_table(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
     {
-        if(sm.stack.size() <= sm.stack_top) [[unlikely]]
+        if(sm.stack.empty()) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -250,7 +431,7 @@ namespace uwvm::vm::interpreter::func
 #if __has_cpp_attribute(__gnu__::__may_alias__)
             [[__gnu__::__may_alias__]]
 #endif
-            = ::fast_io::vector<operator_t const*> const*;
+            = ::fast_io::vector<operator_t> const*;
 
         auto const& vec{*reinterpret_cast<vec_op_const_p_const_may_alias_ptr>(sm.curr_op->ext.branch)};
 
@@ -312,7 +493,7 @@ namespace uwvm::vm::interpreter::func
             ::fast_io::fast_terminate();
         }
 
-        sm.curr_op = vec.index_unchecked(st.i32)->ext.end + 1;
+        sm.curr_op = vec.index_unchecked(st.i32).ext.end + 1;
     }
 
 #if __has_cpp_attribute(__gnu__::__hot__)
@@ -343,7 +524,7 @@ namespace uwvm::vm::interpreter::func
         drop(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
     {
 
-        if(sm.stack.size() <= sm.stack_top) [[unlikely]]
+        if(sm.stack.empty()) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -401,7 +582,7 @@ namespace uwvm::vm::interpreter::func
         auto& local{sm.local_storages.get_container().index_unchecked(sm.local_top + index)};
         auto const local_type{local.vt};
 
-        if(sm.stack.size() <= sm.stack_top) [[unlikely]]
+        if(sm.stack.empty()) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -475,7 +656,7 @@ namespace uwvm::vm::interpreter::func
         auto& local{sm.local_storages.get_container().index_unchecked(sm.local_top + index)};
         auto const local_type{local.vt};
 
-        if(sm.stack.size() <= sm.stack_top) [[unlikely]]
+        if(sm.stack.empty()) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -611,7 +792,7 @@ namespace uwvm::vm::interpreter::func
             ::fast_io::fast_terminate();
         }
 
-        if(sm.stack.size() <= sm.stack_top) [[unlikely]]
+        if(sm.stack.empty()) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -689,7 +870,7 @@ namespace uwvm::vm::interpreter::func
     inline void
         select(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
     {
-        if(sm.stack.size() < sm.stack_top + 3) [[unlikely]]
+        if(sm.stack.size() < 3) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -801,7 +982,7 @@ namespace uwvm::vm::interpreter::func
     inline void
         select_t(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
     {
-        if(sm.stack.size() < sm.stack_top + 3) [[unlikely]]
+        if(sm.stack.size() < 3) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -905,7 +1086,7 @@ namespace uwvm::vm::interpreter::func
         auto const aligment{sm.curr_op->ext.sz1};
         auto const offset{sm.curr_op->ext.sz2};
 
-        if(sm.stack.size() <= sm.stack_top) [[unlikely]]
+        if(sm.stack.empty()) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -1004,7 +1185,7 @@ namespace uwvm::vm::interpreter::func
         auto const aligment{sm.curr_op->ext.sz1};
         auto const offset{sm.curr_op->ext.sz2};
 
-        if(sm.stack.size() <= sm.stack_top) [[unlikely]]
+        if(sm.stack.empty()) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -1103,7 +1284,7 @@ namespace uwvm::vm::interpreter::func
         auto const aligment{sm.curr_op->ext.sz1};
         auto const offset{sm.curr_op->ext.sz2};
 
-        if(sm.stack.size() <= sm.stack_top) [[unlikely]]
+        if(sm.stack.empty()) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -1202,7 +1383,7 @@ namespace uwvm::vm::interpreter::func
         auto const aligment{sm.curr_op->ext.sz1};
         auto const offset{sm.curr_op->ext.sz2};
 
-        if(sm.stack.size() <= sm.stack_top) [[unlikely]]
+        if(sm.stack.empty()) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -1301,7 +1482,7 @@ namespace uwvm::vm::interpreter::func
         auto const aligment{sm.curr_op->ext.sz1};
         auto const offset{sm.curr_op->ext.sz2};
 
-        if(sm.stack.size() <= sm.stack_top) [[unlikely]]
+        if(sm.stack.empty()) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -1399,7 +1580,7 @@ namespace uwvm::vm::interpreter::func
         auto const aligment{sm.curr_op->ext.sz1};
         auto const offset{sm.curr_op->ext.sz2};
 
-        if(sm.stack.size() <= sm.stack_top) [[unlikely]]
+        if(sm.stack.empty()) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -1497,7 +1678,7 @@ namespace uwvm::vm::interpreter::func
         auto const aligment{sm.curr_op->ext.sz1};
         auto const offset{sm.curr_op->ext.sz2};
 
-        if(sm.stack.size() <= sm.stack_top) [[unlikely]]
+        if(sm.stack.empty()) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -1595,7 +1776,7 @@ namespace uwvm::vm::interpreter::func
         auto const aligment{sm.curr_op->ext.sz1};
         auto const offset{sm.curr_op->ext.sz2};
 
-        if(sm.stack.size() <= sm.stack_top) [[unlikely]]
+        if(sm.stack.empty()) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -1693,7 +1874,7 @@ namespace uwvm::vm::interpreter::func
         auto const aligment{sm.curr_op->ext.sz1};
         auto const offset{sm.curr_op->ext.sz2};
 
-        if(sm.stack.size() <= sm.stack_top) [[unlikely]]
+        if(sm.stack.empty()) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -1791,7 +1972,7 @@ namespace uwvm::vm::interpreter::func
         auto const aligment{sm.curr_op->ext.sz1};
         auto const offset{sm.curr_op->ext.sz2};
 
-        if(sm.stack.size() <= sm.stack_top) [[unlikely]]
+        if(sm.stack.empty()) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -1888,7 +2069,7 @@ namespace uwvm::vm::interpreter::func
         auto const aligment{sm.curr_op->ext.sz1};
         auto const offset{sm.curr_op->ext.sz2};
 
-        if(sm.stack.size() <= sm.stack_top) [[unlikely]]
+        if(sm.stack.empty()) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -1986,7 +2167,7 @@ namespace uwvm::vm::interpreter::func
         auto const aligment{sm.curr_op->ext.sz1};
         auto const offset{sm.curr_op->ext.sz2};
 
-        if(sm.stack.size() <= sm.stack_top) [[unlikely]]
+        if(sm.stack.empty()) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -2084,7 +2265,7 @@ namespace uwvm::vm::interpreter::func
         auto const aligment{sm.curr_op->ext.sz1};
         auto const offset{sm.curr_op->ext.sz2};
 
-        if(sm.stack.size() <= sm.stack_top) [[unlikely]]
+        if(sm.stack.empty()) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -2182,7 +2363,7 @@ namespace uwvm::vm::interpreter::func
         auto const aligment{sm.curr_op->ext.sz1};
         auto const offset{sm.curr_op->ext.sz2};
 
-        if(sm.stack.size() <= sm.stack_top) [[unlikely]]
+        if(sm.stack.empty()) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -2280,7 +2461,7 @@ namespace uwvm::vm::interpreter::func
         auto const aligment{sm.curr_op->ext.sz1};
         auto const offset{sm.curr_op->ext.sz2};
 
-        if(sm.stack.size() < sm.stack_top + 2) [[unlikely]]
+        if(sm.stack.size() < 2) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -2407,7 +2588,7 @@ namespace uwvm::vm::interpreter::func
         auto const aligment{sm.curr_op->ext.sz1};
         auto const offset{sm.curr_op->ext.sz2};
 
-        if(sm.stack.size() < sm.stack_top + 2) [[unlikely]]
+        if(sm.stack.size() < 2) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -2534,7 +2715,7 @@ namespace uwvm::vm::interpreter::func
         auto const aligment{sm.curr_op->ext.sz1};
         auto const offset{sm.curr_op->ext.sz2};
 
-        if(sm.stack.size() < sm.stack_top + 2) [[unlikely]]
+        if(sm.stack.size() < 2) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -2661,7 +2842,7 @@ namespace uwvm::vm::interpreter::func
         auto const aligment{sm.curr_op->ext.sz1};
         auto const offset{sm.curr_op->ext.sz2};
 
-        if(sm.stack.size() < sm.stack_top + 2) [[unlikely]]
+        if(sm.stack.size() < 2) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -2788,7 +2969,7 @@ namespace uwvm::vm::interpreter::func
         auto const aligment{sm.curr_op->ext.sz1};
         auto const offset{sm.curr_op->ext.sz2};
 
-        if(sm.stack.size() < sm.stack_top + 2) [[unlikely]]
+        if(sm.stack.size() < 2) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -2915,7 +3096,7 @@ namespace uwvm::vm::interpreter::func
         auto const aligment{sm.curr_op->ext.sz1};
         auto const offset{sm.curr_op->ext.sz2};
 
-        if(sm.stack.size() < sm.stack_top + 2) [[unlikely]]
+        if(sm.stack.size() < 2) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -3042,7 +3223,7 @@ namespace uwvm::vm::interpreter::func
         auto const aligment{sm.curr_op->ext.sz1};
         auto const offset{sm.curr_op->ext.sz2};
 
-        if(sm.stack.size() < sm.stack_top + 2) [[unlikely]]
+        if(sm.stack.size() < 2) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -3169,7 +3350,7 @@ namespace uwvm::vm::interpreter::func
         auto const aligment{sm.curr_op->ext.sz1};
         auto const offset{sm.curr_op->ext.sz2};
 
-        if(sm.stack.size() < sm.stack_top + 2) [[unlikely]]
+        if(sm.stack.size() < 2) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -3296,7 +3477,7 @@ namespace uwvm::vm::interpreter::func
         auto const aligment{sm.curr_op->ext.sz1};
         auto const offset{sm.curr_op->ext.sz2};
 
-        if(sm.stack.size() < sm.stack_top + 2) [[unlikely]]
+        if(sm.stack.size() < 2) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -3445,7 +3626,7 @@ namespace uwvm::vm::interpreter::func
             = ::uwvm::vm::interpreter::memory::memory_t*;
         auto mem{reinterpret_cast<memory_t_may_alias_ptr>(const_cast<::uwvm::vm::interpreter::operator_t*>(sm.curr_op->ext.branch))};
 
-        if(sm.stack.size() <= sm.stack_top) [[unlikely]]
+        if(sm.stack.empty()) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -3566,7 +3747,7 @@ namespace uwvm::vm::interpreter::func
     inline void
         i32_eqz(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
     {
-        if(sm.stack.size() <= sm.stack_top) [[unlikely]]
+        if(sm.stack.empty()) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -3637,7 +3818,7 @@ namespace uwvm::vm::interpreter::func
     inline void
         i32_eq(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
     {
-        if(sm.stack.size() < sm.stack_top + 2) [[unlikely]]
+        if(sm.stack.size() < 2) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -3709,7 +3890,7 @@ namespace uwvm::vm::interpreter::func
     inline void
         i32_ne(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
     {
-        if(sm.stack.size() < sm.stack_top + 2) [[unlikely]]
+        if(sm.stack.size() < 2) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -3781,7 +3962,7 @@ namespace uwvm::vm::interpreter::func
     inline void
         i32_lt_s(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
     {
-        if(sm.stack.size() < sm.stack_top + 2) [[unlikely]]
+        if(sm.stack.size() < 2) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -3853,7 +4034,7 @@ namespace uwvm::vm::interpreter::func
     inline void
         i32_lt_u(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
     {
-        if(sm.stack.size() < sm.stack_top + 2) [[unlikely]]
+        if(sm.stack.size() < 2) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -3927,7 +4108,7 @@ namespace uwvm::vm::interpreter::func
     inline void
         i32_gt_s(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
     {
-        if(sm.stack.size() < sm.stack_top + 2) [[unlikely]]
+        if(sm.stack.size() < 2) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -3999,7 +4180,7 @@ namespace uwvm::vm::interpreter::func
     inline void
         i32_gt_u(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
     {
-        if(sm.stack.size() < sm.stack_top + 2) [[unlikely]]
+        if(sm.stack.size() < 2) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -4073,7 +4254,7 @@ namespace uwvm::vm::interpreter::func
     inline void
         i32_le_s(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
     {
-        if(sm.stack.size() < sm.stack_top + 2) [[unlikely]]
+        if(sm.stack.size() < 2) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -4145,7 +4326,7 @@ namespace uwvm::vm::interpreter::func
     inline void
         i32_le_u(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
     {
-        if(sm.stack.size() < sm.stack_top + 2) [[unlikely]]
+        if(sm.stack.size() < 2) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -4219,7 +4400,7 @@ namespace uwvm::vm::interpreter::func
     inline void
         i32_ge_s(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
     {
-        if(sm.stack.size() < sm.stack_top + 2) [[unlikely]]
+        if(sm.stack.size() < 2) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -4291,7 +4472,7 @@ namespace uwvm::vm::interpreter::func
     inline void
         i32_ge_u(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
     {
-        if(sm.stack.size() < sm.stack_top + 2) [[unlikely]]
+        if(sm.stack.size() < 2) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -4365,7 +4546,7 @@ namespace uwvm::vm::interpreter::func
     inline void
         i64_eqz(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
     {
-        if(sm.stack.size() <= sm.stack_top) [[unlikely]]
+        if(sm.stack.empty()) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -4436,7 +4617,7 @@ namespace uwvm::vm::interpreter::func
     inline void
         i64_eq(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
     {
-        if(sm.stack.size() < sm.stack_top + 2) [[unlikely]]
+        if(sm.stack.size() < 2) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -4508,7 +4689,7 @@ namespace uwvm::vm::interpreter::func
     inline void
         i64_ne(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
     {
-        if(sm.stack.size() < sm.stack_top + 2) [[unlikely]]
+        if(sm.stack.size() < 2) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -4580,7 +4761,7 @@ namespace uwvm::vm::interpreter::func
     inline void
         i64_lt_s(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
     {
-        if(sm.stack.size() < sm.stack_top + 2) [[unlikely]]
+        if(sm.stack.size() < 2) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -4652,7 +4833,7 @@ namespace uwvm::vm::interpreter::func
     inline void
         i64_lt_u(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
     {
-        if(sm.stack.size() < sm.stack_top + 2) [[unlikely]]
+        if(sm.stack.size() < 2) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -4726,7 +4907,7 @@ namespace uwvm::vm::interpreter::func
     inline void
         i64_gt_s(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
     {
-        if(sm.stack.size() < sm.stack_top + 2) [[unlikely]]
+        if(sm.stack.size() < 2) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -4798,7 +4979,7 @@ namespace uwvm::vm::interpreter::func
     inline void
         i64_gt_u(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
     {
-        if(sm.stack.size() < sm.stack_top + 2) [[unlikely]]
+        if(sm.stack.size() < 2) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -4872,7 +5053,7 @@ namespace uwvm::vm::interpreter::func
     inline void
         i64_le_s(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
     {
-        if(sm.stack.size() < sm.stack_top + 2) [[unlikely]]
+        if(sm.stack.size() < 2) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -4944,7 +5125,7 @@ namespace uwvm::vm::interpreter::func
     inline void
         i64_le_u(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
     {
-        if(sm.stack.size() < sm.stack_top + 2) [[unlikely]]
+        if(sm.stack.size() < 2) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -5018,7 +5199,7 @@ namespace uwvm::vm::interpreter::func
     inline void
         i64_ge_s(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
     {
-        if(sm.stack.size() < sm.stack_top + 2) [[unlikely]]
+        if(sm.stack.size() < 2) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -5090,7 +5271,7 @@ namespace uwvm::vm::interpreter::func
     inline void
         i64_ge_u(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
     {
-        if(sm.stack.size() < sm.stack_top + 2) [[unlikely]]
+        if(sm.stack.size() < 2) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -5164,7 +5345,7 @@ namespace uwvm::vm::interpreter::func
     inline void
         f32_eq(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
     {
-        if(sm.stack.size() < sm.stack_top + 2) [[unlikely]]
+        if(sm.stack.size() < 2) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -5236,7 +5417,7 @@ namespace uwvm::vm::interpreter::func
     inline void
         f32_ne(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
     {
-        if(sm.stack.size() < sm.stack_top + 2) [[unlikely]]
+        if(sm.stack.size() < 2) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -5308,7 +5489,7 @@ namespace uwvm::vm::interpreter::func
     inline void
         f32_lt(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
     {
-        if(sm.stack.size() < sm.stack_top + 2) [[unlikely]]
+        if(sm.stack.size() < 2) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -5380,7 +5561,7 @@ namespace uwvm::vm::interpreter::func
     inline void
         f32_gt(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
     {
-        if(sm.stack.size() < sm.stack_top + 2) [[unlikely]]
+        if(sm.stack.size() < 2) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -5452,7 +5633,7 @@ namespace uwvm::vm::interpreter::func
     inline void
         f32_le(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
     {
-        if(sm.stack.size() < sm.stack_top + 2) [[unlikely]]
+        if(sm.stack.size() < 2) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -5524,7 +5705,7 @@ namespace uwvm::vm::interpreter::func
     inline void
         f32_ge(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
     {
-        if(sm.stack.size() < sm.stack_top + 2) [[unlikely]]
+        if(sm.stack.size() < 2) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -5596,7 +5777,7 @@ namespace uwvm::vm::interpreter::func
     inline void
         f64_eq(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
     {
-        if(sm.stack.size() < sm.stack_top + 2) [[unlikely]]
+        if(sm.stack.size() < 2) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -5668,7 +5849,7 @@ namespace uwvm::vm::interpreter::func
     inline void
         f64_ne(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
     {
-        if(sm.stack.size() < sm.stack_top + 2) [[unlikely]]
+        if(sm.stack.size() < 2) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -5740,7 +5921,7 @@ namespace uwvm::vm::interpreter::func
     inline void
         f64_lt(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
     {
-        if(sm.stack.size() < sm.stack_top + 2) [[unlikely]]
+        if(sm.stack.size() < 2) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -5812,7 +5993,7 @@ namespace uwvm::vm::interpreter::func
     inline void
         f64_gt(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
     {
-        if(sm.stack.size() < sm.stack_top + 2) [[unlikely]]
+        if(sm.stack.size() < 2) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -5884,7 +6065,7 @@ namespace uwvm::vm::interpreter::func
     inline void
         f64_le(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
     {
-        if(sm.stack.size() < sm.stack_top + 2) [[unlikely]]
+        if(sm.stack.size() < 2) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -5956,7 +6137,7 @@ namespace uwvm::vm::interpreter::func
     inline void
         f64_ge(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
     {
-        if(sm.stack.size() < sm.stack_top + 2) [[unlikely]]
+        if(sm.stack.size() < 2) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -6028,7 +6209,7 @@ namespace uwvm::vm::interpreter::func
     inline void
         i32_clz(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
     {
-        if(sm.stack.size() <= sm.stack_top) [[unlikely]]
+        if(sm.stack.empty()) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -6100,7 +6281,7 @@ namespace uwvm::vm::interpreter::func
     inline void
         i32_ctz(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
     {
-        if(sm.stack.size() <= sm.stack_top) [[unlikely]]
+        if(sm.stack.empty()) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -6172,7 +6353,7 @@ namespace uwvm::vm::interpreter::func
     inline void
         i32_popcnt(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
     {
-        if(sm.stack.size() <= sm.stack_top) [[unlikely]]
+        if(sm.stack.empty()) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -6244,7 +6425,7 @@ namespace uwvm::vm::interpreter::func
     inline void
         i32_add(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
     {
-        if(sm.stack.size() < sm.stack_top + 2) [[unlikely]]
+        if(sm.stack.size() < 2) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -6316,7 +6497,7 @@ namespace uwvm::vm::interpreter::func
     inline void
         i32_sub(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
     {
-        if(sm.stack.size() < sm.stack_top + 2) [[unlikely]]
+        if(sm.stack.size() < 2) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -6388,7 +6569,7 @@ namespace uwvm::vm::interpreter::func
     inline void
         i32_mul(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
     {
-        if(sm.stack.size() < sm.stack_top + 2) [[unlikely]]
+        if(sm.stack.size() < 2) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -6460,7 +6641,7 @@ namespace uwvm::vm::interpreter::func
     inline void
         i32_div_s(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
     {
-        if(sm.stack.size() < sm.stack_top + 2) [[unlikely]]
+        if(sm.stack.size() < 2) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -6532,7 +6713,7 @@ namespace uwvm::vm::interpreter::func
     inline void
         i32_div_u(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
     {
-        if(sm.stack.size() < sm.stack_top + 2) [[unlikely]]
+        if(sm.stack.size() < 2) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -6606,7 +6787,7 @@ namespace uwvm::vm::interpreter::func
     inline void
         i32_rem_s(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
     {
-        if(sm.stack.size() < sm.stack_top + 2) [[unlikely]]
+        if(sm.stack.size() < 2) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -6678,7 +6859,7 @@ namespace uwvm::vm::interpreter::func
     inline void
         i32_rem_u(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
     {
-        if(sm.stack.size() < sm.stack_top + 2) [[unlikely]]
+        if(sm.stack.size() < 2) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -6752,7 +6933,7 @@ namespace uwvm::vm::interpreter::func
     inline void
         i32_and(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
     {
-        if(sm.stack.size() < sm.stack_top + 2) [[unlikely]]
+        if(sm.stack.size() < 2) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -6824,7 +7005,7 @@ namespace uwvm::vm::interpreter::func
     inline void
         i32_or(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
     {
-        if(sm.stack.size() < sm.stack_top + 2) [[unlikely]]
+        if(sm.stack.size() < 2) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -6896,7 +7077,7 @@ namespace uwvm::vm::interpreter::func
     inline void
         i32_xor(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
     {
-        if(sm.stack.size() < sm.stack_top + 2) [[unlikely]]
+        if(sm.stack.size() < 2) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -6968,7 +7149,7 @@ namespace uwvm::vm::interpreter::func
     inline void
         i32_shl(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
     {
-        if(sm.stack.size() < sm.stack_top + 2) [[unlikely]]
+        if(sm.stack.size() < 2) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -7040,7 +7221,7 @@ namespace uwvm::vm::interpreter::func
     inline void
         i32_shr_s(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
     {
-        if(sm.stack.size() < sm.stack_top + 2) [[unlikely]]
+        if(sm.stack.size() < 2) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -7112,7 +7293,7 @@ namespace uwvm::vm::interpreter::func
     inline void
         i32_shr_u(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
     {
-        if(sm.stack.size() < sm.stack_top + 2) [[unlikely]]
+        if(sm.stack.size() < 2) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -7186,7 +7367,7 @@ namespace uwvm::vm::interpreter::func
     inline void
         i32_rotl(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
     {
-        if(sm.stack.size() < sm.stack_top + 2) [[unlikely]]
+        if(sm.stack.size() < 2) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -7260,7 +7441,7 @@ namespace uwvm::vm::interpreter::func
     inline void
         i32_rotr(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
     {
-        if(sm.stack.size() < sm.stack_top + 2) [[unlikely]]
+        if(sm.stack.size() < 2) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -7334,7 +7515,7 @@ namespace uwvm::vm::interpreter::func
     inline void
         i64_clz(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
     {
-        if(sm.stack.size() <= sm.stack_top) [[unlikely]]
+        if(sm.stack.empty()) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -7406,7 +7587,7 @@ namespace uwvm::vm::interpreter::func
     inline void
         i64_ctz(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
     {
-        if(sm.stack.size() <= sm.stack_top) [[unlikely]]
+        if(sm.stack.empty()) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -7478,7 +7659,7 @@ namespace uwvm::vm::interpreter::func
     inline void
         i64_popcnt(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
     {
-        if(sm.stack.size() <= sm.stack_top) [[unlikely]]
+        if(sm.stack.empty()) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -7550,7 +7731,7 @@ namespace uwvm::vm::interpreter::func
     inline void
         i64_add(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
     {
-        if(sm.stack.size() < sm.stack_top + 2) [[unlikely]]
+        if(sm.stack.size() < 2) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -7622,7 +7803,7 @@ namespace uwvm::vm::interpreter::func
     inline void
         i64_sub(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
     {
-        if(sm.stack.size() < sm.stack_top + 2) [[unlikely]]
+        if(sm.stack.size() < 2) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -7694,7 +7875,7 @@ namespace uwvm::vm::interpreter::func
     inline void
         i64_mul(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
     {
-        if(sm.stack.size() < sm.stack_top + 2) [[unlikely]]
+        if(sm.stack.size() < 2) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -7766,7 +7947,7 @@ namespace uwvm::vm::interpreter::func
     inline void
         i64_div_s(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
     {
-        if(sm.stack.size() < sm.stack_top + 2) [[unlikely]]
+        if(sm.stack.size() < 2) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -7838,7 +8019,7 @@ namespace uwvm::vm::interpreter::func
     inline void
         i64_div_u(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
     {
-        if(sm.stack.size() < sm.stack_top + 2) [[unlikely]]
+        if(sm.stack.size() < 2) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -7912,7 +8093,7 @@ namespace uwvm::vm::interpreter::func
     inline void
         i64_rem_s(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
     {
-        if(sm.stack.size() < sm.stack_top + 2) [[unlikely]]
+        if(sm.stack.size() < 2) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -7984,7 +8165,7 @@ namespace uwvm::vm::interpreter::func
     inline void
         i64_rem_u(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
     {
-        if(sm.stack.size() < sm.stack_top + 2) [[unlikely]]
+        if(sm.stack.size() < 2) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -8058,7 +8239,7 @@ namespace uwvm::vm::interpreter::func
     inline void
         i64_and(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
     {
-        if(sm.stack.size() < sm.stack_top + 2) [[unlikely]]
+        if(sm.stack.size() < 2) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -8130,7 +8311,7 @@ namespace uwvm::vm::interpreter::func
     inline void
         i64_or(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
     {
-        if(sm.stack.size() < sm.stack_top + 2) [[unlikely]]
+        if(sm.stack.size() < 2) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -8202,7 +8383,7 @@ namespace uwvm::vm::interpreter::func
     inline void
         i64_xor(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
     {
-        if(sm.stack.size() < sm.stack_top + 2) [[unlikely]]
+        if(sm.stack.size() < 2) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -8274,7 +8455,7 @@ namespace uwvm::vm::interpreter::func
     inline void
         i64_shl(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
     {
-        if(sm.stack.size() < sm.stack_top + 2) [[unlikely]]
+        if(sm.stack.size() < 2) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -8346,7 +8527,7 @@ namespace uwvm::vm::interpreter::func
     inline void
         i64_shr_s(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
     {
-        if(sm.stack.size() < sm.stack_top + 2) [[unlikely]]
+        if(sm.stack.size() < 2) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -8418,7 +8599,7 @@ namespace uwvm::vm::interpreter::func
     inline void
         i64_shr_u(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
     {
-        if(sm.stack.size() < sm.stack_top + 2) [[unlikely]]
+        if(sm.stack.size() < 2) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -8492,7 +8673,7 @@ namespace uwvm::vm::interpreter::func
     inline void
         i64_rotl(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
     {
-        if(sm.stack.size() < sm.stack_top + 2) [[unlikely]]
+        if(sm.stack.size() < 2) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -8566,7 +8747,7 @@ namespace uwvm::vm::interpreter::func
     inline void
         i64_rotr(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
     {
-        if(sm.stack.size() < sm.stack_top + 2) [[unlikely]]
+        if(sm.stack.size() < 2) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -8640,7 +8821,7 @@ namespace uwvm::vm::interpreter::func
     inline void
         f32_abs(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
     {
-        if(sm.stack.size() <= sm.stack_top) [[unlikely]]
+        if(sm.stack.empty()) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -8711,7 +8892,7 @@ namespace uwvm::vm::interpreter::func
     inline void
         f32_neg(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
     {
-        if(sm.stack.size() <= sm.stack_top) [[unlikely]]
+        if(sm.stack.empty()) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -8782,7 +8963,7 @@ namespace uwvm::vm::interpreter::func
     inline void
         f32_ceil(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
     {
-        if(sm.stack.size() <= sm.stack_top) [[unlikely]]
+        if(sm.stack.empty()) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -8853,7 +9034,7 @@ namespace uwvm::vm::interpreter::func
     inline void
         f32_floor(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
     {
-        if(sm.stack.size() <= sm.stack_top) [[unlikely]]
+        if(sm.stack.empty()) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -8924,7 +9105,7 @@ namespace uwvm::vm::interpreter::func
     inline void
         f32_trunc(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
     {
-        if(sm.stack.size() <= sm.stack_top) [[unlikely]]
+        if(sm.stack.empty()) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -8995,7 +9176,7 @@ namespace uwvm::vm::interpreter::func
     inline void
         f32_nearest(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
     {
-        if(sm.stack.size() <= sm.stack_top) [[unlikely]]
+        if(sm.stack.empty()) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -9066,7 +9247,7 @@ namespace uwvm::vm::interpreter::func
     inline void
         f32_sqrt(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
     {
-        if(sm.stack.size() <= sm.stack_top) [[unlikely]]
+        if(sm.stack.empty()) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -9137,7 +9318,7 @@ namespace uwvm::vm::interpreter::func
     inline void
         f32_add(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
     {
-        if(sm.stack.size() < sm.stack_top + 2) [[unlikely]]
+        if(sm.stack.size() < 2) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -9209,7 +9390,7 @@ namespace uwvm::vm::interpreter::func
     inline void
         f32_sub(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
     {
-        if(sm.stack.size() < sm.stack_top + 2) [[unlikely]]
+        if(sm.stack.size() < 2) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -9281,7 +9462,7 @@ namespace uwvm::vm::interpreter::func
     inline void
         f32_mul(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
     {
-        if(sm.stack.size() < sm.stack_top + 2) [[unlikely]]
+        if(sm.stack.size() < 2) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -9353,7 +9534,7 @@ namespace uwvm::vm::interpreter::func
     inline void
         f32_div(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
     {
-        if(sm.stack.size() < sm.stack_top + 2) [[unlikely]]
+        if(sm.stack.size() < 2) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -9425,7 +9606,7 @@ namespace uwvm::vm::interpreter::func
     inline void
         f32_min(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
     {
-        if(sm.stack.size() < sm.stack_top + 2) [[unlikely]]
+        if(sm.stack.size() < 2) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -9497,7 +9678,7 @@ namespace uwvm::vm::interpreter::func
     inline void
         f32_max(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
     {
-        if(sm.stack.size() < sm.stack_top + 2) [[unlikely]]
+        if(sm.stack.size() < 2) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -9569,7 +9750,7 @@ namespace uwvm::vm::interpreter::func
     inline void
         f32_copysign(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
     {
-        if(sm.stack.size() < sm.stack_top + 2) [[unlikely]]
+        if(sm.stack.size() < 2) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -9641,7 +9822,7 @@ namespace uwvm::vm::interpreter::func
     inline void
         f64_abs(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
     {
-        if(sm.stack.size() <= sm.stack_top) [[unlikely]]
+        if(sm.stack.empty()) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -9712,7 +9893,7 @@ namespace uwvm::vm::interpreter::func
     inline void
         f64_neg(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
     {
-        if(sm.stack.size() <= sm.stack_top) [[unlikely]]
+        if(sm.stack.empty()) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -9783,7 +9964,7 @@ namespace uwvm::vm::interpreter::func
     inline void
         f64_ceil(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
     {
-        if(sm.stack.size() <= sm.stack_top) [[unlikely]]
+        if(sm.stack.empty()) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -9854,7 +10035,7 @@ namespace uwvm::vm::interpreter::func
     inline void
         f64_floor(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
     {
-        if(sm.stack.size() <= sm.stack_top) [[unlikely]]
+        if(sm.stack.empty()) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -9925,7 +10106,7 @@ namespace uwvm::vm::interpreter::func
     inline void
         f64_trunc(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
     {
-        if(sm.stack.size() <= sm.stack_top) [[unlikely]]
+        if(sm.stack.empty()) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -9996,7 +10177,7 @@ namespace uwvm::vm::interpreter::func
     inline void
         f64_nearest(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
     {
-        if(sm.stack.size() <= sm.stack_top) [[unlikely]]
+        if(sm.stack.empty()) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -10067,7 +10248,7 @@ namespace uwvm::vm::interpreter::func
     inline void
         f64_sqrt(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
     {
-        if(sm.stack.size() <= sm.stack_top) [[unlikely]]
+        if(sm.stack.empty()) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -10138,7 +10319,7 @@ namespace uwvm::vm::interpreter::func
     inline void
         f64_add(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
     {
-        if(sm.stack.size() < sm.stack_top + 2) [[unlikely]]
+        if(sm.stack.size() < 2) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -10210,7 +10391,7 @@ namespace uwvm::vm::interpreter::func
     inline void
         f64_sub(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
     {
-        if(sm.stack.size() < sm.stack_top + 2) [[unlikely]]
+        if(sm.stack.size() < 2) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -10282,7 +10463,7 @@ namespace uwvm::vm::interpreter::func
     inline void
         f64_mul(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
     {
-        if(sm.stack.size() < sm.stack_top + 2) [[unlikely]]
+        if(sm.stack.size() < 2) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -10354,7 +10535,7 @@ namespace uwvm::vm::interpreter::func
     inline void
         f64_div(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
     {
-        if(sm.stack.size() < sm.stack_top + 2) [[unlikely]]
+        if(sm.stack.size() < 2) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -10426,7 +10607,7 @@ namespace uwvm::vm::interpreter::func
     inline void
         f64_min(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
     {
-        if(sm.stack.size() < sm.stack_top + 2) [[unlikely]]
+        if(sm.stack.size() < 2) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -10498,7 +10679,7 @@ namespace uwvm::vm::interpreter::func
     inline void
         f64_max(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
     {
-        if(sm.stack.size() < sm.stack_top + 2) [[unlikely]]
+        if(sm.stack.size() < 2) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -10570,7 +10751,7 @@ namespace uwvm::vm::interpreter::func
     inline void
         f64_copysign(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
     {
-        if(sm.stack.size() < sm.stack_top + 2) [[unlikely]]
+        if(sm.stack.size() < 2) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -10642,7 +10823,7 @@ namespace uwvm::vm::interpreter::func
     inline void
         i32_wrap_i64(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
     {
-        if(sm.stack.size() <= sm.stack_top) [[unlikely]]
+        if(sm.stack.empty()) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -10713,7 +10894,7 @@ namespace uwvm::vm::interpreter::func
     inline void
         i32_trunc_f32_s(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
     {
-        if(sm.stack.size() <= sm.stack_top) [[unlikely]]
+        if(sm.stack.empty()) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -10784,7 +10965,7 @@ namespace uwvm::vm::interpreter::func
     inline void
         i32_trunc_f32_u(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
     {
-        if(sm.stack.size() <= sm.stack_top) [[unlikely]]
+        if(sm.stack.empty()) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -10856,7 +11037,7 @@ namespace uwvm::vm::interpreter::func
     inline void
         i32_trunc_f64_s(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
     {
-        if(sm.stack.size() <= sm.stack_top) [[unlikely]]
+        if(sm.stack.empty()) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -10927,7 +11108,7 @@ namespace uwvm::vm::interpreter::func
     inline void
         i32_trunc_f64_u(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
     {
-        if(sm.stack.size() <= sm.stack_top) [[unlikely]]
+        if(sm.stack.empty()) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -10999,7 +11180,7 @@ namespace uwvm::vm::interpreter::func
     inline void
         i64_extend_i32_s(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
     {
-        if(sm.stack.size() <= sm.stack_top) [[unlikely]]
+        if(sm.stack.empty()) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -11070,7 +11251,7 @@ namespace uwvm::vm::interpreter::func
     inline void
         i64_extend_i32_u(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
     {
-        if(sm.stack.size() <= sm.stack_top) [[unlikely]]
+        if(sm.stack.empty()) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -11142,7 +11323,7 @@ namespace uwvm::vm::interpreter::func
     inline void
         i64_trunc_f32_s(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
     {
-        if(sm.stack.size() <= sm.stack_top) [[unlikely]]
+        if(sm.stack.empty()) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -11213,7 +11394,7 @@ namespace uwvm::vm::interpreter::func
     inline void
         i64_trunc_f32_u(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
     {
-        if(sm.stack.size() <= sm.stack_top) [[unlikely]]
+        if(sm.stack.empty()) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -11285,7 +11466,7 @@ namespace uwvm::vm::interpreter::func
     inline void
         i64_trunc_f64_s(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
     {
-        if(sm.stack.size() <= sm.stack_top) [[unlikely]]
+        if(sm.stack.empty()) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -11356,7 +11537,7 @@ namespace uwvm::vm::interpreter::func
     inline void
         i64_trunc_f64_u(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
     {
-        if(sm.stack.size() <= sm.stack_top) [[unlikely]]
+        if(sm.stack.empty()) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -11428,7 +11609,7 @@ namespace uwvm::vm::interpreter::func
     inline void
         f32_convert_i32_s(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
     {
-        if(sm.stack.size() <= sm.stack_top) [[unlikely]]
+        if(sm.stack.empty()) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -11499,7 +11680,7 @@ namespace uwvm::vm::interpreter::func
     inline void
         f32_convert_i32_u(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
     {
-        if(sm.stack.size() <= sm.stack_top) [[unlikely]]
+        if(sm.stack.empty()) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -11571,7 +11752,7 @@ namespace uwvm::vm::interpreter::func
     inline void
         f32_convert_i64_s(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
     {
-        if(sm.stack.size() <= sm.stack_top) [[unlikely]]
+        if(sm.stack.empty()) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -11642,7 +11823,7 @@ namespace uwvm::vm::interpreter::func
     inline void
         f32_convert_i64_u(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
     {
-        if(sm.stack.size() <= sm.stack_top) [[unlikely]]
+        if(sm.stack.empty()) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -11714,7 +11895,7 @@ namespace uwvm::vm::interpreter::func
     inline void
         f32_demote_f64(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
     {
-        if(sm.stack.size() <= sm.stack_top) [[unlikely]]
+        if(sm.stack.empty()) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -11785,7 +11966,7 @@ namespace uwvm::vm::interpreter::func
     inline void
         f64_convert_i32_s(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
     {
-        if(sm.stack.size() <= sm.stack_top) [[unlikely]]
+        if(sm.stack.empty()) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -11856,7 +12037,7 @@ namespace uwvm::vm::interpreter::func
     inline void
         f64_convert_i32_u(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
     {
-        if(sm.stack.size() <= sm.stack_top) [[unlikely]]
+        if(sm.stack.empty()) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -11928,7 +12109,7 @@ namespace uwvm::vm::interpreter::func
     inline void
         f64_convert_i64_s(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
     {
-        if(sm.stack.size() <= sm.stack_top) [[unlikely]]
+        if(sm.stack.empty()) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -11999,7 +12180,7 @@ namespace uwvm::vm::interpreter::func
     inline void
         f64_convert_i64_u(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
     {
-        if(sm.stack.size() <= sm.stack_top) [[unlikely]]
+        if(sm.stack.empty()) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -12071,7 +12252,7 @@ namespace uwvm::vm::interpreter::func
     inline void
         f64_promote_f32(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
     {
-        if(sm.stack.size() <= sm.stack_top) [[unlikely]]
+        if(sm.stack.empty()) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -12142,7 +12323,7 @@ namespace uwvm::vm::interpreter::func
     inline void
         i32_reinterpret_f32(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
     {
-        if(sm.stack.size() <= sm.stack_top) [[unlikely]]
+        if(sm.stack.empty()) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -12213,7 +12394,7 @@ namespace uwvm::vm::interpreter::func
     inline void
         i64_reinterpret_f64(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
     {
-        if(sm.stack.size() <= sm.stack_top) [[unlikely]]
+        if(sm.stack.empty()) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -12284,7 +12465,7 @@ namespace uwvm::vm::interpreter::func
     inline void
         f32_reinterpret_i32(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
     {
-        if(sm.stack.size() <= sm.stack_top) [[unlikely]]
+        if(sm.stack.empty()) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -12355,7 +12536,7 @@ namespace uwvm::vm::interpreter::func
     inline void
         f64_reinterpret_i64(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
     {
-        if(sm.stack.size() <= sm.stack_top) [[unlikely]]
+        if(sm.stack.empty()) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -12426,7 +12607,7 @@ namespace uwvm::vm::interpreter::func
     inline void
         i32_extend8_s(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
     {
-        if(sm.stack.size() <= sm.stack_top) [[unlikely]]
+        if(sm.stack.empty()) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -12498,7 +12679,7 @@ namespace uwvm::vm::interpreter::func
     inline void
         i32_extend16_s(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
     {
-        if(sm.stack.size() <= sm.stack_top) [[unlikely]]
+        if(sm.stack.empty()) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -12570,7 +12751,7 @@ namespace uwvm::vm::interpreter::func
     inline void
         i64_extend8_s(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
     {
-        if(sm.stack.size() <= sm.stack_top) [[unlikely]]
+        if(sm.stack.empty()) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -12642,7 +12823,7 @@ namespace uwvm::vm::interpreter::func
     inline void
         i64_extend16_s(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
     {
-        if(sm.stack.size() <= sm.stack_top) [[unlikely]]
+        if(sm.stack.empty()) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -12714,7 +12895,7 @@ namespace uwvm::vm::interpreter::func
     inline void
         i64_extend32_s(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
     {
-        if(sm.stack.size() <= sm.stack_top) [[unlikely]]
+        if(sm.stack.empty()) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
