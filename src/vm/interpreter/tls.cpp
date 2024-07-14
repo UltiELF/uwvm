@@ -4,8 +4,14 @@
 #include "astgen.h"
 #include "astrun.h"
 
-thread_local ::fast_io::tlc::stack<::uwvm::vm::interpreter::details::d_flow_t, ::fast_io::tlc::vector<::uwvm::vm::interpreter::details::d_flow_t>>(
+#if !defined(__wasm_atomics__)
+thread_local 
+#endif
+::fast_io::tlc::stack<::uwvm::vm::interpreter::details::d_flow_t, ::fast_io::tlc::vector<::uwvm::vm::interpreter::details::d_flow_t>>(
     ::uwvm::vm::interpreter::details::ga_flow){};
 
-thread_local ::uwvm::vm::interpreter::stack_machine(::uwvm::vm::interpreter::s){};
+#if !defined(__wasm_atomics__)
+thread_local 
+#endif
+    ::uwvm::vm::interpreter::stack_machine(::uwvm::vm::interpreter::uwvm_sm){};
 

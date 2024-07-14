@@ -5,35 +5,39 @@
 
 namespace uwvm::vm::interpreter
 {
-    extern thread_local ::uwvm::vm::interpreter::stack_machine s;
+    extern 
+#if !defined(__wasm_atomics__)
+        thread_local
+#endif
+        ::uwvm::vm::interpreter::stack_machine uwvm_sm;
 
     inline void run_ast(ast const& a) noexcept
     {
-        if(s.stack.empty()) [[unlikely]]
+        if(uwvm_sm.stack.empty()) [[unlikely]]
         {
             // Just checking the stack is enough
-            s.init();
+            uwvm_sm.init();
         }
 
         if(!a.operators.empty()) [[likely]]
         {
             // storage last op
-            auto const last_begin_op{s.begin_op};
-            auto const last_curr_op{s.curr_op};
-            auto const last_end_op{s.end_op};
+            auto const last_begin_op{uwvm_sm.begin_op};
+            auto const last_curr_op{uwvm_sm.curr_op};
+            auto const last_end_op{uwvm_sm.end_op};
 
             // prepare
             auto const begin_op{::std::to_address(a.operators.begin())};
             auto const end_op{::std::to_address(a.operators.end())};
-            s.begin_op = begin_op;
-            s.end_op = end_op;
+            uwvm_sm.begin_op = begin_op;
+            uwvm_sm.end_op = end_op;
 
             // check stack
             auto const& func_type{*a.ft};
             auto const func_type_para_size{static_cast<::std::size_t>(func_type.parameter_end - func_type.parameter_begin)};
             auto const func_type_result_size{static_cast<::std::size_t>(func_type.result_end - func_type.result_begin)};
 
-            if(s.stack.size() < func_type_para_size) [[unlikely]]
+            if(uwvm_sm.stack.size() < func_type_para_size) [[unlikely]]
             {
                 ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -62,7 +66,7 @@ namespace uwvm::vm::interpreter
                 ::fast_io::fast_terminate();
             }
 
-            auto curr_st{s.stack.get_container().cend() - 1};
+            auto curr_st{uwvm_sm.stack.get_container().cend() - 1};
             for(auto curr{func_type.parameter_end - 1}; curr != func_type.parameter_begin - 1; --curr)
             {
                 auto const curr_vt{*curr};
@@ -99,7 +103,7 @@ namespace uwvm::vm::interpreter
             }
 
             // local
-            auto& local_storage_c{s.local_storages.get_container()};
+            auto& local_storage_c{uwvm_sm.local_storages.get_container()};
             auto local_curr{local_storage_c.imp.curr_ptr};
             auto local_end{local_storage_c.imp.end_ptr};
             auto local_storage_size{static_cast<::std::size_t>(local_end - local_curr)};
@@ -112,12 +116,12 @@ namespace uwvm::vm::interpreter
                 local_storage_size = static_cast<::std::size_t>(local_end - local_curr);
             }
 
-            auto const last_local_top{s.local_top};
-            s.local_top = static_cast<::std::size_t>(local_curr - local_storage_c.imp.begin_ptr);
+            auto const last_local_top{uwvm_sm.local_top};
+            uwvm_sm.local_top = static_cast<::std::size_t>(local_curr - local_storage_c.imp.begin_ptr);
             local_storage_c.imp.curr_ptr += a.local_size;
 
             auto local_curr_temp{local_curr};
-            auto const stack_cend{s.stack.get_container().cend()};
+            auto const stack_cend{uwvm_sm.stack.get_container().cend()};
             for(auto i{stack_cend - func_type_para_size}; i != stack_cend; ++i)
             {
                 *local_curr_temp = *i;
@@ -136,21 +140,21 @@ namespace uwvm::vm::interpreter
             }
 
             // set stack curr
-            s.stack.get_container().imp.curr_ptr -= func_type_para_size;
+            uwvm_sm.stack.get_container().imp.curr_ptr -= func_type_para_size;
 
             // run
-            for(s.curr_op = begin_op; s.curr_op != end_op;)
+            for(uwvm_sm.curr_op = begin_op; uwvm_sm.curr_op != end_op;)
             {
-                if(s.curr_op->int_func) [[likely]] { s.curr_op->int_func(s.curr_op->code_begin, s); }
-                else { ++s.curr_op; }
+                if(uwvm_sm.curr_op->int_func) [[likely]] { uwvm_sm.curr_op->int_func(uwvm_sm.curr_op->code_begin, uwvm_sm); }
+                else { ++uwvm_sm.curr_op; }
             }
 
             // reset local point
             local_storage_c.imp.curr_ptr = local_curr;
-            s.local_top = last_local_top;
+            uwvm_sm.local_top = last_local_top;
 
             // check stack
-            if(s.stack.size() < func_type_result_size) [[unlikely]]
+            if(uwvm_sm.stack.size() < func_type_result_size) [[unlikely]]
             {
                 ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -179,7 +183,7 @@ namespace uwvm::vm::interpreter
                 ::fast_io::fast_terminate();
             }
 
-            curr_st = s.stack.get_container().cend() - 1;
+            curr_st = uwvm_sm.stack.get_container().cend() - 1;
             for(auto curr{func_type.result_end - 1}; curr != func_type.result_begin - 1; --curr)
             {
                 auto const curr_vt{*curr};
@@ -216,9 +220,9 @@ namespace uwvm::vm::interpreter
             }
 
             // reset op
-            s.begin_op = last_begin_op;
-            s.curr_op = last_curr_op;
-            s.end_op = last_end_op;
+            uwvm_sm.begin_op = last_begin_op;
+            uwvm_sm.curr_op = last_curr_op;
+            uwvm_sm.end_op = last_end_op;
         }
     }
 }  // namespace uwvm::vm::interpreter

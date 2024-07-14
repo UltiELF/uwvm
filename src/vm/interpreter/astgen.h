@@ -45,7 +45,11 @@ namespace uwvm::vm::interpreter
 {
     namespace details
     {
-        extern thread_local ::fast_io::tlc::stack<d_flow_t, ::fast_io::tlc::vector<d_flow_t>> ga_flow;
+        extern 
+#if !defined(__wasm_atomics__)
+            thread_local
+#endif
+            ::fast_io::tlc::stack<d_flow_t, ::fast_io::tlc::vector<d_flow_t>> ga_flow;
     }  // namespace details
 
     // https://pengowray.github.io/wasm-ops/
