@@ -5,11 +5,7 @@
 
 namespace uwvm::vm::interpreter
 {
-    extern 
-#if !defined(__wasm_atomics__)
-        thread_local
-#endif
-        ::uwvm::vm::interpreter::stack_machine uwvm_sm;
+    extern thread_local ::uwvm::vm::interpreter::stack_machine uwvm_sm;
 
     inline void run_ast(ast const& a) noexcept
     {

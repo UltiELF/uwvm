@@ -134,7 +134,7 @@ namespace uwvm::vm::interpreter
 #endif
             * 1024};
 
-        constexpr void init() noexcept
+        void init() noexcept
         {
             stack.reserve(default_int_stack_size);
             local_storages.reserve(default_local_size);
