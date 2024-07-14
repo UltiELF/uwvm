@@ -131,16 +131,94 @@ namespace uwvm::vm::interpreter
                 for(::std::size_t j{}; j < i.count; ++j)
                 {
                     local_curr_temp->vt = it;
+
+                    switch(it)
+                    {
+                        case ::uwvm::wasm::value_type::i32:
+                        {
+                            local_curr_temp->i32 = decltype(local_curr_temp->i32){};
+                            break;
+                        }
+                        case ::uwvm::wasm::value_type::i64:
+                        {
+                            local_curr_temp->i64 = decltype(local_curr_temp->i64){};
+                            break;
+                        }
+                        case ::uwvm::wasm::value_type::f32:
+                        {
+                            local_curr_temp->f32 = decltype(local_curr_temp->f32){};
+                            break;
+                        }
+                        case ::uwvm::wasm::value_type::f64:
+                        {
+                            local_curr_temp->f64 = decltype(local_curr_temp->f64){};
+                            break;
+                        }
+                        case ::uwvm::wasm::value_type::v128:
+                        {
+                            local_curr_temp->v128 = decltype(local_curr_temp->v128){};
+                            break;
+                        }
+                        case ::uwvm::wasm::value_type::funcref: [[fallthrough]];
+                        case ::uwvm::wasm::value_type::externref:
+                        {
+                            local_curr_temp->ref = decltype(local_curr_temp->ref){};
+                            break;
+                        }
+                        default:
+                        {
+                            ::fast_io::io::perr(::uwvm::u8err,
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"uwvm: "
+                                u8"\033[31m"
+                                u8"[fatal] "
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"(offset=",
+                                ::fast_io::mnp::addrvw(reinterpret_cast<::std::byte const*>(func_type.parameter_begin) - global_wasm_module.module_begin),
+                                u8") "
+                                u8"Value type not match."
+                                u8"\n"
+                                u8"\033[0m"
+                                u8"Terminate.\n\n");
+                            ::uwvm::backtrace();
+                            ::fast_io::fast_terminate();
+                        }
+                    }
+
                     ++local_curr_temp;
                 }
             }
 
+#if 0
             // set stack curr
             uwvm_sm.stack.get_container().imp.curr_ptr -= func_type_para_size;
+#endif
 
             // run
             for(uwvm_sm.curr_op = begin_op; uwvm_sm.curr_op != end_op;)
             {
+#if 0
+                if(uwvm_sm.curr_op->code_begin - global_wasm_module.module_begin == 0x000af6)
+                {
+                    ::fast_io::io::perr(::uwvm::u8out, u8"enter\n");
+                    __debugbreak();
+                }
+                ::fast_io::io::perrln(::uwvm::u8out,
+                                      ::fast_io::mnp::hex0x(static_cast<::std::size_t>(uwvm_sm.curr_op->code_begin - global_wasm_module.module_begin)),
+                                      u8": ",
+                                      uwvm_sm.stack.size());
+#endif
+
                 if(uwvm_sm.curr_op->int_func) [[likely]] { uwvm_sm.curr_op->int_func(uwvm_sm.curr_op->code_begin, uwvm_sm); }
                 else { ++uwvm_sm.curr_op; }
             }

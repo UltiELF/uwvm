@@ -452,6 +452,9 @@ function defopt()
 			end
 		end
 
+		add_syslinks("c++abi")
+		add_syslinks("unwind")
+
 	elseif is_plat("cross") then
 		add_cxxflags("-fno-rtti")
 		add_cxflags("-fno-unwind-tables")

@@ -52,187 +52,6 @@ namespace uwvm::vm::interpreter::func
         ::fast_io::fast_terminate();
     }
 
-#if __has_cpp_attribute(__gnu__::__cold__)
-    [[__gnu__::__cold__]]
-#endif
-    inline void
-        end(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
-    {
-        if(sm.curr_op->ext.branch)
-        {
-            ::uwvm::wasm::value_type vt{};
-            ::fast_io::freestanding::my_memcpy(__builtin_addressof(vt), sm.curr_op->ext.branch->code_begin + 1, sizeof(vt));
-            switch(vt)
-            {
-                case ::uwvm::wasm::value_type::resulttype:
-                {
-                    if(!sm.stack.empty()) [[unlikely]]
-                    {
-                        ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The result type of the instructions did not match the blocktype."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
-                        ::uwvm::backtrace();
-                        ::fast_io::fast_terminate();
-                    }
-                    break;
-                }
-                case ::uwvm::wasm::value_type::i32:
-                {
-                    if(sm.stack.size() != 1 && sm.stack.top_unchecked().vt != ::uwvm::wasm::value_type::i32) [[unlikely]]
-                    {
-                        ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The result type of the instructions did not match the blocktype."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
-                        ::uwvm::backtrace();
-                        ::fast_io::fast_terminate();
-                    }
-                    break;
-                }
-                case ::uwvm::wasm::value_type::i64:
-                {
-                    if(sm.stack.size() != 1 && sm.stack.top_unchecked().vt != ::uwvm::wasm::value_type::i64) [[unlikely]]
-                    {
-                        ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The result type of the instructions did not match the blocktype."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
-                        ::uwvm::backtrace();
-                        ::fast_io::fast_terminate();
-                    }
-
-                    break;
-                }
-                case ::uwvm::wasm::value_type::f32:
-                {
-                    if(sm.stack.size() != 1 && sm.stack.top_unchecked().vt != ::uwvm::wasm::value_type::f32) [[unlikely]]
-                    {
-                        ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The result type of the instructions did not match the blocktype."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
-                        ::uwvm::backtrace();
-                        ::fast_io::fast_terminate();
-                    }
-
-                    break;
-                }
-                case ::uwvm::wasm::value_type::f64:
-                {
-                    if(sm.stack.size() != 1 && sm.stack.top_unchecked().vt != ::uwvm::wasm::value_type::f64) [[unlikely]]
-                    {
-                        ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The result type of the instructions did not match the blocktype."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
-                        ::uwvm::backtrace();
-                        ::fast_io::fast_terminate();
-                    }
-
-                    break;
-                }
-                default: ::fast_io::unreachable();
-            }
-        }
-        ++sm.curr_op;
-    }
-
 #if __has_cpp_attribute(__gnu__::__hot__)
     [[__gnu__::__hot__]]
 #endif
@@ -464,36 +283,19 @@ namespace uwvm::vm::interpreter::func
             ::fast_io::fast_terminate();
         }
 
-        if(vec.size() <= st.i32) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"br_table size <= index."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
-            ::uwvm::backtrace();
-            ::fast_io::fast_terminate();
-        }
+        auto const jump_index{static_cast<::std::size_t>(st.i32)};
 
-        sm.curr_op = vec.index_unchecked(st.i32).ext.end + 1;
+        if(vec.size() <= jump_index) [[unlikely]]
+        {
+            auto const& op{vec.back()};
+            sm.curr_op = op.ext.end + 1;
+            return;
+        }
+        else
+        {
+            auto const& op{vec.index_unchecked(jump_index)};
+            sm.curr_op = op.ext.end + 1;
+        }
     }
 
 #if __has_cpp_attribute(__gnu__::__hot__)
@@ -2572,6 +2374,36 @@ namespace uwvm::vm::interpreter::func
         mem += offset;
         mem = ((mem + (static_cast<::std::size_t>(1) << aligment) - 1) >> aligment) << aligment;
 
+        if(mem >= reinterpret_cast<::std::size_t>(::uwvm::vm::interpreter::memories.front_unchecked().memory_begin +
+                                                  ::uwvm::vm::interpreter::memories.front_unchecked().memory_length)) [[unlikely]]
+        {
+            ::fast_io::io::perr(::uwvm::u8err,
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"uwvm: "
+                                u8"\033[31m"
+                                u8"[fatal] "
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"(offset=",
+                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
+                                u8") "
+                                u8"Cross border access."
+                                u8"\n"
+                                u8"\033[0m"
+                                u8"Terminate.\n\n");
+            ::uwvm::backtrace();
+            ::fast_io::fast_terminate();
+        }
+
         auto const ml{::fast_io::little_endian(static_cast<::std::uint_least32_t>(num.i32))};
 
         ::fast_io::freestanding::my_memcpy(reinterpret_cast<void*>(mem), __builtin_addressof(ml), sizeof(ml));
@@ -2698,6 +2530,36 @@ namespace uwvm::vm::interpreter::func
 
         mem += offset;
         mem = ((mem + (static_cast<::std::size_t>(1) << aligment) - 1) >> aligment) << aligment;
+
+        if(mem >= reinterpret_cast<::std::size_t>(::uwvm::vm::interpreter::memories.front_unchecked().memory_begin +
+                                                  ::uwvm::vm::interpreter::memories.front_unchecked().memory_length)) [[unlikely]]
+        {
+            ::fast_io::io::perr(::uwvm::u8err,
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"uwvm: "
+                                u8"\033[31m"
+                                u8"[fatal] "
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"(offset=",
+                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
+                                u8") "
+                                u8"Cross border access."
+                                u8"\n"
+                                u8"\033[0m"
+                                u8"Terminate.\n\n");
+            ::uwvm::backtrace();
+            ::fast_io::fast_terminate();
+        }
 
         auto const ml{::fast_io::little_endian(static_cast<::std::uint_least64_t>(num.i64))};
 
@@ -2826,6 +2688,36 @@ namespace uwvm::vm::interpreter::func
         mem += offset;
         mem = ((mem + (static_cast<::std::size_t>(1) << aligment) - 1) >> aligment) << aligment;
 
+        if(mem >= reinterpret_cast<::std::size_t>(::uwvm::vm::interpreter::memories.front_unchecked().memory_begin +
+                                                  ::uwvm::vm::interpreter::memories.front_unchecked().memory_length)) [[unlikely]]
+        {
+            ::fast_io::io::perr(::uwvm::u8err,
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"uwvm: "
+                                u8"\033[31m"
+                                u8"[fatal] "
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"(offset=",
+                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
+                                u8") "
+                                u8"Cross border access."
+                                u8"\n"
+                                u8"\033[0m"
+                                u8"Terminate.\n\n");
+            ::uwvm::backtrace();
+            ::fast_io::fast_terminate();
+        }
+
         auto const ml{::fast_io::little_endian(::std::bit_cast<::std::uint_least32_t>(num.f32))};
 
         ::fast_io::freestanding::my_memcpy(reinterpret_cast<void*>(mem), __builtin_addressof(ml), sizeof(ml));
@@ -2952,6 +2844,36 @@ namespace uwvm::vm::interpreter::func
 
         mem += offset;
         mem = ((mem + (static_cast<::std::size_t>(1) << aligment) - 1) >> aligment) << aligment;
+
+        if(mem >= reinterpret_cast<::std::size_t>(::uwvm::vm::interpreter::memories.front_unchecked().memory_begin +
+                                                  ::uwvm::vm::interpreter::memories.front_unchecked().memory_length)) [[unlikely]]
+        {
+            ::fast_io::io::perr(::uwvm::u8err,
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"uwvm: "
+                                u8"\033[31m"
+                                u8"[fatal] "
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"(offset=",
+                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
+                                u8") "
+                                u8"Cross border access."
+                                u8"\n"
+                                u8"\033[0m"
+                                u8"Terminate.\n\n");
+            ::uwvm::backtrace();
+            ::fast_io::fast_terminate();
+        }
 
         auto const ml{::fast_io::little_endian(::std::bit_cast<::std::uint_least64_t>(num.f64))};
 

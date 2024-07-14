@@ -341,6 +341,7 @@ namespace uwvm::vm::interpreter
                                 ::fast_io::fast_terminate();
                             }
                     }
+
                     auto& op_ebr{temp.operators.emplace_back_unchecked(op)};
                     details::ga_flow.push({op.code_begin, __builtin_addressof(op_ebr), ::uwvm::vm::interpreter::flow_control_t::loop});
 
@@ -562,8 +563,6 @@ namespace uwvm::vm::interpreter
                                 u8"Terminate.\n\n");
                         ::fast_io::fast_terminate();
                     }
-
-                    op.int_func = __builtin_addressof(::uwvm::vm::interpreter::func::end);
 
                     auto& op_ebr{temp.operators.emplace_back_unchecked(op)};
 
