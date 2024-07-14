@@ -1,7 +1,7 @@
 ﻿#pragma once
 #if defined(_MSC_VER)
     #include <stacktrace>
-#elif !defined(__MSDOS__) && !defined(__MSDOS__)
+#elif !defined(__MSDOS__) && !defined(__wasm__)
     #include <libunwind.h>
 #endif
 #include <fast_io.h>
@@ -20,7 +20,7 @@ namespace uwvm
         ::std::size_t counter{};
         for(auto const& i: bt) { ::fast_io::io::perr(::uwvm::u8err, u8"[", counter++, u8"] (", ::fast_io::mnp::code_cvt(i.description()), u8")\n"); }
         ::fast_io::io::perrln(::uwvm::u8err);
-#elif !defined(__MSDOS__) && !defined(__MSDOS__)
+#elif !defined(__MSDOS__) && !defined(__wasm__)
         ::unw_cursor_t cursor{};
         ::unw_context_t context{};
 
