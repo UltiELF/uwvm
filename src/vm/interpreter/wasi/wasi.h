@@ -389,7 +389,7 @@ namespace uwvm::vm::interpreter::wasi
 
         decltype(auto) two_zero{u"\0\0"};
 
-        auto const Environment_end{::std::search(Environment, Environment + EnvironmentSize, two_zero, two_zero + 2)};
+        auto const Environment_end{::std::search(Environment, Environment + EnvironmentSize, two_zero, two_zero + 2) + 1};
 
         // in order to get u8 environments length
         ::fast_io::u8string env_str{::fast_io::u8concat_fast_io(::fast_io::mnp::code_cvt(::fast_io::mnp::strvw(Environment, Environment_end)))};
