@@ -1,4 +1,4 @@
-name: uwvm-test
+name: uwvm-build
 
 on:
   pull_request:
