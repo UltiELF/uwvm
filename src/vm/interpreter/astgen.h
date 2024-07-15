@@ -622,7 +622,6 @@ namespace uwvm::vm::interpreter
                             op_ebr.ext.branch = __builtin_addressof(op_ebr);
 
                             ++curr;
-
                             break;
                         }
                         case ::uwvm::vm::interpreter::flow_control_t::else_:

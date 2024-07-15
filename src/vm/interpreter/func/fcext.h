@@ -89,7 +89,7 @@ namespace uwvm::vm::interpreter::func
             auto const len{memory.memory_length};
 
             if(static_cast<::std::size_t>(para_src.i32) + static_cast<::std::size_t>(para_sz.i32) > len ||
-               static_cast<::std::size_t>(para_dest.i32) + static_cast<::std::size_t>(para_sz.i32)) [[unlikely]]
+               static_cast<::std::size_t>(para_dest.i32) + static_cast<::std::size_t>(para_sz.i32) > len) [[unlikely]]
             {
                 ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -198,7 +198,7 @@ namespace uwvm::vm::interpreter::func
             auto const begin{memory.memory_begin};
             auto const len{memory.memory_length};
 
-            if(static_cast<::std::size_t>(para_dest.i32) + static_cast<::std::size_t>(para_sz.i32)) [[unlikely]]
+            if(static_cast<::std::size_t>(para_dest.i32) + static_cast<::std::size_t>(para_sz.i32) > len) [[unlikely]]
             {
                 ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"

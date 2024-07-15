@@ -21,6 +21,7 @@ namespace uwvm
         for(auto const& i: bt) { ::fast_io::io::perr(::uwvm::u8err, u8"[", counter++, u8"] (", ::fast_io::mnp::code_cvt(i.description()), u8")\n"); }
         ::fast_io::io::perrln(::uwvm::u8err);
 #elif !defined(__MSDOS__) && !defined(__wasm__)
+        // bug
         ::unw_cursor_t cursor{};
         ::unw_context_t context{};
 

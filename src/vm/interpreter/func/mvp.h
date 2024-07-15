@@ -38,15 +38,9 @@ namespace uwvm::vm::interpreter::func
                                 ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
                                 u8") "
                                 u8"Catch unreachable\n"
-                                u8"\033[33m"
-                                u8"[back trace] \n"
+                                u8"\n"
                                 u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                            );
+                                u8"Terminate.\n\n");
 
         ::uwvm::backtrace();
         ::fast_io::fast_terminate();
