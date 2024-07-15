@@ -96,9 +96,9 @@ namespace uwvm::test
 
             ::std::uint_least32_t args_length{};
             ::fast_io::freestanding::my_memcpy(__builtin_addressof(args_length), memory_begin + 1024, sizeof(::std::uint_least32_t));
-            auto const args_sz_le{::fast_io::little_endian(args_length)};
+            auto const args_length_le{::fast_io::little_endian(args_length)};
 
-            ::fast_io::perrln(::uwvm::u8out, u8"args_sz=", args_sz, u8", args_length=", args_length);
+            ::fast_io::perrln(::uwvm::u8out, u8"args_sz=", args_sz_le, u8", args_length=", args_length_le);
 
             ::fast_io::perr(::uwvm::u8out, u8"Successfully\n");
         }
@@ -141,7 +141,7 @@ namespace uwvm::test
             {
                 char8_t* args{reinterpret_cast<char8_t*>(memory_begin + ::fast_io::little_endian(*args_begin))};
 
-                ::fast_io::perrln(::uwvm::u8out, u8"arg[", counter++, u8"] ", ::fast_io::mnp::os_c_str(args));
+                ::fast_io::perrln(::uwvm::u8out, u8"env[", counter++, u8"] ", ::fast_io::mnp::os_c_str(args));
                 ++args_begin;
             }
             ::fast_io::perr(::uwvm::u8out, u8"Successfully\n");
@@ -185,9 +185,9 @@ namespace uwvm::test
 
             ::std::uint_least32_t args_length{};
             ::fast_io::freestanding::my_memcpy(__builtin_addressof(args_length), memory_begin + 1024, sizeof(::std::uint_least32_t));
-            auto const args_sz_le{::fast_io::little_endian(args_length)};
+            auto const args_length_le{::fast_io::little_endian(args_length)};
 
-            ::fast_io::perrln(::uwvm::u8out, u8"args_sz=", args_sz, u8", args_length=", args_length);
+            ::fast_io::perrln(::uwvm::u8out, u8"environ_sz=", args_sz_le, u8", environ_length=", args_length_le);
 
             ::fast_io::perr(::uwvm::u8out, u8"Successfully\n");
         }
