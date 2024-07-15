@@ -226,10 +226,12 @@ namespace uwvm::vm::interpreter::wasi
                 return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::efault);
             }
 
+#if 0
             if(static_cast<::std::uint_least32_t>(wsz_buf_len) == 0) [[unlikely]]
             {
                 return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::efault);
             }
+#endif
 
             auto const cvt_buf_write_end{
                 ::fast_io::operations::write_some_bytes(pfd,

@@ -572,6 +572,8 @@ namespace uwvm::vm::interpreter
                         case ::uwvm::vm::interpreter::flow_control_t::func:
                         {
                             ++curr;
+                            
+                            // check func cur == end
                             if(curr != end) [[unlikely]]
                             {
                                 ::fast_io::io::perr(::uwvm::u8err,
@@ -599,11 +601,30 @@ namespace uwvm::vm::interpreter
                                     u8"Terminate.\n\n");
                                 ::fast_io::fast_terminate();
                             }
-                            continue;
+                            break;
                         }
                         case ::uwvm::vm::interpreter::flow_control_t::block: [[fallthrough]];
-                        case ::uwvm::vm::interpreter::flow_control_t::loop: [[fallthrough]];
-                        case ::uwvm::vm::interpreter::flow_control_t::if_: break;
+                        case ::uwvm::vm::interpreter::flow_control_t::if_: 
+                        {
+                            for(auto const i: f.brs) { i->ext.end = __builtin_addressof(op_ebr); }
+
+                            f.op->ext.end = __builtin_addressof(op_ebr);
+                            op_ebr.ext.branch = f.op;
+
+                            ++curr;
+                            break;
+                        }
+                        case ::uwvm::vm::interpreter::flow_control_t::loop:
+                        {
+                            for(auto const i: f.brs) { i->ext.end = f.op; }
+
+                            f.op->ext.end = f.op;
+                            op_ebr.ext.branch = __builtin_addressof(op_ebr);
+
+                            ++curr;
+
+                            break;
+                        }
                         case ::uwvm::vm::interpreter::flow_control_t::else_:
                         {
                             // set "if" and "else" end_pointer to this op
@@ -640,12 +661,6 @@ namespace uwvm::vm::interpreter
                             }
                     }
 
-                    for(auto const i: f.brs) { i->ext.end = __builtin_addressof(op_ebr); }
-
-                    f.op->ext.end = __builtin_addressof(op_ebr);
-                    op_ebr.ext.branch = f.op;
-
-                    ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::try_:

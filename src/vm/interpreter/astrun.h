@@ -207,8 +207,8 @@ namespace uwvm::vm::interpreter
             // run
             for(uwvm_sm.curr_op = begin_op; uwvm_sm.curr_op != end_op;)
             {
-#if 0
-                if(uwvm_sm.curr_op->code_begin - global_wasm_module.module_begin == 0x000af6)
+#if 0 // debug
+                if(uwvm_sm.curr_op->code_begin - global_wasm_module.module_begin == 0x004225)
                 {
                     ::fast_io::io::perr(::uwvm::u8out, u8"enter\n");
                     __debugbreak();

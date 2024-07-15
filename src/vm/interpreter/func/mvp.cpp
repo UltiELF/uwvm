@@ -10,11 +10,16 @@
 #endif
 void ::uwvm::vm::interpreter::func::call(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
 {
-
     auto const& wasmmod{::uwvm::global_wasm_module};
 
     auto const import_function_count{wasmmod.importsec.func_types.size()};
     auto const all_func_index{reinterpret_cast<::std::size_t>(sm.curr_op->ext.branch)};
+
+#if 0 // debug
+    ::std::size_t break_point{22};
+    if(all_func_index == break_point) { __debugbreak(); }
+#endif
+
     if(all_func_index >= import_function_count)
     {
         auto const index{all_func_index - import_function_count};
