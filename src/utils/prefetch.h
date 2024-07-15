@@ -17,7 +17,7 @@ namespace uwvm
 #if __has_builtin(__builtin_prefetch)
         __builtin_prefetch(add, static_cast<int>(write), level);
 #else
-        ::_mm_prefetch(add, static_cast<int>(write) << 2 | level);
+        ::_mm_prefetch(reinterpret_cast<char const*>(add), static_cast<int>(write) << 2 | level);
 #endif
     }
 
