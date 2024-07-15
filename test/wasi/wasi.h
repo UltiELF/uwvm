@@ -21,41 +21,25 @@ namespace uwvm::test
 
             if(res != 0) [[unlikely]]
             {
-                ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"Test Failed."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
-                ::fast_io::fast_terminate();
+                ::uwvm::test::failed = true;
+                ::fast_io::perr(::uwvm::u8out, u8"\033[31mFailed\033[0m\n");
             }
-
-            auto const memory_begin{::uwvm::vm::interpreter::memories.front_unchecked().memory_begin};
-
-            ::std::uint_least32_t* args_begin{reinterpret_cast<::std::uint_least32_t*>(memory_begin + 0)};
-            ::std::size_t counter{};
-            while(*args_begin)
+            else
             {
-                char8_t* args{reinterpret_cast<char8_t*>(memory_begin + ::fast_io::little_endian(*args_begin))};
 
-                ::fast_io::perrln(::uwvm::u8out, u8"arg[", counter++, u8"] ", ::fast_io::mnp::os_c_str(args));
-                ++args_begin;
+                auto const memory_begin{::uwvm::vm::interpreter::memories.front_unchecked().memory_begin};
+
+                ::std::uint_least32_t* args_begin{reinterpret_cast<::std::uint_least32_t*>(memory_begin + 0)};
+                ::std::size_t counter{};
+                while(*args_begin)
+                {
+                    char8_t* args{reinterpret_cast<char8_t*>(memory_begin + ::fast_io::little_endian(*args_begin))};
+
+                    ::fast_io::perrln(::uwvm::u8out, u8"arg[", counter++, u8"] ", ::fast_io::mnp::os_c_str(args));
+                    ++args_begin;
+                }
+                ::fast_io::perr(::uwvm::u8out, u8"\033[32mSuccessfully\033[0m\n");
             }
-            ::fast_io::perr(::uwvm::u8out, u8"Successfully\n");
         }
 
         {
@@ -65,42 +49,26 @@ namespace uwvm::test
 
             if(res != 0) [[unlikely]]
             {
-                ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"Test Failed."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
-                ::fast_io::fast_terminate();
+                ::uwvm::test::failed = true;
+                ::fast_io::perr(::uwvm::u8out, u8"\033[31mFailed\033[0m\n");
             }
+            else
+            {
 
-            auto const memory_begin{::uwvm::vm::interpreter::memories.front_unchecked().memory_begin};
+                auto const memory_begin{::uwvm::vm::interpreter::memories.front_unchecked().memory_begin};
 
-            ::std::uint_least32_t args_sz{};
-            ::fast_io::freestanding::my_memcpy(__builtin_addressof(args_sz), memory_begin, sizeof(::std::uint_least32_t));
-            auto const args_sz_le{::fast_io::little_endian(args_sz)};
+                ::std::uint_least32_t args_sz{};
+                ::fast_io::freestanding::my_memcpy(__builtin_addressof(args_sz), memory_begin, sizeof(::std::uint_least32_t));
+                auto const args_sz_le{::fast_io::little_endian(args_sz)};
 
-            ::std::uint_least32_t args_length{};
-            ::fast_io::freestanding::my_memcpy(__builtin_addressof(args_length), memory_begin + 1024, sizeof(::std::uint_least32_t));
-            auto const args_length_le{::fast_io::little_endian(args_length)};
+                ::std::uint_least32_t args_length{};
+                ::fast_io::freestanding::my_memcpy(__builtin_addressof(args_length), memory_begin + 1024, sizeof(::std::uint_least32_t));
+                auto const args_length_le{::fast_io::little_endian(args_length)};
 
-            ::fast_io::perrln(::uwvm::u8out, u8"args_sz=", args_sz_le, u8", args_length=", args_length_le);
+                ::fast_io::perrln(::uwvm::u8out, u8"args_sz=", args_sz_le, u8", args_length=", args_length_le);
 
-            ::fast_io::perr(::uwvm::u8out, u8"Successfully\n");
+                ::fast_io::perr(::uwvm::u8out, u8"\033[32mSuccessfully\033[0m\n");
+            }
         }
 
         {
@@ -110,41 +78,24 @@ namespace uwvm::test
 
             if(res != 0) [[unlikely]]
             {
-                ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"Test Failed."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
-                ::fast_io::fast_terminate();
+                ::uwvm::test::failed = true;
+                ::fast_io::perr(::uwvm::u8out, u8"\033[31mFailed\033[0m\n");
             }
-
-            auto const memory_begin{::uwvm::vm::interpreter::memories.front_unchecked().memory_begin};
-
-            ::std::uint_least32_t* args_begin{reinterpret_cast<::std::uint_least32_t*>(memory_begin + 0)};
-            ::std::size_t counter{};
-            while(*args_begin)
+            else
             {
-                char8_t* args{reinterpret_cast<char8_t*>(memory_begin + ::fast_io::little_endian(*args_begin))};
+                auto const memory_begin{::uwvm::vm::interpreter::memories.front_unchecked().memory_begin};
 
-                ::fast_io::perrln(::uwvm::u8out, u8"env[", counter++, u8"] ", ::fast_io::mnp::os_c_str(args));
-                ++args_begin;
+                ::std::uint_least32_t* args_begin{reinterpret_cast<::std::uint_least32_t*>(memory_begin + 0)};
+                ::std::size_t counter{};
+                while(*args_begin)
+                {
+                    char8_t* args{reinterpret_cast<char8_t*>(memory_begin + ::fast_io::little_endian(*args_begin))};
+
+                    ::fast_io::perrln(::uwvm::u8out, u8"env[", counter++, u8"] ", ::fast_io::mnp::os_c_str(args));
+                    ++args_begin;
+                }
+                ::fast_io::perr(::uwvm::u8out, u8"\033[32mSuccessfully\033[0m\n");
             }
-            ::fast_io::perr(::uwvm::u8out, u8"Successfully\n");
         }
 
         {
@@ -154,42 +105,25 @@ namespace uwvm::test
 
             if(res != 0) [[unlikely]]
             {
-                ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"Test Failed."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
-                ::fast_io::fast_terminate();
+                ::uwvm::test::failed = true;
+                ::fast_io::perr(::uwvm::u8out, u8"\033[31mFailed\033[0m\n");
             }
+            else
+            {
+                auto const memory_begin{::uwvm::vm::interpreter::memories.front_unchecked().memory_begin};
 
-            auto const memory_begin{::uwvm::vm::interpreter::memories.front_unchecked().memory_begin};
+                ::std::uint_least32_t args_sz{};
+                ::fast_io::freestanding::my_memcpy(__builtin_addressof(args_sz), memory_begin, sizeof(::std::uint_least32_t));
+                auto const args_sz_le{::fast_io::little_endian(args_sz)};
 
-            ::std::uint_least32_t args_sz{};
-            ::fast_io::freestanding::my_memcpy(__builtin_addressof(args_sz), memory_begin, sizeof(::std::uint_least32_t));
-            auto const args_sz_le{::fast_io::little_endian(args_sz)};
+                ::std::uint_least32_t args_length{};
+                ::fast_io::freestanding::my_memcpy(__builtin_addressof(args_length), memory_begin + 1024, sizeof(::std::uint_least32_t));
+                auto const args_length_le{::fast_io::little_endian(args_length)};
 
-            ::std::uint_least32_t args_length{};
-            ::fast_io::freestanding::my_memcpy(__builtin_addressof(args_length), memory_begin + 1024, sizeof(::std::uint_least32_t));
-            auto const args_length_le{::fast_io::little_endian(args_length)};
+                ::fast_io::perrln(::uwvm::u8out, u8"environ_sz=", args_sz_le, u8", environ_length=", args_length_le);
 
-            ::fast_io::perrln(::uwvm::u8out, u8"environ_sz=", args_sz_le, u8", environ_length=", args_length_le);
-
-            ::fast_io::perr(::uwvm::u8out, u8"Successfully\n");
+                ::fast_io::perr(::uwvm::u8out, u8"\033[32mSuccessfully\033[0m\n");
+            }
         }
     }
 }  // namespace uwvm::test

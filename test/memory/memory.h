@@ -29,7 +29,7 @@ namespace uwvm::test
         ::fast_io::perr(::uwvm::u8out, u8"move\n");
         ::uwvm::vm::interpreter::memory::memory_t m3{::std::move(m2)};  // move    
 
-        ::fast_io::perrln(::uwvm::u8out, u8"Successfully\n");
+        ::fast_io::perrln(::uwvm::u8out, u8"\033[32mSuccessfully\033[0m\n");
 
     }
 }
