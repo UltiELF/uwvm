@@ -316,9 +316,12 @@ namespace uwvm::vm::interpreter::wasi
         ::std::uint_least32_t nenv_len_wasm{};
 
 #if defined(__linux__)
-        ::fast_io::native_file_loader envs{u8"/proc/self/environ"};
-        nenv_wasm = static_cast<::std::uint_least32_t>(::std::ranges::count(envs, u8'\0'));
-        nenv_len_wasm = static_cast<::std::uint_least32_t>(envs.size());
+        char buffer[32768];
+        ::fast_io::native_file envs{u8"/proc/self/environ", ::fast_io::open_mode::in};
+        auto const read_end{::fast_io::operations::read_some(envs, buffer, buffer + 32767)};
+
+        nenv_wasm = static_cast<::std::uint_least32_t>(::std::count(buffer, read_end, u8'\0'));
+        nenv_len_wasm = static_cast<::std::uint_least32_t>(read_end - buffer);
 
 #elif defined(__DragonFly__) || defined(__FreeBSD__) || defined(__FreeBSD_kernel__) || defined(__NetBSD__) || defined(BSD) || defined(_SYSTYPE_BSD)
     #if defined(__NetBSD__)
