@@ -14,6 +14,7 @@
 #include "abi.h"
 #include "../../../run/wasm_file.h"
 #include "../../../clpara/parsing_result.h"
+#include "../memory/memory.h"
 
 namespace uwvm::vm::interpreter::wasi
 {
