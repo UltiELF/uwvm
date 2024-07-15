@@ -320,7 +320,7 @@ namespace uwvm::vm::interpreter::wasi
         ::fast_io::native_file envs{u8"/proc/self/environ", ::fast_io::open_mode::in};
         auto const read_end{::fast_io::operations::read_some(envs, buffer, buffer + 32767)};
 
-        nenv_wasm = static_cast<::std::uint_least32_t>(::std::count(buffer, read_end, u8'\0') - 1);
+        nenv_wasm = static_cast<::std::uint_least32_t>(::std::count(buffer, read_end, u8'\0'));
         nenv_len_wasm = static_cast<::std::uint_least32_t>(read_end - buffer);
 
 #elif defined(__DragonFly__) || defined(__FreeBSD__) || defined(__FreeBSD_kernel__) || defined(__NetBSD__) || defined(BSD) || defined(_SYSTYPE_BSD)
@@ -335,7 +335,7 @@ namespace uwvm::vm::interpreter::wasi
             ::std::size_t size{32767};
             if(::fast_io::noexcept_call(::sysctl, mib, 4, buffer, __builtin_addressof(size), nullptr, 0) == 0) [[likely]]
             {
-                nenv_wasm = static_cast<::std::uint_least32_t>(::std::count(buffer, buffer + size, u8'\0') - 1);
+                nenv_wasm = static_cast<::std::uint_least32_t>(::std::count(buffer, buffer + size, u8'\0'));
                 nenv_len_wasm = static_cast<::std::uint_least32_t>(size);
             }
             else { success = false; }
@@ -353,7 +353,7 @@ namespace uwvm::vm::interpreter::wasi
                 char buffer[32768];
                 if(::fast_io::noexcept_call(::sysctl, mib, 4, buffer, __builtin_addressof(size), nullptr, 0) == 0) [[likely]]
                 {
-                    nenv_wasm = static_cast<::std::uint_least32_t>(::std::count(buffer, buffer + size, u8'\0') - 1);
+                    nenv_wasm = static_cast<::std::uint_least32_t>(::std::count(buffer, buffer + size, u8'\0'));
                     nenv_len_wasm = static_cast<::std::uint_least32_t>(size);
                 }
                 else { success = false; }
@@ -391,7 +391,7 @@ namespace uwvm::vm::interpreter::wasi
 
         auto const Environment_end{::std::search(Environment, Environment + EnvironmentSize, two_zero, two_zero + 2)};
 
-        // in order to get u8 environments length 
+        // in order to get u8 environments length
         ::fast_io::u8string env_str{::fast_io::u8concat_fast_io(::fast_io::mnp::code_cvt(::fast_io::mnp::strvw(Environment, Environment_end)))};
 
         nenv_wasm = static_cast<::std::uint_least32_t>(::std::ranges::count(env_str, u8'\0'));
