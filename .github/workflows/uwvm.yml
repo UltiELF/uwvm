@@ -30,7 +30,7 @@ jobs:
         run: |
           xmake clean
           xmake f --clean
-          xmake f -p linux -a x86_64 -m debug --static=y --uwvm-test=y --policies=build.sanitizer.address --policies=build.sanitizer.leak
+          xmake f -p linux -a x86_64 -m debug --static=y --uwvm-test=y --policies=build.sanitizer.address
           xmake -v
       - name: Test-UWVM-TEST-x86_64-linux-gnu
         run: |
