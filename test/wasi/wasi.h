@@ -100,7 +100,7 @@ namespace uwvm::test
 
         {
             ::fast_io::perr(::uwvm::u8out, u8"environ_sizes_get(", 0, u8",", 1024, u8")\n");
-            auto const res{uwvm::vm::interpreter::wasi::args_sizes_get(0, 1024)};
+            auto const res{uwvm::vm::interpreter::wasi::environ_sizes_get(0, 1024)};
             ::fast_io::perrln(::uwvm::u8out, u8"return=", res);
 
             if(res != 0) [[unlikely]]

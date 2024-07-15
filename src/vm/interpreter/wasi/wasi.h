@@ -11,6 +11,7 @@
 
 #include <fast_io.h>
 #include <fast_io_dsal/string.h>
+#include <fast_io_dsal/string_view.h>
 #include "abi.h"
 #include "../../../run/wasm_file.h"
 #include "../../../clpara/parsing_result.h"
@@ -165,6 +166,7 @@ namespace uwvm::vm::interpreter::wasi
             auto const pos{::std::find(env_buf_begin, env_buf_end, u8'\0')};
 
             env_buf_begin = pos + 1;
+            if(*env_buf_begin == u8'0') [[unlikely]] { break; }
             ++env_para_i32p;
         }
 
@@ -192,6 +194,7 @@ namespace uwvm::vm::interpreter::wasi
             auto const pos{::std::find(env_buf_begin, env_buf_end, u8'\0')};
 
             env_buf_begin = pos + 1;
+            if(*env_buf_begin == u8'0') [[unlikely]] { break; }
             ++env_para_i32p;
         }
 
@@ -226,6 +229,7 @@ namespace uwvm::vm::interpreter::wasi
             auto const pos{::std::find(env_buf_begin, env_buf_end, u8'\0')};
 
             env_buf_begin = pos + 1;
+            if(*env_buf_begin == u8'0') [[unlikely]] { break; }
             ++env_para_i32p;
         }
 
@@ -265,8 +269,10 @@ namespace uwvm::vm::interpreter::wasi
         auto c_peb{::fast_io::win32::nt::nt_get_current_peb()};
         auto const Environment{c_peb->ProcessParameters->Environment};
         auto const EnvironmentSize{c_peb->ProcessParameters->EnvironmentSize};
+        decltype(auto) two_zero{u"\0\0"};
+        auto const Environment_end{::std::search(Environment, Environment + EnvironmentSize, two_zero, two_zero + 2)};
 
-        ::fast_io::u8string env_str{::fast_io::u8concat_fast_io(::fast_io::mnp::code_cvt(::fast_io::mnp::strvw(Environment, Environment + EnvironmentSize)))};
+        ::fast_io::u8string env_str{::fast_io::u8concat_fast_io(::fast_io::mnp::code_cvt(::fast_io::mnp::strvw(Environment, Environment_end)))};
 
         if(env_str.size() > static_cast<::std::size_t>(memory_end - reinterpret_cast<::std::byte*>(env_buf_begin))) [[unlikely]]
         {
@@ -286,6 +292,7 @@ namespace uwvm::vm::interpreter::wasi
             auto const pos{::std::find(env_buf_begin, env_buf_end, u8'\0')};
 
             env_buf_begin = pos + 1;
+            if(*env_buf_begin == u8'0') [[unlikely]] { break; }
             ++env_para_i32p;
         }
 
@@ -377,7 +384,12 @@ namespace uwvm::vm::interpreter::wasi
         auto const Environment{c_peb->ProcessParameters->Environment};
         auto const EnvironmentSize{c_peb->ProcessParameters->EnvironmentSize};
 
-        ::fast_io::u8string env_str{::fast_io::u8concat_fast_io(::fast_io::mnp::code_cvt(::fast_io::mnp::strvw(Environment, Environment + EnvironmentSize)))};
+        decltype(auto) two_zero{u"\0\0"};
+
+        auto const Environment_end{::std::search(Environment, Environment + EnvironmentSize, two_zero, two_zero + 2)};
+
+        // in order to get u8 environments length 
+        ::fast_io::u8string env_str{::fast_io::u8concat_fast_io(::fast_io::mnp::code_cvt(::fast_io::mnp::strvw(Environment, Environment_end)))};
 
         nenv_wasm = static_cast<::std::uint_least32_t>(::std::ranges::count(env_str, u8'\0'));
         nenv_len_wasm = static_cast<::std::uint_least32_t>(env_str.size());
