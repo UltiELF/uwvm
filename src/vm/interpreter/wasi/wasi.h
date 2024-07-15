@@ -162,7 +162,7 @@ namespace uwvm::vm::interpreter::wasi
                 ::fast_io::little_endian(static_cast<::std::uint_least32_t>(env_buf_begin - reinterpret_cast<char8_t_may_alias_ptr>(memory_begin)))};
             ::fast_io::freestanding::my_memcpy(env_para_i32p, __builtin_addressof(env_buf_offset_le32), sizeof(env_buf_offset_le32));
 
-            auto const pos{::std::find(env_buf_begin, env_buf_end, u8'0')};
+            auto const pos{::std::find(env_buf_begin, env_buf_end, u8'\0')};
 
             env_buf_begin = pos + 1;
             ++env_para_i32p;
@@ -189,7 +189,7 @@ namespace uwvm::vm::interpreter::wasi
                 ::fast_io::little_endian(static_cast<::std::uint_least32_t>(env_buf_begin - reinterpret_cast<char8_t_may_alias_ptr>(memory_begin)))};
             ::fast_io::freestanding::my_memcpy(env_para_i32p, __builtin_addressof(env_buf_offset_le32), sizeof(env_buf_offset_le32));
 
-            auto const pos{::std::find(env_buf_begin, env_buf_end, u8'0')};
+            auto const pos{::std::find(env_buf_begin, env_buf_end, u8'\0')};
 
             env_buf_begin = pos + 1;
             ++env_para_i32p;
@@ -223,7 +223,7 @@ namespace uwvm::vm::interpreter::wasi
                 ::fast_io::little_endian(static_cast<::std::uint_least32_t>(env_buf_begin - reinterpret_cast<char8_t_may_alias_ptr>(memory_begin)))};
             ::fast_io::freestanding::my_memcpy(env_para_i32p, __builtin_addressof(env_buf_offset_le32), sizeof(env_buf_offset_le32));
 
-            auto const pos{::std::find(env_buf_begin, env_buf_end, u8'0')};
+            auto const pos{::std::find(env_buf_begin, env_buf_end, u8'\0')};
 
             env_buf_begin = pos + 1;
             ++env_para_i32p;
@@ -283,7 +283,7 @@ namespace uwvm::vm::interpreter::wasi
                 ::fast_io::little_endian(static_cast<::std::uint_least32_t>(env_buf_begin - reinterpret_cast<char8_t_may_alias_ptr>(memory_begin)))};
             ::fast_io::freestanding::my_memcpy(env_para_i32p, __builtin_addressof(env_buf_offset_le32), sizeof(env_buf_offset_le32));
 
-            auto const pos{::std::find(env_buf_begin, env_buf_end, u8'0')};
+            auto const pos{::std::find(env_buf_begin, env_buf_end, u8'\0')};
 
             env_buf_begin = pos + 1;
             ++env_para_i32p;
@@ -310,7 +310,7 @@ namespace uwvm::vm::interpreter::wasi
 
 #if defined(__linux__)
         ::fast_io::native_file_loader envs{u8"/proc/self/environ"};
-        nenv_wasm = static_cast<::std::uint_least32_t>(::std::ranges::count(envs, u8'0'));
+        nenv_wasm = static_cast<::std::uint_least32_t>(::std::ranges::count(envs, u8'\0'));
         nenv_len_wasm = static_cast<::std::uint_least32_t>(envs.size());
 
 #elif defined(__DragonFly__) || defined(__FreeBSD__) || defined(__FreeBSD_kernel__) || defined(__NetBSD__) || defined(BSD) || defined(_SYSTYPE_BSD)
