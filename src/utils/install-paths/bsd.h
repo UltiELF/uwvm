@@ -27,7 +27,7 @@ namespace uwvm::path
     {
         char buffer1[PATH_MAX + 1];
         char buffer2[PATH_MAX + 1];
-        char* resolved = NULL;
+        char* resolved{};
         int length = -1;
 
 #if defined(__NetBSD__)
@@ -37,7 +37,7 @@ namespace uwvm::path
 #endif
         ::std::size_t size{PATH_MAX};
 
-        if(::fast_io::noexcept_call(::sysctl, mib, 4, buffer1, &size, nullptr, 0) != 0) { return; }
+        if(::fast_io::noexcept_call(::sysctl, mib, 4, buffer1, __builtin_addressof(size), nullptr, 0) != 0) { return; }
 
         resolved = ::fast_io::noexcept_call(::realpath, buffer1, buffer2);
 

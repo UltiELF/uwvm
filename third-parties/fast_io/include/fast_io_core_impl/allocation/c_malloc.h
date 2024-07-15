@@ -166,7 +166,7 @@ public:
 		return p;
 	}
 
-#if defined(_MSC_VER) || __MSVCRT_VERSION__ >= 0x900
+#if (defined(_MSC_VER) || __MSVCRT_VERSION__ >= 0x900) && false
 	static inline allocation_least_result allocate_aligned_at_least(::std::size_t alignment, ::std::size_t n) noexcept
 	{
 		auto p{::fast_io::c_malloc_allocator::allocate_aligned(alignment, n)};

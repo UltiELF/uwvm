@@ -37,11 +37,11 @@ namespace uwvm::path
         int mib[4]{CTL_KERN, KERN_PROC_ARGS, getpid(), KERN_PROC_ARGV};
         ::std::size_t size{};
 
-        if(::fast_io::noexcept_call(::sysctl, mib, 4, nullptr, &size, nullptr, 0) != 0) [[unlikely]] { return; }
+        if(::fast_io::noexcept_call(::sysctl, mib, 4, nullptr, __builtin_addressof(size), nullptr, 0) != 0) [[unlikely]] { return; }
 
         if(size > PATH_MAX) [[unlikely]] { return; }
 
-        if(::fast_io::noexcept_call(::sysctl, mib, 4, argv, &size, nullptr, 0) != 0) [[unlikely]] { return; }
+        if(::fast_io::noexcept_call(::sysctl, mib, 4, argv, __builtin_addressof(size), nullptr, 0) != 0) [[unlikely]] { return; }
 
         if(strchr(argv, '/'))
         {

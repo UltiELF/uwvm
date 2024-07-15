@@ -1,5 +1,16 @@
 #pragma once
+
+#if defined(__DragonFly__) || defined(__FreeBSD__) || defined(__FreeBSD_kernel__) || defined(__NetBSD__) || defined(BSD) || defined(_SYSTYPE_BSD) ||           \
+    defined(__OpenBSD__)
+    #include <sys/types.h>
+    #include <sys/sysctl.h>
+    #include <dlfcn.h>
+#elif defined(__APPLE__) || defined(__DARWIN_C_LEVEL)
+    #include <crt_externs.h>
+#endif
+
 #include <fast_io.h>
+#include <fast_io_dsal/string.h>
 #include "abi.h"
 #include "../../../run/wasm_file.h"
 #include "../../../clpara/parsing_result.h"
@@ -108,9 +119,304 @@ namespace uwvm::vm::interpreter::wasi
         return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::esuccess);
     }
 
-    ::std::int_least32_t environ_get(::std::int_least32_t arg0, ::std::int_least32_t arg1) noexcept { return {}; }
+    ::std::int_least32_t environ_get(::std::int_least32_t arg0, ::std::int_least32_t arg1) noexcept
+    {
+        auto& memory{::uwvm::vm::interpreter::memories.front()};
+        auto const memory_begin{memory.memory_begin};
+        auto const memory_length{memory.memory_length};
+        auto const memory_end{memory_begin + memory_length};
 
-    ::std::int_least32_t environ_sizes_get(::std::int_least32_t arg0, ::std::int_least32_t arg1) noexcept { return {}; }
+        auto env_para_begin{memory_begin + static_cast<::std::size_t>(arg0)};
+
+        auto const pr_cend{::uwvm::parsing_result.cend()};
+
+        if(env_para_begin + sizeof(::std::uint_least32_t) * static_cast<::std::size_t>(pr_cend - (::uwvm::parsing_result.cbegin() + ::uwvm::wasm_file_ppos)) >=
+           memory_end) [[unlikely]]
+        {
+            return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::efault);
+        }
+
+        using uint_least32_t_may_alias_ptr
+#if __has_cpp_attribute(__gnu__::__may_alias__)
+            [[__gnu__::__may_alias__]]
+#endif
+            = ::std::uint_least32_t*;
+
+        [[maybe_unused]] auto env_para_i32p{reinterpret_cast<uint_least32_t_may_alias_ptr>(env_para_begin)};
+
+        using char8_t_may_alias_ptr
+#if __has_cpp_attribute(__gnu__::__may_alias__)
+            [[__gnu__::__may_alias__]]
+#endif
+            = char8_t*;
+
+        [[maybe_unused]] auto env_buf_begin{reinterpret_cast<char8_t_may_alias_ptr>(memory_begin + static_cast<::std::size_t>(arg1))};
+
+#if defined(__linux__)
+        ::fast_io::u8native_file envs{u8"/proc/self/environ", ::fast_io::open_mode::in};
+        auto const env_buf_end{::fast_io::operations::read_some(envs, env_buf_begin, reinterpret_cast<char8_t_may_alias_ptr>(memory_end))};
+        for(; env_buf_begin < env_buf_end;)
+        {
+            auto const env_buf_offset_le32{
+                ::fast_io::little_endian(static_cast<::std::uint_least32_t>(env_buf_begin - reinterpret_cast<char8_t_may_alias_ptr>(memory_begin)))};
+            ::fast_io::freestanding::my_memcpy(env_para_i32p, __builtin_addressof(env_buf_offset_le32), sizeof(env_buf_offset_le32));
+
+            auto const pos{::std::find(env_buf_begin, env_buf_end, u8'0')};
+
+            env_buf_begin = pos + 1;
+            ++env_para_i32p;
+        }
+
+#elif defined(__DragonFly__) || defined(__FreeBSD__) || defined(__FreeBSD_kernel__) || defined(__NetBSD__) || defined(BSD) || defined(_SYSTYPE_BSD)
+    #if defined(__NetBSD__)
+        int mib[4]{CTL_KERN, KERN_PROC_ARGS, -1, KERN_PROC_ENV};
+    #else
+        int mib[4]{CTL_KERN, KERN_PROC, KERN_PROC_ENV, -1};
+    #endif
+        ::std::size_t size{static_cast<::std::size_t>(memory_end - reinterpret_cast<::std::byte*>(env_buf_begin))};
+
+        if(::fast_io::noexcept_call(::sysctl, mib, 4, env_buf_begin, __builtin_addressof(size), nullptr, 0) != 0) [[unlikely]]
+        {
+            return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::efault);
+        }
+
+        auto const env_buf_end{env_buf_begin + size};
+
+        for(; env_buf_begin < env_buf_end;)
+        {
+            auto const env_buf_offset_le32{
+                ::fast_io::little_endian(static_cast<::std::uint_least32_t>(env_buf_begin - reinterpret_cast<char8_t_may_alias_ptr>(memory_begin)))};
+            ::fast_io::freestanding::my_memcpy(env_para_i32p, __builtin_addressof(env_buf_offset_le32), sizeof(env_buf_offset_le32));
+
+            auto const pos{::std::find(env_buf_begin, env_buf_end, u8'0')};
+
+            env_buf_begin = pos + 1;
+            ++env_para_i32p;
+        }
+
+#elif defined(__OpenBSD__)
+        int mib[4]{CTL_KERN, KERN_PROC_ARGS, getpid(), KERN_PROC_ENV};
+
+        ::std::size_t size{};
+
+        if(::fast_io::noexcept_call(::sysctl, mib, 4, nullptr, __builtin_addressof(size), nullptr, 0) != 0) [[unlikely]]
+        {
+            return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::efault);
+        }
+
+        if(size > static_cast<::std::size_t>(memory_end - reinterpret_cast<::std::byte*>(env_buf_begin))) [[unlikely]]
+        {
+            return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::efault);
+        }
+
+        if(::fast_io::noexcept_call(::sysctl, mib, 4, env_buf_begin, __builtin_addressof(size), nullptr, 0) != 0) [[unlikely]]
+        {
+            return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::efault);
+        }
+
+        auto const env_buf_end{env_buf_begin + size};
+
+        for(; env_buf_begin < env_buf_end;)
+        {
+            auto const env_buf_offset_le32{
+                ::fast_io::little_endian(static_cast<::std::uint_least32_t>(env_buf_begin - reinterpret_cast<char8_t_may_alias_ptr>(memory_begin)))};
+            ::fast_io::freestanding::my_memcpy(env_para_i32p, __builtin_addressof(env_buf_offset_le32), sizeof(env_buf_offset_le32));
+
+            auto const pos{::std::find(env_buf_begin, env_buf_end, u8'0')};
+
+            env_buf_begin = pos + 1;
+            ++env_para_i32p;
+        }
+
+#elif defined(__APPLE__) || defined(__DARWIN_C_LEVEL)
+        char*** const envs_get{::fast_io::noexcept_call(::_NSGetEnviron)};
+        auto envion{*envs_get};
+
+        while(*envion)
+        {
+            auto const env_buf_offset_le32{
+                ::fast_io::little_endian(static_cast<::std::uint_least32_t>(env_buf_begin - reinterpret_cast<char8_t_may_alias_ptr>(memory_begin)))};
+            ::fast_io::freestanding::my_memcpy(env_para_i32p, __builtin_addressof(env_buf_offset_le32), sizeof(env_buf_offset_le32));
+
+            auto const env_str{*envion};
+            auto const env_str_len{::fast_io::cstr_len(env_str)};
+
+            if(reinterpret_cast<::std::byte*>(env_buf_begin) + env_str_len >= memory_end) [[unlikely]]
+            {
+                return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::efault);
+            }
+
+            ::fast_io::freestanding::my_memcpy(env_buf_begin, env_str, env_str_len);
+
+            env_buf_begin += env_str_len;
+            *env_buf_begin++ = u8'\0';
+
+            ++env_para_i32p;
+            ++envion;
+        }
+
+#elif defined(_WIN32)
+    #if defined(_WIN32_WINDOWS)
+        // CreateEnvironmentBlock function
+        // Minimum supported client	Windows 2000 Professional [desktop apps only]
+        return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::efault);
+    #else
+        auto c_peb{::fast_io::win32::nt::nt_get_current_peb()};
+        auto const Environment{c_peb->ProcessParameters->Environment};
+        auto const EnvironmentSize{c_peb->ProcessParameters->EnvironmentSize};
+
+        ::fast_io::u8string env_str{::fast_io::u8concat_fast_io(::fast_io::mnp::code_cvt(::fast_io::mnp::strvw(Environment, Environment + EnvironmentSize)))};
+
+        if(env_str.size() > static_cast<::std::size_t>(memory_end - reinterpret_cast<::std::byte*>(env_buf_begin))) [[unlikely]]
+        {
+            return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::efault);
+        }
+
+        ::fast_io::freestanding::my_memcpy(env_buf_begin, env_str.data(), env_str.size());
+
+        auto const env_buf_end{env_buf_begin + env_str.size()};
+
+        for(; env_buf_begin < env_buf_end;)
+        {
+            auto const env_buf_offset_le32{
+                ::fast_io::little_endian(static_cast<::std::uint_least32_t>(env_buf_begin - reinterpret_cast<char8_t_may_alias_ptr>(memory_begin)))};
+            ::fast_io::freestanding::my_memcpy(env_para_i32p, __builtin_addressof(env_buf_offset_le32), sizeof(env_buf_offset_le32));
+
+            auto const pos{::std::find(env_buf_begin, env_buf_end, u8'0')};
+
+            env_buf_begin = pos + 1;
+            ++env_para_i32p;
+        }
+
+    #endif
+#else
+        return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::efault);
+#endif
+        return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::esuccess);
+    }
+
+    ::std::int_least32_t environ_sizes_get(::std::int_least32_t arg0, ::std::int_least32_t arg1) noexcept
+    {
+        auto& memory{::uwvm::vm::interpreter::memories.front()};
+        auto const memory_begin{memory.memory_begin};
+        auto const memory_length{memory.memory_length};
+        auto const memory_end{memory_begin + memory_length};
+
+        bool success{true};
+
+        ::std::uint_least32_t nenv_wasm{};
+        ::std::uint_least32_t nenv_len_wasm{};
+
+#if defined(__linux__)
+        ::fast_io::native_file_loader envs{u8"/proc/self/environ"};
+        nenv_wasm = static_cast<::std::uint_least32_t>(::std::ranges::count(envs, u8'0'));
+        nenv_len_wasm = static_cast<::std::uint_least32_t>(envs.size());
+
+#elif defined(__DragonFly__) || defined(__FreeBSD__) || defined(__FreeBSD_kernel__) || defined(__NetBSD__) || defined(BSD) || defined(_SYSTYPE_BSD)
+    #if defined(__NetBSD__)
+        int mib[4]{CTL_KERN, KERN_PROC_ARGS, -1, KERN_PROC_ENV};
+    #else
+        int mib[4]{CTL_KERN, KERN_PROC, KERN_PROC_ENV, -1};
+    #endif
+
+        {
+            char buffer[32768];
+            ::std::size_t size{32767};
+            if(::fast_io::noexcept_call(::sysctl, mib, 4, buffer, __builtin_addressof(size), nullptr, 0) == 0) [[likely]]
+            {
+                nenv_wasm = static_cast<::std::uint_least32_t>(::std::count(buffer, buffer + size, u8'\0'));
+                nenv_len_wasm = static_cast<::std::uint_least32_t>(size);
+            }
+            else { success = false; }
+        }
+
+#elif defined(__OpenBSD__)
+        int mib[4]{CTL_KERN, KERN_PROC_ARGS, getpid(), KERN_PROC_ENV};
+
+        ::std::size_t size{};
+
+        if(::fast_io::noexcept_call(::sysctl, mib, 4, nullptr, __builtin_addressof(size), nullptr, 0) == 0) [[likely]]
+        {
+            if(size < 32767) [[likely]]
+            {
+                char buffer[32768];
+                if(::fast_io::noexcept_call(::sysctl, mib, 4, buffer, __builtin_addressof(size), nullptr, 0) == 0) [[likely]]
+                {
+                    nenv_wasm = static_cast<::std::uint_least32_t>(::std::count(buffer, buffer + size, u8'\0'));
+                    nenv_len_wasm = static_cast<::std::uint_least32_t>(size);
+                }
+                else { success = false; }
+            }
+            else { success = false; }
+        }
+        else { success = false; }
+
+#elif defined(__APPLE__) || defined(__DARWIN_C_LEVEL)
+        char*** const envs_get{::fast_io::noexcept_call(::_NSGetEnviron)};
+        auto envion{*envs_get};
+
+        while(*envion)
+        {
+            ++nenv_wasm;
+
+            auto const env_str{*envion};
+            auto const env_str_len{::fast_io::cstr_len(env_str)};
+            nenv_len_wasm += env_str_len + 1;
+
+            ++envion;
+        }
+
+#elif defined(_WIN32)
+    #if defined(_WIN32_WINDOWS)
+        // CreateEnvironmentBlock function
+        // Minimum supported client	Windows 2000 Professional [desktop apps only]
+        success = false;
+    #else
+        auto c_peb{::fast_io::win32::nt::nt_get_current_peb()};
+        auto const Environment{c_peb->ProcessParameters->Environment};
+        auto const EnvironmentSize{c_peb->ProcessParameters->EnvironmentSize};
+
+        ::fast_io::u8string env_str{::fast_io::u8concat_fast_io(::fast_io::mnp::code_cvt(::fast_io::mnp::strvw(Environment, Environment + EnvironmentSize)))};
+
+        nenv_wasm = static_cast<::std::uint_least32_t>(::std::ranges::count(env_str, u8'\0'));
+        nenv_len_wasm = static_cast<::std::uint_least32_t>(env_str.size());
+
+    #endif
+#else
+        success = false;
+#endif
+
+        auto const nenv_begin{memory_begin + static_cast<::std::size_t>(arg0)};
+        if(nenv_begin + sizeof(::uwvm::vm::interpreter::wasi::wasi_size_t) >= memory_end) [[unlikely]]
+        {
+            return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::efault);
+        }
+
+        using wasi_size_t_may_alias_ptr
+#if __has_cpp_attribute(__gnu__::__may_alias__)
+            [[__gnu__::__may_alias__]]
+#endif
+            = ::uwvm::vm::interpreter::wasi::wasi_size_t*;
+
+        auto nenv_i32p{reinterpret_cast<wasi_size_t_may_alias_ptr>(nenv_begin)};
+
+        auto const nenv_wasm_le32{::fast_io::little_endian(static_cast<::std::uint_least32_t>(nenv_wasm))};
+
+        ::fast_io::freestanding::my_memcpy(nenv_i32p, __builtin_addressof(nenv_wasm_le32), sizeof(::std::uint_least32_t));
+
+        // buf len
+        auto const nenv_len_wasm_begin{memory_begin + static_cast<::std::size_t>(arg1)};
+        if(nenv_len_wasm_begin + sizeof(::uwvm::vm::interpreter::wasi::wasi_size_t) >= memory_end) [[unlikely]]
+        {
+            return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::efault);
+        }
+
+        auto const nenv_len_le32{::fast_io::little_endian(static_cast<::std::uint_least32_t>(nenv_len_wasm))};
+        ::fast_io::freestanding::my_memcpy(nenv_len_wasm_begin, __builtin_addressof(nenv_len_wasm), sizeof(::std::uint_least32_t));
+
+        if(success) [[likely]] { return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::esuccess); }
+        else { return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::efault); }
+    }
 
     ::std::int_least32_t clock_res_get(::std::int_least32_t arg0, ::std::int_least32_t arg1) noexcept { return {}; }
 

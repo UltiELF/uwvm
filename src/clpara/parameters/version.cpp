@@ -443,7 +443,7 @@
     #else
                         u8"\033[91m"
     #endif
-                        u8"[warnging] "
+                        u8"[warning] "
     #ifdef __MSDOS__
                         u8"\033[37m"
     #else

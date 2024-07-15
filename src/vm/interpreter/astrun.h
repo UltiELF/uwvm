@@ -1,5 +1,6 @@
 ﻿#pragma once
 #include <back_trace.h>
+#include <prefetch.h>
 #include "ast.h"
 #include "aststorge.h"
 
@@ -13,6 +14,8 @@ namespace uwvm::vm::interpreter
         {
             // Just checking the stack is enough
             uwvm_sm.init();
+            ::uwvm::prefetch(uwvm_sm.stack.get_container().cbegin());
+            ::uwvm::prefetch(uwvm_sm.local_storages.get_container().cbegin());
         }
 
         if(!a.operators.empty()) [[likely]]
@@ -198,6 +201,8 @@ namespace uwvm::vm::interpreter
                     ++local_curr_temp;
                 }
             }
+
+            ::uwvm::prefetch(local_curr);
 
 #if 0
             // set stack curr

@@ -26,7 +26,7 @@
     #include "bsd.h"
 #elif defined(__OpenBSD__)
     #include "openbsd.h"
-#elif defined(__APPLE__)
+#elif defined(__APPLE__) || defined(__DARWIN_C_LEVEL)
     #include "darwin.h"
 #else
     #include "null.h"
