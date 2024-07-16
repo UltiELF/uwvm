@@ -147,6 +147,10 @@ $ xmake f -m [release|releasedbg|debug] -p [windows|mingw|linux|sun|msdosdjgpp|b
 ```bash 
 --use-mimalloc=y|n(default)
 ```
+* 禁用c++异常（会导致部分WASI用不了）
+```bash
+--fno-exceptions=y|n(default)
+```
 * 启用清洁器
 ```bash
 --policies=build.sanitizer.address --policies=build.sanitizer.leak

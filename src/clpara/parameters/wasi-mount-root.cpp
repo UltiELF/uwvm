@@ -37,7 +37,38 @@
 
     auto const str{sresp1->str};
 
-    ::uwvm::vm::interpreter::wasi::root_path = ::fast_io::dir_file{str};
+#ifdef __cpp_exceptions
+    try
+#endif
+    {
+        ::uwvm::vm::interpreter::wasi::root_path = ::fast_io::dir_file{str};
+    }
+#ifdef __cpp_exceptions
+    catch(::fast_io::error e)
+    {
+        ::fast_io::io::perr(::uwvm::u8err,
+                                u8"\033[0m"
+    #ifdef __MSDOS__
+                                u8"\033[37m"
+    #else
+                                u8"\033[97m"
+    #endif
+                                u8"uwvm: "
+                                u8"\033[31m"
+                                u8"[fatal] "
+                                u8"\033[0m"
+    #ifdef __MSDOS__
+                                u8"\033[37m"
+    #else
+                                u8"\033[97m"
+    #endif
+                                u8"Unable to open path: ",
+                                e,
+                                u8"\n\n"
+                                u8"\033[0m");
+        return ::uwvm::cmdline::parameter_return_type::return_m1_imme;
+    }
+#endif
 
     return ::uwvm::cmdline::parameter_return_type::def;
 }

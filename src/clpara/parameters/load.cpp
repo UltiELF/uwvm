@@ -74,7 +74,7 @@
         #else
                                 u8"\033[97m"
         #endif
-                                ,
+                                u8"Unable to load dynamic library: ",
                                 e,
                                 u8"\n"
                                 u8"\033[0m"

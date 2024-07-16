@@ -155,7 +155,22 @@ namespace uwvm::vm::interpreter::wasi
         [[maybe_unused]] auto env_buf_begin{reinterpret_cast<char8_t_may_alias_ptr>(memory_begin + static_cast<::std::size_t>(arg1))};
 
 #if defined(__linux__)
-        ::fast_io::u8native_file envs{u8"/proc/self/environ", ::fast_io::open_mode::in};
+
+        ::fast_io::u8native_file envs{};
+
+    #ifdef __cpp_exceptions
+        try
+    #endif
+        {
+            envs = ::fast_io::u8native_file{u8"/proc/self/environ", ::fast_io::open_mode::in};
+        }
+    #ifdef __cpp_exceptions
+        catch(::fast_io::error e)
+        {
+            return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::efault);
+        }
+    #endif
+
         auto const env_buf_end{::fast_io::operations::read_some(envs, env_buf_begin, reinterpret_cast<char8_t_may_alias_ptr>(memory_end))};
         for(; env_buf_begin < env_buf_end;)
         {
@@ -317,11 +332,25 @@ namespace uwvm::vm::interpreter::wasi
 
 #if defined(__linux__)
         char buffer[32768];
-        ::fast_io::native_file envs{u8"/proc/self/environ", ::fast_io::open_mode::in};
-        auto const read_end{::fast_io::operations::read_some(envs, buffer, buffer + 32767)};
 
-        nenv_wasm = static_cast<::std::uint_least32_t>(::std::count(buffer, read_end, u8'\0'));
-        nenv_len_wasm = static_cast<::std::uint_least32_t>(read_end - buffer);
+        ::fast_io::u8native_file envs{};
+
+    #ifdef __cpp_exceptions
+        try
+    #endif
+        {
+            envs = ::fast_io::u8native_file{u8"/proc/self/environ", ::fast_io::open_mode::in};
+            auto const read_end{::fast_io::operations::read_some(envs, buffer, buffer + 32767)};
+
+            nenv_wasm = static_cast<::std::uint_least32_t>(::std::count(buffer, read_end, u8'\0'));
+            nenv_len_wasm = static_cast<::std::uint_least32_t>(read_end - buffer);
+        }
+    #ifdef __cpp_exceptions
+        catch(::fast_io::error e)
+        {
+            success = false;
+        }
+    #endif
 
 #elif defined(__DragonFly__) || defined(__FreeBSD__) || defined(__FreeBSD_kernel__) || defined(__NetBSD__) || defined(BSD) || defined(_SYSTYPE_BSD)
     #if defined(__NetBSD__)
@@ -434,7 +463,71 @@ namespace uwvm::vm::interpreter::wasi
         else { return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::efault); }
     }
 
-    ::std::int_least32_t clock_res_get(::std::int_least32_t arg0, ::std::int_least32_t arg1) noexcept { return {}; }
+    ::std::int_least32_t clock_res_get(::std::int_least32_t arg0, ::std::int_least32_t arg1) noexcept
+    {
+        ::fast_io::posix_clock_id id{};
+        switch(static_cast<::uwvm::vm::interpreter::wasi::clockid_t>(arg0))
+        {
+            case ::uwvm::vm::interpreter::wasi::clockid_t::clock_realtime:
+            {
+                id = ::fast_io::posix_clock_id::realtime;
+                break;
+            }
+            case ::uwvm::vm::interpreter::wasi::clockid_t::clock_monotonic:
+            {
+                id = ::fast_io::posix_clock_id::monotonic;
+                break;
+            }
+            case ::uwvm::vm::interpreter::wasi::clockid_t::clock_process_cputime_id:
+            {
+                id = ::fast_io::posix_clock_id::process_cputime_id;
+                break;
+            }
+            case ::uwvm::vm::interpreter::wasi::clockid_t::clock_thread_cputime_id:
+            {
+                id = ::fast_io::posix_clock_id::thread_cputime_id;
+                break;
+            }
+            default:
+            {
+                return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::einval);
+            }
+        }
+
+        auto& memory{::uwvm::vm::interpreter::memories.front()};
+        auto const memory_begin{memory.memory_begin};
+        auto const memory_length{memory.memory_length};
+        auto const memory_end{memory_begin + memory_length};
+
+        auto ts_begin{memory_begin + static_cast<::std::size_t>(arg1)};
+
+        if(ts_begin + sizeof(::uwvm::vm::interpreter::wasi::timestamp_t) >= memory_end) [[unlikely]]
+        {
+            return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::efault);
+        }
+
+        ::fast_io::unix_timestamp ts{};
+#ifdef __cpp_exceptions
+        try
+#endif
+        {
+            ts = ::fast_io::posix_clock_getres(id);
+        }
+#ifdef __cpp_exceptions
+        catch(::fast_io::error e)
+        {
+            constexpr auto ts_u64_le{::fast_io::little_endian(static_cast<::std::uint_least64_t>(1'000'000u))};  // 1ms
+            ::fast_io::freestanding::my_memcpy(ts_begin, __builtin_addressof(ts_u64_le), sizeof(ts_u64_le));
+            return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::efault);
+        }
+#endif
+        constexpr ::std::uint_least64_t mul_factor{::fast_io::uint_least64_subseconds_per_second / 1'000'000'000u};
+
+        auto const ts_u64_le{::fast_io::little_endian(static_cast<::std::uint_least64_t>(ts.seconds * 1'000'000'000u + ts.subseconds / mul_factor))};
+        ::fast_io::freestanding::my_memcpy(ts_begin, __builtin_addressof(ts_u64_le), sizeof(ts_u64_le));
+
+        return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::esuccess);
+    }
 
     ::std::int_least32_t clock_time_get(::std::int_least32_t arg0, ::std::int_least64_t arg1, ::std::int_least32_t arg2) noexcept { return {}; }
 

@@ -1,26 +1,29 @@
 ﻿#pragma once
-#if defined(_MSC_VER)
-    #include <stacktrace>
-#elif !defined(__MSDOS__) && !defined(__wasm__)
-    #include <libunwind.h>
-#endif
-#include <fast_io.h>
-#include <io_device.h>
+#if 0
+    #if defined(_MSC_VER)
+        #include <stacktrace>
+    #elif !defined(__MSDOS__) && !defined(__wasm__)
+        #ifndef __cpp_exceptions
+            #include <libunwind.h>
+        #endif
+    #endif
+    #include <fast_io.h>
+    #include <io_device.h>
 
 namespace uwvm
 {
-#if __has_cpp_attribute(__gnu__::__cold__)
+    #if __has_cpp_attribute(__gnu__::__cold__)
     [[__gnu__::__cold__]]
-#endif
+    #endif
     inline void
         backtrace() noexcept
     {
-#if defined(_MSC_VER)
+    #if defined(_MSC_VER) || defined(__cpp_exceptions)
         auto const bt{::std::stacktrace::current()};
         ::std::size_t counter{};
         for(auto const& i: bt) { ::fast_io::io::perr(::uwvm::u8err, u8"[", counter++, u8"] (", ::fast_io::mnp::code_cvt(i.description()), u8")\n"); }
         ::fast_io::io::perrln(::uwvm::u8err);
-#elif !defined(__MSDOS__) && !defined(__wasm__)
+    #elif !defined(__MSDOS__) && !defined(__wasm__) && !defined(__cpp_exceptions)
         // bug
         ::unw_cursor_t cursor{};
         ::unw_context_t context{};
@@ -53,6 +56,18 @@ namespace uwvm
                                 u8"]\n");
         }
         ::fast_io::io::perrln(::uwvm::u8err);
-#endif
+    #endif
     }
-}
+}  // namespace uwvm
+#else
+namespace uwvm
+{
+    #if __has_cpp_attribute(__gnu__::__cold__)
+    [[__gnu__::__cold__]]
+    #endif
+    inline void
+        backtrace() noexcept
+    {
+    }
+}  // namespace uwvm
+#endif

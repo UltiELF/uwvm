@@ -13,7 +13,6 @@
 #include "objdump.h"
 #include "../vm/interpreter/int.h"
 
-
 namespace uwvm
 {
     inline void run() noexcept
@@ -72,7 +71,9 @@ namespace uwvm
     #else
                                 u8"\033[97m"
     #endif
-                                ,
+                                u8"Unable to open WASM file \"",
+                                ::uwvm::global_wasm_module.module_name,
+                                u8"\": ",
                                 e,
                                 u8"\n"
                                 u8"\033[0m"
@@ -95,7 +96,7 @@ namespace uwvm
                 ::uwvm::u8objdump();
                 break;
             }
-            case ::uwvm::mode::interpreter :
+            case ::uwvm::mode::interpreter:
             {
                 ::uwvm::vm::interpreter::interpret();
                 break;

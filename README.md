@@ -147,6 +147,10 @@ $ xmake f -m [release|releasedbg|debug] -p [windows|mingw|macosx|linux|iphoneos 
 ```bash 
 --use-mimalloc=y|n(default)
 ```
+* Disable c++ exceptions (some WASIs cannot be used)
+```bash
+--fno-exceptions=y|n(default)
+```
 * Enable Sanitizer
 ```bash 
 --policies=build.sanitizer.address --policies=build.sanitizer.leak

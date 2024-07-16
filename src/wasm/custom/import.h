@@ -8,7 +8,21 @@ namespace uwvm::wasm::custom
 {
     inline bool import_custom_section_from_dll(::fast_io::native_dll_io_observer ndio) noexcept
     {
-        auto csfunc{reinterpret_cast<::uwvm::wasm::custom::csfunc_may_alias_ptr>(::fast_io::dll_load_symbol(ndio, u8"CustomSection"))};
+        ::uwvm::wasm::custom::csfunc_may_alias_ptr csfunc{};
+
+#ifdef __cpp_exceptions
+        try
+#endif
+        {
+            csfunc = reinterpret_cast<::uwvm::wasm::custom::csfunc_may_alias_ptr>(::fast_io::dll_load_symbol(ndio, u8"CustomSection"));
+        }
+#ifdef __cpp_exceptions
+        catch(::fast_io::error e)
+        {
+            return false;
+        }
+#endif
+
         if(csfunc)
         {
             auto csfunc_returnval{csfunc()};

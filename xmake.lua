@@ -93,6 +93,11 @@ option("uwvm-default-mvp")
 	add_defines("UWVM_DEFAULT_MVP")
 option_end()
 
+option("fno-exceptions")
+	set_default(false)
+	set_showmenu(true)
+option_end()
+
 function defopt()
 	set_languages("c11", "cxx23")
 
@@ -102,7 +107,11 @@ function defopt()
 	add_options("timer")
 	add_options("uwvm-test")
 
-	set_exceptions("no-cxx")
+	local disable_cpp_exceptions = get_config("fno-exceptions")
+
+	if disable_cpp_exceptions then
+		set_exceptions("no-cxx")
+	end
 
 	local use_llvm_toolchain = get_config("use-llvm")
 	if is_plat("windows") then
@@ -221,7 +230,9 @@ function defopt()
 
 		add_cxxflags("-fno-rtti")
 		add_cxflags("-fno-unwind-tables")
-		add_cxflags("-fno-asynchronous-unwind-tables")
+		if disable_cpp_exceptions then
+			add_cxflags("-fno-asynchronous-unwind-tables")
+		end
 		if is_mode("release", "releasedbg") then
 			add_cxflags("-fno-ident")
 		end
@@ -278,7 +289,9 @@ function defopt()
 	elseif is_plat("linux") then
 		add_cxxflags("-fno-rtti")
 		add_cxflags("-fno-unwind-tables")
-		add_cxflags("-fno-asynchronous-unwind-tables")
+		if disable_cpp_exceptions then
+			add_cxflags("-fno-asynchronous-unwind-tables")
+		end
 		if is_mode("release", "releasedbg") then
 			add_cxflags("-fno-ident")
 		end
@@ -321,7 +334,9 @@ function defopt()
 	elseif is_plat("msdosdjgpp") then
 		add_cxxflags("-fno-rtti")
 		add_cxflags("-fno-unwind-tables")
-		add_cxflags("-fno-asynchronous-unwind-tables")
+		if disable_cpp_exceptions then
+			add_cxflags("-fno-asynchronous-unwind-tables")
+		end
 		if is_mode("release", "releasedbg") then
 			add_cxflags("-fno-ident")
 		end
@@ -346,7 +361,9 @@ function defopt()
 	elseif is_plat("unix", "bsd", "freebsd", "dragonflybsd", "netbsd", "openbsd", "sun") then
 		add_cxxflags("-fno-rtti")
 		add_cxflags("-fno-unwind-tables")
-		add_cxflags("-fno-asynchronous-unwind-tables")
+		if disable_cpp_exceptions then
+			add_cxflags("-fno-asynchronous-unwind-tables")
+		end
 		if is_mode("release", "releasedbg") then
 			add_cxflags("-fno-ident")
 		end
@@ -374,7 +391,9 @@ function defopt()
 	elseif is_plat("macosx", "iphoneos", "watchos") then -- unknown-apple-darwin
 		add_cxxflags("-fno-rtti")
 		add_cxflags("-fno-unwind-tables")
-		add_cxflags("-fno-asynchronous-unwind-tables")
+		if disable_cpp_exceptions then
+			add_cxflags("-fno-asynchronous-unwind-tables")
+		end
 		if is_mode("release", "releasedbg") then
 			add_cxflags("-fno-ident")
 		end
@@ -404,7 +423,9 @@ function defopt()
 
 		add_cxxflags("-fno-rtti")
 		add_cxflags("-fno-unwind-tables")
-		add_cxflags("-fno-asynchronous-unwind-tables")
+		if disable_cpp_exceptions then
+			add_cxflags("-fno-asynchronous-unwind-tables")
+		end
 		if is_mode("release", "releasedbg") then
 			add_cxflags("-fno-ident")
 		end
@@ -458,7 +479,9 @@ function defopt()
 	elseif is_plat("cross") then
 		add_cxxflags("-fno-rtti")
 		add_cxflags("-fno-unwind-tables")
-		add_cxflags("-fno-asynchronous-unwind-tables")
+		if disable_cpp_exceptions then
+			add_cxflags("-fno-asynchronous-unwind-tables")
+		end
 		if is_mode("release", "releasedbg") then
 			add_cxflags("-fno-ident")
 		end
@@ -523,9 +546,11 @@ target("uwvm")
 	defopt()
 
 	-- libunwind
-	if not (is_plat("windows") or is_plat("msdosdjgpp") or is_plat("wasm-wasi", "wasm-wasip1", "wasm-wasip2")) then
-		add_deps("unwind")
-		add_includedirs("third-parties/libunwind/include/")
+	if disable_cpp_exceptions then
+		if not (is_plat("windows") or is_plat("msdosdjgpp") or is_plat("wasm-wasi", "wasm-wasip1", "wasm-wasip2")) then
+			add_deps("unwind")
+			add_includedirs("third-parties/libunwind/include/")
+		end
 	end
 
 	-- mimalloc
@@ -561,21 +586,22 @@ target("uwvm")
 	end
 target_end()
 
-if not (is_plat("windows") or is_plat("msdosdjgpp") or is_plat("wasm-wasi", "wasm-wasip1", "wasm-wasip2"))then
-	target("unwind")
-		set_kind("static")
-		defopt()
+if disable_cpp_exceptions then
+	if not (is_plat("windows") or is_plat("msdosdjgpp") or is_plat("wasm-wasi", "wasm-wasip1", "wasm-wasip2"))then
+		target("unwind")
+			set_kind("static")
+			defopt()
 
-		add_defines("_LIBUNWIND_IS_NATIVE_ONLY")
+			add_defines("_LIBUNWIND_IS_NATIVE_ONLY")
 
-		add_includedirs("third-parties/libunwind/include/")
+			add_includedirs("third-parties/libunwind/include/")
 
-		add_files("third-parties/libunwind/src/**.cpp")
-		add_files("third-parties/libunwind/src/**.c")
-		add_files("third-parties/libunwind/src/**.S")	
-	target_end()
+			add_files("third-parties/libunwind/src/**.cpp")
+			add_files("third-parties/libunwind/src/**.c")
+			add_files("third-parties/libunwind/src/**.S")	
+		target_end()
+	end
 end
-
 --
 -- If you want to known more usage about xmake, please see https://xmake.io
 --
