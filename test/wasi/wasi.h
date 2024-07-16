@@ -125,5 +125,57 @@ namespace uwvm::test
                 ::fast_io::perr(::uwvm::u8out, u8"\033[32mSuccessfully\033[0m\n");
             }
         }
+
+        {
+            ::fast_io::perr(::uwvm::u8out, u8"clock_res_get(", 0, u8",", 1024, u8")\n");
+            auto const res{uwvm::vm::interpreter::wasi::clock_res_get(0, 1024)};
+            ::fast_io::perrln(::uwvm::u8out, u8"clock_res_get=", res);
+
+            if(res != 0) [[unlikely]]
+            {
+                ::uwvm::test::failed = true;
+                ::fast_io::perr(::uwvm::u8out, u8"\033[31mFailed\033[0m\n");
+            }
+            else
+            {
+                auto const memory_begin{::uwvm::vm::interpreter::memories.front_unchecked().memory_begin};
+
+                ::std::uint_least64_t ts{};
+                ::fast_io::freestanding::my_memcpy(__builtin_addressof(ts), memory_begin + 1024, sizeof(::std::uint_least64_t));
+                auto const ts_le{::fast_io::little_endian(ts)};
+
+                ::fast_io::perrln(::uwvm::u8out, u8"resolution=", ts_le);
+
+                ::fast_io::perr(::uwvm::u8out, u8"\033[32mSuccessfully\033[0m\n");
+            }
+        }
+
+        {
+            ::fast_io::perr(::uwvm::u8out, u8"clock_time_get(", 0, u8",", 512, u8",", 1024, u8")\n");
+            auto const res{uwvm::vm::interpreter::wasi::clock_time_get(0, 512, 1024)};
+            ::fast_io::perrln(::uwvm::u8out, u8"clock_res_get=", res);
+
+            if(res != 0) [[unlikely]]
+            {
+                ::uwvm::test::failed = true;
+                ::fast_io::perr(::uwvm::u8out, u8"\033[31mFailed\033[0m\n");
+            }
+            else
+            {
+                auto const memory_begin{::uwvm::vm::interpreter::memories.front_unchecked().memory_begin};
+
+                ::std::uint_least64_t pre{};
+                ::fast_io::freestanding::my_memcpy(__builtin_addressof(pre), memory_begin + 512, sizeof(::std::uint_least64_t));
+                auto const pre_le{::fast_io::little_endian(pre)};
+
+                ::std::uint_least64_t ts{};
+                ::fast_io::freestanding::my_memcpy(__builtin_addressof(ts), memory_begin + 1024, sizeof(::std::uint_least64_t));
+                auto const ts_le{::fast_io::little_endian(ts)};
+
+                ::fast_io::perrln(::uwvm::u8out, u8"precision=", pre_le, u8", time=", ts_le);
+
+                ::fast_io::perr(::uwvm::u8out, u8"\033[32mSuccessfully\033[0m\n");
+            }
+        }
     }
 }  // namespace uwvm::test

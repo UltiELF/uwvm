@@ -529,7 +529,80 @@ namespace uwvm::vm::interpreter::wasi
         return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::esuccess);
     }
 
-    ::std::int_least32_t clock_time_get(::std::int_least32_t arg0, ::std::int_least64_t arg1, ::std::int_least32_t arg2) noexcept { return {}; }
+    ::std::int_least32_t clock_time_get(::std::int_least32_t arg0, ::std::int_least64_t arg1, ::std::int_least32_t arg2) noexcept
+    {
+        ::fast_io::posix_clock_id id{};
+        switch(static_cast<::uwvm::vm::interpreter::wasi::clockid_t>(arg0))
+        {
+            case ::uwvm::vm::interpreter::wasi::clockid_t::clock_realtime:
+            {
+                id = ::fast_io::posix_clock_id::realtime;
+                break;
+            }
+            case ::uwvm::vm::interpreter::wasi::clockid_t::clock_monotonic:
+            {
+                id = ::fast_io::posix_clock_id::monotonic;
+                break;
+            }
+            case ::uwvm::vm::interpreter::wasi::clockid_t::clock_process_cputime_id:
+            {
+                id = ::fast_io::posix_clock_id::process_cputime_id;
+                break;
+            }
+            case ::uwvm::vm::interpreter::wasi::clockid_t::clock_thread_cputime_id:
+            {
+                id = ::fast_io::posix_clock_id::thread_cputime_id;
+                break;
+            }
+            default:
+            {
+                return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::einval);
+            }
+        }
+
+        auto& memory{::uwvm::vm::interpreter::memories.front()};
+        auto const memory_begin{memory.memory_begin};
+        auto const memory_length{memory.memory_length};
+        auto const memory_end{memory_begin + memory_length};
+
+        auto pre_begin{memory_begin + static_cast<::std::size_t>(arg1)};
+
+        if(pre_begin + sizeof(::uwvm::vm::interpreter::wasi::timestamp_t) >= memory_end) [[unlikely]]
+        {
+            return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::efault);
+        }
+
+        ::fast_io::freestanding::my_memset(pre_begin, 0, sizeof(::uwvm::vm::interpreter::wasi::timestamp_t));
+
+        auto ts_begin{memory_begin + static_cast<::std::size_t>(arg2)};
+
+        if(ts_begin + sizeof(::uwvm::vm::interpreter::wasi::timestamp_t) >= memory_end) [[unlikely]]
+        {
+            return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::efault);
+        }
+
+        ::fast_io::unix_timestamp ts{};
+#ifdef __cpp_exceptions
+        try
+#endif
+        {
+            ts = ::fast_io::posix_clock_gettime(id);
+        }
+#ifdef __cpp_exceptions
+        catch(::fast_io::error e)
+        {
+            constexpr ::std::uint_least64_t ts_u64_le{};
+            ::fast_io::freestanding::my_memcpy(ts_begin, __builtin_addressof(ts_u64_le), sizeof(ts_u64_le));
+            return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::efault);
+        }
+#endif
+        constexpr ::std::uint_least64_t mul_factor{::fast_io::uint_least64_subseconds_per_second / 1'000'000'000u};
+
+        auto const ts_u64_le{::fast_io::little_endian(static_cast<::std::uint_least64_t>(ts.seconds * 1'000'000'000u + ts.subseconds / mul_factor))};
+        ::fast_io::freestanding::my_memcpy(ts_begin, __builtin_addressof(ts_u64_le), sizeof(ts_u64_le));
+
+        return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::esuccess);
+    }
 
     ::std::int_least32_t fd_advise(::std::int_least32_t arg0, ::std::int_least64_t arg1, ::std::int_least64_t arg2, ::std::int_least32_t arg3) noexcept
     {
