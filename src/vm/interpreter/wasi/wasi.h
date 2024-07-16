@@ -331,7 +331,7 @@ namespace uwvm::vm::interpreter::wasi
         ::std::uint_least32_t nenv_len_wasm{};
 
 #if defined(__linux__)
-        char buffer[32768];
+        char8_t buffer[32768];
 
         ::fast_io::u8native_file envs{};
 
@@ -360,7 +360,7 @@ namespace uwvm::vm::interpreter::wasi
     #endif
 
         {
-            char buffer[32768];
+            char8_t buffer[32768];
             ::std::size_t size{32767};
             if(::fast_io::noexcept_call(::sysctl, mib, 4, buffer, __builtin_addressof(size), nullptr, 0) == 0) [[likely]]
             {
@@ -379,7 +379,7 @@ namespace uwvm::vm::interpreter::wasi
         {
             if(size < 32767) [[likely]]
             {
-                char buffer[32768];
+                char8_t buffer[32768];
                 if(::fast_io::noexcept_call(::sysctl, mib, 4, buffer, __builtin_addressof(size), nullptr, 0) == 0) [[likely]]
                 {
                     nenv_wasm = static_cast<::std::uint_least32_t>(::std::count(buffer, buffer + size, u8'\0'));
