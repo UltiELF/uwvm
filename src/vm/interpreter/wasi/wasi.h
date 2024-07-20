@@ -660,7 +660,7 @@ namespace uwvm::vm::interpreter::wasi
                 return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::einval);
             }
         }
-        auto const rt{::fast_io::system_call<__NR_fadvise64, int>(fd.fd, static_cast<off_t>(arg1), static_cast<off_t>(arg2), advice)};
+        auto const rt{::fast_io::system_call<__NR_fadvise64, int>(fd, static_cast<off_t>(arg1), static_cast<off_t>(arg2), advice)};
         if(rt == -1) [[unlikely]] { return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::efault); }
         else { return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::esuccess); }
     #elif _POSIX_C_SOURCE >= 200112L
@@ -702,7 +702,7 @@ namespace uwvm::vm::interpreter::wasi
                 return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::einval);
             }
         }
-        auto const rt{::uwvm::posix::fadvise(fd.fd, static_cast<off_t>(arg1), static_cast<off_t>(arg2), advice)};
+        auto const rt{::uwvm::posix::fadvise(fd, static_cast<off_t>(arg1), static_cast<off_t>(arg2), advice)};
         if(rt == -1) [[unlikely]] { return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::efault); }
         else { return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::esuccess); }
     #else
