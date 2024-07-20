@@ -42,34 +42,7 @@ namespace uwvm::vm
         ::uwvm::vm::interpreter::imports = ::fast_io::vector<::uwvm::vm::interpreter::int_import_func_p>{import_size};
 
         // bare
-        if(::uwvm::wasm_abi == ::uwvm::wasm::abi::bare) [[unlikely]]
-        {
-            if(::uwvm::vm::start_func == static_cast<::std::size_t>(-1)) [[unlikely]]
-            {
-                ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"Bare running must specify start func."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
-                ::fast_io::fast_terminate();
-            }
-            return;
-        }
+        if(::uwvm::wasm_abi == ::uwvm::wasm::abi::bare) [[unlikely]] { return; }
         else if(::uwvm::wasm_abi == ::uwvm::wasm::abi::wasi)
         {
             init(::uwvm::vm::interpreter::wasi::wasm_fd_storages);
@@ -77,6 +50,7 @@ namespace uwvm::vm
             ::uwvm::vm::interpreter::wasi::wasm_fd_storages.opens.push_back_unchecked(1);
             ::uwvm::vm::interpreter::wasi::wasm_fd_storages.opens.push_back_unchecked(2);
         }
+
         // init import
         auto ft_p{wasmmod.importsec.func_types.cbegin()};
         for(auto& i: ::uwvm::vm::interpreter::imports)
