@@ -10,6 +10,7 @@
 
 // wasi
 #include "interpreter/wasi/int_cl.h"
+#include "interpreter/wasi/fd_map.h"
 
 namespace uwvm::vm
 {
@@ -69,7 +70,13 @@ namespace uwvm::vm
             }
             return;
         }
-
+        else if(::uwvm::wasm_abi == ::uwvm::wasm::abi::wasi)
+        {
+            init(::uwvm::vm::interpreter::wasi::wasm_fd_storages);
+            ::uwvm::vm::interpreter::wasi::wasm_fd_storages.opens.push_back_unchecked(0);
+            ::uwvm::vm::interpreter::wasi::wasm_fd_storages.opens.push_back_unchecked(1);
+            ::uwvm::vm::interpreter::wasi::wasm_fd_storages.opens.push_back_unchecked(2);
+        }
         // init import
         auto ft_p{wasmmod.importsec.func_types.cbegin()};
         for(auto& i: ::uwvm::vm::interpreter::imports)

@@ -6,6 +6,7 @@
     #include <sys/sysctl.h>
     #include <dlfcn.h>
 #elif defined(__APPLE__) || defined(__DARWIN_C_LEVEL)
+    #include <fcntl.h>
     #include <crt_externs.h>
 #endif
 
@@ -13,9 +14,18 @@
 #include <fast_io_dsal/string.h>
 #include <fast_io_dsal/string_view.h>
 #include "abi.h"
+#include "fd_map.h"
 #include "../../../run/wasm_file.h"
 #include "../../../clpara/parsing_result.h"
 #include "../memory/memory.h"
+
+#if (!defined(__NEWLIB__) || defined(__CYGWIN__)) && !defined(_WIN32) && !defined(__MSDOS__) && __has_include(<dirent.h>) && !defined(_PICOLIBC__)
+namespace uwvm::posix
+{
+    extern int fadvise(int fd, off_t offset, off_t len, int advice) noexcept __asm__("posix_fadvise");
+
+}  // namespace uwvm::posix
+#endif
 
 namespace uwvm::vm::interpreter::wasi
 {
@@ -606,7 +616,101 @@ namespace uwvm::vm::interpreter::wasi
 
     ::std::int_least32_t fd_advise(::std::int_least32_t arg0, ::std::int_least64_t arg1, ::std::int_least64_t arg2, ::std::int_least32_t arg3) noexcept
     {
-        return {};
+        auto const fd{get_fd(::uwvm::vm::interpreter::wasi::wasm_fd_storages, arg0)};
+
+        if(fd == -1) [[unlikely]] { return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::einval); }
+
+#if (!defined(__NEWLIB__) || defined(__CYGWIN__)) && !defined(_WIN32) && !defined(__MSDOS__) && __has_include(<dirent.h>) && !defined(_PICOLIBC__)
+    #if defined(__linux__) && defined(__NR_fadvise64)
+        int advice{};
+        switch(static_cast<::uwvm::vm::interpreter::wasi::advice_t>(arg3))
+        {
+            case ::uwvm::vm::interpreter::wasi::advice_t::advice_normal:
+            {
+                advice = POSIX_FADV_NORMAL;
+                break;
+            }
+            case ::uwvm::vm::interpreter::wasi::advice_t::advice_sequential:
+            {
+                advice = POSIX_FADV_SEQUENTIAL;
+                break;
+            }
+            case ::uwvm::vm::interpreter::wasi::advice_t::advice_random:
+            {
+                advice = POSIX_FADV_RANDOM;
+                break;
+            }
+            case ::uwvm::vm::interpreter::wasi::advice_t::advice_willneed:
+            {
+                advice = POSIX_FADV_WILLNEED;
+                break;
+            }
+            case ::uwvm::vm::interpreter::wasi::advice_t::advice_dontneed:
+            {
+                advice = POSIX_FADV_DONTNEED;
+                break;
+            }
+            case ::uwvm::vm::interpreter::wasi::advice_t::advice_noreuse:
+            {
+                advice = POSIX_FADV_NOREUSE;
+                break;
+            }
+            default:
+            {
+                return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::einval);
+            }
+        }
+        auto const rt{::fast_io::system_call<__NR_fadvise64, int>(fd.fd, static_cast<off_t>(arg1), static_cast<off_t>(arg2), advice)};
+        if(rt == -1) [[unlikely]] { return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::efault); }
+        else { return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::esuccess); }
+    #elif _POSIX_C_SOURCE >= 200112L
+        int advice{};
+        switch(static_cast<::uwvm::vm::interpreter::wasi::advice_t>(arg3))
+        {
+            case ::uwvm::vm::interpreter::wasi::advice_t::advice_normal:
+            {
+                advice = POSIX_FADV_NORMAL;
+                break;
+            }
+            case ::uwvm::vm::interpreter::wasi::advice_t::advice_sequential:
+            {
+                advice = POSIX_FADV_SEQUENTIAL;
+                break;
+            }
+            case ::uwvm::vm::interpreter::wasi::advice_t::advice_random:
+            {
+                advice = POSIX_FADV_RANDOM;
+                break;
+            }
+            case ::uwvm::vm::interpreter::wasi::advice_t::advice_willneed:
+            {
+                advice = POSIX_FADV_WILLNEED;
+                break;
+            }
+            case ::uwvm::vm::interpreter::wasi::advice_t::advice_dontneed:
+            {
+                advice = POSIX_FADV_DONTNEED;
+                break;
+            }
+            case ::uwvm::vm::interpreter::wasi::advice_t::advice_noreuse:
+            {
+                advice = POSIX_FADV_NOREUSE;
+                break;
+            }
+            default:
+            {
+                return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::einval);
+            }
+        }
+        auto const rt{::uwvm::posix::fadvise(fd.fd, static_cast<off_t>(arg1), static_cast<off_t>(arg2), advice)};
+        if(rt == -1) [[unlikely]] { return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::efault); }
+        else { return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::esuccess); }
+    #else
+        return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::efault);
+    #endif
+#else
+        return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::efault);
+#endif
     }
 
     ::std::int_least32_t fd_allocate(::std::int_least32_t arg0, ::std::int_least64_t arg1, ::std::int_least64_t arg2) noexcept { return {}; }
@@ -678,7 +782,9 @@ namespace uwvm::vm::interpreter::wasi
     ::std::int_least32_t fd_write(::std::int_least32_t arg0, ::std::int_least32_t arg1, ::std::int_least32_t arg2, ::std::int_least32_t arg3) noexcept
     {
         // No need to check the memory of wasm
-        ::fast_io::posix_io_observer pfd{static_cast<int>(arg0)};
+        auto const pfd{get_fd(::uwvm::vm::interpreter::wasi::wasm_fd_storages, arg0)};
+
+        if(pfd == -1) [[unlikely]] { return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::einval); }
 
         auto& memory{::uwvm::vm::interpreter::memories.front()};
         auto const memory_begin{memory.memory_begin};
@@ -722,7 +828,7 @@ namespace uwvm::vm::interpreter::wasi
 #endif
 
             auto const cvt_buf_write_end{
-                ::fast_io::operations::write_some_bytes(pfd,
+                ::fast_io::operations::write_some_bytes(::fast_io::posix_io_observer{pfd},
                                                         cvt_buf_begin,
                                                         cvt_buf_begin + static_cast<::std::size_t>(static_cast<::std::uint_least32_t>(wsz_buf_len)))};
 
