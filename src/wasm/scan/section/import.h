@@ -229,10 +229,10 @@ namespace uwvm::wasm
             it.module_end = next_module + module_len;
 
             // set curr
-            curr = reinterpret_cast<::std::byte const*>(next_module + module_len);
+            curr = reinterpret_cast<::std::byte const*>(it.module_end);
 
             // check curr
-            if(end - curr < static_cast<::std::ptrdiff_t>(3)) [[unlikely]]
+            if(static_cast<::std::size_t>(end - curr) < 3u || curr > end) [[unlikely]]
             {
                 ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -337,7 +337,7 @@ namespace uwvm::wasm
             curr = reinterpret_cast<::std::byte const*>(next_name + name_len);
 
             // check curr
-            if(end - curr < static_cast<::std::ptrdiff_t>(2)) [[unlikely]]
+            if(static_cast<::std::size_t>(end - curr) < 2u || curr > end) [[unlikely]]
             {
                 ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"

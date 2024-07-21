@@ -39,9 +39,9 @@ namespace uwvm::vm::interpreter::wasi
         auto argv_begin{memory_begin + static_cast<::std::size_t>(arg0)};
 
         auto const pr_cend{::uwvm::parsing_result.cend()};
-
-        if(argv_begin + sizeof(::std::uint_least32_t) * static_cast<::std::size_t>(pr_cend - (::uwvm::parsing_result.cbegin() + ::uwvm::wasm_file_ppos)) >=
-           memory_end) [[unlikely]]
+        if(static_cast<::std::size_t>(memory_end - argv_begin) <
+               sizeof(::std::uint_least32_t) * static_cast<::std::size_t>(pr_cend - (::uwvm::parsing_result.cbegin() + ::uwvm::wasm_file_ppos)) ||
+           argv_begin > memory_end) [[unlikely]]
         {
             return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::efault);
         }
@@ -69,7 +69,8 @@ namespace uwvm::vm::interpreter::wasi
             ::fast_io::freestanding::my_memcpy(argv_i32p, __builtin_addressof(argv_buf_offset_le32), sizeof(argv_buf_offset_le32));
             auto const length{i->str.size()};
 
-            if(reinterpret_cast<::std::byte*>(argv_buf_begin) + length >= memory_end) [[unlikely]]
+            if(static_cast<::std::size_t>(memory_end - reinterpret_cast<::std::byte*>(argv_buf_begin)) < length ||
+               reinterpret_cast<::std::byte*>(argv_buf_begin) > memory_end) [[unlikely]]
             {
                 return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::efault);
             }
@@ -94,7 +95,8 @@ namespace uwvm::vm::interpreter::wasi
 
         // argc begin
         auto const argc_begin{memory_begin + static_cast<::std::size_t>(arg0)};
-        if(argc_begin + sizeof(::uwvm::vm::interpreter::wasi::wasi_size_t) >= memory_end) [[unlikely]]
+
+        if(static_cast<::std::size_t>(memory_end - argc_begin) < sizeof(::uwvm::vm::interpreter::wasi::wasi_size_t) || argc_begin > memory_end) [[unlikely]]
         {
             return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::efault);
         }
@@ -115,7 +117,9 @@ namespace uwvm::vm::interpreter::wasi
 
         // buf len
         auto const buf_len_begin{memory_begin + static_cast<::std::size_t>(arg1)};
-        if(buf_len_begin + sizeof(::uwvm::vm::interpreter::wasi::wasi_size_t) >= memory_end) [[unlikely]]
+
+        if(static_cast<::std::size_t>(memory_end - buf_len_begin) < sizeof(::uwvm::vm::interpreter::wasi::wasi_size_t) || buf_len_begin > memory_end)
+            [[unlikely]]
         {
             return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::efault);
         }
@@ -142,8 +146,9 @@ namespace uwvm::vm::interpreter::wasi
 
         auto const pr_cend{::uwvm::parsing_result.cend()};
 
-        if(env_para_begin + sizeof(::std::uint_least32_t) * static_cast<::std::size_t>(pr_cend - (::uwvm::parsing_result.cbegin() + ::uwvm::wasm_file_ppos)) >=
-           memory_end) [[unlikely]]
+        if(static_cast<::std::size_t>(memory_end - env_para_begin) <
+               sizeof(::std::uint_least32_t) * static_cast<::std::size_t>(pr_cend - (::uwvm::parsing_result.cbegin() + ::uwvm::wasm_file_ppos)) ||
+           env_para_begin > memory_end) [[unlikely]]
         {
             return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::efault);
         }
@@ -442,7 +447,8 @@ namespace uwvm::vm::interpreter::wasi
 #endif
 
         auto const nenv_begin{memory_begin + static_cast<::std::size_t>(arg0)};
-        if(nenv_begin + sizeof(::uwvm::vm::interpreter::wasi::wasi_size_t) >= memory_end) [[unlikely]]
+
+        if(static_cast<::std::size_t>(memory_end - nenv_begin) < sizeof(::uwvm::vm::interpreter::wasi::wasi_size_t) || nenv_begin > memory_end) [[unlikely]]
         {
             return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::efault);
         }
@@ -461,7 +467,9 @@ namespace uwvm::vm::interpreter::wasi
 
         // buf len
         auto const nenv_len_wasm_begin{memory_begin + static_cast<::std::size_t>(arg1)};
-        if(nenv_len_wasm_begin + sizeof(::uwvm::vm::interpreter::wasi::wasi_size_t) >= memory_end) [[unlikely]]
+
+        if(static_cast<::std::size_t>(memory_end - nenv_len_wasm_begin) < sizeof(::uwvm::vm::interpreter::wasi::wasi_size_t) ||
+           nenv_len_wasm_begin > memory_end) [[unlikely]]
         {
             return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::efault);
         }
@@ -511,7 +519,7 @@ namespace uwvm::vm::interpreter::wasi
 
         auto ts_begin{memory_begin + static_cast<::std::size_t>(arg1)};
 
-        if(ts_begin + sizeof(::uwvm::vm::interpreter::wasi::timestamp_t) >= memory_end) [[unlikely]]
+        if(static_cast<::std::size_t>(memory_end - ts_begin) < sizeof(::uwvm::vm::interpreter::wasi::timestamp_t) || ts_begin > memory_end) [[unlikely]]
         {
             return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::efault);
         }
@@ -577,7 +585,7 @@ namespace uwvm::vm::interpreter::wasi
 
         auto pre_begin{memory_begin + static_cast<::std::size_t>(arg1)};
 
-        if(pre_begin + sizeof(::uwvm::vm::interpreter::wasi::timestamp_t) >= memory_end) [[unlikely]]
+        if(static_cast<::std::size_t>(memory_end - pre_begin) < sizeof(::uwvm::vm::interpreter::wasi::timestamp_t) || pre_begin > memory_end) [[unlikely]]
         {
             return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::efault);
         }
@@ -586,7 +594,7 @@ namespace uwvm::vm::interpreter::wasi
 
         auto ts_begin{memory_begin + static_cast<::std::size_t>(arg2)};
 
-        if(ts_begin + sizeof(::uwvm::vm::interpreter::wasi::timestamp_t) >= memory_end) [[unlikely]]
+        if(static_cast<::std::size_t>(memory_end - ts_begin) < sizeof(::uwvm::vm::interpreter::wasi::timestamp_t) || ts_begin > memory_end) [[unlikely]]
         {
             return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::efault);
         }
@@ -841,7 +849,10 @@ namespace uwvm::vm::interpreter::wasi
 
         ::std::byte const* cvt_begin{memory_begin + static_cast<::std::size_t>(arg1)};
 
-        if(cvt_begin + 8 * arg2 >= memory_end) [[unlikely]] { return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::efault); }
+        if(static_cast<::std::size_t>(memory_end - cvt_begin) < 8u * static_cast<::std::size_t>(arg2) || cvt_begin > memory_end) [[unlikely]]
+        {
+            return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::efault);
+        }
 
         ::std::size_t all_written_size{};
 
@@ -863,7 +874,8 @@ namespace uwvm::vm::interpreter::wasi
             auto const cvt_buf_off{static_cast<::std::size_t>(static_cast<::std::uint_least32_t>(wpt_buf))};
             auto const cvt_buf_begin{memory_begin + cvt_buf_off};
 
-            if(cvt_buf_begin + static_cast<::std::size_t>(static_cast<::std::uint_least32_t>(wsz_buf_len)) >= memory_end) [[unlikely]]
+            if(static_cast<::std::size_t>(memory_end - cvt_buf_begin) < static_cast<::std::size_t>(static_cast<::std::uint_least32_t>(wsz_buf_len)) ||
+               cvt_buf_begin > memory_end) [[unlikely]]
             {
                 return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::efault);
             }

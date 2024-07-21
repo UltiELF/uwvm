@@ -6019,61 +6019,6 @@ namespace uwvm::vm::interpreter
                             ::uwvm::unfinished();
                             break;
                         }
-                        case ::uwvm::wasm::op_exten_reftype::memory_randomtag:
-                        {
-                            ::uwvm::unfinished();
-                            break;
-                        }
-                        case ::uwvm::wasm::op_exten_reftype::memory_copytag:
-                        {
-                            ::uwvm::unfinished();
-                            break;
-                        }
-                        case ::uwvm::wasm::op_exten_reftype::memory_subtag:
-                        {
-                            ::uwvm::unfinished();
-                            break;
-                        }
-                        case ::uwvm::wasm::op_exten_reftype::memory_loadtag:
-                        {
-                            ::uwvm::unfinished();
-                            break;
-                        }
-                        case ::uwvm::wasm::op_exten_reftype::memory_storetag:
-                        {
-                            ::uwvm::unfinished();
-                            break;
-                        }
-                        case ::uwvm::wasm::op_exten_reftype::memory_storeztag:
-                        {
-                            ::uwvm::unfinished();
-                            break;
-                        }
-                        case ::uwvm::wasm::op_exten_reftype::memory_randomstoretag:
-                        {
-                            ::uwvm::unfinished();
-                            break;
-                        }
-                        case ::uwvm::wasm::op_exten_reftype::memory_randomstoreztag:
-                        {
-                            ::uwvm::unfinished();
-                            break;
-                        }
-                        case ::uwvm::wasm::op_exten_reftype::memory_hinttag:
-                        {
-                            ::uwvm::unfinished();
-                            break;
-                        }
-                        case ::uwvm::wasm::op_exten_reftype::memory_hintstoretag:
-                        {
-                            ::uwvm::unfinished();
-                            break;
-                        }
-                        case ::uwvm::wasm::op_exten_reftype::memory_hintstoreztag:
-                        {
-                            ::uwvm::unfinished();
-                            break;
-                        }
                         case ::uwvm::wasm::op_exten_reftype::i32_trunc_sat_f32_s:
                         {
                             ::uwvm::unfinished();

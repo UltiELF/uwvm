@@ -913,7 +913,9 @@ namespace uwvm::vm::interpreter::func
 
         auto const st{sm.stack.pop_element_unchecked()};
 
-        auto mem{reinterpret_cast<::std::size_t>(::uwvm::vm::interpreter::memories.front_unchecked().memory_begin)};
+        auto& global_memory{::uwvm::vm::interpreter::memories.front_unchecked()};
+        auto mem{reinterpret_cast<::std::size_t>(global_memory.memory_begin)};
+        auto const mem_end{mem + global_memory.memory_length};
 
         switch(st.vt)
         {
@@ -961,6 +963,35 @@ namespace uwvm::vm::interpreter::func
 
         mem += offset;
         mem = ((mem + (static_cast<::std::size_t>(1) << aligment) - 1) >> aligment) << aligment;
+
+        if(static_cast<::std::size_t>(mem_end - mem) < sizeof(::std::uint_least32_t) || mem > mem_end) [[unlikely]]
+        {
+            ::fast_io::io::perr(::uwvm::u8err,
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"uwvm: "
+                                u8"\033[31m"
+                                u8"[fatal] "
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"(offset=",
+                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
+                                u8") "
+                                u8"Cross border access."
+                                u8"\n"
+                                u8"\033[0m"
+                                u8"Terminate.\n\n");
+            ::uwvm::backtrace();
+            ::fast_io::fast_terminate();
+        }
 
         ::std::uint_least32_t ml{};
 
@@ -1012,7 +1043,9 @@ namespace uwvm::vm::interpreter::func
 
         auto const st{sm.stack.pop_element_unchecked()};
 
-        auto mem{reinterpret_cast<::std::size_t>(::uwvm::vm::interpreter::memories.front_unchecked().memory_begin)};
+        auto& global_memory{::uwvm::vm::interpreter::memories.front_unchecked()};
+        auto mem{reinterpret_cast<::std::size_t>(global_memory.memory_begin)};
+        auto const mem_end{mem + global_memory.memory_length};
 
         switch(st.vt)
         {
@@ -1060,6 +1093,34 @@ namespace uwvm::vm::interpreter::func
 
         mem += offset;
         mem = ((mem + (static_cast<::std::size_t>(1) << aligment) - 1) >> aligment) << aligment;
+        if(static_cast<::std::size_t>(mem_end - mem) < sizeof(::std::uint_least64_t) || mem > mem_end) [[unlikely]]
+        {
+            ::fast_io::io::perr(::uwvm::u8err,
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"uwvm: "
+                                u8"\033[31m"
+                                u8"[fatal] "
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"(offset=",
+                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
+                                u8") "
+                                u8"Cross border access."
+                                u8"\n"
+                                u8"\033[0m"
+                                u8"Terminate.\n\n");
+            ::uwvm::backtrace();
+            ::fast_io::fast_terminate();
+        }
 
         ::std::uint_least64_t ml{};
 
@@ -1111,7 +1172,9 @@ namespace uwvm::vm::interpreter::func
 
         auto const st{sm.stack.pop_element_unchecked()};
 
-        auto mem{reinterpret_cast<::std::size_t>(::uwvm::vm::interpreter::memories.front_unchecked().memory_begin)};
+        auto& global_memory{::uwvm::vm::interpreter::memories.front_unchecked()};
+        auto mem{reinterpret_cast<::std::size_t>(global_memory.memory_begin)};
+        auto const mem_end{mem + global_memory.memory_length};
 
         switch(st.vt)
         {
@@ -1159,6 +1222,34 @@ namespace uwvm::vm::interpreter::func
 
         mem += offset;
         mem = ((mem + (static_cast<::std::size_t>(1) << aligment) - 1) >> aligment) << aligment;
+        if(static_cast<::std::size_t>(mem_end - mem) < sizeof(::std::uint_least32_t) || mem > mem_end) [[unlikely]]
+        {
+            ::fast_io::io::perr(::uwvm::u8err,
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"uwvm: "
+                                u8"\033[31m"
+                                u8"[fatal] "
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"(offset=",
+                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
+                                u8") "
+                                u8"Cross border access."
+                                u8"\n"
+                                u8"\033[0m"
+                                u8"Terminate.\n\n");
+            ::uwvm::backtrace();
+            ::fast_io::fast_terminate();
+        }
 
         ::std::uint_least32_t ml{};
 
@@ -1210,7 +1301,9 @@ namespace uwvm::vm::interpreter::func
 
         auto const st{sm.stack.pop_element_unchecked()};
 
-        auto mem{reinterpret_cast<::std::size_t>(::uwvm::vm::interpreter::memories.front_unchecked().memory_begin)};
+        auto& global_memory{::uwvm::vm::interpreter::memories.front_unchecked()};
+        auto mem{reinterpret_cast<::std::size_t>(global_memory.memory_begin)};
+        auto const mem_end{mem + global_memory.memory_length};
 
         switch(st.vt)
         {
@@ -1258,6 +1351,35 @@ namespace uwvm::vm::interpreter::func
 
         mem += offset;
         mem = ((mem + (static_cast<::std::size_t>(1) << aligment) - 1) >> aligment) << aligment;
+
+        if(static_cast<::std::size_t>(mem_end - mem) < sizeof(::std::uint_least64_t) || mem > mem_end) [[unlikely]]
+        {
+            ::fast_io::io::perr(::uwvm::u8err,
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"uwvm: "
+                                u8"\033[31m"
+                                u8"[fatal] "
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"(offset=",
+                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
+                                u8") "
+                                u8"Cross border access."
+                                u8"\n"
+                                u8"\033[0m"
+                                u8"Terminate.\n\n");
+            ::uwvm::backtrace();
+            ::fast_io::fast_terminate();
+        }
 
         ::std::uint_least64_t ml{};
 
@@ -1309,7 +1431,9 @@ namespace uwvm::vm::interpreter::func
 
         auto const st{sm.stack.pop_element_unchecked()};
 
-        auto mem{reinterpret_cast<::std::size_t>(::uwvm::vm::interpreter::memories.front_unchecked().memory_begin)};
+        auto& global_memory{::uwvm::vm::interpreter::memories.front_unchecked()};
+        auto mem{reinterpret_cast<::std::size_t>(global_memory.memory_begin)};
+        auto const mem_end{mem + global_memory.memory_length};
 
         switch(st.vt)
         {
@@ -1357,6 +1481,35 @@ namespace uwvm::vm::interpreter::func
 
         mem += offset;
         mem = ((mem + (static_cast<::std::size_t>(1) << aligment) - 1) >> aligment) << aligment;
+
+        if(static_cast<::std::size_t>(mem_end - mem) < sizeof(::std::uint_least8_t) || mem > mem_end) [[unlikely]]
+        {
+            ::fast_io::io::perr(::uwvm::u8err,
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"uwvm: "
+                                u8"\033[31m"
+                                u8"[fatal] "
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"(offset=",
+                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
+                                u8") "
+                                u8"Cross border access."
+                                u8"\n"
+                                u8"\033[0m"
+                                u8"Terminate.\n\n");
+            ::uwvm::backtrace();
+            ::fast_io::fast_terminate();
+        }
 
         ::std::uint_least8_t ml{};
 
@@ -1407,7 +1560,9 @@ namespace uwvm::vm::interpreter::func
 
         auto const st{sm.stack.pop_element_unchecked()};
 
-        auto mem{reinterpret_cast<::std::size_t>(::uwvm::vm::interpreter::memories.front_unchecked().memory_begin)};
+        auto& global_memory{::uwvm::vm::interpreter::memories.front_unchecked()};
+        auto mem{reinterpret_cast<::std::size_t>(global_memory.memory_begin)};
+        auto const mem_end{mem + global_memory.memory_length};
 
         switch(st.vt)
         {
@@ -1455,6 +1610,34 @@ namespace uwvm::vm::interpreter::func
 
         mem += offset;
         mem = ((mem + (static_cast<::std::size_t>(1) << aligment) - 1) >> aligment) << aligment;
+        if(static_cast<::std::size_t>(mem_end - mem) < sizeof(::std::uint_least8_t) || mem > mem_end) [[unlikely]]
+        {
+            ::fast_io::io::perr(::uwvm::u8err,
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"uwvm: "
+                                u8"\033[31m"
+                                u8"[fatal] "
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"(offset=",
+                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
+                                u8") "
+                                u8"Cross border access."
+                                u8"\n"
+                                u8"\033[0m"
+                                u8"Terminate.\n\n");
+            ::uwvm::backtrace();
+            ::fast_io::fast_terminate();
+        }
 
         ::std::uint_least8_t ml{};
 
@@ -1505,7 +1688,9 @@ namespace uwvm::vm::interpreter::func
 
         auto const st{sm.stack.pop_element_unchecked()};
 
-        auto mem{reinterpret_cast<::std::size_t>(::uwvm::vm::interpreter::memories.front_unchecked().memory_begin)};
+        auto& global_memory{::uwvm::vm::interpreter::memories.front_unchecked()};
+        auto mem{reinterpret_cast<::std::size_t>(global_memory.memory_begin)};
+        auto const mem_end{mem + global_memory.memory_length};
 
         switch(st.vt)
         {
@@ -1553,6 +1738,34 @@ namespace uwvm::vm::interpreter::func
 
         mem += offset;
         mem = ((mem + (static_cast<::std::size_t>(1) << aligment) - 1) >> aligment) << aligment;
+        if(static_cast<::std::size_t>(mem_end - mem) < sizeof(::std::uint_least16_t) || mem > mem_end) [[unlikely]]
+        {
+            ::fast_io::io::perr(::uwvm::u8err,
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"uwvm: "
+                                u8"\033[31m"
+                                u8"[fatal] "
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"(offset=",
+                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
+                                u8") "
+                                u8"Cross border access."
+                                u8"\n"
+                                u8"\033[0m"
+                                u8"Terminate.\n\n");
+            ::uwvm::backtrace();
+            ::fast_io::fast_terminate();
+        }
 
         ::std::uint_least16_t ml{};
 
@@ -1603,7 +1816,9 @@ namespace uwvm::vm::interpreter::func
 
         auto const st{sm.stack.pop_element_unchecked()};
 
-        auto mem{reinterpret_cast<::std::size_t>(::uwvm::vm::interpreter::memories.front_unchecked().memory_begin)};
+        auto& global_memory{::uwvm::vm::interpreter::memories.front_unchecked()};
+        auto mem{reinterpret_cast<::std::size_t>(global_memory.memory_begin)};
+        auto const mem_end{mem + global_memory.memory_length};
 
         switch(st.vt)
         {
@@ -1651,6 +1866,34 @@ namespace uwvm::vm::interpreter::func
 
         mem += offset;
         mem = ((mem + (static_cast<::std::size_t>(1) << aligment) - 1) >> aligment) << aligment;
+        if(static_cast<::std::size_t>(mem_end - mem) < sizeof(::std::uint_least16_t) || mem > mem_end) [[unlikely]]
+        {
+            ::fast_io::io::perr(::uwvm::u8err,
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"uwvm: "
+                                u8"\033[31m"
+                                u8"[fatal] "
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"(offset=",
+                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
+                                u8") "
+                                u8"Cross border access."
+                                u8"\n"
+                                u8"\033[0m"
+                                u8"Terminate.\n\n");
+            ::uwvm::backtrace();
+            ::fast_io::fast_terminate();
+        }
 
         ::std::uint_least16_t ml{};
 
@@ -1701,7 +1944,9 @@ namespace uwvm::vm::interpreter::func
 
         auto const st{sm.stack.pop_element_unchecked()};
 
-        auto mem{reinterpret_cast<::std::size_t>(::uwvm::vm::interpreter::memories.front_unchecked().memory_begin)};
+        auto& global_memory{::uwvm::vm::interpreter::memories.front_unchecked()};
+        auto mem{reinterpret_cast<::std::size_t>(global_memory.memory_begin)};
+        auto const mem_end{mem + global_memory.memory_length};
 
         switch(st.vt)
         {
@@ -1749,6 +1994,34 @@ namespace uwvm::vm::interpreter::func
 
         mem += offset;
         mem = ((mem + (static_cast<::std::size_t>(1) << aligment) - 1) >> aligment) << aligment;
+        if(static_cast<::std::size_t>(mem_end - mem) < sizeof(::std::uint_least8_t) || mem > mem_end) [[unlikely]]
+        {
+            ::fast_io::io::perr(::uwvm::u8err,
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"uwvm: "
+                                u8"\033[31m"
+                                u8"[fatal] "
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"(offset=",
+                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
+                                u8") "
+                                u8"Cross border access."
+                                u8"\n"
+                                u8"\033[0m"
+                                u8"Terminate.\n\n");
+            ::uwvm::backtrace();
+            ::fast_io::fast_terminate();
+        }
 
         ::std::uint_least8_t ml{};
 
@@ -1799,7 +2072,9 @@ namespace uwvm::vm::interpreter::func
 
         auto const st{sm.stack.pop_element_unchecked()};
 
-        auto mem{reinterpret_cast<::std::size_t>(::uwvm::vm::interpreter::memories.front_unchecked().memory_begin)};
+        auto& global_memory{::uwvm::vm::interpreter::memories.front_unchecked()};
+        auto mem{reinterpret_cast<::std::size_t>(global_memory.memory_begin)};
+        auto const mem_end{mem + global_memory.memory_length};
 
         switch(st.vt)
         {
@@ -1847,6 +2122,34 @@ namespace uwvm::vm::interpreter::func
 
         mem += offset;
         mem = ((mem + (static_cast<::std::size_t>(1) << aligment) - 1) >> aligment) << aligment;
+        if(static_cast<::std::size_t>(mem_end - mem) < sizeof(::std::uint_least8_t) || mem > mem_end) [[unlikely]]
+        {
+            ::fast_io::io::perr(::uwvm::u8err,
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"uwvm: "
+                                u8"\033[31m"
+                                u8"[fatal] "
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"(offset=",
+                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
+                                u8") "
+                                u8"Cross border access."
+                                u8"\n"
+                                u8"\033[0m"
+                                u8"Terminate.\n\n");
+            ::uwvm::backtrace();
+            ::fast_io::fast_terminate();
+        }
 
         ::std::uint_least8_t ml{};
 
@@ -1896,7 +2199,9 @@ namespace uwvm::vm::interpreter::func
 
         auto const st{sm.stack.pop_element_unchecked()};
 
-        auto mem{reinterpret_cast<::std::size_t>(::uwvm::vm::interpreter::memories.front_unchecked().memory_begin)};
+        auto& global_memory{::uwvm::vm::interpreter::memories.front_unchecked()};
+        auto mem{reinterpret_cast<::std::size_t>(global_memory.memory_begin)};
+        auto const mem_end{mem + global_memory.memory_length};
 
         switch(st.vt)
         {
@@ -1944,6 +2249,34 @@ namespace uwvm::vm::interpreter::func
 
         mem += offset;
         mem = ((mem + (static_cast<::std::size_t>(1) << aligment) - 1) >> aligment) << aligment;
+        if(static_cast<::std::size_t>(mem_end - mem) < sizeof(::std::uint_least16_t) || mem > mem_end) [[unlikely]]
+        {
+            ::fast_io::io::perr(::uwvm::u8err,
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"uwvm: "
+                                u8"\033[31m"
+                                u8"[fatal] "
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"(offset=",
+                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
+                                u8") "
+                                u8"Cross border access."
+                                u8"\n"
+                                u8"\033[0m"
+                                u8"Terminate.\n\n");
+            ::uwvm::backtrace();
+            ::fast_io::fast_terminate();
+        }
 
         ::std::uint_least16_t ml{};
 
@@ -1994,7 +2327,9 @@ namespace uwvm::vm::interpreter::func
 
         auto const st{sm.stack.pop_element_unchecked()};
 
-        auto mem{reinterpret_cast<::std::size_t>(::uwvm::vm::interpreter::memories.front_unchecked().memory_begin)};
+        auto& global_memory{::uwvm::vm::interpreter::memories.front_unchecked()};
+        auto mem{reinterpret_cast<::std::size_t>(global_memory.memory_begin)};
+        auto const mem_end{mem + global_memory.memory_length};
 
         switch(st.vt)
         {
@@ -2042,6 +2377,34 @@ namespace uwvm::vm::interpreter::func
 
         mem += offset;
         mem = ((mem + (static_cast<::std::size_t>(1) << aligment) - 1) >> aligment) << aligment;
+        if(static_cast<::std::size_t>(mem_end - mem) < sizeof(::std::uint_least16_t) || mem > mem_end) [[unlikely]]
+        {
+            ::fast_io::io::perr(::uwvm::u8err,
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"uwvm: "
+                                u8"\033[31m"
+                                u8"[fatal] "
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"(offset=",
+                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
+                                u8") "
+                                u8"Cross border access."
+                                u8"\n"
+                                u8"\033[0m"
+                                u8"Terminate.\n\n");
+            ::uwvm::backtrace();
+            ::fast_io::fast_terminate();
+        }
 
         ::std::uint_least16_t ml{};
 
@@ -2092,7 +2455,9 @@ namespace uwvm::vm::interpreter::func
 
         auto const st{sm.stack.pop_element_unchecked()};
 
-        auto mem{reinterpret_cast<::std::size_t>(::uwvm::vm::interpreter::memories.front_unchecked().memory_begin)};
+        auto& global_memory{::uwvm::vm::interpreter::memories.front_unchecked()};
+        auto mem{reinterpret_cast<::std::size_t>(global_memory.memory_begin)};
+        auto const mem_end{mem + global_memory.memory_length};
 
         switch(st.vt)
         {
@@ -2140,6 +2505,34 @@ namespace uwvm::vm::interpreter::func
 
         mem += offset;
         mem = ((mem + (static_cast<::std::size_t>(1) << aligment) - 1) >> aligment) << aligment;
+        if(static_cast<::std::size_t>(mem_end - mem) < sizeof(::std::uint_least32_t) || mem > mem_end) [[unlikely]]
+        {
+            ::fast_io::io::perr(::uwvm::u8err,
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"uwvm: "
+                                u8"\033[31m"
+                                u8"[fatal] "
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"(offset=",
+                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
+                                u8") "
+                                u8"Cross border access."
+                                u8"\n"
+                                u8"\033[0m"
+                                u8"Terminate.\n\n");
+            ::uwvm::backtrace();
+            ::fast_io::fast_terminate();
+        }
 
         ::std::uint_least32_t ml{};
 
@@ -2190,7 +2583,9 @@ namespace uwvm::vm::interpreter::func
 
         auto const st{sm.stack.pop_element_unchecked()};
 
-        auto mem{reinterpret_cast<::std::size_t>(::uwvm::vm::interpreter::memories.front_unchecked().memory_begin)};
+        auto& global_memory{::uwvm::vm::interpreter::memories.front_unchecked()};
+        auto mem{reinterpret_cast<::std::size_t>(global_memory.memory_begin)};
+        auto const mem_end{mem + global_memory.memory_length};
 
         switch(st.vt)
         {
@@ -2238,6 +2633,34 @@ namespace uwvm::vm::interpreter::func
 
         mem += offset;
         mem = ((mem + (static_cast<::std::size_t>(1) << aligment) - 1) >> aligment) << aligment;
+        if(static_cast<::std::size_t>(mem_end - mem) < sizeof(::std::uint_least32_t) || mem > mem_end) [[unlikely]]
+        {
+            ::fast_io::io::perr(::uwvm::u8err,
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"uwvm: "
+                                u8"\033[31m"
+                                u8"[fatal] "
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"(offset=",
+                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
+                                u8") "
+                                u8"Cross border access."
+                                u8"\n"
+                                u8"\033[0m"
+                                u8"Terminate.\n\n");
+            ::uwvm::backtrace();
+            ::fast_io::fast_terminate();
+        }
 
         ::std::uint_least32_t ml{};
 
@@ -2319,7 +2742,9 @@ namespace uwvm::vm::interpreter::func
 
         auto const st{sm.stack.pop_element_unchecked()};
 
-        auto mem{reinterpret_cast<::std::size_t>(::uwvm::vm::interpreter::memories.front_unchecked().memory_begin)};
+        auto& global_memory{::uwvm::vm::interpreter::memories.front_unchecked()};
+        auto mem{reinterpret_cast<::std::size_t>(global_memory.memory_begin)};
+        auto const mem_end{mem + global_memory.memory_length};
 
         switch(st.vt)
         {
@@ -2367,9 +2792,7 @@ namespace uwvm::vm::interpreter::func
 
         mem += offset;
         mem = ((mem + (static_cast<::std::size_t>(1) << aligment) - 1) >> aligment) << aligment;
-
-        if(mem >= reinterpret_cast<::std::size_t>(::uwvm::vm::interpreter::memories.front_unchecked().memory_begin +
-                                                  ::uwvm::vm::interpreter::memories.front_unchecked().memory_length)) [[unlikely]]
+        if(static_cast<::std::size_t>(mem_end - mem) < sizeof(::std::uint_least32_t) || mem > mem_end) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -2476,7 +2899,9 @@ namespace uwvm::vm::interpreter::func
 
         auto const st{sm.stack.pop_element_unchecked()};
 
-        auto mem{reinterpret_cast<::std::size_t>(::uwvm::vm::interpreter::memories.front_unchecked().memory_begin)};
+        auto& global_memory{::uwvm::vm::interpreter::memories.front_unchecked()};
+        auto mem{reinterpret_cast<::std::size_t>(global_memory.memory_begin)};
+        auto const mem_end{mem + global_memory.memory_length};
 
         switch(st.vt)
         {
@@ -2525,8 +2950,7 @@ namespace uwvm::vm::interpreter::func
         mem += offset;
         mem = ((mem + (static_cast<::std::size_t>(1) << aligment) - 1) >> aligment) << aligment;
 
-        if(mem >= reinterpret_cast<::std::size_t>(::uwvm::vm::interpreter::memories.front_unchecked().memory_begin +
-                                                  ::uwvm::vm::interpreter::memories.front_unchecked().memory_length)) [[unlikely]]
+        if(static_cast<::std::size_t>(mem_end - mem) < sizeof(::std::uint_least64_t) || mem > mem_end) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -2633,7 +3057,9 @@ namespace uwvm::vm::interpreter::func
 
         auto const st{sm.stack.pop_element_unchecked()};
 
-        auto mem{reinterpret_cast<::std::size_t>(::uwvm::vm::interpreter::memories.front_unchecked().memory_begin)};
+        auto& global_memory{::uwvm::vm::interpreter::memories.front_unchecked()};
+        auto mem{reinterpret_cast<::std::size_t>(global_memory.memory_begin)};
+        auto const mem_end{mem + global_memory.memory_length};
 
         switch(st.vt)
         {
@@ -2682,8 +3108,7 @@ namespace uwvm::vm::interpreter::func
         mem += offset;
         mem = ((mem + (static_cast<::std::size_t>(1) << aligment) - 1) >> aligment) << aligment;
 
-        if(mem >= reinterpret_cast<::std::size_t>(::uwvm::vm::interpreter::memories.front_unchecked().memory_begin +
-                                                  ::uwvm::vm::interpreter::memories.front_unchecked().memory_length)) [[unlikely]]
+        if(static_cast<::std::size_t>(mem_end - mem) < sizeof(::std::uint_least32_t) || mem > mem_end) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -2790,7 +3215,9 @@ namespace uwvm::vm::interpreter::func
 
         auto const st{sm.stack.pop_element_unchecked()};
 
-        auto mem{reinterpret_cast<::std::size_t>(::uwvm::vm::interpreter::memories.front_unchecked().memory_begin)};
+        auto& global_memory{::uwvm::vm::interpreter::memories.front_unchecked()};
+        auto mem{reinterpret_cast<::std::size_t>(global_memory.memory_begin)};
+        auto const mem_end{mem + global_memory.memory_length};
 
         switch(st.vt)
         {
@@ -2839,8 +3266,7 @@ namespace uwvm::vm::interpreter::func
         mem += offset;
         mem = ((mem + (static_cast<::std::size_t>(1) << aligment) - 1) >> aligment) << aligment;
 
-        if(mem >= reinterpret_cast<::std::size_t>(::uwvm::vm::interpreter::memories.front_unchecked().memory_begin +
-                                                  ::uwvm::vm::interpreter::memories.front_unchecked().memory_length)) [[unlikely]]
+        if(static_cast<::std::size_t>(mem_end - mem) < sizeof(::std::uint_least64_t) || mem > mem_end) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -2947,7 +3373,9 @@ namespace uwvm::vm::interpreter::func
 
         auto const st{sm.stack.pop_element_unchecked()};
 
-        auto mem{reinterpret_cast<::std::size_t>(::uwvm::vm::interpreter::memories.front_unchecked().memory_begin)};
+        auto& global_memory{::uwvm::vm::interpreter::memories.front_unchecked()};
+        auto mem{reinterpret_cast<::std::size_t>(global_memory.memory_begin)};
+        auto const mem_end{mem + global_memory.memory_length};
 
         switch(st.vt)
         {
@@ -2995,6 +3423,34 @@ namespace uwvm::vm::interpreter::func
 
         mem += offset;
         mem = ((mem + (static_cast<::std::size_t>(1) << aligment) - 1) >> aligment) << aligment;
+        if(static_cast<::std::size_t>(mem_end - mem) < sizeof(::std::uint_least8_t) || mem > mem_end) [[unlikely]]
+        {
+            ::fast_io::io::perr(::uwvm::u8err,
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"uwvm: "
+                                u8"\033[31m"
+                                u8"[fatal] "
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"(offset=",
+                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
+                                u8") "
+                                u8"Cross border access."
+                                u8"\n"
+                                u8"\033[0m"
+                                u8"Terminate.\n\n");
+            ::uwvm::backtrace();
+            ::fast_io::fast_terminate();
+        }
 
         auto const ml{::fast_io::little_endian(static_cast<::std::uint_least8_t>(static_cast<::std::uint_least32_t>(num.i32)))};
 
@@ -3074,7 +3530,9 @@ namespace uwvm::vm::interpreter::func
 
         auto const st{sm.stack.pop_element_unchecked()};
 
-        auto mem{reinterpret_cast<::std::size_t>(::uwvm::vm::interpreter::memories.front_unchecked().memory_begin)};
+        auto& global_memory{::uwvm::vm::interpreter::memories.front_unchecked()};
+        auto mem{reinterpret_cast<::std::size_t>(global_memory.memory_begin)};
+        auto const mem_end{mem + global_memory.memory_length};
 
         switch(st.vt)
         {
@@ -3122,6 +3580,34 @@ namespace uwvm::vm::interpreter::func
 
         mem += offset;
         mem = ((mem + (static_cast<::std::size_t>(1) << aligment) - 1) >> aligment) << aligment;
+        if(static_cast<::std::size_t>(mem_end - mem) < sizeof(::std::uint_least16_t) || mem > mem_end) [[unlikely]]
+        {
+            ::fast_io::io::perr(::uwvm::u8err,
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"uwvm: "
+                                u8"\033[31m"
+                                u8"[fatal] "
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"(offset=",
+                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
+                                u8") "
+                                u8"Cross border access."
+                                u8"\n"
+                                u8"\033[0m"
+                                u8"Terminate.\n\n");
+            ::uwvm::backtrace();
+            ::fast_io::fast_terminate();
+        }
 
         auto const ml{::fast_io::little_endian(static_cast<::std::uint_least16_t>(static_cast<::std::uint_least32_t>(num.i32)))};
 
@@ -3201,7 +3687,9 @@ namespace uwvm::vm::interpreter::func
 
         auto const st{sm.stack.pop_element_unchecked()};
 
-        auto mem{reinterpret_cast<::std::size_t>(::uwvm::vm::interpreter::memories.front_unchecked().memory_begin)};
+        auto& global_memory{::uwvm::vm::interpreter::memories.front_unchecked()};
+        auto mem{reinterpret_cast<::std::size_t>(global_memory.memory_begin)};
+        auto const mem_end{mem + global_memory.memory_length};
 
         switch(st.vt)
         {
@@ -3249,6 +3737,34 @@ namespace uwvm::vm::interpreter::func
 
         mem += offset;
         mem = ((mem + (static_cast<::std::size_t>(1) << aligment) - 1) >> aligment) << aligment;
+        if(static_cast<::std::size_t>(mem_end - mem) < sizeof(::std::uint_least8_t) || mem > mem_end) [[unlikely]]
+        {
+            ::fast_io::io::perr(::uwvm::u8err,
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"uwvm: "
+                                u8"\033[31m"
+                                u8"[fatal] "
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"(offset=",
+                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
+                                u8") "
+                                u8"Cross border access."
+                                u8"\n"
+                                u8"\033[0m"
+                                u8"Terminate.\n\n");
+            ::uwvm::backtrace();
+            ::fast_io::fast_terminate();
+        }
 
         auto const ml{::fast_io::little_endian(static_cast<::std::uint_least8_t>(static_cast<::std::uint_least64_t>(num.i64)))};
 
@@ -3328,7 +3844,9 @@ namespace uwvm::vm::interpreter::func
 
         auto const st{sm.stack.pop_element_unchecked()};
 
-        auto mem{reinterpret_cast<::std::size_t>(::uwvm::vm::interpreter::memories.front_unchecked().memory_begin)};
+        auto& global_memory{::uwvm::vm::interpreter::memories.front_unchecked()};
+        auto mem{reinterpret_cast<::std::size_t>(global_memory.memory_begin)};
+        auto const mem_end{mem + global_memory.memory_length};
 
         switch(st.vt)
         {
@@ -3376,6 +3894,34 @@ namespace uwvm::vm::interpreter::func
 
         mem += offset;
         mem = ((mem + (static_cast<::std::size_t>(1) << aligment) - 1) >> aligment) << aligment;
+        if(static_cast<::std::size_t>(mem_end - mem) < sizeof(::std::uint_least16_t) || mem > mem_end) [[unlikely]]
+        {
+            ::fast_io::io::perr(::uwvm::u8err,
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"uwvm: "
+                                u8"\033[31m"
+                                u8"[fatal] "
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"(offset=",
+                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
+                                u8") "
+                                u8"Cross border access."
+                                u8"\n"
+                                u8"\033[0m"
+                                u8"Terminate.\n\n");
+            ::uwvm::backtrace();
+            ::fast_io::fast_terminate();
+        }
 
         auto const ml{::fast_io::little_endian(static_cast<::std::uint_least16_t>(static_cast<::std::uint_least64_t>(num.i64)))};
 
@@ -3455,7 +4001,9 @@ namespace uwvm::vm::interpreter::func
 
         auto const st{sm.stack.pop_element_unchecked()};
 
-        auto mem{reinterpret_cast<::std::size_t>(::uwvm::vm::interpreter::memories.front_unchecked().memory_begin)};
+        auto& global_memory{::uwvm::vm::interpreter::memories.front_unchecked()};
+        auto mem{reinterpret_cast<::std::size_t>(global_memory.memory_begin)};
+        auto const mem_end{mem + global_memory.memory_length};
 
         switch(st.vt)
         {
@@ -3503,6 +4051,34 @@ namespace uwvm::vm::interpreter::func
 
         mem += offset;
         mem = ((mem + (static_cast<::std::size_t>(1) << aligment) - 1) >> aligment) << aligment;
+        if(static_cast<::std::size_t>(mem_end - mem) < sizeof(::std::uint_least32_t) || mem > mem_end) [[unlikely]]
+        {
+            ::fast_io::io::perr(::uwvm::u8err,
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"uwvm: "
+                                u8"\033[31m"
+                                u8"[fatal] "
+                                u8"\033[0m"
+#ifdef __MSDOS__
+                                u8"\033[37m"
+#else
+                                u8"\033[97m"
+#endif
+                                u8"(offset=",
+                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
+                                u8") "
+                                u8"Cross border access."
+                                u8"\n"
+                                u8"\033[0m"
+                                u8"Terminate.\n\n");
+            ::uwvm::backtrace();
+            ::fast_io::fast_terminate();
+        }
 
         auto const ml{::fast_io::little_endian(static_cast<::std::uint_least32_t>(static_cast<::std::uint_least64_t>(num.i64)))};
 

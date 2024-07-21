@@ -191,7 +191,7 @@ namespace uwvm::wasm
 
             curr = reinterpret_cast<::std::byte const*>(next_en);
 
-            if(end - curr < export_name_len + 2) [[unlikely]]
+            if(static_cast<::std::size_t>(end - curr) < export_name_len + 2u || curr > end) [[unlikely]]
             {
                 ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"

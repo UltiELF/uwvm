@@ -6,7 +6,7 @@
 namespace uwvm::wasm
 {
     // https://pengowray.github.io/wasm-ops/
-    
+
     // mvp or prefix
     enum class op_basic : ::uwvm::wasm::op_basic_type  // u8
     {
@@ -670,19 +670,6 @@ namespace uwvm::wasm
         table_init = 0x0c,
         table_copy = 0x0e,
         table_size = 0x10,
-
-        // Memory Tag
-        memory_randomtag = 0x20,
-        memory_copytag = 0x21,
-        memory_subtag = 0x22,
-        memory_loadtag = 0x23,
-        memory_storetag = 0x24,
-        memory_storeztag = 0x25,
-        memory_randomstoretag = 0x28,
-        memory_randomstoreztag = 0x29,
-        memory_hinttag = 0x2c,
-        memory_hintstoretag = 0x2d,
-        memory_hintstoreztag = 0x2e,
 
         // Saturating float->int truncation operators
         i32_trunc_sat_f32_s = 0x00,

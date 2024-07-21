@@ -207,7 +207,7 @@ namespace uwvm::wasm
 
                     // jump to para1
                     curr = reinterpret_cast<::std::byte const*>(next_para);
-                    if(end - curr < static_cast<::std::ptrdiff_t>(para_len + 1)) [[unlikely]]
+                    if(static_cast<::std::size_t>(end - curr) < para_len + 1u || curr > end) [[unlikely]]
                     {
                         ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -413,7 +413,7 @@ namespace uwvm::wasm
 
                     // jump to res1
                     curr = reinterpret_cast<::std::byte const*>(next_res);
-                    if(end - curr < static_cast<::std::ptrdiff_t>(res_len)) [[unlikely]]
+                    if(static_cast<::std::size_t>(end - curr) < res_len || curr > end) [[unlikely]]
                     {
                         ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"

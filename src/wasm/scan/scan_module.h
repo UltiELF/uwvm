@@ -101,7 +101,7 @@ namespace uwvm::wasm
         // get first section
         curr += 4U;
 
-        if(end - curr < 2) [[unlikely]]
+        if(static_cast<::std::size_t>(end - curr) < 2U || curr > end) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -181,7 +181,7 @@ namespace uwvm::wasm
             curr = reinterpret_cast<::std::byte const*>(next);
 
             // check length
-            if(end - curr < sec_len) [[unlikely]]
+            if(static_cast<::std::size_t>(end - curr) < sec_len || curr > end) [[unlikely]]
             {
                 ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -313,8 +313,8 @@ namespace uwvm::wasm
             curr = sec_end;
 
             // check next section
-            if(auto const dif{end - curr}; dif == 0U) { break; }
-            else if(dif < 2U) [[unlikely]]
+            if(auto const dif{static_cast<::std::size_t>(end - curr)}; dif == 0U) { break; }
+            else if(dif < 2U || curr > end) [[unlikely]]
             {
                 ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"

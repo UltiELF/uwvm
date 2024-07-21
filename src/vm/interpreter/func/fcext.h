@@ -21,7 +21,7 @@ namespace uwvm::vm::interpreter::func
         inline void
             memory_copy(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
         {
-            if(sm.stack.size() <  3) [[unlikely]]
+            if(sm.stack.size() <  3u) [[unlikely]]
             {
                 ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"

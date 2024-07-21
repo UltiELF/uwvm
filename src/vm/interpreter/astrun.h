@@ -204,7 +204,7 @@ namespace uwvm::vm::interpreter
 
             ::uwvm::prefetch(local_curr);
 
-#if 0
+#if 1
             // set stack curr
             uwvm_sm.stack.get_container().imp.curr_ptr -= func_type_para_size;
 #endif

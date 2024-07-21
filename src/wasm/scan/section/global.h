@@ -616,7 +616,7 @@ namespace uwvm::wasm
                         ::fast_io::fast_terminate();
                     }
 
-                    if(end - curr < 4) [[unlikely]]
+                    if(static_cast<::std::size_t>(end - curr) < 4u || curr > end) [[unlikely]]
                     {
                         ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -684,7 +684,7 @@ namespace uwvm::wasm
                         ::fast_io::fast_terminate();
                     }
 
-                    if(end - curr < 8) [[unlikely]]
+                    if(static_cast<::std::size_t>(end - curr) < 8u || curr > end) [[unlikely]]
                     {
                         ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -940,7 +940,7 @@ namespace uwvm::wasm
 
                     curr = reinterpret_cast<::std::byte const*>(next_ope);
 
-                    if(end - curr < 16) [[unlikely]]
+                    if(static_cast<::std::size_t>(end - curr) < 16u || curr > end) [[unlikely]]
                     {
                         ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -1031,7 +1031,7 @@ namespace uwvm::wasm
                     }
             }
 
-            if(end - curr < 1) [[unlikely]]
+            if(static_cast<::std::size_t>(end - curr) < 1u || curr > end) [[unlikely]]
             {
                 ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
