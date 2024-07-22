@@ -522,7 +522,6 @@ inline constexpr posix_at_entry at_fdcwd() noexcept
 
 #endif
 
-#if (!defined(__NEWLIB__) || defined(__CYGWIN__)) && (!defined(_WIN32) || defined(__WINE__))
 namespace details
 {
 
@@ -736,8 +735,6 @@ inline posix_file_status status(basic_posix_family_io_observer<family, ch_type> 
 	return details::fstat_impl(piob.fd);
 #endif
 }
-
-#endif
 
 #if (defined(_WIN32) && !defined(__WINE__) && !defined(__BIONIC__)) && !defined(__CYGWIN__)
 template <::fast_io::posix_family family, ::std::integral ch_type>

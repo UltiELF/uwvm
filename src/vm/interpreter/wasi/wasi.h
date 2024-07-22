@@ -775,7 +775,149 @@ namespace uwvm::vm::interpreter::wasi
         return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::esuccess);
     }
 
-    ::std::int_least32_t fd_fdstat_get(::std::int_least32_t arg0, ::std::int_least32_t arg1) noexcept { return {}; }
+    ::std::int_least32_t fd_fdstat_get(::std::int_least32_t arg0, ::std::int_least32_t arg1) noexcept
+    {
+        auto const fd{get_fd(::uwvm::vm::interpreter::wasi::wasm_fd_storages, arg0)};
+        if(fd == -1) [[unlikely]] { return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::einval); }
+
+        auto& memory{::uwvm::vm::interpreter::memories.front()};
+        auto const memory_begin{memory.memory_begin};
+        auto const memory_length{memory.memory_length};
+        auto const memory_end{memory_begin + memory_length};
+
+        // write pos begin
+        auto const fdstat_begin{memory_begin + static_cast<::std::size_t>(arg1)};
+
+        if(static_cast<::std::size_t>(memory_end - fdstat_begin) < 24 || fdstat_begin > memory_end) [[unlikely]]
+        {
+            return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::efault);
+        }
+
+        ::uwvm::vm::interpreter::wasi::filetype_t fs_filetype{};                                                                 // 0
+        ::uwvm::vm::interpreter::wasi::fdflags_t fs_flags{};                                                                     // 2
+        ::uwvm::vm::interpreter::wasi::rights_t fs_rights_base{static_cast<::uwvm::vm::interpreter::wasi::rights_t>(-1)};        // 8
+        ::uwvm::vm::interpreter::wasi::rights_t fs_rights_inheriting{static_cast<::uwvm::vm::interpreter::wasi::rights_t>(-1)};  // 16
+
+        ::fast_io::posix_io_observer fpio{fd};
+
+        ::fast_io::posix_file_status s{};
+
+#ifdef __cpp_exceptions
+        try
+#endif
+        {
+            s = ::fast_io::status(fpio);
+        }
+#ifdef __cpp_exceptions
+        catch(::fast_io::error e)
+        {
+            ::fast_io::freestanding::my_memset(fdstat_begin, 0, 24);
+            return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::efault);
+        }
+#endif
+
+        switch(s.type)
+        {
+            case ::fast_io::file_type::none:
+            {
+                fs_filetype = ::uwvm::vm::interpreter::wasi::filetype_t::filetype_unknown;
+                break;
+            }
+            case ::fast_io::file_type::not_found:
+            {
+                fs_filetype = ::uwvm::vm::interpreter::wasi::filetype_t::filetype_unknown;
+                break;
+            }
+            case ::fast_io::file_type::regular:
+            {
+                fs_filetype = ::uwvm::vm::interpreter::wasi::filetype_t::filetype_regular_file;
+                break;
+            }
+            case ::fast_io::file_type::directory:
+            {
+                fs_filetype = ::uwvm::vm::interpreter::wasi::filetype_t::filetype_directory;
+                break;
+            }
+            case ::fast_io::file_type::symlink:
+            {
+                fs_filetype = ::uwvm::vm::interpreter::wasi::filetype_t::filetype_symbolic_link;
+                break;
+            }
+            case ::fast_io::file_type::block:
+            {
+                fs_filetype = ::uwvm::vm::interpreter::wasi::filetype_t::filetype_block_device;
+                break;
+            }
+            case ::fast_io::file_type::character:
+            {
+                fs_filetype = ::uwvm::vm::interpreter::wasi::filetype_t::filetype_character_device;
+                break;
+            }
+            case ::fast_io::file_type::fifo:
+            {
+                fs_filetype = ::uwvm::vm::interpreter::wasi::filetype_t::filetype_unknown;
+                break;
+            }
+            case ::fast_io::file_type::socket:
+            {
+                fs_filetype = ::uwvm::vm::interpreter::wasi::filetype_t::filetype_socket_stream;
+                break;
+            }
+            case ::fast_io::file_type::unknown:
+            {
+                fs_filetype = ::uwvm::vm::interpreter::wasi::filetype_t::filetype_unknown;
+                break;
+            }
+            case ::fast_io::file_type::remote:
+            {
+                fs_filetype = ::uwvm::vm::interpreter::wasi::filetype_t::filetype_unknown;
+                break;
+            }
+            default:
+            {
+                ::fast_io::fast_terminate();
+            }
+        }
+
+        ::std::uint_least16_t fs_flags_temp{};
+#ifdef O_APPEND
+        if(s.flags & O_APPEND) { fs_flags_temp |= static_cast<::std::uint_least16_t>(::uwvm::vm::interpreter::wasi::fdflags_t::fdflag_append); }
+#endif
+#ifdef O_DSYNC
+        if(s.flags & O_DSYNC) { fs_flags_temp |= static_cast<::std::uint_least16_t>(::uwvm::vm::interpreter::wasi::fdflags_t::fdflag_dsync); }
+#endif
+#ifdef O_NONBLOCK
+        if(s.flags & O_NONBLOCK) { fs_flags_temp |= static_cast<::std::uint_least16_t>(::uwvm::vm::interpreter::wasi::fdflags_t::fdflag_nonblock); }
+#endif
+#ifdef O_RSYNC
+        if(s.flags & O_RSYNC) { fs_flags_temp |= static_cast<::std::uint_least16_t>(::uwvm::vm::interpreter::wasi::fdflags_t::fdflag_rsync); }
+#endif
+#ifdef O_SYNC
+        if(s.flags & O_SYNC) { fs_flags_temp |= static_cast<::std::uint_least16_t>(::uwvm::vm::interpreter::wasi::fdflags_t::fdflag_sync); }
+#endif
+        fs_flags = static_cast<::uwvm::vm::interpreter::wasi::fdflags_t>(fs_flags_temp);
+
+        if(fd < 3)
+        {
+            auto fs_rights_inheriting_temp{static_cast<::std::uint_least64_t>(fs_rights_inheriting)};
+            fs_rights_inheriting_temp &= ~(static_cast<::std::uint_least64_t>(::uwvm::vm::interpreter::wasi::rights_t::right_fd_seek) |
+                                           static_cast<::std::uint_least64_t>(::uwvm::vm::interpreter::wasi::rights_t::right_fd_tell));
+            fs_rights_inheriting = static_cast<::uwvm::vm::interpreter::wasi::rights_t>(fs_rights_inheriting_temp);
+        }
+
+        ::fast_io::freestanding::my_memcpy(fdstat_begin, __builtin_addressof(fs_filetype), sizeof(fs_filetype));
+
+        auto const fs_flags_le{::fast_io::little_endian(static_cast<::std::uint_least16_t>(fs_flags))};
+        ::fast_io::freestanding::my_memcpy(fdstat_begin + 2, __builtin_addressof(fs_flags_le), sizeof(fs_flags_le));
+
+        auto const fs_rights_base_le{::fast_io::little_endian(static_cast<::std::uint_least64_t>(fs_rights_base))};
+        ::fast_io::freestanding::my_memcpy(fdstat_begin + 8, __builtin_addressof(fs_rights_base_le), sizeof(fs_rights_base_le));
+
+        auto const fs_rights_inheriting_le{::fast_io::little_endian(static_cast<::std::uint_least64_t>(fs_rights_inheriting))};
+        ::fast_io::freestanding::my_memcpy(fdstat_begin + 16, __builtin_addressof(fs_rights_inheriting_le), sizeof(fs_rights_inheriting_le));
+        
+        return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::esuccess);
+    }
 
     ::std::int_least32_t fd_fdstat_set_flags(::std::int_least32_t arg0, ::std::int_least32_t arg1) noexcept { return {}; }
 
