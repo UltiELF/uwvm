@@ -349,5 +349,30 @@ struct system_info
     ::std::uint_least16_t wProcessorRevision;
 };
 
+union large_integer
+{
+    struct
+    {
+        ::std::uint_least32_t LowPart;
+        ::std::int_least32_t HighPart;
+    };
+
+    struct
+    {
+        ::std::uint_least32_t LowPart;
+        ::std::int_least32_t HighPart;
+    } u;
+
+    ::std::int_least64_t QuadPart;
+};
+
+struct file_basic_info
+{
+    large_integer CreationTime;
+    large_integer LastAccessTime;
+    large_integer LastWriteTime;
+    large_integer ChangeTime;
+    ::std::uint_least32_t FileAttributes;
+};
 
 } // namespace fast_io::win32

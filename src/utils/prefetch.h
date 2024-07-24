@@ -6,6 +6,9 @@
 namespace uwvm
 {
     template <bool write = false, int level = 3>
+#if __has_cpp_attribute(__gnu__::__artificial__)
+    [[__gnu__::__artificial__]]
+#endif
 #if __has_cpp_attribute(__gnu__::__always_inline__)
     [[__gnu__::__always_inline__]]
 #elif __has_cpp_attribute(msvc::forceinline)

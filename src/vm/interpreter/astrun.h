@@ -14,9 +14,10 @@ namespace uwvm::vm::interpreter
         {
             // Just checking the stack is enough
             uwvm_sm.init();
-            ::uwvm::prefetch(uwvm_sm.stack.get_container().cbegin());
-            ::uwvm::prefetch(uwvm_sm.local_storages.get_container().cbegin());
         }
+
+        ::uwvm::prefetch(uwvm_sm.stack.get_container().cbegin());
+        ::uwvm::prefetch(uwvm_sm.local_storages.get_container().cbegin());
 
         if(!a.operators.empty()) [[likely]]
         {

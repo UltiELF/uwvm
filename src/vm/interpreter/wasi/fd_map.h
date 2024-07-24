@@ -29,6 +29,14 @@ namespace uwvm::vm::interpreter::wasi
         else { return wasm_fd_storage.opens.index_unchecked(wasm_fd_pos); }
     }
 
+    inline constexpr bool reset_fd(wasm_fd_storage_t& wasm_fd_storage, ::std::int_least32_t wasm_fd, int fd) noexcept
+    {
+        auto const wasm_fd_pos{static_cast<::std::size_t>(wasm_fd)};
+        if(wasm_fd_storage.opens.size() <= wasm_fd_pos) [[unlikely]] { return false; }
+        wasm_fd_storage.opens.index_unchecked(wasm_fd_pos) = fd;
+        return true;
+    }
+
     inline constexpr ::std::int_least32_t create_wasm_fd(wasm_fd_storage_t& wasm_fd_storage, int fd) noexcept
     {
         if(wasm_fd_storage.closes.empty())

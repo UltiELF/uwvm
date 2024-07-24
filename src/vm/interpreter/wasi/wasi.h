@@ -874,9 +874,7 @@ namespace uwvm::vm::interpreter::wasi
                 break;
             }
             default:
-            {
-                ::fast_io::fast_terminate();
-            }
+                [[unlikely]] { ::fast_io::fast_terminate(); }
         }
 
         ::std::uint_least16_t fs_flags_temp{};
@@ -915,13 +913,101 @@ namespace uwvm::vm::interpreter::wasi
 
         auto const fs_rights_inheriting_le{::fast_io::little_endian(static_cast<::std::uint_least64_t>(fs_rights_inheriting))};
         ::fast_io::freestanding::my_memcpy(fdstat_begin + 16, __builtin_addressof(fs_rights_inheriting_le), sizeof(fs_rights_inheriting_le));
-        
+
         return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::esuccess);
     }
 
-    ::std::int_least32_t fd_fdstat_set_flags(::std::int_least32_t arg0, ::std::int_least32_t arg1) noexcept { return {}; }
+    ::std::int_least32_t fd_fdstat_set_flags(::std::int_least32_t arg0, ::std::int_least32_t arg1) noexcept
+    {
+        auto const fd{get_fd(::uwvm::vm::interpreter::wasi::wasm_fd_storages, arg0)};
+        if(fd == -1) [[unlikely]] { return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::einval); }
+        auto const flags{static_cast<::uwvm::vm::interpreter::wasi::fdflags_t>(arg1)};
+        auto const flags_u16{static_cast<::std::uint_least16_t>(flags)};
 
-    ::std::int_least32_t fd_fdstat_set_rights(::std::int_least32_t arg0, ::std::int_least64_t arg1, ::std::int_least64_t arg2) noexcept { return {}; }
+#if (defined(_WIN32) && !defined(__WINE__) && !defined(__BIONIC__)) && !defined(__CYGWIN__)
+        auto const win32_handle{static_cast<::fast_io::win32_io_observer>(::fast_io::posix_io_observer{fd})};
+        void* const handle{win32_handle.native_handle()};
+
+        ::fast_io::win32::by_handle_file_information bhfi{};
+        if(!::fast_io::win32::GetFileInformationByHandle(handle, __builtin_addressof(bhfi))) [[unlikely]]
+        {
+            return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::efault);
+        }
+
+        if(flags_u16 & static_cast<::std::uint_least16_t>(::uwvm::vm::interpreter::wasi::fdflags_t::fdflag_append) ==
+                           static_cast<::std::uint_least16_t>(::uwvm::vm::interpreter::wasi::fdflags_t::fdflag_append))
+        {
+            bhfi.dwFileAttributes &= 0x0004 /* FILE_APPEND_DATA */;
+        }
+        else { bhfi.dwFileAttributes &= ~0x0004 /* FILE_APPEND_DATA */; }
+
+        ::fast_io::win32::file_basic_info fbi{.FileAttributes{bhfi.dwFileAttributes}};
+
+        if(!::fast_io::win32::SetFileInformationByHandle(handle,
+                                                         ::fast_io::win32::file_info_by_handle_class::FileBasicInfo,
+                                                         __builtin_addressof(fbi),
+                                                         sizeof(fbi))) [[unlikely]]
+        {
+            return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::efault);
+        }
+#else
+        ::std::uintmax_t fd_flags{};
+        if(flags_u16 & static_cast<::std::uint_least16_t>(::uwvm::vm::interpreter::wasi::fdflags_t::fdflag_append) ==
+                           static_cast<::std::uint_least16_t>(::uwvm::vm::interpreter::wasi::fdflags_t::fdflag_append))
+        {
+    #ifdef O_APPEND
+            fd_flags |= O_APPEND;
+    #endif
+        }
+        if(flags_u16 & static_cast<::std::uint_least16_t>(::uwvm::vm::interpreter::wasi::fdflags_t::fdflag_dsync) ==
+                           static_cast<::std::uint_least16_t>(::uwvm::vm::interpreter::wasi::fdflags_t::fdflag_dsync))
+        {
+    #ifdef O_DSYNC
+            fd_flags |= O_DSYNC;
+    #endif
+        }
+        if(flags_u16 & static_cast<::std::uint_least16_t>(::uwvm::vm::interpreter::wasi::fdflags_t::fdflag_nonblock) ==
+                           static_cast<::std::uint_least16_t>(::uwvm::vm::interpreter::wasi::fdflags_t::fdflag_nonblock))
+        {
+    #ifdef O_NONBLOCK
+            fd_flags |= O_NONBLOCK;
+    #endif
+        }
+        if(flags_u16 & static_cast<::std::uint_least16_t>(::uwvm::vm::interpreter::wasi::fdflags_t::fdflag_rsync) ==
+                           static_cast<::std::uint_least16_t>(::uwvm::vm::interpreter::wasi::fdflags_t::fdflag_rsync))
+        {
+    #ifdef O_RSYNC
+            fd_flags |= O_RSYNC;
+    #endif
+        }
+        if(flags_u16 & static_cast<::std::uint_least16_t>(::uwvm::vm::interpreter::wasi::fdflags_t::fdflag_sync) ==
+                           static_cast<::std::uint_least16_t>(::uwvm::vm::interpreter::wasi::fdflags_t::fdflag_sync))
+        {
+    #ifdef O_SYNC
+            fd_flags |= O_SYNC;
+    #endif
+        }
+
+        if(
+    #if defined(__linux__) && defined(__NR_fcntl)
+            ::fast_io::system_call<__NR_fcntl, int>(fd, F_SETFL, fd_flags)
+    #else
+            fcntl(fd, F_SETFL, fd_flags)
+    #endif
+            != 0) [[unlikely]]
+        {
+            return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::efault);
+        }
+#endif
+        return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::esuccess);
+    }
+
+    ::std::int_least32_t fd_fdstat_set_rights(::std::int_least32_t arg0, ::std::int_least64_t arg1, ::std::int_least64_t arg2) noexcept
+    {
+        auto const fd{get_fd(::uwvm::vm::interpreter::wasi::wasm_fd_storages, arg0)};
+        if(fd == -1) [[unlikely]] { return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::einval); }
+        return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::esuccess);
+    }
 
     ::std::int_least32_t fd_filestat_get(::std::int_least32_t arg0, ::std::int_least32_t arg1) noexcept { return {}; }
 
