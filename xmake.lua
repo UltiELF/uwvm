@@ -120,9 +120,7 @@ function defopt()
 	-- use llvm
 	local use_llvm_toolchain = get_config("use-llvm")
 
-	if use_llvm_toolchain then	
-		add_cxflags("-Wno-braced-scalar-init")
-	end
+	add_cxflags("-Wno-braced-scalar-init")
 
 	if is_plat("windows") then
 		if use_llvm_toolchain then	
