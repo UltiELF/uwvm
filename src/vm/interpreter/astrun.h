@@ -115,7 +115,7 @@ namespace uwvm::vm::interpreter
 
             if(local_storage_size < a.local_size) [[unlikely]]
             {
-                local_storage_c.reserve(local_storage_c.size() * 2);
+                local_storage_c.reserve(::std::max(local_storage_c.size() * 2, local_storage_c.size() + a.local_size));
                 local_curr = local_storage_c.imp.curr_ptr;
                 local_end = local_storage_c.imp.end_ptr;
                 local_storage_size = static_cast<::std::size_t>(local_end - local_curr);

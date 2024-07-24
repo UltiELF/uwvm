@@ -126,7 +126,7 @@ namespace uwvm::vm::interpreter
         inline static ::std::size_t default_int_stack_size{1024};
 
         inline static ::std::size_t default_local_size{
-#ifdef __DJGPP__
+#ifndef __DJGPP__
             static_cast<::std::size_t>(64)
 #else
             static_cast<::std::size_t>(1)

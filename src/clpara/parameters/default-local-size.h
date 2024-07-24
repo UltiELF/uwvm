@@ -112,7 +112,7 @@ namespace uwvm::parameter
         .name{::fast_io::string_view{"--default-local-size"}},
         .describe{::fast_io::u8string_view{u8"Set the initial local and local size of the interpreter (unit local, default="
 
-#ifdef __DJGPP__
+#ifndef __DJGPP__
                                            u8"65536"
 #else
                                            u8"1024"
