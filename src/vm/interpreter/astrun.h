@@ -108,6 +108,7 @@ namespace uwvm::vm::interpreter
 
             // local
             auto& local_storage_c{uwvm_sm.local_storages.get_container()};
+            auto const last_local_size{local_storage_c.size()};
             auto local_curr{local_storage_c.imp.curr_ptr};
             auto local_end{local_storage_c.imp.end_ptr};
             auto local_storage_size{static_cast<::std::size_t>(local_end - local_curr)};
@@ -232,7 +233,7 @@ namespace uwvm::vm::interpreter
             }
 
             // reset local point
-            local_storage_c.imp.curr_ptr = local_curr;
+            local_storage_c.imp.curr_ptr = local_storage_c.imp.begin_ptr + last_local_size;
             uwvm_sm.local_top = last_local_top;
 
             // check stack
