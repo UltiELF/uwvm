@@ -6,7 +6,11 @@
 
 namespace uwvm::vm::interpreter
 {
+#if !(defined(__wasi__) && !defined(UWVM_ENABLE_WASI_THREADS))
     extern thread_local ::uwvm::vm::interpreter::stack_machine uwvm_sm;
+#else
+    inline ::uwvm::vm::interpreter::stack_machine uwvm_sm{};
+#endif
 
     inline void run_ast(ast const& a) noexcept
     {

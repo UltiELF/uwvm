@@ -95,7 +95,7 @@ $ uwvm <param1> <param2> ... --run <file> <argv1> <argv2> ...
 * unknown-sun
 * unknwon-apple-darwin
 * i386-msdosdjgpp
-* wasm32-wasip1, wasm32-wasip2, wasm64-wasip1, wasm64-wasip2 (bootstrap)
+* wasm32-wasip1, wasm32-wasip2, wasm64-wasip1, wasm64-wasip2, wasm32-wasip1-threads, wasm32-wasip2-threads, wasm64-wasip1-threads, wasm64-wasip2-threads (bootstrap)
 * etc.
 
 ## How to build

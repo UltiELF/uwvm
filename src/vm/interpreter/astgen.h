@@ -45,7 +45,11 @@ namespace uwvm::vm::interpreter
 {
     namespace details
     {
+#if !(defined(__wasi__) && !defined(UWVM_ENABLE_WASI_THREADS))
         extern thread_local ::fast_io::tlc::stack<d_flow_t, ::fast_io::tlc::vector<d_flow_t>> ga_flow;
+#else
+        inline ::fast_io::tlc::stack<d_flow_t, ::fast_io::tlc::vector<d_flow_t>> ga_flow{};
+#endif
     }  // namespace details
 
     // https://pengowray.github.io/wasm-ops/
@@ -572,7 +576,7 @@ namespace uwvm::vm::interpreter
                         case ::uwvm::vm::interpreter::flow_control_t::func:
                         {
                             ++curr;
-                            
+
                             // check func cur == end
                             if(curr != end) [[unlikely]]
                             {
@@ -604,7 +608,7 @@ namespace uwvm::vm::interpreter
                             break;
                         }
                         case ::uwvm::vm::interpreter::flow_control_t::block: [[fallthrough]];
-                        case ::uwvm::vm::interpreter::flow_control_t::if_: 
+                        case ::uwvm::vm::interpreter::flow_control_t::if_:
                         {
                             for(auto const i: f.brs) { i->ext.end = __builtin_addressof(op_ebr); }
 
