@@ -16,7 +16,7 @@ void ::uwvm::vm::interpreter::func::call(::std::byte const* curr, ::uwvm::vm::in
     auto const all_func_index{reinterpret_cast<::std::size_t>(sm.curr_op->ext.branch)};
 
 #if 0 // debug
-    ::std::size_t break_point{22};
+    ::std::size_t break_point{107};
     if(all_func_index == break_point) { __debugbreak(); }
 #endif
 

@@ -209,10 +209,8 @@ namespace uwvm::vm::interpreter
 
             ::uwvm::prefetch(local_curr);
 
-#if 1
-            // set stack curr
+            // set stack curr (Clear the parameter stack after writing the parameter stack to local)
             uwvm_sm.stack.get_container().imp.curr_ptr -= func_type_para_size;
-#endif
 
             // run
             for(uwvm_sm.curr_op = begin_op; uwvm_sm.curr_op != end_op;)

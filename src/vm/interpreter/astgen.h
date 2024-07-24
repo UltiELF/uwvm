@@ -110,6 +110,11 @@ namespace uwvm::vm::interpreter
 
         for(; curr < end;)
         {
+#if 0
+            ::std::size_t break_point{0x0042f7};
+            if(curr - wasmmod.module_begin == break_point) [[unlikely]] { __debugbreak(); }
+#endif
+
             ::uwvm::wasm::op_basic ob{};
             ::fast_io::freestanding::my_memcpy(__builtin_addressof(ob), curr, sizeof(ob));
 
@@ -1165,8 +1170,42 @@ namespace uwvm::vm::interpreter
 
                     curr = reinterpret_cast<::std::byte const*>(next);
 
-                    ::std::uint_fast8_t reserved{};
-                    ::fast_io::freestanding::my_memcpy(__builtin_addressof(reserved), curr, sizeof(::std::uint_fast8_t));
+                    ::std::size_t reserved{};
+                    auto const [next_reserved, err_reserved]{::fast_io::parse_by_scan(reinterpret_cast<char8_t_const_may_alias_ptr>(curr),
+                                                                                      reinterpret_cast<char8_t_const_may_alias_ptr>(end),
+                                                                                      ::fast_io::mnp::leb128_get(reserved))};
+                    switch(err_reserved)
+                    {
+                        case ::fast_io::parse_code::ok: break;
+                        default:
+                            [[unlikely]]
+                            {
+                                ::fast_io::io::perr(::uwvm::u8err,
+                                    u8"\033[0m"
+#ifdef __MSDOS__
+                                    u8"\033[37m"
+#else
+                                    u8"\033[97m"
+#endif
+                                    u8"uwvm: "
+                                    u8"\033[31m"
+                                    u8"[fatal] "
+                                    u8"\033[0m"
+#ifdef __MSDOS__
+                                    u8"\033[37m"
+#else
+                                    u8"\033[97m"
+#endif
+                                    u8"(offset=",
+                                    ::fast_io::mnp::addrvw(curr - wasmmod.module_begin),
+                                    u8") "
+                                    u8"Invalid reserved."
+                                    u8"\n"
+                                    u8"\033[0m"
+                                    u8"Terminate.\n\n");
+                                ::fast_io::fast_terminate();
+                            }
+                    }
 
                     if(reserved == 0)
                     {
@@ -1207,8 +1246,9 @@ namespace uwvm::vm::interpreter
                         ::fast_io::fast_terminate();
                     }
 
+                    curr = reinterpret_cast<::std::byte const*>(next_reserved);
+
                     temp.operators.emplace_back_unchecked(op);
-                    ++curr;
 
                     break;
                 }
