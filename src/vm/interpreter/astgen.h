@@ -503,6 +503,8 @@ namespace uwvm::vm::interpreter
                         ::fast_io::fast_terminate();
                     }
 
+                    op.int_func = __builtin_addressof(::uwvm::vm::interpreter::func::br); // br == else
+
                     auto& f{details::ga_flow.top_unchecked()};
                     if(f.flow_e != ::uwvm::vm::interpreter::flow_control_t::if_) [[unlikely]]
                     {
