@@ -5,15 +5,14 @@
     __builtin_addressof(::uwvm::parameter::start_func),
 
     // features
-    __builtin_addressof(::uwvm::parameter::enable_multi_value), __builtin_addressof(::uwvm::parameter::enable_relaxed_simd),
-    __builtin_addressof(::uwvm::parameter::enable_exception_handling), __builtin_addressof(::uwvm::parameter::enable_multi_memory),
-    __builtin_addressof(::uwvm::parameter::enable_fixed_width_simd), __builtin_addressof(::uwvm::parameter::enable_thread),
-    __builtin_addressof(::uwvm::parameter::enable_custom_page_sizes),
+    __builtin_addressof(::uwvm::parameter::enable_relaxed_simd), __builtin_addressof(::uwvm::parameter::enable_exception_handling),
+    __builtin_addressof(::uwvm::parameter::enable_multi_memory), __builtin_addressof(::uwvm::parameter::enable_fixed_width_simd),
+    __builtin_addressof(::uwvm::parameter::enable_thread), __builtin_addressof(::uwvm::parameter::enable_custom_page_sizes),
 
 #ifdef UWVM_DEFAULT_MVP
-    __builtin_addressof(::uwvm::parameter::enable_sign_extension_ops), __builtin_addressof(::uwvm::parameter::enable_mutable_globals),
-    __builtin_addressof(::uwvm::parameter::enable_reference_types), __builtin_addressof(::uwvm::parameter::enable_bulk_memory_operations),
-    __builtin_addressof(::uwvm::parameter::enable_non_trapping_float_to_int_conversion),
+    __builtin_addressof(::uwvm::parameter::enable_multi_value), __builtin_addressof(::uwvm::parameter::enable_sign_extension_ops),
+    __builtin_addressof(::uwvm::parameter::enable_mutable_globals), __builtin_addressof(::uwvm::parameter::enable_reference_types),
+    __builtin_addressof(::uwvm::parameter::enable_bulk_memory_operations), __builtin_addressof(::uwvm::parameter::enable_non_trapping_float_to_int_conversion),
 
     // features collection
     __builtin_addressof(::uwvm::parameter::enable_regular_extension),

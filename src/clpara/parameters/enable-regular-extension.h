@@ -23,6 +23,7 @@ namespace uwvm::parameter
             ::uwvm::features::enable_sign_extension_ops = true;
             ::uwvm::features::enable_bulk_memory_operations = true;
             ::uwvm::features::enable_non_trapping_float_to_int_conversion = true;
+            ::uwvm::features::enable_multi_value = true;
 
             return ::uwvm::cmdline::parameter_return_type::def;
         }
@@ -32,7 +33,7 @@ namespace uwvm::parameter
     inline constexpr ::uwvm::cmdline::parameter enable_regular_extension{
         .name{::fast_io::string_view{"--enable-regular-extension"}},
         .describe{::fast_io::u8string_view{
-            u8"Equivalent to \"--enable-mutable-globals --enable-reference-types --enable-sign-extension-ops --enable-bulk-memory-operations --enable-non-trapping-fti-conversion\" . Usage: [--enable-regular-extension|-ER]"}},
+            u8"Equivalent to \"--enable-multi-value --enable-mutable-globals --enable-reference-types --enable-sign-extension-ops --enable-bulk-memory-operations --enable-non-trapping-fti-conversion\" . Usage: [--enable-regular-extension|-ER]"}},
         .alias{::uwvm::cmdline::kns_str_scatter_t{__builtin_addressof(details::enable_regular_extension_alias), 1}},
         .callback{__builtin_addressof(details::enable_regular_extension_callback)},
         .is_exist{__builtin_addressof(details::enable_regular_extension_is_exist)},

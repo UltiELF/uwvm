@@ -361,6 +361,9 @@
                         u8"\nC Library: "
 #if defined(__wasi__)
                         u8"WASI"
+    #if defined(UWVM_ENABLE_WASI_THREADS)
+                        u8" (enable threads)"
+    #endif
 #elif defined(__MINGW32__) && !defined(_UCRT) && !defined(__BIONIC__)
                         u8"MSVCRT"
 #elif (defined(_MSC_VER) || defined(_UCRT)) && !defined(__WINE__) && !defined(__CYGWIN__) && !defined(__BIONIC__)

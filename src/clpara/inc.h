@@ -13,7 +13,6 @@
 #include "parameters/start-func.h"
 
 // features
-#include "parameters/enable-multi-value.h"
 #include "parameters/enable-relaxed-simd.h"
 #include "parameters/enable-exception-handling.h"
 #include "parameters/enable-multi-memory.h"
@@ -22,6 +21,7 @@
 #include "parameters/enable-custom-page-sizes.h"
 
 #ifdef UWVM_DEFAULT_MVP
+    #include "parameters/enable-multi-value.h"
     #include "parameters/enable-mutable-global.h"
     #include "parameters/enable-reference-types.h"
     #include "parameters/enable-sign-extension-ops.h"
