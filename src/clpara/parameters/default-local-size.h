@@ -96,7 +96,7 @@ namespace uwvm::parameter
 #else
                             u8"\033[97m"
 #endif
-                            u8"Locals size cannot be zero/"
+                            u8"Locals size cannot be zero."
                             u8"\n\n");
                 return ::uwvm::cmdline::parameter_return_type::return_m1_imme;
             }

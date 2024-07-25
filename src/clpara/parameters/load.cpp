@@ -74,7 +74,9 @@
         #else
                                 u8"\033[97m"
         #endif
-                                u8"Unable to load dynamic library: ",
+                                u8"Unable to load dynamic library \"",
+                                ::fast_io::mnp::code_cvt(sresp1->str),
+                                u8"\": ",
                                 e,
                                 u8"\n"
                                 u8"\033[0m"
