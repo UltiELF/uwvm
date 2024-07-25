@@ -779,6 +779,7 @@ namespace uwvm::vm::interpreter::wasi
 #elif !defined(__MSDOS__)
         auto const rt{::fast_io::noexcept_call(fdatasync, fd)};
 #else
+        // fdatasync is temporarily not supported in msdosdjgpp
         auto const rt{::fast_io::noexcept_call(fsync, fd)};
 #endif
 
@@ -1197,7 +1198,11 @@ namespace uwvm::vm::interpreter::wasi
         auto const rt{_chsize_s(fd, arg1)};
         if(rt == -1) [[unlikely]] { return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::efault); }
 #else
+    #if defined(__linux__) && defined(__NR_ftruncate)
+        auto const rt{::fast_io::system_call<__NR_ftruncate, int>(fd, static_cast<off_t>(arg1))};
+    #else
         auto const rt{::fast_io::noexcept_call(ftruncate, fd, static_cast<off_t>(arg1))};
+    #endif
         if(rt == -1) [[unlikely]] { return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::efault); }
 #endif
 
