@@ -19,12 +19,21 @@
 #include "../../../clpara/parsing_result.h"
 #include "../memory/memory.h"
 
-#if (!defined(__NEWLIB__) || defined(__CYGWIN__)) && !defined(_WIN32) && !defined(__MSDOS__) && __has_include(<dirent.h>) && !defined(_PICOLIBC__)
+#if (!defined(__NEWLIB__) || defined(__CYGWIN__)) && !defined(_WIN32) && __has_include(<dirent.h>) && !defined(_PICOLIBC__)
 namespace uwvm::posix
 {
+    #if !defined(__MSDOS__)
     extern int fadvise(int fd, off_t offset, off_t len, int advice) noexcept __asm__("posix_fadvise");
     extern int fallocate(int fd, int mode, off_t offset, off_t len) noexcept __asm__("fallocate");
-    extern int fcntl(int fd, int cmd, ... /* arg */) noexcept __asm__("fcntl");
+    #endif
+
+    extern int fcntl(int fd, int cmd, ... /* arg */) noexcept
+    #if !defined(__MSDOS__)
+        __asm__("fcntl")
+    #else
+        __asm__("_fcntl")
+    #endif
+            ;
 }  // namespace uwvm::posix
 #endif
 
@@ -767,8 +776,10 @@ namespace uwvm::vm::interpreter::wasi
         auto const rt{::fast_io::noexcept_call(_commit, fd)};
 #elif defined(__linux__) && defined(__NR_fdatasync)
         auto const rt{::fast_io::system_call<__NR_fdatasync, int>(fd)};
-#else
+#elif !defined(__MSDOS__)
         auto const rt{::fast_io::noexcept_call(fdatasync, fd)};
+#else
+        auto const rt{::fast_io::noexcept_call(fsync, fd)};
 #endif
 
         if(rt == -1) [[unlikely]] { return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::efault); }
@@ -941,11 +952,10 @@ namespace uwvm::vm::interpreter::wasi
         auto const fd{get_fd(::uwvm::vm::interpreter::wasi::wasm_fd_storages, arg0)};
         if(fd == -1) [[unlikely]] { return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::einval); }
 
-#if !defined(__MSDOS__)
         auto const flags{static_cast<::uwvm::vm::interpreter::wasi::fdflags_t>(arg1)};
         auto const flags_u16{static_cast<::std::uint_least16_t>(flags)};
 
-    #if (defined(_WIN32) && !defined(__WINE__) && !defined(__BIONIC__)) && !defined(__CYGWIN__)
+#if (defined(_WIN32) && !defined(__WINE__) && !defined(__BIONIC__)) && !defined(__CYGWIN__)
         auto const win32_handle{static_cast<::fast_io::win32_io_observer>(::fast_io::posix_io_observer{fd})};
         void* const handle{win32_handle.native_handle()};
 
@@ -971,58 +981,56 @@ namespace uwvm::vm::interpreter::wasi
         {
             return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::efault);
         }
-    #else
+#else
         ::std::uintmax_t fd_flags{};
         if((flags_u16 & static_cast<::std::uint_least16_t>(::uwvm::vm::interpreter::wasi::fdflags_t::fdflag_append)) ==
            static_cast<::std::uint_least16_t>(::uwvm::vm::interpreter::wasi::fdflags_t::fdflag_append))
         {
-        #ifdef O_APPEND
+    #ifdef O_APPEND
             fd_flags |= O_APPEND;
-        #endif
+    #endif
         }
         if((flags_u16 & static_cast<::std::uint_least16_t>(::uwvm::vm::interpreter::wasi::fdflags_t::fdflag_dsync)) ==
            static_cast<::std::uint_least16_t>(::uwvm::vm::interpreter::wasi::fdflags_t::fdflag_dsync))
         {
-        #ifdef O_DSYNC
+    #ifdef O_DSYNC
             fd_flags |= O_DSYNC;
-        #endif
+    #endif
         }
         if((flags_u16 & static_cast<::std::uint_least16_t>(::uwvm::vm::interpreter::wasi::fdflags_t::fdflag_nonblock)) ==
            static_cast<::std::uint_least16_t>(::uwvm::vm::interpreter::wasi::fdflags_t::fdflag_nonblock))
         {
-        #ifdef O_NONBLOCK
+    #ifdef O_NONBLOCK
             fd_flags |= O_NONBLOCK;
-        #endif
+    #endif
         }
         if((flags_u16 & static_cast<::std::uint_least16_t>(::uwvm::vm::interpreter::wasi::fdflags_t::fdflag_rsync)) ==
            static_cast<::std::uint_least16_t>(::uwvm::vm::interpreter::wasi::fdflags_t::fdflag_rsync))
         {
-        #ifdef O_RSYNC
+    #ifdef O_RSYNC
             fd_flags |= O_RSYNC;
-        #endif
+    #endif
         }
         if((flags_u16 & static_cast<::std::uint_least16_t>(::uwvm::vm::interpreter::wasi::fdflags_t::fdflag_sync)) ==
            static_cast<::std::uint_least16_t>(::uwvm::vm::interpreter::wasi::fdflags_t::fdflag_sync))
         {
-        #ifdef O_SYNC
+    #ifdef O_SYNC
             fd_flags |= O_SYNC;
-        #endif
+    #endif
         }
 
         if(
-        #if defined(__linux__) && defined(__NR_fcntl)
+    #if defined(__linux__) && defined(__NR_fcntl)
             ::fast_io::system_call<__NR_fcntl, int>(fd, F_SETFL, fd_flags)
-        #else
+    #else
             ::uwvm::posix::fcntl(fd, F_SETFL, fd_flags)
-        #endif
+    #endif
             != 0) [[unlikely]]
         {
             return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::efault);
         }
-    #endif
-#else
-        return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::efault);
 #endif
+
         return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::esuccess);
     }
 
@@ -1181,7 +1189,20 @@ namespace uwvm::vm::interpreter::wasi
         return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::esuccess);
     }
 
-    ::std::int_least32_t fd_filestat_set_size(::std::int_least32_t arg0, ::std::int_least64_t arg1) noexcept { return {}; }
+    ::std::int_least32_t fd_filestat_set_size(::std::int_least32_t arg0, ::std::int_least64_t arg1) noexcept
+    {
+        auto const fd{get_fd(::uwvm::vm::interpreter::wasi::wasm_fd_storages, arg0)};
+        if(fd == -1) [[unlikely]] { return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::einval); }
+#if (defined(_WIN32) && !defined(__WINE__) && !defined(__BIONIC__)) && !defined(__CYGWIN__)
+        auto const rt{_chsize_s(fd, arg1)};
+        if(rt == -1) [[unlikely]] { return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::efault); }
+#else
+        auto const rt{::fast_io::noexcept_call(ftruncate, fd, static_cast<off_t>(arg1))};
+        if(rt == -1) [[unlikely]] { return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::efault); }
+#endif
+
+        return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::esuccess);
+    }
 
     ::std::int_least32_t
         fd_filestat_set_times(::std::int_least32_t arg0, ::std::int_least64_t arg1, ::std::int_least64_t arg2, ::std::int_least32_t arg3) noexcept
