@@ -767,6 +767,22 @@ namespace uwvm::vm::interpreter::wasi
         auto const rt{::fast_io::noexcept_call(_commit, fd)};
 #elif defined(__linux__) && defined(__NR_fdatasync)
         auto const rt{::fast_io::system_call<__NR_fdatasync, int>(fd)};
+#else
+        auto const rt{::fast_io::noexcept_call(fdatasync, fd)};
+#endif
+
+        if(rt == -1) [[unlikely]] { return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::efault); }
+
+        return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::esuccess);
+    }
+
+    ::std::int_least32_t fd_sync(::std::int_least32_t arg0) noexcept
+    {
+        auto const fd{get_fd(::uwvm::vm::interpreter::wasi::wasm_fd_storages, arg0)};
+        if(fd == -1) [[unlikely]] { return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::einval); }
+
+#if (defined(_WIN32) && !defined(__WINE__) && !defined(__BIONIC__)) && !defined(__CYGWIN__)
+        auto const rt{::fast_io::noexcept_call(_commit, fd)};
 #elif defined(__linux__) && defined(__NR_fsync)
         auto const rt{::fast_io::system_call<__NR_fsync, int>(fd)};
 #else
@@ -1014,6 +1030,7 @@ namespace uwvm::vm::interpreter::wasi
     {
         auto const fd{get_fd(::uwvm::vm::interpreter::wasi::wasm_fd_storages, arg0)};
         if(fd == -1) [[unlikely]] { return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::einval); }
+        // No support required
         return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::esuccess);
     }
 
@@ -1027,15 +1044,15 @@ namespace uwvm::vm::interpreter::wasi
         return {};
     }
 
+    ::std::int_least32_t fd_prestat_get(::std::int_least32_t arg0, ::std::int_least32_t arg1) noexcept { return {}; }
+
+    ::std::int_least32_t fd_prestat_dir_name(::std::int_least32_t arg0, ::std::int_least32_t arg1, ::std::int_least32_t arg2) noexcept { return {}; }
+
     ::std::int_least32_t
         fd_pread(::std::int_least32_t arg0, ::std::int_least32_t arg1, ::std::int_least32_t arg2, ::std::int_least64_t arg3, ::std::int_least32_t arg4) noexcept
     {
         return {};
     }
-
-    ::std::int_least32_t fd_prestat_get(::std::int_least32_t arg0, ::std::int_least32_t arg1) noexcept { return {}; }
-
-    ::std::int_least32_t fd_prestat_dir_name(::std::int_least32_t arg0, ::std::int_least32_t arg1, ::std::int_least32_t arg2) noexcept { return {}; }
 
     ::std::int_least32_t fd_pwrite(::std::int_least32_t arg0,
                                    ::std::int_least32_t arg1,
@@ -1066,8 +1083,6 @@ namespace uwvm::vm::interpreter::wasi
     {
         return {};
     }
-
-    ::std::int_least32_t fd_sync(::std::int_least32_t arg0) noexcept { return {}; }
 
     ::std::int_least32_t fd_tell(::std::int_least32_t arg0, ::std::int_least32_t arg1) noexcept { return {}; }
 
@@ -1229,7 +1244,14 @@ namespace uwvm::vm::interpreter::wasi
         return {};
     }
 
-    void proc_exit(::std::int_least32_t arg0) noexcept { return; }
+    void proc_exit(::std::int_least32_t arg0) noexcept
+    {
+#if defined(__linux__) && defined(__NR_exit)
+        ::fast_io::fast_exit(arg0);
+#else
+        ::fast_io::noexcept_call(exit, static_cast<int>(arg0));
+#endif
+    }
 
     ::std::int_least32_t sched_yield() noexcept { return {}; }
 
