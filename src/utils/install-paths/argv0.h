@@ -32,8 +32,8 @@ namespace uwvm::path
         char path_list_separator[8] = ":";  // could be ":; "
         if(argv0[0] == path_separator)
         {
-            [[maybe_unused]] auto const unused1{::realpath(argv0, newpath)};
-            if(!access(newpath, F_OK))
+            [[maybe_unused]] auto const unused1{::fast_io::noexcept_call(realpath, argv0, newpath)};
+            if(!::fast_io::noexcept_call(access, newpath, F_OK))
             {
                 newpath[PATH_MAX - 1] = 0;
                 ::uwvm::path::module_path = ::fast_io::u8concat_fast_io(::fast_io::mnp::code_cvt_os_c_str(newpath));
@@ -54,13 +54,19 @@ namespace uwvm::path
             }
             else { return; }
         }
-        else if(strchr(argv0, path_separator))
+        else if(
+#if __has_builtin(__builtin_strchr)
+            __builtin_strchr(argv0, static_cast<int>(path_separator))
+#else
+            strchr(argv0, static_cast<int>(path_separator))
+#endif
+        )
         {
-            [[maybe_unused]] auto const unused1{::getcwd(newpath2, PATH_MAX)};
-            ::strncat(newpath2, path_separator_as_string, PATH_MAX + 256);
-            ::strncat(newpath2, argv0, PATH_MAX + 256);
-            [[maybe_unused]] auto const unused2{::realpath(newpath2, newpath)};
-            if(!access(newpath, F_OK))
+            [[maybe_unused]] auto const unused1{::fast_io::noexcept_call(getcwd, newpath2, PATH_MAX)};
+            ::fast_io::noexcept_call(strncat, newpath2, path_separator_as_string, PATH_MAX + 256);
+            ::fast_io::noexcept_call(strncat, newpath2, argv0, PATH_MAX + 256);
+            [[maybe_unused]] auto const unused2{::fast_io::noexcept_call(realpath, newpath2, newpath)};
+            if(!::fast_io::noexcept_call(access, newpath, F_OK))
             {
                 newpath[PATH_MAX - 1] = 0;
                 ::uwvm::path::module_path = ::fast_io::u8concat_fast_io(::fast_io::mnp::code_cvt_os_c_str(newpath));
@@ -85,14 +91,15 @@ namespace uwvm::path
         {
             char* saveptr;
             char* pathitem;
-            char* save_path{::getenv("PATH")};
-            for(pathitem = ::strtok_r(save_path, path_list_separator, &saveptr); pathitem; pathitem = ::strtok_r(NULL, path_list_separator, &saveptr))
+            char* save_path{::fast_io::noexcept_call(getenv, "PATH")};
+            for(pathitem = ::fast_io::noexcept_call(strtok_r, save_path, path_list_separator, &saveptr); pathitem;
+                pathitem = ::fast_io::noexcept_call(strtok_r, nullptr, path_list_separator, &saveptr))
             {
-                ::strncpy(newpath2, pathitem, PATH_MAX + 256);
-                ::strncat(newpath2, path_separator_as_string, PATH_MAX + 256);
-                ::strncat(newpath2, argv0, PATH_MAX + 256);
+                ::fast_io::noexcept_call(strncpy, newpath2, pathitem, PATH_MAX + 256);
+                ::fast_io::noexcept_call(strncat, newpath2, path_separator_as_string, PATH_MAX + 256);
+                ::fast_io::noexcept_call(strncat, newpath2, argv0, PATH_MAX + 256);
                 [[maybe_unused]] auto const unused1{::realpath(newpath2, newpath)};
-                if(!access(newpath, F_OK))
+                if(!::fast_io::noexcept_call(access, newpath, F_OK))
                 {
                     newpath[PATH_MAX - 1] = 0;
                     ::uwvm::path::module_path = ::fast_io::u8concat_fast_io(::fast_io::mnp::code_cvt_os_c_str(newpath));
