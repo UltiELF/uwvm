@@ -126,6 +126,8 @@ function defopt()
 		if use_llvm_toolchain then	
 			set_toolchains("clang-cl")
 			add_cxflags("-std:c++latest") --  argument unused during compilation: '-std:c++23'
+		else
+			print("[uwvm] warning: MSVC is not recommended. Some functions may not work!")
 		end
 	elseif not is_plat("wasm-wasi", "wasm-wasip1", "wasm-wasip2") then 
 		if use_llvm_toolchain then	

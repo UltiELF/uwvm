@@ -1034,7 +1034,152 @@ namespace uwvm::vm::interpreter::wasi
         return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::esuccess);
     }
 
-    ::std::int_least32_t fd_filestat_get(::std::int_least32_t arg0, ::std::int_least32_t arg1) noexcept { return {}; }
+    ::std::int_least32_t fd_filestat_get(::std::int_least32_t arg0, ::std::int_least32_t arg1) noexcept
+    {
+        auto const fd{get_fd(::uwvm::vm::interpreter::wasi::wasm_fd_storages, arg0)};
+        if(fd == -1) [[unlikely]] { return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::einval); }
+
+        auto& memory{::uwvm::vm::interpreter::memories.front()};
+        auto const memory_begin{memory.memory_begin};
+        auto const memory_length{memory.memory_length};
+        auto const memory_end{memory_begin + memory_length};
+
+        // write pos begin
+        auto const file_stat_begin{memory_begin + static_cast<::std::size_t>(arg1)};
+
+        if(static_cast<::std::size_t>(memory_end - file_stat_begin) < 64 || file_stat_begin > memory_end) [[unlikely]]
+        {
+            return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::efault);
+        }
+
+        ::uwvm::vm::interpreter::wasi::device_t st_dev{};
+        ::uwvm::vm::interpreter::wasi::inode_t st_ino{};
+        ::uwvm::vm::interpreter::wasi::filetype_t st_filetype{};
+        ::uwvm::vm::interpreter::wasi::linkcount_t st_nlink{};
+        ::uwvm::vm::interpreter::wasi::filesize_t st_size{};
+        ::uwvm::vm::interpreter::wasi::timestamp_t st_atim{};
+        ::uwvm::vm::interpreter::wasi::timestamp_t st_mtim{};
+        ::uwvm::vm::interpreter::wasi::timestamp_t st_ctim{};
+
+        ::fast_io::posix_io_observer fpio{fd};
+
+        ::fast_io::posix_file_status s{};
+
+#ifdef __cpp_exceptions
+        try
+#endif
+        {
+            s = ::fast_io::status(fpio);
+        }
+#ifdef __cpp_exceptions
+        catch(::fast_io::error e)
+        {
+            ::fast_io::freestanding::my_memset(file_stat_begin, 0, 64);
+            return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::efault);
+        }
+#endif
+
+        st_dev = static_cast<::uwvm::vm::interpreter::wasi::device_t>(s.dev);
+        st_ino = static_cast<::uwvm::vm::interpreter::wasi::inode_t>(s.ino);
+
+        switch(s.type)
+        {
+            case ::fast_io::file_type::none:
+            {
+                st_filetype = ::uwvm::vm::interpreter::wasi::filetype_t::filetype_unknown;
+                break;
+            }
+            case ::fast_io::file_type::not_found:
+            {
+                st_filetype = ::uwvm::vm::interpreter::wasi::filetype_t::filetype_unknown;
+                break;
+            }
+            case ::fast_io::file_type::regular:
+            {
+                st_filetype = ::uwvm::vm::interpreter::wasi::filetype_t::filetype_regular_file;
+                break;
+            }
+            case ::fast_io::file_type::directory:
+            {
+                st_filetype = ::uwvm::vm::interpreter::wasi::filetype_t::filetype_directory;
+                break;
+            }
+            case ::fast_io::file_type::symlink:
+            {
+                st_filetype = ::uwvm::vm::interpreter::wasi::filetype_t::filetype_symbolic_link;
+                break;
+            }
+            case ::fast_io::file_type::block:
+            {
+                st_filetype = ::uwvm::vm::interpreter::wasi::filetype_t::filetype_block_device;
+                break;
+            }
+            case ::fast_io::file_type::character:
+            {
+                st_filetype = ::uwvm::vm::interpreter::wasi::filetype_t::filetype_character_device;
+                break;
+            }
+            case ::fast_io::file_type::fifo:
+            {
+                st_filetype = ::uwvm::vm::interpreter::wasi::filetype_t::filetype_unknown;
+                break;
+            }
+            case ::fast_io::file_type::socket:
+            {
+                st_filetype = ::uwvm::vm::interpreter::wasi::filetype_t::filetype_socket_stream;
+                break;
+            }
+            case ::fast_io::file_type::unknown:
+            {
+                st_filetype = ::uwvm::vm::interpreter::wasi::filetype_t::filetype_unknown;
+                break;
+            }
+            case ::fast_io::file_type::remote:
+            {
+                st_filetype = ::uwvm::vm::interpreter::wasi::filetype_t::filetype_unknown;
+                break;
+            }
+            default:
+                [[unlikely]] { ::fast_io::fast_terminate(); }
+        }
+
+        st_nlink = static_cast<::uwvm::vm::interpreter::wasi::linkcount_t>(s.nlink);
+        st_size = static_cast<::uwvm::vm::interpreter::wasi::filesize_t>(s.size);
+
+        constexpr ::std::uint_least64_t mul_factor{::fast_io::uint_least64_subseconds_per_second / 1'000'000'000u};
+
+        st_atim = static_cast<::uwvm::vm::interpreter::wasi::timestamp_t>(
+            static_cast<::std::uint_least64_t>(s.atim.seconds * 1'000'000'000u + s.atim.subseconds / mul_factor));
+        st_mtim = static_cast<::uwvm::vm::interpreter::wasi::timestamp_t>(
+            static_cast<::std::uint_least64_t>(s.mtim.seconds * 1'000'000'000u + s.mtim.subseconds / mul_factor));
+        st_ctim = static_cast<::uwvm::vm::interpreter::wasi::timestamp_t>(
+            static_cast<::std::uint_least64_t>(s.ctim.seconds * 1'000'000'000u + s.ctim.subseconds / mul_factor));
+
+        auto const st_dev_le{::fast_io::little_endian(static_cast<::std::uint_least64_t>(st_dev))};
+        ::fast_io::freestanding::my_memcpy(file_stat_begin, __builtin_addressof(st_dev_le), sizeof(st_dev_le));
+
+        auto const st_ino_le{::fast_io::little_endian(static_cast<::std::uint_least64_t>(st_ino))};
+        ::fast_io::freestanding::my_memcpy(file_stat_begin + 8, __builtin_addressof(st_ino_le), sizeof(st_ino_le));
+
+        ::fast_io::freestanding::my_memcpy(file_stat_begin + 16, __builtin_addressof(st_filetype), sizeof(st_filetype));
+
+        auto const st_nlink_le{::fast_io::little_endian(static_cast<::std::uint_least64_t>(st_nlink))};
+        ::fast_io::freestanding::my_memcpy(file_stat_begin + 24, __builtin_addressof(st_nlink_le), sizeof(st_nlink_le));
+
+        auto const st_size_le{::fast_io::little_endian(static_cast<::std::uint_least64_t>(st_size))};
+        ::fast_io::freestanding::my_memcpy(file_stat_begin + 32, __builtin_addressof(st_size_le), sizeof(st_size_le));
+
+        auto const st_atim_le{::fast_io::little_endian(static_cast<::std::uint_least64_t>(st_atim))};
+        ::fast_io::freestanding::my_memcpy(file_stat_begin + 40, __builtin_addressof(st_atim_le), sizeof(st_atim_le));
+
+        auto const st_mtim_le{::fast_io::little_endian(static_cast<::std::uint_least64_t>(st_mtim))};
+        ::fast_io::freestanding::my_memcpy(file_stat_begin + 48, __builtin_addressof(st_mtim_le), sizeof(st_mtim_le));
+
+        auto const st_ctim_le{::fast_io::little_endian(static_cast<::std::uint_least64_t>(st_ctim))};
+        ::fast_io::freestanding::my_memcpy(file_stat_begin + 56, __builtin_addressof(st_ctim_le), sizeof(st_ctim_le));
+
+        return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::esuccess);
+    }
 
     ::std::int_least32_t fd_filestat_set_size(::std::int_least32_t arg0, ::std::int_least64_t arg1) noexcept { return {}; }
 
