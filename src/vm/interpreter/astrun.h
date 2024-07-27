@@ -228,7 +228,11 @@ namespace uwvm::vm::interpreter
                                       uwvm_sm.stack.size());
 #endif
 
-                if(uwvm_sm.curr_op->int_func) [[likely]] { uwvm_sm.curr_op->int_func(uwvm_sm.curr_op->code_begin, uwvm_sm); }
+                if(uwvm_sm.curr_op->int_func) [[likely]] 
+                {
+                    // run
+                    uwvm_sm.curr_op->int_func(uwvm_sm.curr_op->code_begin, uwvm_sm); 
+                }
                 else { ++uwvm_sm.curr_op; }
             }
 

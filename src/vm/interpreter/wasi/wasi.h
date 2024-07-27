@@ -179,7 +179,7 @@ namespace uwvm::vm::interpreter::wasi
 
         [[maybe_unused]] auto env_buf_begin{reinterpret_cast<char8_t_may_alias_ptr>(memory_begin + static_cast<::std::size_t>(arg1))};
 
-#if defined(__linux__)
+#if defined(__linux__) || defined(__sun)
 
         ::fast_io::u8native_file envs{};
 
@@ -355,7 +355,7 @@ namespace uwvm::vm::interpreter::wasi
         ::std::uint_least32_t nenv_wasm{};
         ::std::uint_least32_t nenv_len_wasm{};
 
-#if defined(__linux__)
+#if defined(__linux__) || defined(__sun)
         char8_t buffer[32768];
 
         ::fast_io::u8native_file envs{};
@@ -1420,7 +1420,11 @@ namespace uwvm::vm::interpreter::wasi
 #if defined(__linux__) && defined(__NR_exit)
         ::fast_io::fast_exit(arg0);
 #else
+    #if __has_builtin(__builtin_exit)
+        __builtin_exit(static_cast<int>(arg0));
+    #else
         ::fast_io::noexcept_call(exit, static_cast<int>(arg0));
+    #endif
 #endif
     }
 

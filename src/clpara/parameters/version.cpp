@@ -335,7 +335,7 @@
 #elif defined(__VMS)
                         u8"VMS"
 #elif defined(__sun)
-                        u8"Solaris"
+                        u8"Solaris (SunOS)"
 #elif defined(__QNX__) || defined(__QNXNTO__)
                         u8"QNX"
 #elif defined(__BEOS__)
