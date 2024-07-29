@@ -206,10 +206,10 @@ namespace uwvm::vm::interpreter::wasi
 
     enum class fstflags_t : ::std::uint_least16_t
     {
-        filestat_set_atim,
-        filestat_set_atim_now,
-        filestat_set_mtim,
-        filestat_set_mtim_now,
+        filestat_set_atim = 0x0001,
+        filestat_set_atim_now = 0x0002,
+        filestat_set_mtim = 0x0004,
+        filestat_set_mtim_now = 0x0008,
     };
 
     enum class inode_t : ::std::uint_least64_t

@@ -1212,7 +1212,104 @@ namespace uwvm::vm::interpreter::wasi
     ::std::int_least32_t
         fd_filestat_set_times(::std::int_least32_t arg0, ::std::int_least64_t arg1, ::std::int_least64_t arg2, ::std::int_least32_t arg3) noexcept
     {
-        return {};
+        auto const fd{get_fd(::uwvm::vm::interpreter::wasi::wasm_fd_storages, arg0)};
+        if(fd == -1) [[unlikely]] { return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::einval); }
+
+        auto const flags{static_cast<::uwvm::vm::interpreter::wasi::fstflags_t>(arg3)};
+        auto const atm{static_cast<::std::uint_least64_t>(arg1)};
+        auto const mtm{static_cast<::std::uint_least64_t>(arg2)};
+
+#if (!defined(__NEWLIB__) || defined(__CYGWIN__)) && !defined(_WIN32) && !defined(__MSDOS__) && __has_include(<dirent.h>) && !defined(_PICOLIBC__)
+        struct timespec timestamp_spec[2];
+
+        if((static_cast<::std::uint_least16_t>(flags) & static_cast<::std::uint_least16_t>(::uwvm::vm::interpreter::wasi::fstflags_t::filestat_set_atim_now)) ==
+           static_cast<::std::uint_least16_t>(::uwvm::vm::interpreter::wasi::fstflags_t::filestat_set_atim_now))
+        {
+            timestamp_spec[0] = {{}, UTIME_NOW};
+        }
+        else if((static_cast<::std::uint_least16_t>(flags) &
+                 static_cast<::std::uint_least16_t>(::uwvm::vm::interpreter::wasi::fstflags_t::filestat_set_atim)) ==
+                static_cast<::std::uint_least16_t>(::uwvm::vm::interpreter::wasi::fstflags_t::filestat_set_atim))
+        {
+            timestamp_spec[0] = {static_cast<::std::time_t>(atm / 1'000'000'000u), static_cast<long>(atm % 1'000'000'000u)};
+        }
+        else { timestamp_spec[0] = {{}, UTIME_OMIT}; }
+
+        if((static_cast<::std::uint_least16_t>(flags) & static_cast<::std::uint_least16_t>(::uwvm::vm::interpreter::wasi::fstflags_t::filestat_set_mtim_now)) ==
+           static_cast<::std::uint_least16_t>(::uwvm::vm::interpreter::wasi::fstflags_t::filestat_set_mtim_now))
+        {
+            timestamp_spec[1] = {{}, UTIME_NOW};
+        }
+        else if((static_cast<::std::uint_least16_t>(flags) &
+                 static_cast<::std::uint_least16_t>(::uwvm::vm::interpreter::wasi::fstflags_t::filestat_set_mtim)) ==
+                static_cast<::std::uint_least16_t>(::uwvm::vm::interpreter::wasi::fstflags_t::filestat_set_mtim))
+        {
+            timestamp_spec[1] = {static_cast<::std::time_t>(mtm / 1'000'000'000u), static_cast<long>(mtm % 1'000'000'000u)};
+        }
+        else { timestamp_spec[1] = {{}, UTIME_OMIT}; }
+
+        ::fast_io::noexcept_call(futimens, fd, timestamp_spec);
+#elif defined(_WIN32)
+
+        constexpr auto uts_to_file_time = [](::std::uint_least64_t uts) noexcept -> ::fast_io::win32::filetime
+        {
+            constexpr ::std::uint_least64_t gap{11644473600000ULL * 10000ULL};
+            auto const date_time{uts + gap};
+
+            return ::fast_io::win32::filetime{.dwLowDateTime{static_cast<::std::uint_least32_t>(date_time)},
+                                              .dwHighDateTime{static_cast<::std::uint_least32_t>(date_time >> 32u)}};
+        };
+
+        auto const win32_handle{static_cast<::fast_io::win32_io_observer>(::fast_io::posix_io_observer{fd})};
+        void* const handle{win32_handle.native_handle()};
+
+        ::fast_io::win32::filetime currtime{};
+
+        ::fast_io::win32::filetime lpLastAccessTime{};
+        ::fast_io::win32::filetime lpLastWriteTime{};
+
+        if((static_cast<::std::uint_least16_t>(flags) & static_cast<::std::uint_least16_t>(::uwvm::vm::interpreter::wasi::fstflags_t::filestat_set_atim_now)) ==
+           static_cast<::std::uint_least16_t>(::uwvm::vm::interpreter::wasi::fstflags_t::filestat_set_atim_now))
+        {
+    #if (!defined(_WIN32_WINNT) || _WIN32_WINNT >= 0x0602) && !defined(_WIN32_WINDOWS)
+            ::fast_io::win32::GetSystemTimePreciseAsFileTime(__builtin_addressof(currtime));
+    #else
+            ::fast_io::win32::GetSystemTimeAsFileTime(__builtin_addressof(currtime));
+    #endif
+            lpLastAccessTime = currtime;
+        }
+        else if((static_cast<::std::uint_least16_t>(flags) &
+                 static_cast<::std::uint_least16_t>(::uwvm::vm::interpreter::wasi::fstflags_t::filestat_set_atim)) ==
+                static_cast<::std::uint_least16_t>(::uwvm::vm::interpreter::wasi::fstflags_t::filestat_set_atim))
+        {
+            lpLastAccessTime = uts_to_file_time(atm);
+        }
+
+        if((static_cast<::std::uint_least16_t>(flags) & static_cast<::std::uint_least16_t>(::uwvm::vm::interpreter::wasi::fstflags_t::filestat_set_mtim_now)) ==
+           static_cast<::std::uint_least16_t>(::uwvm::vm::interpreter::wasi::fstflags_t::filestat_set_mtim_now))
+        {
+            if(::std::bit_cast<::std::uint_least64_t>(currtime) == 0)
+            {
+    #if (!defined(_WIN32_WINNT) || _WIN32_WINNT >= 0x0602) && !defined(_WIN32_WINDOWS)
+                ::fast_io::win32::GetSystemTimePreciseAsFileTime(__builtin_addressof(currtime));
+    #else
+                ::fast_io::win32::GetSystemTimeAsFileTime(__builtin_addressof(currtime));
+    #endif
+            }
+            lpLastWriteTime = currtime;
+        }
+        else if((static_cast<::std::uint_least16_t>(flags) &
+                 static_cast<::std::uint_least16_t>(::uwvm::vm::interpreter::wasi::fstflags_t::filestat_set_mtim)) ==
+                static_cast<::std::uint_least16_t>(::uwvm::vm::interpreter::wasi::fstflags_t::filestat_set_mtim))
+        {
+            lpLastWriteTime = uts_to_file_time(mtm);
+        }
+
+        ::fast_io::win32::SetFileTime(handle, nullptr, __builtin_addressof(lpLastAccessTime), __builtin_addressof(lpLastWriteTime));
+#else
+        return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::efault);
+#endif
+        return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::esuccess);
     }
 
     ::std::int_least32_t fd_prestat_get(::std::int_least32_t arg0, ::std::int_least32_t arg1) noexcept { return {}; }
