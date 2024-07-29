@@ -1248,7 +1248,11 @@ namespace uwvm::vm::interpreter::wasi
         }
         else { timestamp_spec[1] = {{}, UTIME_OMIT}; }
 
-        ::fast_io::noexcept_call(futimens, fd, timestamp_spec);
+        if(::fast_io::noexcept_call(futimens, fd, timestamp_spec) == -1) [[unlikely]]
+        {
+            return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::efault);
+        }
+
 #elif defined(_WIN32)
 
         constexpr auto uts_to_file_time = [](::std::uint_least64_t uts) noexcept -> ::fast_io::win32::filetime
@@ -1305,7 +1309,11 @@ namespace uwvm::vm::interpreter::wasi
             lpLastWriteTime = uts_to_file_time(mtm);
         }
 
-        ::fast_io::win32::SetFileTime(handle, nullptr, __builtin_addressof(lpLastAccessTime), __builtin_addressof(lpLastWriteTime));
+        if(!::fast_io::win32::SetFileTime(handle, nullptr, __builtin_addressof(lpLastAccessTime), __builtin_addressof(lpLastWriteTime))) [[unlikely]]
+        {
+            return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::efault);
+        }
+
 #else
         return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::efault);
 #endif
