@@ -46,7 +46,7 @@ namespace uwvm::vm::interpreter::wasi
         auto const memory_length{memory.memory_length};
         auto const memory_end{memory_begin + memory_length};
 
-        auto argv_begin{memory_begin + static_cast<::std::size_t>(arg0)};
+        auto argv_begin{memory_begin + static_cast<::std::size_t>(static_cast<::std::uint_least32_t>(arg0))};
 
         auto const pr_cend{::uwvm::parsing_result.cend()};
         if(static_cast<::std::size_t>(memory_end - argv_begin) <
@@ -70,7 +70,7 @@ namespace uwvm::vm::interpreter::wasi
 #endif
             = char8_t*;
 
-        auto argv_buf_begin{reinterpret_cast<char8_t_may_alias_ptr>(memory_begin + static_cast<::std::size_t>(arg1))};
+        auto argv_buf_begin{reinterpret_cast<char8_t_may_alias_ptr>(memory_begin + static_cast<::std::size_t>(static_cast<::std::uint_least32_t>(arg1)))};
 
         for(auto i{::uwvm::parsing_result.cbegin() + ::uwvm::wasm_file_ppos}; i < pr_cend; ++i)
         {
@@ -104,7 +104,7 @@ namespace uwvm::vm::interpreter::wasi
         auto const pr_cend{::uwvm::parsing_result.cend()};
 
         // argc begin
-        auto const argc_begin{memory_begin + static_cast<::std::size_t>(arg0)};
+        auto const argc_begin{memory_begin + static_cast<::std::size_t>(static_cast<::std::uint_least32_t>(arg0))};
 
         if(static_cast<::std::size_t>(memory_end - argc_begin) < sizeof(::uwvm::vm::interpreter::wasi::wasi_size_t) || argc_begin > memory_end) [[unlikely]]
         {
@@ -126,7 +126,7 @@ namespace uwvm::vm::interpreter::wasi
         ::fast_io::freestanding::my_memcpy(argv_i32p, __builtin_addressof(argv_wasm_le32), sizeof(::std::uint_least32_t));
 
         // buf len
-        auto const buf_len_begin{memory_begin + static_cast<::std::size_t>(arg1)};
+        auto const buf_len_begin{memory_begin + static_cast<::std::size_t>(static_cast<::std::uint_least32_t>(arg1))};
 
         if(static_cast<::std::size_t>(memory_end - buf_len_begin) < sizeof(::uwvm::vm::interpreter::wasi::wasi_size_t) || buf_len_begin > memory_end)
             [[unlikely]]
@@ -152,7 +152,7 @@ namespace uwvm::vm::interpreter::wasi
         auto const memory_length{memory.memory_length};
         auto const memory_end{memory_begin + memory_length};
 
-        auto env_para_begin{memory_begin + static_cast<::std::size_t>(arg0)};
+        auto env_para_begin{memory_begin + static_cast<::std::size_t>(static_cast<::std::uint_least32_t>(arg0))};
 
         auto const pr_cend{::uwvm::parsing_result.cend()};
 
@@ -177,7 +177,7 @@ namespace uwvm::vm::interpreter::wasi
 #endif
             = char8_t*;
 
-        [[maybe_unused]] auto env_buf_begin{reinterpret_cast<char8_t_may_alias_ptr>(memory_begin + static_cast<::std::size_t>(arg1))};
+        [[maybe_unused]] auto env_buf_begin{reinterpret_cast<char8_t_may_alias_ptr>(memory_begin + static_cast<::std::size_t>(static_cast<::std::uint_least32_t>(arg1)))};
 
 #if defined(__linux__) || defined(__sun)
 
@@ -456,7 +456,7 @@ namespace uwvm::vm::interpreter::wasi
         success = false;
 #endif
 
-        auto const nenv_begin{memory_begin + static_cast<::std::size_t>(arg0)};
+        auto const nenv_begin{memory_begin + static_cast<::std::size_t>(static_cast<::std::uint_least32_t>(arg0))};
 
         if(static_cast<::std::size_t>(memory_end - nenv_begin) < sizeof(::uwvm::vm::interpreter::wasi::wasi_size_t) || nenv_begin > memory_end) [[unlikely]]
         {
@@ -476,7 +476,7 @@ namespace uwvm::vm::interpreter::wasi
         ::fast_io::freestanding::my_memcpy(nenv_i32p, __builtin_addressof(nenv_wasm_le32), sizeof(::std::uint_least32_t));
 
         // buf len
-        auto const nenv_len_wasm_begin{memory_begin + static_cast<::std::size_t>(arg1)};
+        auto const nenv_len_wasm_begin{memory_begin + static_cast<::std::size_t>(static_cast<::std::uint_least32_t>(arg1))};
 
         if(static_cast<::std::size_t>(memory_end - nenv_len_wasm_begin) < sizeof(::uwvm::vm::interpreter::wasi::wasi_size_t) ||
            nenv_len_wasm_begin > memory_end) [[unlikely]]
@@ -527,7 +527,7 @@ namespace uwvm::vm::interpreter::wasi
         auto const memory_length{memory.memory_length};
         auto const memory_end{memory_begin + memory_length};
 
-        auto ts_begin{memory_begin + static_cast<::std::size_t>(arg1)};
+        auto ts_begin{memory_begin + static_cast<::std::size_t>(static_cast<::std::uint_least32_t>(arg1))};
 
         if(static_cast<::std::size_t>(memory_end - ts_begin) < sizeof(::uwvm::vm::interpreter::wasi::timestamp_t) || ts_begin > memory_end) [[unlikely]]
         {
@@ -593,16 +593,7 @@ namespace uwvm::vm::interpreter::wasi
         auto const memory_length{memory.memory_length};
         auto const memory_end{memory_begin + memory_length};
 
-        auto pre_begin{memory_begin + static_cast<::std::size_t>(arg1)};
-
-        if(static_cast<::std::size_t>(memory_end - pre_begin) < sizeof(::uwvm::vm::interpreter::wasi::timestamp_t) || pre_begin > memory_end) [[unlikely]]
-        {
-            return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::efault);
-        }
-
-        ::fast_io::freestanding::my_memset(pre_begin, 0, sizeof(::uwvm::vm::interpreter::wasi::timestamp_t));
-
-        auto ts_begin{memory_begin + static_cast<::std::size_t>(arg2)};
+        auto ts_begin{memory_begin + static_cast<::std::size_t>(static_cast<::std::uint_least32_t>(arg2))};
 
         if(static_cast<::std::size_t>(memory_end - ts_begin) < sizeof(::uwvm::vm::interpreter::wasi::timestamp_t) || ts_begin > memory_end) [[unlikely]]
         {
@@ -817,7 +808,7 @@ namespace uwvm::vm::interpreter::wasi
         auto const memory_end{memory_begin + memory_length};
 
         // write pos begin
-        auto const fdstat_begin{memory_begin + static_cast<::std::size_t>(arg1)};
+        auto const fdstat_begin{memory_begin + static_cast<::std::size_t>(static_cast<::std::uint_least32_t>(arg1))};
 
         if(static_cast<::std::size_t>(memory_end - fdstat_begin) < 24 || fdstat_begin > memory_end) [[unlikely]]
         {
@@ -1040,7 +1031,7 @@ namespace uwvm::vm::interpreter::wasi
         auto const fd{get_fd(::uwvm::vm::interpreter::wasi::wasm_fd_storages, arg0)};
         if(fd == -1) [[unlikely]] { return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::einval); }
         // No support required
-        return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::esuccess);
+        return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::efault);
     }
 
     ::std::int_least32_t fd_filestat_get(::std::int_least32_t arg0, ::std::int_least32_t arg1) noexcept
@@ -1054,7 +1045,7 @@ namespace uwvm::vm::interpreter::wasi
         auto const memory_end{memory_begin + memory_length};
 
         // write pos begin
-        auto const file_stat_begin{memory_begin + static_cast<::std::size_t>(arg1)};
+        auto const file_stat_begin{memory_begin + static_cast<::std::size_t>(static_cast<::std::uint_least32_t>(arg1))};
 
         if(static_cast<::std::size_t>(memory_end - file_stat_begin) < 64 || file_stat_begin > memory_end) [[unlikely]]
         {
@@ -1320,14 +1311,109 @@ namespace uwvm::vm::interpreter::wasi
         return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::esuccess);
     }
 
-    ::std::int_least32_t fd_prestat_get(::std::int_least32_t arg0, ::std::int_least32_t arg1) noexcept { return {}; }
+    ::std::int_least32_t fd_prestat_get(::std::int_least32_t arg0, ::std::int_least32_t arg1) noexcept
+    {
+        auto const fd{get_fd(::uwvm::vm::interpreter::wasi::wasm_fd_storages, arg0)};
+        if(fd == -1) [[unlikely]] { return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::einval); }
+        // No support required
+        return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::efault);
+    }
 
-    ::std::int_least32_t fd_prestat_dir_name(::std::int_least32_t arg0, ::std::int_least32_t arg1, ::std::int_least32_t arg2) noexcept { return {}; }
+    ::std::int_least32_t fd_prestat_dir_name(::std::int_least32_t arg0, ::std::int_least32_t arg1, ::std::int_least32_t arg2) noexcept
+    {
+        auto const fd{get_fd(::uwvm::vm::interpreter::wasi::wasm_fd_storages, arg0)};
+        if(fd == -1) [[unlikely]] { return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::einval); }
+        // No support required
+        return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::efault);
+    }
 
     ::std::int_least32_t
         fd_pread(::std::int_least32_t arg0, ::std::int_least32_t arg1, ::std::int_least32_t arg2, ::std::int_least64_t arg3, ::std::int_least32_t arg4) noexcept
     {
-        return {};
+        auto const pfd{get_fd(::uwvm::vm::interpreter::wasi::wasm_fd_storages, arg0)};
+        if(pfd == -1) [[unlikely]] { return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::einval); }
+
+        auto& memory{::uwvm::vm::interpreter::memories.front()};
+        auto const memory_begin{memory.memory_begin};
+        auto const memory_length{memory.memory_length};
+        auto const memory_end{memory_begin + memory_length};
+
+        ::std::byte const* cvt_begin{memory_begin + static_cast<::std::size_t>(static_cast<::std::uint_least32_t>(arg1))};
+
+        if(static_cast<::std::size_t>(memory_end - cvt_begin) < 8u * static_cast<::std::size_t>(static_cast<::std::uint_least32_t>(arg2)) ||
+           cvt_begin > memory_end) [[unlikely]]
+        {
+            return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::efault);
+        }
+
+#if __has_builtin(__builtin_alloca)
+        auto tmp{static_cast<::fast_io::basic_io_scatter_t<char>*>(
+            __builtin_alloca(static_cast<::std::size_t>(static_cast<::std::uint_least32_t>(arg2)) * sizeof(::fast_io::basic_io_scatter_t<char>)))};
+#elif defined(_WIN32) && !defined(__WINE__) && !defined(__BIONIC__)) && !defined(__CYGWIN__)
+        auto tmp{static_cast<::fast_io::basic_io_scatter_t<char>*>(
+            _alloca(static_cast<::std::size_t>(static_cast<::std::uint_least32_t>(arg2)) * sizeof(::fast_io::basic_io_scatter_t<char>)))};
+#else
+        auto tmp{static_cast<::fast_io::basic_io_scatter_t<char>*>(
+            alloca(static_cast<::std::size_t>(static_cast<::std::uint_least32_t>(arg2)) * sizeof(::fast_io::basic_io_scatter_t<char>)))};
+#endif
+
+        ::std::size_t all_read_size{};
+
+        for(::std::size_t i{}; i < static_cast<::std::size_t>(static_cast<::std::uint_least32_t>(arg2)); ++i)
+        {
+            ::uwvm::vm::interpreter::wasi::wasi_void_ptr_t wpt_buf{};
+            ::uwvm::vm::interpreter::wasi::wasi_size_t wsz_buf_len{};
+
+            ::std::uint_least32_t le_wpt_buf{};
+            ::fast_io::freestanding::my_memcpy(__builtin_addressof(le_wpt_buf), cvt_begin, sizeof(le_wpt_buf));
+            wpt_buf = static_cast<decltype(wpt_buf)>(::fast_io::little_endian(le_wpt_buf));
+            cvt_begin += 4;
+
+            ::std::uint_least32_t le_wsz_buf_len{};
+            ::fast_io::freestanding::my_memcpy(__builtin_addressof(le_wsz_buf_len), cvt_begin, sizeof(le_wsz_buf_len));
+            wsz_buf_len = static_cast<decltype(wsz_buf_len)>(::fast_io::little_endian(le_wsz_buf_len));
+            cvt_begin += 4;
+
+            auto const cvt_buf_off{static_cast<::std::size_t>(static_cast<::std::uint_least32_t>(wpt_buf))};
+            auto const cvt_buf_begin{memory_begin + cvt_buf_off};
+
+            if(static_cast<::std::size_t>(memory_end - cvt_buf_begin) < static_cast<::std::size_t>(static_cast<::std::uint_least32_t>(wsz_buf_len)) ||
+               cvt_buf_begin > memory_end) [[unlikely]]
+            {
+                return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::efault);
+            }
+
+            auto& tmpi{tmp[i]};
+
+            using char_const_may_alias_ptr
+#if __has_cpp_attribute(__gnu__::__may_alias__)
+                [[__gnu__::__may_alias__]]
+#endif
+                = char const*;
+
+            tmpi.base = reinterpret_cast<char_const_may_alias_ptr>(cvt_buf_begin);
+            tmpi.len = static_cast<::std::size_t>(le_wsz_buf_len);
+
+            all_read_size += static_cast<::std::size_t>(le_wsz_buf_len);
+        }
+
+        auto const [position,
+                    position_in_scatter]{::fast_io::operations::scatter_pread_some(::fast_io::posix_io_observer{pfd},
+                                                                                   tmp,
+                                                                                   static_cast<::std::size_t>(static_cast<::std::uint_least32_t>(arg2)),
+                                                                                   static_cast<::fast_io::intfpos_t>(arg3))};
+
+        ::std::byte* number_begin{memory_begin + static_cast<::std::size_t>(static_cast<::std::uint_least32_t>(arg4))};
+
+        if(static_cast<::std::size_t>(memory_end - number_begin) < sizeof(::std::uint_least32_t) || number_begin > memory_end) [[unlikely]]
+        {
+            return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::efault);
+        }
+
+        ::std::uint_least32_t le32{::fast_io::little_endian(static_cast<::std::uint_least32_t>(all_read_size))};
+        ::fast_io::freestanding::my_memcpy(number_begin, __builtin_addressof(le32), sizeof(le32));
+
+        return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::esuccess);
     }
 
     ::std::int_least32_t fd_pwrite(::std::int_least32_t arg0,
@@ -1364,76 +1450,8 @@ namespace uwvm::vm::interpreter::wasi
 
     ::std::int_least32_t fd_write(::std::int_least32_t arg0, ::std::int_least32_t arg1, ::std::int_least32_t arg2, ::std::int_least32_t arg3) noexcept
     {
-        // No need to check the memory of wasm
-        auto const pfd{get_fd(::uwvm::vm::interpreter::wasi::wasm_fd_storages, arg0)};
 
-        if(pfd == -1) [[unlikely]] { return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::einval); }
-
-        auto& memory{::uwvm::vm::interpreter::memories.front()};
-        auto const memory_begin{memory.memory_begin};
-        auto const memory_length{memory.memory_length};
-        auto const memory_end{memory_begin + memory_length};
-
-        ::std::byte const* cvt_begin{memory_begin + static_cast<::std::size_t>(arg1)};
-
-        if(static_cast<::std::size_t>(memory_end - cvt_begin) < 8u * static_cast<::std::size_t>(arg2) || cvt_begin > memory_end) [[unlikely]]
-        {
-            return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::efault);
-        }
-
-        ::std::size_t all_written_size{};
-
-        for(::std::size_t i{}; i < static_cast<::std::size_t>(arg2); ++i)
-        {
-            ::uwvm::vm::interpreter::wasi::wasi_void_ptr_t wpt_buf{};
-            ::uwvm::vm::interpreter::wasi::wasi_size_t wsz_buf_len{};
-
-            ::std::uint_least32_t le_wpt_buf{};
-            ::fast_io::freestanding::my_memcpy(__builtin_addressof(le_wpt_buf), cvt_begin, sizeof(le_wpt_buf));
-            wpt_buf = static_cast<decltype(wpt_buf)>(::fast_io::little_endian(le_wpt_buf));
-            cvt_begin += 4;
-
-            ::std::uint_least32_t le_wsz_buf_len{};
-            ::fast_io::freestanding::my_memcpy(__builtin_addressof(le_wsz_buf_len), cvt_begin, sizeof(le_wsz_buf_len));
-            wsz_buf_len = static_cast<decltype(wsz_buf_len)>(::fast_io::little_endian(le_wsz_buf_len));
-            cvt_begin += 4;
-
-            auto const cvt_buf_off{static_cast<::std::size_t>(static_cast<::std::uint_least32_t>(wpt_buf))};
-            auto const cvt_buf_begin{memory_begin + cvt_buf_off};
-
-            if(static_cast<::std::size_t>(memory_end - cvt_buf_begin) < static_cast<::std::size_t>(static_cast<::std::uint_least32_t>(wsz_buf_len)) ||
-               cvt_buf_begin > memory_end) [[unlikely]]
-            {
-                return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::efault);
-            }
-
-#if 0
-            if(static_cast<::std::uint_least32_t>(wsz_buf_len) == 0) [[unlikely]]
-            {
-                return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::efault);
-            }
-#endif
-
-            auto const cvt_buf_write_end{
-                ::fast_io::operations::write_some_bytes(::fast_io::posix_io_observer{pfd},
-                                                        cvt_buf_begin,
-                                                        cvt_buf_begin + static_cast<::std::size_t>(static_cast<::std::uint_least32_t>(wsz_buf_len)))};
-
-            auto const cvt_buf_write_sz{static_cast<::std::size_t>(cvt_buf_write_end - cvt_buf_begin)};
-
-            all_written_size += cvt_buf_write_sz;
-
-            if(cvt_buf_write_sz != static_cast<::std::size_t>(wsz_buf_len)) [[unlikely]]
-            {
-                return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::efault);
-            }
-        }
-
-        ::std::byte* number_begin{memory_begin + static_cast<::std::size_t>(arg3)};
-        ::std::uint_least32_t le32{::fast_io::little_endian(static_cast<::std::uint_least32_t>(all_written_size))};
-        ::fast_io::freestanding::my_memcpy(number_begin, __builtin_addressof(le32), sizeof(le32));
-
-        return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::esuccess);
+        return {};
     }
 
     ::std::int_least32_t path_create_directory(::std::int_least32_t arg0, ::std::int_least32_t arg1, ::std::int_least32_t arg2) noexcept { return {}; }

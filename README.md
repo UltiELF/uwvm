@@ -83,6 +83,9 @@ $ uwvm <param1> <param2> ... --run <file> <argv1> <argv2> ...
 | [Custom Page Sizes](https://github.com/WebAssembly/custom-page-sizes/blob/main/proposals/custom-page-sizes/Overview.md)                            |  ```--enable-custom-page-sizes```    |
 | [Type reflection](https://github.com/WebAssembly/js-types/blob/main/proposals/js-types/Overview.md)                                                |  :x:                                 |
 | [Sign-extension operators](https://github.com/WebAssembly/sign-extension-ops/blob/master/proposals/sign-extension-ops/Overview.md)                 |  V1.0.1                              |
+| [WASI](https://github.com/WebAssembly/WASI)                                                                                                        |  V1.0.1                              |
+| [WASI Preview 2](https://github.com/WebAssembly/WASI/blob/main/preview2/README.md)                                                                 |  :x:                                 |
+| [WASIX](https://wasix.org/)                                                                                                                        |  :x:                                 |
 
 ### Supports multiple platforms
 * (x86\_64, i386, aarch64, arm)-windows-(gnu, msvc) (support UCRT and MSVCRT)
