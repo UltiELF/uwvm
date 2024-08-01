@@ -1617,7 +1617,26 @@ namespace uwvm::vm::interpreter::wasi
                                     ::std::int_least64_t arg3,
                                     ::std::int_least32_t arg4) noexcept
     {
-        return {};
+        auto const pfd{get_fd(::uwvm::vm::interpreter::wasi::wasm_fd_storages, arg0)};
+        if(pfd == -1) [[unlikely]] { return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::einval); }
+
+        auto& memory{::uwvm::vm::interpreter::memories.front()};
+        auto const memory_begin{memory.memory_begin};
+        auto const memory_length{memory.memory_length};
+        auto const memory_end{memory_begin + memory_length};
+
+        ::std::byte const* buf_begin{memory_begin + static_cast<::std::size_t>(static_cast<::std::uint_least32_t>(arg1))};
+
+        if(static_cast<::std::size_t>(memory_end - buf_begin) < static_cast<::std::size_t>(static_cast<::std::uint_least32_t>(arg2)) || buf_begin > memory_end)
+            [[unlikely]]
+        {
+            return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::efault);
+        }
+
+        auto const cookie{static_cast<::uwvm::vm::interpreter::wasi::dircookie_t>(arg3)};
+
+
+        return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::esuccess);
     }
 
     ::std::int_least32_t fd_renumber(::std::int_least32_t arg0, ::std::int_least32_t arg1) noexcept { return {}; }
