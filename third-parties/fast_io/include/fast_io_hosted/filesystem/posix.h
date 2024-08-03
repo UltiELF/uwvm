@@ -21,7 +21,7 @@ inline int dirp_to_fd(DIR *dirp) noexcept
 
 } // namespace details
 
-class dos_directory_io_observer
+class posix_directory_io_observer
 {
 public:
 	using native_handle_type = DIR *;
