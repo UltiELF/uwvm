@@ -270,6 +270,8 @@ inline constexpr int calculate_posix_open_mode(open_mode value) noexcept
 	if ((value & open_mode::directory) != open_mode::none)
 #ifdef O_DIRECTORY
 		mode |= O_DIRECTORY;
+#elif defined(__MSDOS__)
+		return O_RDONLY; // ??? bug
 #else
 		return {};
 #endif

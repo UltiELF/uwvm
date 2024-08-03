@@ -471,7 +471,7 @@ namespace fast_io::containers
             if(size < ssosize)
             {
                 this->imp = {ssobuffer.buffer, ssobuffer.buffer + size, ssobuffer.buffer + ::fast_io::containers::details::string_sso_sizem1<char_type>};
-                ::fast_io::freestanding::non_overlapped_copy_n(other.cbegin(), size, ssobuffer.buffer);
+                ::fast_io::freestanding::non_overlapped_copy_n(other.cbegin(), ssosize, ssobuffer.buffer);
                 ssobuffer.buffer[size] = 0;
             }
             else

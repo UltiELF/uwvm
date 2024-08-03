@@ -8,8 +8,17 @@
     #include "posix_at.h"
 #endif
 
-#if (defined(_WIN32) || defined(__CYGWIN__)) && !defined(_WIN32_WINDOWS)
-    #include "nt.h"
-    #include "nt_at.h"
+#if (defined(_WIN32) || defined(__CYGWIN__))
+    #if defined(_WIN32_WINDOWS)
+        #include "win9x.h"
+        #include "win9x_at.h"
+    #else
+        #include "nt.h"
+        #include "nt_at.h"
+    #endif
 #endif
 
+#if defined(__MSDOS__)
+    #include "dos.h"
+    #include "dos_at.h"
+#endif
