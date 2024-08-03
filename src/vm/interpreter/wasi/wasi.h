@@ -1633,8 +1633,15 @@ namespace uwvm::vm::interpreter::wasi
             return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::efault);
         }
 
-        auto const cookie{static_cast<::uwvm::vm::interpreter::wasi::dircookie_t>(arg3)};
+        auto const cookie{static_cast<::std::uint_least64_t>(arg3)};
 
+        ::std::size_t cookie_counter{};
+        
+        for(auto const& ent : current(at(::fast_io::posix_io_observer{pfd}))) 
+        {
+            if(cookie_counter++ < cookie) { continue; }
+            
+        }
 
         return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::esuccess);
     }
