@@ -89,7 +89,7 @@ namespace fast_io
         {
         }
 
-        dos_directory_file(posix_file&& pioh) : dos_directory_io_observer{details::my_dos_fdopendir(pioh.fd)}
+        dos_directory_file(posix_file&& pioh) : dos_directory_io_observer{details::my_dos_fdopendir(pioh.fd), pioh.fd}
         {
             if(this->dirp.dirp == nullptr) { throw_posix_error(); }
             pioh.release();
@@ -378,9 +378,8 @@ namespace fast_io
     template <typename StackType>
     inline basic_dos_recursive_directory_iterator<StackType> begin(basic_posix_recursive_directory_generator<StackType> const& pdg)
     {
-        auto dirp{pdg.dir_fl.dirp.dirp};
-        ::rewinddir(dirp);
-        basic_dos_recursive_directory_iterator<StackType> pdit{dirp};
+        ::rewinddir(pdg.dir_fl.dirp.dirp);
+        basic_dos_recursive_directory_iterator<StackType> pdit{pdg.dir_fl.dirp};
         ++pdit;
         return pdit;
     }

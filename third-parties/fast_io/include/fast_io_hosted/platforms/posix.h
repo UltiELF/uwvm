@@ -814,13 +814,13 @@ template <bool always_terminate = false>
 inline int my_posix_openat(int dirfd, char const *pathname, int flags, mode_t mode)
 {
     auto pathname_cstr{::fast_io::noexcept_call(::__get_fd_name, dirfd)};
-    ::fast_io::tlc::string pn{::fast_io::tlc::concat_fast_io_tlc(::fast_io::mnp::os_c_str(pathname_cstr), ::fast_io::mnp::os_c_str(pathname))};
+    ::fast_io::tlc::string pn{::fast_io::tlc::concat_fast_io_tlc(::fast_io::mnp::os_c_str(pathname_cstr), "\\", ::fast_io::mnp::os_c_str(pathname))};
     int fd{::open(pn.c_str(), flags, mode)};
     system_call_throw_error<always_terminate>(fd);
     return fd;
 }
 
-#elif defined(__NEWLIB__) || defined(__MSDOS__) || defined(_PICOLIBC__)
+#elif defined(__NEWLIB__) || defined(_PICOLIBC__)
 
 template <bool always_terminate = false>
 inline int my_posix_openat(int, char const *, int, mode_t)
