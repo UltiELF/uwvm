@@ -814,7 +814,10 @@ template <bool always_terminate = false>
 inline int my_posix_openat(int dirfd, char const *pathname, int flags, mode_t mode)
 {
     if (pathname == nullptr) [[unlikely]]
+    {
+        system_call_throw_error<always_terminate>(-1);
         return -1;
+    }
     if(dirfd == -100)
     {
         int fd(::open(pathname, flags, mode));
@@ -823,7 +826,10 @@ inline int my_posix_openat(int dirfd, char const *pathname, int flags, mode_t mo
     }
     auto pathname_cstr{::fast_io::noexcept_call(::__get_fd_name, dirfd)};
     if (pathname_cstr == nullptr) [[unlikely]]
+    {
+        system_call_throw_error<always_terminate>(-1);
         return -1;
+    }
     ::fast_io::tlc::string pn{::fast_io::tlc::concat_fast_io_tlc(::fast_io::mnp::os_c_str(pathname_cstr), "\\", ::fast_io::mnp::os_c_str(pathname))};
     int fd{::open(pn.c_str(), flags, mode)};
     system_call_throw_error<always_terminate>(fd);
