@@ -513,16 +513,29 @@ io_bytes_stream_ref_define(basic_posix_family_io_observer<family, ch_type> other
 	return {other.handle};
 }
 
-#if !(defined(_WIN32) && !defined(__WINE__) && !defined(__BIONIC__)) && defined(AT_FDCWD)
+#if !(defined(_WIN32) && !defined(__WINE__) && !defined(__BIONIC__))
 
 inline constexpr posix_at_entry posix_at_fdcwd() noexcept
 {
-	return posix_at_entry(AT_FDCWD);
+	return posix_at_entry(
+#ifdef defined(AT_FDCWD)
+        AT_FDCWD
+#else
+		-100
+#endif
+		
+	);
 }
 
 inline constexpr posix_at_entry at_fdcwd() noexcept
 {
-	return posix_at_entry(AT_FDCWD);
+	return posix_at_entry(
+#ifdef defined(AT_FDCWD)
+        AT_FDCWD
+#else
+		-100
+#endif
+		);
 }
 
 #endif
@@ -813,27 +826,31 @@ inline int open_fd_from_handle(void *handle, open_mode md)
 template <bool always_terminate = false>
 inline int my_posix_openat(int dirfd, char const *pathname, int flags, mode_t mode)
 {
-    if (pathname == nullptr) [[unlikely]]
-    {
-        system_call_throw_error<always_terminate>(-1);
-        return -1;
-    }
-    if(dirfd == -100)
-    {
-        int fd(::open(pathname, flags, mode));
-        system_call_throw_error<always_terminate>(fd);
-        return fd;
-    }
-    auto pathname_cstr{::fast_io::noexcept_call(::__get_fd_name, dirfd)};
-    if (pathname_cstr == nullptr) [[unlikely]]
-    {
-        system_call_throw_error<always_terminate>(-1);
-        return -1;
-    }
-    ::fast_io::tlc::string pn{::fast_io::tlc::concat_fast_io_tlc(::fast_io::mnp::os_c_str(pathname_cstr), "\\", ::fast_io::mnp::os_c_str(pathname))};
-    int fd{::open(pn.c_str(), flags, mode)};
-    system_call_throw_error<always_terminate>(fd);
-    return fd;
+	if (pathname == nullptr) [[unlikely]]
+	{
+		system_call_throw_error<always_terminate>(-1);
+		return -1;
+	}
+
+	if(dirfd == -100)
+	{
+		int fd(::fast_io::noexcept_call(::open, pathname, flags, mode));
+		system_call_throw_error<always_terminate>(fd);
+		return fd;
+	}
+	else
+	{
+		auto pathname_cstr{::fast_io::noexcept_call(::__get_fd_name, dirfd)};
+		if(pathname_cstr == nullptr) [[unlikely]]
+		{
+			system_call_throw_error<always_terminate>(-1);
+			return -1;
+		}
+		::fast_io::tlc::string pn{::fast_io::tlc::concat_fast_io_tlc(::fast_io::mnp::os_c_str(pathname_cstr), "\\", ::fast_io::mnp::os_c_str(pathname))};
+		int fd{::fast_io::noexcept_call(::open, pn.c_str(), flags, mode)};
+		system_call_throw_error<always_terminate>(fd);
+		return fd;
+	}
 }
 
 #elif defined(__NEWLIB__) || defined(_PICOLIBC__)
@@ -984,7 +1001,7 @@ inline int my_posix_open(char const *pathname, int flags,
 #endif
 
 #if defined(__MSDOS__) || (defined(__NEWLIB__) && !defined(AT_FDCWD)) || defined(_PICOLIBC__)
-	int fd{::open(pathname, flags, mode)};
+    int fd{::fast_io::noexcept_call(::open, pathname, flags, mode)};
 	system_call_throw_error<always_terminate>(fd);
 	return fd;
 #else
