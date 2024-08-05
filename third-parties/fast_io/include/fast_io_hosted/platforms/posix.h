@@ -519,11 +519,10 @@ inline constexpr posix_at_entry posix_at_fdcwd() noexcept
 {
 	return posix_at_entry(
 #ifdef defined(AT_FDCWD)
-        AT_FDCWD
+		AT_FDCWD
 #else
 		-100
 #endif
-		
 	);
 }
 
@@ -531,7 +530,7 @@ inline constexpr posix_at_entry at_fdcwd() noexcept
 {
 	return posix_at_entry(
 #ifdef defined(AT_FDCWD)
-        AT_FDCWD
+		AT_FDCWD
 #else
 		-100
 #endif
@@ -1001,7 +1000,7 @@ inline int my_posix_open(char const *pathname, int flags,
 #endif
 
 #if defined(__MSDOS__) || (defined(__NEWLIB__) && !defined(AT_FDCWD)) || defined(_PICOLIBC__)
-    int fd{::fast_io::noexcept_call(::open, pathname, flags, mode)};
+	int fd{::fast_io::noexcept_call(::open, pathname, flags, mode)};
 	system_call_throw_error<always_terminate>(fd);
 	return fd;
 #else
