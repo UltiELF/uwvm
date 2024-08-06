@@ -165,6 +165,23 @@ struct file_full_dir_information
 	char16_t FileName[1];
 };
 
+struct file_id_full_dir_information
+{
+	::std::uint_least32_t NextEntryOffset;
+	::std::uint_least32_t FileIndex;
+	::std::int_least64_t CreationTime;
+	::std::int_least64_t LastAccessTime;
+	::std::int_least64_t LastWriteTime;
+	::std::int_least64_t ChangeTime;
+	::std::int_least64_t EndOfFile;
+	::std::int_least64_t AllocationSize;
+	::std::uint_least32_t FileAttributes;
+	::std::uint_least32_t FileNameLength;
+	::std::uint_least32_t EaSize;
+	large_integer FileId;
+	char16_t FileName[1];
+};
+
 struct file_both_dir_information
 {
 	::std::uint_least32_t NextEntryOffset;
@@ -183,11 +200,33 @@ struct file_both_dir_information
 	char16_t FileName[1];
 };
 
+struct file_id_both_dir_information
+{
+	::std::uint_least32_t NextEntryOffset;
+	::std::uint_least32_t FileIndex;
+	::std::int_least64_t CreationTime;
+	::std::int_least64_t LastAccessTime;
+	::std::int_least64_t LastWriteTime;
+	::std::int_least64_t ChangeTime;
+	::std::int_least64_t EndOfFile;
+	::std::int_least64_t AllocationSize;
+	::std::uint_least32_t FileAttributes;
+	::std::uint_least32_t FileNameLength;
+	::std::uint_least32_t EaSize;
+	char ShortNameLength;
+	char16_t ShortName[12];
+	large_integer FileId;
+	char16_t FileName[1];
+};
+
+
 union dir_information
 {
 	void *DirInfo;
 	file_full_dir_information *FullDirInfo;
+	file_id_full_dir_information *IdFullDirInfo;
 	file_both_dir_information *BothDirInfo;
+	file_id_both_dir_information *IdBothDirInfo;
 };
 
 struct file_standard_information

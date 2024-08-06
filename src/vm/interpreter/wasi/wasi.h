@@ -1611,6 +1611,25 @@ namespace uwvm::vm::interpreter::wasi
         return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::esuccess);
     }
 
+    namespace details
+    {
+        template <typename T>
+        concept wasi_entry_has_d_ino = requires(T t) { t.entry->d_ino; };
+
+        template <typename T>
+        inline constexpr ::uwvm::vm::interpreter::wasi::inode_t get_inode(T const& ent) noexcept
+        {
+            constexpr bool has_d_ino{details::wasi_entry_has_d_ino<T>};
+
+            if constexpr(has_d_ino) { return static_cast<::uwvm::vm::interpreter::wasi::inode_t>(ent.entry->d_ino); }
+            else
+            {
+                static ::std::uint_least64_t temp{};
+                return static_cast<::uwvm::vm::interpreter::wasi::inode_t>(temp++);
+            }
+        }
+    }  // namespace details
+
     ::std::int_least32_t fd_readdir(::std::int_least32_t arg0,
                                     ::std::int_least32_t arg1,
                                     ::std::int_least32_t arg2,
@@ -1633,29 +1652,48 @@ namespace uwvm::vm::interpreter::wasi
             return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::efault);
         }
 
+        ::std::byte const* buf_end{buf_begin + static_cast<::std::size_t>(static_cast<::std::uint_least32_t>(arg2))};
+
+        ::std::byte* number_begin{memory_begin + static_cast<::std::size_t>(static_cast<::std::uint_least32_t>(arg4))};
+
+        if(static_cast<::std::size_t>(memory_end - number_begin) < sizeof(::std::uint_least32_t) || number_begin > memory_end) [[unlikely]]
+        {
+            return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::efault);
+        }
+
         auto const cookie{static_cast<::std::uint_least64_t>(arg3)};
 
         ::std::size_t cookie_counter{};
-        ::std::size_t byte_used{};
+        ::std::byte* curr{const_cast<::std::byte*>(buf_begin)};
 
         for(auto const& ent: current(at(::fast_io::posix_io_observer{pfd})))
         {
-            if(byte_used >= static_cast<::std::size_t>(static_cast<::std::uint_least32_t>(arg2))) [[unlikely]]
+            if(buf_end - curr < 24 || curr > buf_end) [[unlikely]]
             {
-                // to do
-                break;
+                ::fast_io::freestanding::my_memset(number_begin, 0, sizeof(::std::uint_least32_t));
+
+                return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::efault);
             }
 
             ::uwvm::vm::interpreter::wasi::dircookie_t const d_next{static_cast<::uwvm::vm::interpreter::wasi::dircookie_t>(cookie_counter)};
 
             if(cookie_counter++ < cookie) { continue; }
 
+            ::uwvm::vm::interpreter::wasi::inode_t const d_ino{details::get_inode(ent)};
+
             ::fast_io::u8cstring_view const fn{u8filename(ent)};
-            ::uwvm::vm::interpreter::wasi::inode_t const d_ino{}; // not support yet
+
             ::uwvm::vm::interpreter::wasi::dirnamlen_t const d_namlen{static_cast<::uwvm::vm::interpreter::wasi::dirnamlen_t>(fn.size())};
+
             ::uwvm::vm::interpreter::wasi::filetype_t d_type{};
 
-            switch(ent.entry->d_type)
+            switch(
+#if defined(_WIN32)
+                ent.entry->d_type
+#else
+                ::fast_io::details::st_mode_to_file_type(ent.entry->d_type)
+#endif
+            )
             {
                 case ::fast_io::file_type::none:
                 {
@@ -1715,9 +1753,26 @@ namespace uwvm::vm::interpreter::wasi
                 default:
                     [[unlikely]] { ::fast_io::fast_terminate(); }
             }
-            
-            // to do
+
+            ::std::uint_least64_t const le_d_next{::fast_io::little_endian(static_cast<::std::uint_least64_t>(d_next))};
+            ::fast_io::freestanding::my_memcpy(curr, __builtin_addressof(le_d_next), sizeof(le_d_next));
+            curr += 8;
+
+            ::std::uint_least64_t const le_d_ino{::fast_io::little_endian(static_cast<::std::uint_least64_t>(d_ino))};
+            ::fast_io::freestanding::my_memcpy(curr, __builtin_addressof(le_d_ino), sizeof(le_d_ino));
+            curr += 8;
+
+            ::std::uint_least32_t const le_d_namlen{::fast_io::little_endian(static_cast<::std::uint_least64_t>(d_namlen))};
+            ::fast_io::freestanding::my_memcpy(curr, __builtin_addressof(le_d_namlen), sizeof(le_d_namlen));
+            curr += 4;
+
+            ::fast_io::freestanding::my_memcpy(curr, __builtin_addressof(d_type), sizeof(d_type));
+            curr += 4;
         }
+
+        ::std::uint_least32_t num_used{static_cast<::std::uint_least32_t>(curr - buf_begin)};
+        ::std::uint_least32_t const le_d_namlen{::fast_io::little_endian(num_used)};
+        ::fast_io::freestanding::my_memcpy(number_begin, __builtin_addressof(le_d_namlen), sizeof(::std::uint_least32_t));
 
         return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::esuccess);
     }
