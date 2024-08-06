@@ -2062,7 +2062,7 @@ namespace uwvm::wasm
                 {
                     ::fast_io::operations::print_freestanding<false>(::std::forward<s>(stm), 
                                                                      u" - "
-                                                                     u"globau" 
+                                                                     u"global"
                                                                      u"[",
                                                                      t->index, 
                                                                      u"] -> \"",
