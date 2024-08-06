@@ -663,67 +663,67 @@ struct rtl_unicode_string_buffer
 
 enum class system_information_class
 {
-    SystemBasicInformation,
-    SystemProcessorInformation,
-    SystemPerformanceInformation,
-    SystemTimeOfDayInformation,
-    SystemPathInformation,
-    SystemProcessInformation,
-    SystemCallCountInformation,
-    SystemDeviceInformation,
-    SystemProcessorPerformanceInformation,
-    SystemFlagsInformation,
-    SystemCallTimeInformation,
-    SystemModuleInformation,
-    SystemLocksInformation,
-    SystemStackTraceInformation,
-    SystemPagedPoolInformation,
-    SystemNonPagedPoolInformation,
-    SystemHandleInformation,
-    SystemObjectInformation,
-    SystemPageFileInformation,
-    SystemVdmInstemulInformation,
-    SystemVdmBopInformation,
-    SystemFileCacheInformation,
-    SystemPoolTagInformation,
-    SystemInterruptInformation,
-    SystemDpcBehaviorInformation,
-    SystemFullMemoryInformation,
-    SystemLoadGdiDriverInformation,
-    SystemUnloadGdiDriverInformation,
-    SystemTimeAdjustmentInformation,
-    SystemSummaryMemoryInformation,
-    SystemNextEventIdInformation,
-    SystemEventIdsInformation,
-    SystemCrashDumpInformation,
-    SystemExceptionInformation,
-    SystemCrashDumpStateInformation,
-    SystemKernelDebuggerInformation,
-    SystemContextSwitchInformation,
-    SystemRegistryQuotaInformation,
-    SystemExtendServiceTableInformation,
-    SystemPrioritySeperation,
-    SystemPlugPlayBusInformation,
-    SystemDockInformation,
-    SystemPowerInformation,
-    SystemProcessorSpeedInformation,
-    SystemCurrentTimeZoneInformation,
-    SystemLookasideInformation
+	SystemBasicInformation,
+	SystemProcessorInformation,
+	SystemPerformanceInformation,
+	SystemTimeOfDayInformation,
+	SystemPathInformation,
+	SystemProcessInformation,
+	SystemCallCountInformation,
+	SystemDeviceInformation,
+	SystemProcessorPerformanceInformation,
+	SystemFlagsInformation,
+	SystemCallTimeInformation,
+	SystemModuleInformation,
+	SystemLocksInformation,
+	SystemStackTraceInformation,
+	SystemPagedPoolInformation,
+	SystemNonPagedPoolInformation,
+	SystemHandleInformation,
+	SystemObjectInformation,
+	SystemPageFileInformation,
+	SystemVdmInstemulInformation,
+	SystemVdmBopInformation,
+	SystemFileCacheInformation,
+	SystemPoolTagInformation,
+	SystemInterruptInformation,
+	SystemDpcBehaviorInformation,
+	SystemFullMemoryInformation,
+	SystemLoadGdiDriverInformation,
+	SystemUnloadGdiDriverInformation,
+	SystemTimeAdjustmentInformation,
+	SystemSummaryMemoryInformation,
+	SystemNextEventIdInformation,
+	SystemEventIdsInformation,
+	SystemCrashDumpInformation,
+	SystemExceptionInformation,
+	SystemCrashDumpStateInformation,
+	SystemKernelDebuggerInformation,
+	SystemContextSwitchInformation,
+	SystemRegistryQuotaInformation,
+	SystemExtendServiceTableInformation,
+	SystemPrioritySeperation,
+	SystemPlugPlayBusInformation,
+	SystemDockInformation,
+	SystemPowerInformation,
+	SystemProcessorSpeedInformation,
+	SystemCurrentTimeZoneInformation,
+	SystemLookasideInformation
 };
 
 struct system_basic_information
 {
-    ::std::uint_least32_t Reserved;
-    ::std::uint_least32_t TimerResolution;
-    ::std::uint_least32_t PageSize;
-    ::std::uint_least32_t NumberOfPhysicalPages;
-    ::std::uint_least32_t LowestPhysicalPageNumber;
-    ::std::uint_least32_t HighestPhysicalPageNumber;
-    ::std::uint_least32_t AllocationGranularity;
-    ::std::size_t MinimumUserModeAddress;
-    ::std::size_t MaximumUserModeAddress;
-    ::std::size_t ActiveProcessorsAffinityMask;
-    char NumberOfProcessors;
+	::std::uint_least32_t Reserved;
+	::std::uint_least32_t TimerResolution;
+	::std::uint_least32_t PageSize;
+	::std::uint_least32_t NumberOfPhysicalPages;
+	::std::uint_least32_t LowestPhysicalPageNumber;
+	::std::uint_least32_t HighestPhysicalPageNumber;
+	::std::uint_least32_t AllocationGranularity;
+	::std::size_t MinimumUserModeAddress;
+	::std::size_t MaximumUserModeAddress;
+	::std::size_t ActiveProcessorsAffinityMask;
+	char NumberOfProcessors;
 };
 
 } // namespace fast_io::win32::nt

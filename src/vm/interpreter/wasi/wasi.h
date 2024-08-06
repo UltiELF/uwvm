@@ -1636,10 +1636,86 @@ namespace uwvm::vm::interpreter::wasi
         auto const cookie{static_cast<::std::uint_least64_t>(arg3)};
 
         ::std::size_t cookie_counter{};
-        
-        for(auto const& ent : current(at(::fast_io::posix_io_observer{pfd}))) 
+        ::std::size_t byte_used{};
+
+        for(auto const& ent: current(at(::fast_io::posix_io_observer{pfd})))
         {
+            if(byte_used >= static_cast<::std::size_t>(static_cast<::std::uint_least32_t>(arg2))) [[unlikely]]
+            {
+                // to do
+                break;
+            }
+
+            ::uwvm::vm::interpreter::wasi::dircookie_t const d_next{static_cast<::uwvm::vm::interpreter::wasi::dircookie_t>(cookie_counter)};
+
             if(cookie_counter++ < cookie) { continue; }
+
+            ::fast_io::u8cstring_view const fn{u8filename(ent)};
+            ::uwvm::vm::interpreter::wasi::inode_t const d_ino{}; // not support yet
+            ::uwvm::vm::interpreter::wasi::dirnamlen_t const d_namlen{static_cast<::uwvm::vm::interpreter::wasi::dirnamlen_t>(fn.size())};
+            ::uwvm::vm::interpreter::wasi::filetype_t d_type{};
+
+            switch(ent.entry->d_type)
+            {
+                case ::fast_io::file_type::none:
+                {
+                    d_type = ::uwvm::vm::interpreter::wasi::filetype_t::filetype_unknown;
+                    break;
+                }
+                case ::fast_io::file_type::not_found:
+                {
+                    d_type = ::uwvm::vm::interpreter::wasi::filetype_t::filetype_unknown;
+                    break;
+                }
+                case ::fast_io::file_type::regular:
+                {
+                    d_type = ::uwvm::vm::interpreter::wasi::filetype_t::filetype_regular_file;
+                    break;
+                }
+                case ::fast_io::file_type::directory:
+                {
+                    d_type = ::uwvm::vm::interpreter::wasi::filetype_t::filetype_directory;
+                    break;
+                }
+                case ::fast_io::file_type::symlink:
+                {
+                    d_type = ::uwvm::vm::interpreter::wasi::filetype_t::filetype_symbolic_link;
+                    break;
+                }
+                case ::fast_io::file_type::block:
+                {
+                    d_type = ::uwvm::vm::interpreter::wasi::filetype_t::filetype_block_device;
+                    break;
+                }
+                case ::fast_io::file_type::character:
+                {
+                    d_type = ::uwvm::vm::interpreter::wasi::filetype_t::filetype_character_device;
+                    break;
+                }
+                case ::fast_io::file_type::fifo:
+                {
+                    d_type = ::uwvm::vm::interpreter::wasi::filetype_t::filetype_unknown;
+                    break;
+                }
+                case ::fast_io::file_type::socket:
+                {
+                    d_type = ::uwvm::vm::interpreter::wasi::filetype_t::filetype_socket_stream;
+                    break;
+                }
+                case ::fast_io::file_type::unknown:
+                {
+                    d_type = ::uwvm::vm::interpreter::wasi::filetype_t::filetype_unknown;
+                    break;
+                }
+                case ::fast_io::file_type::remote:
+                {
+                    d_type = ::uwvm::vm::interpreter::wasi::filetype_t::filetype_unknown;
+                    break;
+                }
+                default:
+                    [[unlikely]] { ::fast_io::fast_terminate(); }
+            }
+            
             // to do
         }
 
