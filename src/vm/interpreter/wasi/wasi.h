@@ -1617,7 +1617,7 @@ namespace uwvm::vm::interpreter::wasi
         concept wasi_entry_has_d_ino = requires(T t) { t.entry->d_ino; };
 
         template <typename T>
-        inline constexpr ::uwvm::vm::interpreter::wasi::inode_t get_inode(T const& ent) noexcept
+        inline ::uwvm::vm::interpreter::wasi::inode_t get_inode(T const& ent) noexcept
         {
             constexpr bool has_d_ino{details::wasi_entry_has_d_ino<T>};
 
@@ -1644,7 +1644,7 @@ namespace uwvm::vm::interpreter::wasi
         auto const memory_length{memory.memory_length};
         auto const memory_end{memory_begin + memory_length};
 
-        ::std::byte const* buf_begin{memory_begin + static_cast<::std::size_t>(static_cast<::std::uint_least32_t>(arg1))};
+        ::std::byte const* const buf_begin{memory_begin + static_cast<::std::size_t>(static_cast<::std::uint_least32_t>(arg1))};
 
         if(static_cast<::std::size_t>(memory_end - buf_begin) < static_cast<::std::size_t>(static_cast<::std::uint_least32_t>(arg2)) || buf_begin > memory_end)
             [[unlikely]]
@@ -1652,9 +1652,9 @@ namespace uwvm::vm::interpreter::wasi
             return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::efault);
         }
 
-        ::std::byte const* buf_end{buf_begin + static_cast<::std::size_t>(static_cast<::std::uint_least32_t>(arg2))};
+        ::std::byte const* const buf_end{buf_begin + static_cast<::std::size_t>(static_cast<::std::uint_least32_t>(arg2))};
 
-        ::std::byte* number_begin{memory_begin + static_cast<::std::size_t>(static_cast<::std::uint_least32_t>(arg4))};
+        ::std::byte* const number_begin{memory_begin + static_cast<::std::size_t>(static_cast<::std::uint_least32_t>(arg4))};
 
         if(static_cast<::std::size_t>(memory_end - number_begin) < sizeof(::std::uint_least32_t) || number_begin > memory_end) [[unlikely]]
         {
