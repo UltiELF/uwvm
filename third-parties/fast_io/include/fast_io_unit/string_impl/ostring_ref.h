@@ -70,7 +70,7 @@ strlike_set_curr(io_strlike_type_t<char_type, ::std::basic_string<char_type, tra
 #if __cpp_if_consteval >= 202106L
 	if consteval
 #else
-	if (__builtin_is_constant_evaluated())
+	if (::std::is_constant_evaluated())
 #endif
 	{
 		auto old_ptr{str.data()};
@@ -111,8 +111,8 @@ strlike_set_curr(io_strlike_type_t<char_type, ::std::basic_string<char_type, tra
 	else
 #endif
 	{
-		traits_type::assign(*p, char_type());
 		::fast_io::details::string_hack::set_end_ptr(str, p);
+		traits_type::assign(*p, char_type());
 	}
 }
 
