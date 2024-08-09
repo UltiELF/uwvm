@@ -5,9 +5,6 @@
 
 namespace uwvm::vm::interpreter::wasi
 {
-#if __has_cpp_attribute(__gnu__::__packed__)
-    [[__gnu__::__packed__]]
-#endif
     struct wasm_fd
     {
         ::fast_io::native_mutex* fd_mutex{};
