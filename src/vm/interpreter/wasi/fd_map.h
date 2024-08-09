@@ -10,8 +10,8 @@ namespace uwvm::vm::interpreter::wasi
 #endif
     struct wasm_fd
     {
-        int fd{-1};
         ::fast_io::native_mutex* fd_mutex{};
+        int fd{-1};
 
         using Alloc = ::fast_io::native_typed_global_allocator<::fast_io::native_mutex>;
 
