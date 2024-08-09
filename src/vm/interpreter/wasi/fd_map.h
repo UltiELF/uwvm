@@ -75,16 +75,11 @@ namespace uwvm::vm::interpreter::wasi
     inline wasm_fd get_fd(wasm_fd_storage_t& wasm_fd_storage, ::std::int_least32_t wasm_fd) noexcept
     {
         auto const wasm_fd_pos{static_cast<::std::size_t>(wasm_fd)};
-        wasm_fd_storage.fds_mutex.lock();
-        if(wasm_fd_storage.opens.size() <= wasm_fd_pos) [[unlikely]]
-        {
-            wasm_fd_storage.fds_mutex.unlock();
-            return {-1};
-        }
+        ::fast_io::io_lock_guard fds_lock{wasm_fd_storage.fds_mutex};
+        if(wasm_fd_storage.opens.size() <= wasm_fd_pos) [[unlikely]] { return {-1}; }
         else
         {
             auto const ret{wasm_fd_storage.opens.index_unchecked(wasm_fd_pos)};
-            wasm_fd_storage.fds_mutex.unlock();
             return ret;
         }
     }
@@ -92,33 +87,26 @@ namespace uwvm::vm::interpreter::wasi
     inline bool reset_fd(wasm_fd_storage_t& wasm_fd_storage, ::std::int_least32_t wasm_fd, int fd) noexcept
     {
         auto const wasm_fd_pos{static_cast<::std::size_t>(wasm_fd)};
-        wasm_fd_storage.fds_mutex.lock();
-        if(wasm_fd_storage.opens.size() <= wasm_fd_pos) [[unlikely]]
-        {
-            wasm_fd_storage.fds_mutex.unlock();
-            return false;
-        }
-        wasm_fd_storage.opens.index_unchecked(wasm_fd_pos) = fd;
-        wasm_fd_storage.fds_mutex.unlock();
+        ::fast_io::io_lock_guard fds_lock{wasm_fd_storage.fds_mutex};
+        if(wasm_fd_storage.opens.size() <= wasm_fd_pos) [[unlikely]] { return false; }
+        wasm_fd_storage.opens.index_unchecked(wasm_fd_pos).fd = fd;
         return true;
     }
 
     inline ::std::int_least32_t create_wasm_fd(wasm_fd_storage_t& wasm_fd_storage, int fd) noexcept
     {
-        wasm_fd_storage.fds_mutex.lock();
+        ::fast_io::io_lock_guard fds_lock{wasm_fd_storage.fds_mutex};
         if(wasm_fd_storage.closes.empty())
         {
             auto const pos_p{__builtin_addressof(wasm_fd_storage.opens.emplace_back(fd))};
             auto const ret{static_cast<::std::int_least32_t>(pos_p - wasm_fd_storage.opens.begin())};
-            wasm_fd_storage.fds_mutex.unlock();
             return ret;
         }
         else
         {
             auto const pos{wasm_fd_storage.closes.back_unchecked()};
             wasm_fd_storage.closes.pop_back_unchecked();
-            wasm_fd_storage.opens.index_unchecked(pos) = fd;
-            wasm_fd_storage.fds_mutex.unlock();
+            wasm_fd_storage.opens.index_unchecked(pos).fd = fd;
             return static_cast<::std::int_least32_t>(pos);
         }
     }
@@ -126,23 +114,14 @@ namespace uwvm::vm::interpreter::wasi
     inline bool delete_wasm_fd(wasm_fd_storage_t& wasm_fd_storage, ::std::int_least32_t wasm_fd) noexcept
     {
         auto const wasm_fd_pos{static_cast<::std::size_t>(wasm_fd)};
-        wasm_fd_storage.fds_mutex.lock();
-        if(wasm_fd_storage.opens.size() <= wasm_fd_pos) [[unlikely]]
-        {
-            wasm_fd_storage.fds_mutex.unlock();
-            return false;
-        }
+        ::fast_io::io_lock_guard fds_lock{wasm_fd_storage.fds_mutex};
+        if(wasm_fd_storage.opens.size() <= wasm_fd_pos) [[unlikely]] { return false; }
         else
         {
             auto& fd_need_check{wasm_fd_storage.opens.index_unchecked(wasm_fd_pos)};
-            if(fd_need_check.fd == -1) [[unlikely]]
-            {
-                wasm_fd_storage.fds_mutex.unlock();
-                return false;
-            }
-            fd_need_check = -1;
+            if(fd_need_check.fd == -1) [[unlikely]] { return false; }
+            fd_need_check.fd = -1;
             wasm_fd_storage.closes.push_back(wasm_fd_pos);
-            wasm_fd_storage.fds_mutex.unlock();
             return true;
         }
     }
