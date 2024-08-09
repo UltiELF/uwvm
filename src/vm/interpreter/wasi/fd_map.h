@@ -12,16 +12,29 @@ namespace uwvm::vm::interpreter::wasi
 
         using Alloc = ::fast_io::native_typed_global_allocator<::fast_io::native_mutex>;
 
-        wasm_fd() noexcept { fd_mutex = Alloc::allocate(1); }
+        wasm_fd() noexcept
+        {
+            fd_mutex = Alloc::allocate(1);
+            ::std::construct_at(fd_mutex);
+        }
 
-        wasm_fd(int ofd) noexcept : fd{ofd} { fd_mutex = Alloc::allocate(1); }
+        wasm_fd(int ofd) noexcept : fd{ofd}
+        {
+            fd_mutex = Alloc::allocate(1);
+            ::std::construct_at(fd_mutex);
+        }
 
-        wasm_fd(wasm_fd const& other) noexcept : fd{other.fd} { fd_mutex = Alloc::allocate(1); }
+        wasm_fd(wasm_fd const& other) noexcept : fd{other.fd}
+        {
+            fd_mutex = Alloc::allocate(1);
+            ::std::construct_at(fd_mutex);
+        }
 
         wasm_fd& operator= (wasm_fd const& other) noexcept
         {
             fd = other.fd;
             fd_mutex = Alloc::allocate(1);
+            ::std::construct_at(fd_mutex);
             return *this;
         }
 
@@ -45,7 +58,12 @@ namespace uwvm::vm::interpreter::wasi
         void clear() noexcept
         {
             fd = -1;
-            if(fd_mutex != nullptr) [[likely]] { Alloc::deallocate_n(fd_mutex, 1); }
+            if(fd_mutex != nullptr) [[likely]]
+            {
+                ::std::destroy_at(fd_mutex);
+                Alloc::deallocate_n(fd_mutex, 1);
+                fd_mutex = nullptr;
+            }
         }
 
 #if 0
