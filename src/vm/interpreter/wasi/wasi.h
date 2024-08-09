@@ -2028,7 +2028,7 @@ namespace uwvm::vm::interpreter::wasi
     #if __has_builtin(__builtin_exit)
         __builtin_exit(static_cast<int>(arg0));
     #else
-        ::fast_io::noexcept_call(exit, static_cast<int>(arg0));
+        ::exit(static_cast<int>(arg0));
     #endif
 #endif
     }
