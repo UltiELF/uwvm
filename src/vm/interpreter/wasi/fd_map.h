@@ -7,10 +7,13 @@ namespace uwvm::vm::interpreter::wasi
 {
     struct wasm_fd
     {
-        ::fast_io::native_mutex* fd_mutex{};
-        int fd{-1};
+        using mutex = ::fast_io::native_mutex;
+        using handle = int;
 
-        using Alloc = ::fast_io::native_typed_global_allocator<::fast_io::native_mutex>;
+        mutex* fd_mutex{};
+        handle fd{-1};
+
+        using Alloc = ::fast_io::native_typed_global_allocator<mutex>;
 
         wasm_fd() noexcept
         {
@@ -18,7 +21,7 @@ namespace uwvm::vm::interpreter::wasi
             ::std::construct_at(fd_mutex);
         }
 
-        wasm_fd(int ofd) noexcept : fd{ofd}
+        wasm_fd(handle ofd) noexcept : fd{ofd}
         {
             fd_mutex = Alloc::allocate(1);
             ::std::construct_at(fd_mutex);
@@ -70,10 +73,23 @@ namespace uwvm::vm::interpreter::wasi
         operator int& () noexcept { return fd; }
 #endif
     };
+}  // namespace uwvm::vm::interpreter::wasi
+
+namespace fast_io::freestanding
+{
+    template <>
+    struct is_trivially_relocatable<::uwvm::vm::interpreter::wasi::wasm_fd>
+    {
+        inline static constexpr bool value = true;
+    };
+}  // namespace fast_io::freestanding
+
+namespace uwvm::vm::interpreter::wasi
+{
 
     struct wasm_fd_storage_t
     {
-        ::fast_io::vector<wasm_fd> opens{};
+        ::fast_io::vector<::uwvm::vm::interpreter::wasi::wasm_fd> opens{};
         ::fast_io::vector<::std::size_t> closes{};
         ::fast_io::native_mutex fds_mutex{};
     };
@@ -90,9 +106,9 @@ namespace uwvm::vm::interpreter::wasi
 #endif
     }
 
-    inline wasm_fd get_fd(wasm_fd_storage_t& wasm_fd_storage, ::std::int_least32_t wasm_fd) noexcept
+    inline ::uwvm::vm::interpreter::wasi::wasm_fd get_fd(wasm_fd_storage_t& wasm_fd_storage, ::std::int_least32_t wfd) noexcept
     {
-        auto const wasm_fd_pos{static_cast<::std::size_t>(wasm_fd)};
+        auto const wasm_fd_pos{static_cast<::std::size_t>(wfd)};
         ::fast_io::io_lock_guard fds_lock{wasm_fd_storage.fds_mutex};
         if(wasm_fd_storage.opens.size() <= wasm_fd_pos) [[unlikely]] { return {-1}; }
         else
@@ -102,9 +118,9 @@ namespace uwvm::vm::interpreter::wasi
         }
     }
 
-    inline bool reset_fd(wasm_fd_storage_t& wasm_fd_storage, ::std::int_least32_t wasm_fd, int fd) noexcept
+    inline bool reset_fd(wasm_fd_storage_t& wasm_fd_storage, ::std::int_least32_t wfd, int fd) noexcept
     {
-        auto const wasm_fd_pos{static_cast<::std::size_t>(wasm_fd)};
+        auto const wasm_fd_pos{static_cast<::std::size_t>(wfd)};
         ::fast_io::io_lock_guard fds_lock{wasm_fd_storage.fds_mutex};
         if(wasm_fd_storage.opens.size() <= wasm_fd_pos) [[unlikely]] { return false; }
         wasm_fd_storage.opens.index_unchecked(wasm_fd_pos).fd = fd;
@@ -129,9 +145,9 @@ namespace uwvm::vm::interpreter::wasi
         }
     }
 
-    inline bool delete_wasm_fd(wasm_fd_storage_t& wasm_fd_storage, ::std::int_least32_t wasm_fd) noexcept
+    inline bool delete_wasm_fd(wasm_fd_storage_t& wasm_fd_storage, ::std::int_least32_t wfd) noexcept
     {
-        auto const wasm_fd_pos{static_cast<::std::size_t>(wasm_fd)};
+        auto const wasm_fd_pos{static_cast<::std::size_t>(wfd)};
         ::fast_io::io_lock_guard fds_lock{wasm_fd_storage.fds_mutex};
         if(wasm_fd_storage.opens.size() <= wasm_fd_pos) [[unlikely]] { return false; }
         else
