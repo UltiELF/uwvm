@@ -2022,6 +2022,10 @@ namespace uwvm::vm::interpreter::wasi
 
     void proc_exit(::std::int_least32_t arg0) noexcept
     {
+#if 0
+        // The virtual machine thread is destroyed
+        ::uwvm::vm::interpreter::vm_exit();
+#endif
 #if defined(__linux__) && defined(__NR_exit)
         ::fast_io::fast_exit(arg0);
 #else
