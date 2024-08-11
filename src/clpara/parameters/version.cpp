@@ -60,6 +60,8 @@
 #elif defined(_MSC_VER)
                         u8"Microsoft Visual C++ ",
                         _MSC_VER,
+#elif defined(__INTELLISENSE__)
+                        u8"Intel C++ Compiler"
 #else
                         u8"Unknown C++ compiler"
 #endif
