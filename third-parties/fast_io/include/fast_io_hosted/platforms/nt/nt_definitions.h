@@ -765,4 +765,9 @@ struct system_basic_information
 	char NumberOfProcessors;
 };
 
+struct rtl_srwlock
+{
+    void* Ptr;
+};
+
 } // namespace fast_io::win32::nt
