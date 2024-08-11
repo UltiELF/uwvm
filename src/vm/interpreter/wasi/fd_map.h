@@ -12,7 +12,7 @@ namespace uwvm::vm::interpreter::wasi
 
         mutex* fd_mutex{};
         handle fd{-1};
-        // wasm_fd is created in vector (before wasm_fd is used) and destroyed with vector at the end of the wasm program, so reference counting is not required
+        // wasm_fd is created in vector (before wasm fd is used) and destroyed with the vector at the end of the wasm program, and 'vector<wasm_fd> open' only grows linearly, so reference counting is not required
         bool copy_mutex{};
 
         using Alloc = ::fast_io::native_typed_global_allocator<mutex>;
