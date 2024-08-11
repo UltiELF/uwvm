@@ -62,6 +62,7 @@ $ uwvm <param1> <param2> ... --run <file> <argv1> <argv2> ...
 ### Feature Extensions
 | Standardized features                                                                                                                              |     parameters                       |
 |----------------------------------------------------------------------------------------------------------------------------------------------------|--------------------------------------|
+| [MVP](https://github.com/WebAssembly/design/blob/main/BinaryEncoding.md)                                                                           |  V1.0.0                              |
 | [JS BigInt to Wasm i64 integration](https://github.com/WebAssembly/JS-BigInt-integration)                                                          |  N/A                                 |
 | [Bulk memory operations](https://github.com/WebAssembly/bulk-memory-operations/blob/master/proposals/bulk-memory-operations/Overview.md)           |  V1.0.1                              |
 | [Extended constant expressions](https://github.com/WebAssembly/extended-const/blob/master/proposals/extended-const/Overview.md)                    |  :x:                                 |
