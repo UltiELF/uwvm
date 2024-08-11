@@ -375,9 +375,4 @@ struct file_basic_info
 	::std::uint_least32_t FileAttributes;
 };
 
-struct srwlock
-{
-	void* Ptr;
-};
-
 } // namespace fast_io::win32
