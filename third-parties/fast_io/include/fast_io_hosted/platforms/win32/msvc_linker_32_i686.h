@@ -418,9 +418,27 @@
 #pragma comment( \
 	linker,      \
 	"/alternatename:__imp_?SetFileTime@win32@fast_io@@YGHPAXPBUfiletime@12@11@Z=__imp__SetFileTime@16")
+#pragma comment( \
+	linker,      \
+	"/alternatename:__imp_?RtlAcquireSRWLockExclusive@nt@win32@fast_io@@YGXPAX@Z=__imp__RtlAcquireSRWLockExclusive@4")
+#pragma comment( \
+	linker,      \
+	"/alternatename:__imp_?RtlTryAcquireSRWLockExclusive@nt@win32@fast_io@@YGIPAX@Z=__imp__RtlTryAcquireSRWLockExclusive@4")
+#pragma comment( \
+	linker,      \
+	"/alternatename:__imp_?RtlReleaseSRWLockExclusive@nt@win32@fast_io@@YGXPAX@Z=__imp__RtlReleaseSRWLockExclusive@4")
+#pragma comment( \
+	linker,      \
+	"/alternatename:__imp_?AcquireSRWLockExclusive@win32@fast_io@@YGXPAX@Z=__imp__AcquireSRWLockExclusive@4")
+#pragma comment( \
+	linker,      \
+	"/alternatename:__imp_?TryAcquireSRWLockExclusive@win32@fast_io@@YGIPAX@Z=__imp__TryAcquireSRWLockExclusive@4")
+#pragma comment( \
+	linker,      \
+	"/alternatename:__imp_?ReleaseSRWLockExclusive@win32@fast_io@@YGXPAX@Z=__imp__ReleaseSRWLockExclusive@4")
 
 #if defined(_DLL)
-    #pragma comment(linker, "/alternatename:__imp_?msvc__RTtypeid@msvc@fast_io@@YAPAXPAX@Z=__imp____RTtypeid")
+	#pragma comment(linker, "/alternatename:__imp_?msvc__RTtypeid@msvc@fast_io@@YAPAXPAX@Z=__imp____RTtypeid")
 #else
-    #pragma comment(linker, "/alternatename:?msvc__RTtypeid@msvc@fast_io@@YAPAXPAX@Z=___RTtypeid")
+	#pragma comment(linker, "/alternatename:?msvc__RTtypeid@msvc@fast_io@@YAPAXPAX@Z=___RTtypeid")
 #endif
