@@ -8,7 +8,7 @@ namespace fast_io
 
 struct win32_srwlock
 {
-	using native_handle_type = ::fast_io::win32::nt::rtl_srwlock;
+	using native_handle_type = ::fast_io::win32::srwlock;
 	native_handle_type h{.Ptr = nullptr};
 	explicit constexpr win32_srwlock() noexcept = default;
 	win32_srwlock(win32_srwlock const &) = delete;
