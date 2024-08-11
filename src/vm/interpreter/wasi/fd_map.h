@@ -12,6 +12,7 @@ namespace uwvm::vm::interpreter::wasi
 
         mutex* fd_mutex{};
         handle fd{-1};
+        bool copy_mutex{};
 
         using Alloc = ::fast_io::native_typed_global_allocator<mutex>;
 
@@ -27,32 +28,33 @@ namespace uwvm::vm::interpreter::wasi
             ::std::construct_at(fd_mutex);
         }
 
-        wasm_fd(wasm_fd const& other) noexcept : fd{other.fd}
-        {
-            fd_mutex = Alloc::allocate(1);
-            ::std::construct_at(fd_mutex);
-        }
+        // shared mutex
+
+        wasm_fd(wasm_fd const& other) noexcept : fd_mutex{other.fd_mutex}, fd{other.fd}, copy_mutex{true} {}
 
         wasm_fd& operator= (wasm_fd const& other) noexcept
         {
+            fd_mutex = other.fd_mutex;
             fd = other.fd;
-            fd_mutex = Alloc::allocate(1);
-            ::std::construct_at(fd_mutex);
+            copy_mutex = true;
             return *this;
         }
 
-        wasm_fd(wasm_fd&& other) noexcept : fd{other.fd}, fd_mutex{other.fd_mutex}
+        wasm_fd(wasm_fd&& other) noexcept : fd{other.fd}, fd_mutex{other.fd_mutex}, copy_mutex{other.copy_mutex}
         {
             other.fd = -1;
             other.fd_mutex = nullptr;
+            other.copy_mutex = false;
         }
 
         wasm_fd& operator= (wasm_fd&& other) noexcept
         {
             fd = other.fd;
             fd_mutex = other.fd_mutex;
+            copy_mutex = other.copy_mutex;
             other.fd = -1;
             other.fd_mutex = nullptr;
+            other.copy_mutex = false;
             return *this;
         }
 
@@ -63,10 +65,14 @@ namespace uwvm::vm::interpreter::wasi
             fd = -1;
             if(fd_mutex != nullptr) [[likely]]
             {
-                ::std::destroy_at(fd_mutex);
-                Alloc::deallocate_n(fd_mutex, 1);
+                if(!copy_mutex)
+                {
+                    ::std::destroy_at(fd_mutex);
+                    Alloc::deallocate_n(fd_mutex, 1);
+                }
                 fd_mutex = nullptr;
             }
+            copy_mutex = false;
         }
 
 #if 0
@@ -110,9 +116,14 @@ namespace uwvm::vm::interpreter::wasi
     {
         auto const wasm_fd_pos{static_cast<::std::size_t>(wfd)};
         ::fast_io::io_lock_guard fds_lock{wasm_fd_storage.fds_mutex};
-        if(wasm_fd_storage.opens.size() <= wasm_fd_pos) [[unlikely]] { return {-1}; }
+        if(wasm_fd_storage.opens.size() <= wasm_fd_pos) [[unlikely]]
+        {
+            // construst new mutex
+            return {-1};
+        }
         else
         {
+            // shared mutex
             auto const ret{wasm_fd_storage.opens.index_unchecked(wasm_fd_pos)};
             return ret;
         }
@@ -145,6 +156,33 @@ namespace uwvm::vm::interpreter::wasi
         }
     }
 
+    struct create_and_get_wasm_fd_t
+    {
+        ::std::int_least32_t wfd{};
+        wasm_fd fd{};
+    };
+
+    inline create_and_get_wasm_fd_t create_and_get_wasm_fd(wasm_fd_storage_t& wasm_fd_storage, int fd) noexcept
+    {
+        ::fast_io::io_lock_guard fds_lock{wasm_fd_storage.fds_mutex};
+        if(wasm_fd_storage.closes.empty())
+        {
+            auto const pos_p{__builtin_addressof(wasm_fd_storage.opens.emplace_back(fd))};
+            auto const ret{static_cast<::std::int_least32_t>(pos_p - wasm_fd_storage.opens.begin())};
+            // shared mutex
+            return {ret, *pos_p};
+        }
+        else
+        {
+            auto const pos{wasm_fd_storage.closes.back_unchecked()};
+            wasm_fd_storage.closes.pop_back_unchecked();
+            auto& pfd{wasm_fd_storage.opens.index_unchecked(pos)};
+            pfd.fd = fd;
+            // shared mutex
+            return {static_cast<::std::int_least32_t>(pos), pfd};
+        }
+    }
+
     inline bool delete_wasm_fd(wasm_fd_storage_t& wasm_fd_storage, ::std::int_least32_t wfd) noexcept
     {
         auto const wasm_fd_pos{static_cast<::std::size_t>(wfd)};
@@ -157,6 +195,28 @@ namespace uwvm::vm::interpreter::wasi
             fd_need_check.fd = -1;
             wasm_fd_storage.closes.push_back(wasm_fd_pos);
             return true;
+        }
+    }
+
+    struct delete_and_get_system_fd_t
+    {
+        bool success{};
+        int fd{-1};
+    };
+
+    inline delete_and_get_system_fd_t delete_and_get_system_fd(wasm_fd_storage_t& wasm_fd_storage, ::std::int_least32_t wfd) noexcept
+    {
+        auto const wasm_fd_pos{static_cast<::std::size_t>(wfd)};
+        ::fast_io::io_lock_guard fds_lock{wasm_fd_storage.fds_mutex};
+        if(wasm_fd_storage.opens.size() <= wasm_fd_pos) [[unlikely]] { return {false, -1}; }
+        else
+        {
+            auto& fd_need_check{wasm_fd_storage.opens.index_unchecked(wasm_fd_pos)};
+            if(fd_need_check.fd == -1) [[unlikely]] { return {false, -1}; }
+            auto const temp_fd{fd_need_check.fd};
+            fd_need_check.fd = -1;
+            wasm_fd_storage.closes.push_back(wasm_fd_pos);
+            return {true, temp_fd};
         }
     }
 
