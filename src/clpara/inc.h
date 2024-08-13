@@ -10,6 +10,7 @@
 #include "parameters/default-int-stack-size.h"
 #include "parameters/default-local-size.h"
 #include "parameters/wasi-mount-root.h"
+#include "parameters/wasi-fd-limit.h"
 #include "parameters/start-func.h"
 
 // features

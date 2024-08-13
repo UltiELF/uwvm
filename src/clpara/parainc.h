@@ -2,7 +2,7 @@
     __builtin_addressof(::uwvm::parameter::run), __builtin_addressof(::uwvm::parameter::enable_memory64), __builtin_addressof(::uwvm::parameter::mode),
     __builtin_addressof(::uwvm::parameter::load), __builtin_addressof(::uwvm::parameter::default_int_stack_size),
     __builtin_addressof(::uwvm::parameter::default_local_size), __builtin_addressof(::uwvm::parameter::wasi_mount_root),
-    __builtin_addressof(::uwvm::parameter::start_func),
+    __builtin_addressof(::uwvm::parameter::wasi_fd_limit), __builtin_addressof(::uwvm::parameter::start_func),
 
     // features
     __builtin_addressof(::uwvm::parameter::enable_relaxed_simd), __builtin_addressof(::uwvm::parameter::enable_exception_handling),

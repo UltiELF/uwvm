@@ -18,6 +18,7 @@
 
 #include "astgen.h"
 #include "astrun.h"
+#include "wasm_exit.h"
 
 namespace uwvm::vm::interpreter
 {
@@ -296,6 +297,8 @@ namespace uwvm::vm::interpreter
                                 u8"Terminate.\n\n");
             ::fast_io::fast_terminate();
         }
+
+        ::uwvm::vm::interpreter::wasm_exit();
     }
 
 }  // namespace uwvm::vm::interpreter

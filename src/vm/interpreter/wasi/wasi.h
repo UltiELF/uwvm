@@ -18,6 +18,7 @@
 #include "../../../run/wasm_file.h"
 #include "../../../clpara/parsing_result.h"
 #include "../memory/memory.h"
+#include "../wasm_exit.h"
 
 #if (!defined(__NEWLIB__) || defined(__CYGWIN__)) && !defined(_WIN32) && __has_include(<dirent.h>) && !defined(_PICOLIBC__)
 namespace uwvm::posix
@@ -2022,10 +2023,8 @@ namespace uwvm::vm::interpreter::wasi
 
     void proc_exit(::std::int_least32_t arg0) noexcept
     {
-#if 0
-        // The virtual machine thread is destroyed
-        ::uwvm::vm::interpreter::vm_exit();
-#endif
+        ::uwvm::vm::interpreter::wasm_exit();
+
 #if defined(__linux__) && defined(__NR_exit)
         ::fast_io::fast_exit(arg0);
 #else
