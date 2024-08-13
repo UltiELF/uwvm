@@ -1873,7 +1873,54 @@ namespace uwvm::vm::interpreter::wasi
 
     ::std::int_least32_t fd_seek(::std::int_least32_t arg0, ::std::int_least64_t arg1, ::std::int_least32_t arg2, ::std::int_least32_t arg3) noexcept
     {
-        return {};
+        auto const gfd{get_fd(::uwvm::vm::interpreter::wasi::wasm_fd_storages, arg0)};
+        ::fast_io::io_lock_guard fd_look{*gfd.fd_mutex};
+        auto const pfd{gfd.fd};
+
+        auto& memory{::uwvm::vm::interpreter::memories.front()};
+        auto const memory_begin{memory.memory_begin};
+        auto const memory_length{memory.memory_length};
+        auto const memory_end{memory_begin + memory_length};
+
+        ::std::byte* const cvt_begin{memory_begin + static_cast<::std::size_t>(static_cast<::std::uint_least32_t>(arg3))};
+
+        if(static_cast<::std::size_t>(memory_end - cvt_begin) < 8u || cvt_begin > memory_end) [[unlikely]]
+        {
+            return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::efault);
+        }
+
+        auto const off{static_cast<::fast_io::intfpos_t>(arg1)};
+
+        auto const whence{static_cast<::uwvm::vm::interpreter::wasi::whence_t>(arg2)};
+        ::fast_io::seekdir skd{};
+        switch(whence)
+        {
+            case ::uwvm::vm::interpreter::wasi::whence_t::whence_set:
+            {
+                skd = ::fast_io::seekdir::beg;
+                break;
+            }
+            case ::uwvm::vm::interpreter::wasi::whence_t::whence_cur:
+            {
+                skd = ::fast_io::seekdir::cur;
+                break;
+            }
+            case ::uwvm::vm::interpreter::wasi::whence_t::whence_end:
+            {
+                skd = ::fast_io::seekdir::end;
+                break;
+            }
+            default:
+                [[unlikely]] { return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::einval); }
+        }
+        auto const ret_off{::fast_io::operations::io_stream_seek(::fast_io::posix_io_observer{pfd}, off, skd)};
+
+        auto const new_off{static_cast<::std::uint_least64_t>(ret_off)};
+
+        auto const le_new_off{::fast_io::little_endian(new_off)};
+        ::fast_io::freestanding::my_memcpy(cvt_begin, __builtin_addressof(le_new_off), sizeof(le_new_off));
+
+        return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::esuccess);
     }
 
     ::std::int_least32_t fd_tell(::std::int_least32_t arg0, ::std::int_least32_t arg1) noexcept { return {}; }

@@ -11,9 +11,15 @@ namespace uwvm::vm::interpreter::wasi
         using mutex = ::fast_io::native_mutex;
         using handle = int;
 
+        // ====== for vm ======
         mutex* fd_mutex{};
         ::std::size_t close_pos{SIZE_MAX};
+
+        // ===== wasi fd =====
+        ::uwvm::vm::interpreter::wasi::rights_t rights{static_cast<::uwvm::vm::interpreter::wasi::rights_t>(-1)};
         handle fd{-1};
+
+        // ====== for vm ======
         // wasm_fd is created in vector (before wasm fd is used) and destroyed with the vector at the end of the wasm program, and 'vector<wasm_fd> open' only
         // grows linearly, so reference counting is not required
         bool copy_mutex{};
@@ -34,22 +40,25 @@ namespace uwvm::vm::interpreter::wasi
 
         // shared mutex
 
-        wasm_fd(wasm_fd const& other) noexcept : fd_mutex{other.fd_mutex}, fd{other.fd}, close_pos{other.close_pos}, copy_mutex{true} {}
+        wasm_fd(wasm_fd const& other) noexcept : fd_mutex{other.fd_mutex}, fd{other.fd}, close_pos{other.close_pos}, rights{other.rights}, copy_mutex{true} {}
 
         wasm_fd& operator= (wasm_fd const& other) noexcept
         {
             fd_mutex = other.fd_mutex;
             fd = other.fd;
             close_pos = other.close_pos;
+            rights = other.rights;
             copy_mutex = true;
             return *this;
         }
 
-        wasm_fd(wasm_fd&& other) noexcept : fd{other.fd}, fd_mutex{other.fd_mutex}, close_pos{other.close_pos}, copy_mutex{other.copy_mutex}
+        wasm_fd(wasm_fd&& other) noexcept :
+            fd{other.fd}, fd_mutex{other.fd_mutex}, close_pos{other.close_pos}, rights{other.rights}, copy_mutex{other.copy_mutex}
         {
             other.fd = -1;
             other.fd_mutex = nullptr;
             other.close_pos = SIZE_MAX;
+            other.rights = static_cast<::uwvm::vm::interpreter::wasi::rights_t>(-1);
             other.copy_mutex = false;
         }
 
@@ -58,10 +67,12 @@ namespace uwvm::vm::interpreter::wasi
             fd = other.fd;
             fd_mutex = other.fd_mutex;
             close_pos = other.close_pos;
+            rights = other.rights;
             copy_mutex = other.copy_mutex;
             other.fd = -1;
             other.fd_mutex = nullptr;
             other.close_pos = SIZE_MAX;
+            other.rights = static_cast<::uwvm::vm::interpreter::wasi::rights_t>(-1);
             other.copy_mutex = false;
             return *this;
         }
@@ -72,6 +83,7 @@ namespace uwvm::vm::interpreter::wasi
         {
             fd = -1;
             close_pos = SIZE_MAX;
+            rights = static_cast<::uwvm::vm::interpreter::wasi::rights_t>(-1);
 
             if(fd_mutex != nullptr) [[likely]]
             {
