@@ -114,13 +114,7 @@ namespace uwvm::vm::interpreter::wasi
     {
         auto const min_fd{::std::min(static_cast<::std::size_t>(1024), ::uwvm::vm::interpreter::wasi::wasi_fd_limit)};
         wasm_fd_storage.opens.reserve(min_fd);
-        wasm_fd_storage.closes.reserve(
-#ifdef __MSDOS__
-            1024
-#else
-            32768
-#endif
-        );
+        wasm_fd_storage.closes.reserve(min_fd);
     }
 
     inline ::uwvm::vm::interpreter::wasi::wasm_fd get_fd(wasm_fd_storage_t& wasm_fd_storage, ::std::int_least32_t wfd) noexcept
