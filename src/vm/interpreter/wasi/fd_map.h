@@ -331,6 +331,129 @@ namespace uwvm::vm::interpreter::wasi
         }
     }
 
+    struct set_and_get_system_fd_t
+    {
+        bool success{};
+        int sys_fd{-1};
+    };
+
+    inline set_and_get_system_fd_t set_and_get_system_fd(wasm_fd_storage_t& wasm_fd_storage, ::std::int_least32_t wfd, int fd) noexcept
+    {
+        auto const wasm_fd_pos{static_cast<::std::size_t>(wfd)};
+        ::fast_io::io_lock_guard fds_lock{wasm_fd_storage.fds_mutex};
+
+        if(wasm_fd_pos >= ::uwvm::vm::interpreter::wasi::wasi_fd_limit) [[unlikely]] { return {false, -1}; }
+
+        int sys_fd{-1};
+        if(wasm_fd_storage.opens.size() <= wasm_fd_pos)
+        {
+            wasm_fd_storage.opens.reserve(wasm_fd_pos + 1);
+            if constexpr(::fast_io::freestanding::is_zero_default_constructible_v<wasm_fd>)
+            {
+                ::fast_io::freestanding::bytes_clear_n(reinterpret_cast<::std::byte*>(wasm_fd_storage.opens.imp.curr_ptr),
+                                                       static_cast<::std::size_t>(reinterpret_cast<::std::byte*>(wasm_fd_storage.opens.imp.end_ptr) -
+                                                                                  reinterpret_cast<::std::byte*>(wasm_fd_storage.opens.imp.curr_ptr)));
+                wasm_fd_storage.opens.imp.curr_ptr = wasm_fd_storage.opens.imp.end_ptr;
+            }
+            else
+            {
+                for(; wasm_fd_storage.opens.imp.curr_ptr != wasm_fd_storage.opens.imp.end_ptr; ++wasm_fd_storage.opens.imp.curr_ptr)
+                {
+                    ::std::construct_at(wasm_fd_storage.opens.imp.curr_ptr);
+                }
+            }
+
+            auto& fd_need_check{wasm_fd_storage.opens.index_unchecked(wasm_fd_pos)};
+            sys_fd = fd_need_check.fd;
+            fd_need_check.fd = fd;
+
+            return {true, sys_fd};
+        }
+        else
+        {
+            auto& fd_need_check{wasm_fd_storage.opens.index_unchecked(wasm_fd_pos)};
+            if(fd_need_check.fd == -1)
+            {
+                if(fd_need_check.close_pos < wasm_fd_storage.closes.size()) [[likely]]
+                {
+                    wasm_fd_storage.closes.erase_index_unchecked(fd_need_check.close_pos);
+                }
+                fd_need_check.close_pos = SIZE_MAX;
+                sys_fd = fd_need_check.fd;
+                fd_need_check.fd = fd;
+            }
+            else
+            {
+                sys_fd = fd_need_check.fd;
+                fd_need_check.fd = fd;
+            }
+
+            return {true, sys_fd};
+        }
+    }
+
+    struct set_and_get_wasm_fd_and_system_fd_t
+    {
+        bool success{};
+        wasm_fd fd{};
+        int sys_fd{-1};
+    };
+
+    inline set_and_get_wasm_fd_and_system_fd_t set_and_get_wasm_fd_and_system_fd(wasm_fd_storage_t& wasm_fd_storage, ::std::int_least32_t wfd, int fd) noexcept
+    {
+        auto const wasm_fd_pos{static_cast<::std::size_t>(wfd)};
+        ::fast_io::io_lock_guard fds_lock{wasm_fd_storage.fds_mutex};
+
+        if(wasm_fd_pos >= ::uwvm::vm::interpreter::wasi::wasi_fd_limit) [[unlikely]] { return {false, {}, -1}; }
+
+        int sys_fd{-1};
+        if(wasm_fd_storage.opens.size() <= wasm_fd_pos)
+        {
+            wasm_fd_storage.opens.reserve(wasm_fd_pos + 1);
+            if constexpr(::fast_io::freestanding::is_zero_default_constructible_v<wasm_fd>)
+            {
+                ::fast_io::freestanding::bytes_clear_n(reinterpret_cast<::std::byte*>(wasm_fd_storage.opens.imp.curr_ptr),
+                                                       static_cast<::std::size_t>(reinterpret_cast<::std::byte*>(wasm_fd_storage.opens.imp.end_ptr) -
+                                                                                  reinterpret_cast<::std::byte*>(wasm_fd_storage.opens.imp.curr_ptr)));
+                wasm_fd_storage.opens.imp.curr_ptr = wasm_fd_storage.opens.imp.end_ptr;
+            }
+            else
+            {
+                for(; wasm_fd_storage.opens.imp.curr_ptr != wasm_fd_storage.opens.imp.end_ptr; ++wasm_fd_storage.opens.imp.curr_ptr)
+                {
+                    ::std::construct_at(wasm_fd_storage.opens.imp.curr_ptr);
+                }
+            }
+
+            auto& fd_need_check{wasm_fd_storage.opens.index_unchecked(wasm_fd_pos)};
+            sys_fd = fd_need_check.fd;
+            fd_need_check.fd = fd;
+
+            return {true, fd_need_check, sys_fd};
+        }
+        else
+        {
+            auto& fd_need_check{wasm_fd_storage.opens.index_unchecked(wasm_fd_pos)};
+            if(fd_need_check.fd == -1)
+            {
+                if(fd_need_check.close_pos < wasm_fd_storage.closes.size()) [[likely]]
+                {
+                    wasm_fd_storage.closes.erase_index_unchecked(fd_need_check.close_pos);
+                }
+                fd_need_check.close_pos = SIZE_MAX;
+                sys_fd = fd_need_check.fd;
+                fd_need_check.fd = fd;
+            }
+            else
+            {
+                sys_fd = fd_need_check.fd;
+                fd_need_check.fd = fd;
+            }
+
+            return {true, fd_need_check, sys_fd};
+        }
+    }
+
     // storage
     inline wasm_fd_storage_t wasm_fd_storages{};
 

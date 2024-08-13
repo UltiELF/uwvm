@@ -1833,7 +1833,43 @@ namespace uwvm::vm::interpreter::wasi
         return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::esuccess);
     }
 
-    ::std::int_least32_t fd_renumber(::std::int_least32_t arg0, ::std::int_least32_t arg1) noexcept { return {}; }
+    ::std::int_least32_t fd_renumber(::std::int_least32_t arg0, ::std::int_least32_t arg1) noexcept
+    {
+        if(arg0 == arg1) [[unlikely]] { return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::esuccess); }
+
+        auto const gfd{get_fd(::uwvm::vm::interpreter::wasi::wasm_fd_storages, arg0)};
+        ::fast_io::io_lock_guard fd_look{*gfd.fd_mutex};
+
+        auto const old_sys_fd{gfd.fd};
+
+        // dup
+        ::fast_io::posix_file temp_posix_file{::fast_io::io_dup, ::fast_io::posix_io_observer{old_sys_fd}};
+
+        // get dup fd
+        auto const new_sys_fd{temp_posix_file.release()};
+
+        auto [r_success, r_old_sys_fd]{set_and_get_system_fd(::uwvm::vm::interpreter::wasi::wasm_fd_storages, arg1, new_sys_fd)};
+
+        if(!r_success) [[unlikely]] { return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::efault); }
+
+        if(r_old_sys_fd != -1) [[likely]]
+        {
+            auto const ret{::fast_io::details::sys_close(r_old_sys_fd)};
+
+#if defined(__linux__)
+            using unsigned_t = ::std::make_unsigned_t<decltype(ret)>;
+            if(static_cast<unsigned_t>(static_cast<unsigned_t>(ret) + static_cast<unsigned_t>(4096)) < static_cast<unsigned_t>(4096))
+#else
+            if(ret < 0)
+#endif
+                [[unlikely]]
+            {
+                return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::efault);
+            }
+        }
+
+        return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::esuccess);
+    }
 
     ::std::int_least32_t fd_seek(::std::int_least32_t arg0, ::std::int_least64_t arg1, ::std::int_least32_t arg2, ::std::int_least32_t arg3) noexcept
     {
