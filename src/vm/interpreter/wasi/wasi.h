@@ -1971,7 +1971,7 @@ namespace uwvm::vm::interpreter::wasi
             default:
                 [[unlikely]] { return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::einval); }
         }
-        auto const ret_off{::fast_io::operations::io_stream_seek(::fast_io::posix_io_observer{pfd}, off, skd)};
+        auto const ret_off{::fast_io::operations::io_stream_seek_bytes(::fast_io::posix_io_observer{pfd}, off, skd)};
 
         auto const new_off{static_cast<::std::uint_least64_t>(ret_off)};
 
