@@ -1909,11 +1909,14 @@ namespace uwvm::vm::interpreter::wasi
             return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::eaddrnotavail);
         }
 
-        ::fast_io::freestanding::my_memset(cvt_begin, 0, 4);
+        constexpr auto le_1{::fast_io::little_endian(static_cast<::std::uint_least32_t>(-1))};
+        ::fast_io::freestanding::my_memcpy(cvt_begin, __builtin_addressof(le_1), sizeof(le_1));
+        ::fast_io::freestanding::my_memset(cvt_begin + 4, 0, 8);
 
-        ::std::uint_least32_t sz{1u};
-         auto const le_1{::fast_io::little_endian(sz)};
-        ::fast_io::freestanding::my_memcpy(cvt_begin + 4, __builtin_addressof(le_1), sizeof(le_1));
+        if(arg0 >= ::uwvm::vm::interpreter::wasi::wasi_fd_limit) [[unlikely]]
+        {
+            return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::ebadf);
+        }
 
         return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::esuccess);
     }
@@ -1959,10 +1962,6 @@ namespace uwvm::vm::interpreter::wasi
         }
 
         if(cvt_length == 0) [[unlikely]] { return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::einval); }
-
-        decltype(auto) temp_str{u8"."};
-
-        ::fast_io::freestanding::my_memcpy(cvt_begin, temp_str, sizeof(temp_str));
 
         return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::esuccess);
     }
