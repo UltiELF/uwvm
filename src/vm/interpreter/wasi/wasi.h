@@ -43,6 +43,32 @@ namespace uwvm::vm::interpreter::wasi
 {
     ::std::int_least32_t args_get(::std::int_least32_t arg0, ::std::int_least32_t arg1) noexcept
     {
+#ifdef _DEBUG
+        ::fast_io::io::perr(::uwvm::u8err,
+                                u8"\033[0m"
+    #ifdef __MSDOS__
+                                u8"\033[37m"
+    #else
+                                u8"\033[97m"
+    #endif
+                                u8"uwvm: "
+    #ifdef __MSDOS__
+                                u8"\033[34m"
+    #else
+                                u8"\033[94m"
+    #endif
+                                u8"[debug] "
+                                u8"\033[0m"
+    #ifdef __MSDOS__
+                                u8"\033[37m"
+    #else
+                                u8"\033[97m"
+    #endif
+                                u8"WASI: "
+                                u8"args_get"
+                                u8"\n"
+                                u8"\033[0m");
+#endif
         auto& memory{::uwvm::vm::interpreter::memories.front()};
         auto const memory_begin{memory.memory_begin};
         auto const memory_length{memory.memory_length};
@@ -99,6 +125,32 @@ namespace uwvm::vm::interpreter::wasi
 
     ::std::int_least32_t args_sizes_get(::std::int_least32_t arg0, ::std::int_least32_t arg1) noexcept
     {
+#ifdef _DEBUG
+        ::fast_io::io::perr(::uwvm::u8err,
+                                u8"\033[0m"
+    #ifdef __MSDOS__
+                                u8"\033[37m"
+    #else
+                                u8"\033[97m"
+    #endif
+                                u8"uwvm: "
+    #ifdef __MSDOS__
+                                u8"\033[34m"
+    #else
+                                u8"\033[94m"
+    #endif
+                                u8"[debug] "
+                                u8"\033[0m"
+    #ifdef __MSDOS__
+                                u8"\033[37m"
+    #else
+                                u8"\033[97m"
+    #endif
+                                u8"WASI: "
+                                u8"args_sizes_get"
+                                u8"\n"
+                                u8"\033[0m");
+#endif
         auto& memory{::uwvm::vm::interpreter::memories.front()};
         auto const memory_begin{memory.memory_begin};
         auto const memory_length{memory.memory_length};
@@ -149,6 +201,32 @@ namespace uwvm::vm::interpreter::wasi
 
     ::std::int_least32_t environ_get(::std::int_least32_t arg0, ::std::int_least32_t arg1) noexcept
     {
+#ifdef _DEBUG
+        ::fast_io::io::perr(::uwvm::u8err,
+                                u8"\033[0m"
+    #ifdef __MSDOS__
+                                u8"\033[37m"
+    #else
+                                u8"\033[97m"
+    #endif
+                                u8"uwvm: "
+    #ifdef __MSDOS__
+                                u8"\033[34m"
+    #else
+                                u8"\033[94m"
+    #endif
+                                u8"[debug] "
+                                u8"\033[0m"
+    #ifdef __MSDOS__
+                                u8"\033[37m"
+    #else
+                                u8"\033[97m"
+    #endif
+                                u8"WASI: "
+                                u8"environ_get"
+                                u8"\n"
+                                u8"\033[0m");
+#endif
         auto& memory{::uwvm::vm::interpreter::memories.front()};
         auto const memory_begin{memory.memory_begin};
         auto const memory_length{memory.memory_length};
@@ -348,6 +426,32 @@ namespace uwvm::vm::interpreter::wasi
 
     ::std::int_least32_t environ_sizes_get(::std::int_least32_t arg0, ::std::int_least32_t arg1) noexcept
     {
+#ifdef _DEBUG
+        ::fast_io::io::perr(::uwvm::u8err,
+                                u8"\033[0m"
+    #ifdef __MSDOS__
+                                u8"\033[37m"
+    #else
+                                u8"\033[97m"
+    #endif
+                                u8"uwvm: "
+    #ifdef __MSDOS__
+                                u8"\033[34m"
+    #else
+                                u8"\033[94m"
+    #endif
+                                u8"[debug] "
+                                u8"\033[0m"
+    #ifdef __MSDOS__
+                                u8"\033[37m"
+    #else
+                                u8"\033[97m"
+    #endif
+                                u8"WASI: "
+                                u8"environ_sizes_get"
+                                u8"\n"
+                                u8"\033[0m");
+#endif
         auto& memory{::uwvm::vm::interpreter::memories.front()};
         auto const memory_begin{memory.memory_begin};
         auto const memory_length{memory.memory_length};
@@ -496,6 +600,32 @@ namespace uwvm::vm::interpreter::wasi
 
     ::std::int_least32_t clock_res_get(::std::int_least32_t arg0, ::std::int_least32_t arg1) noexcept
     {
+#ifdef _DEBUG
+        ::fast_io::io::perr(::uwvm::u8err,
+                                u8"\033[0m"
+    #ifdef __MSDOS__
+                                u8"\033[37m"
+    #else
+                                u8"\033[97m"
+    #endif
+                                u8"uwvm: "
+    #ifdef __MSDOS__
+                                u8"\033[34m"
+    #else
+                                u8"\033[94m"
+    #endif
+                                u8"[debug] "
+                                u8"\033[0m"
+    #ifdef __MSDOS__
+                                u8"\033[37m"
+    #else
+                                u8"\033[97m"
+    #endif
+                                u8"WASI: "
+                                u8"clock_res_get"
+                                u8"\n"
+                                u8"\033[0m");
+#endif
         ::fast_io::posix_clock_id id{};
         switch(static_cast<::uwvm::vm::interpreter::wasi::clockid_t>(arg0))
         {
@@ -562,6 +692,32 @@ namespace uwvm::vm::interpreter::wasi
 
     ::std::int_least32_t clock_time_get(::std::int_least32_t arg0, ::std::int_least64_t arg1, ::std::int_least32_t arg2) noexcept
     {
+#ifdef _DEBUG
+        ::fast_io::io::perr(::uwvm::u8err,
+                                u8"\033[0m"
+    #ifdef __MSDOS__
+                                u8"\033[37m"
+    #else
+                                u8"\033[97m"
+    #endif
+                                u8"uwvm: "
+    #ifdef __MSDOS__
+                                u8"\033[34m"
+    #else
+                                u8"\033[94m"
+    #endif
+                                u8"[debug] "
+                                u8"\033[0m"
+    #ifdef __MSDOS__
+                                u8"\033[37m"
+    #else
+                                u8"\033[97m"
+    #endif
+                                u8"WASI: "
+                                u8"clock_time_get"
+                                u8"\n"
+                                u8"\033[0m");
+#endif
         ::fast_io::posix_clock_id id{};
         switch(static_cast<::uwvm::vm::interpreter::wasi::clockid_t>(arg0))
         {
@@ -628,6 +784,32 @@ namespace uwvm::vm::interpreter::wasi
 
     ::std::int_least32_t fd_advise(::std::int_least32_t arg0, ::std::int_least64_t arg1, ::std::int_least64_t arg2, ::std::int_least32_t arg3) noexcept
     {
+#ifdef _DEBUG
+        ::fast_io::io::perr(::uwvm::u8err,
+                                u8"\033[0m"
+    #ifdef __MSDOS__
+                                u8"\033[37m"
+    #else
+                                u8"\033[97m"
+    #endif
+                                u8"uwvm: "
+    #ifdef __MSDOS__
+                                u8"\033[34m"
+    #else
+                                u8"\033[94m"
+    #endif
+                                u8"[debug] "
+                                u8"\033[0m"
+    #ifdef __MSDOS__
+                                u8"\033[37m"
+    #else
+                                u8"\033[97m"
+    #endif
+                                u8"WASI: "
+                                u8"fd_advise"
+                                u8"\n"
+                                u8"\033[0m");
+#endif
         auto const ofd{get_original_wasm_fd_p(::uwvm::vm::interpreter::wasi::wasm_fd_storages, arg0)};
         if(ofd == nullptr) [[unlikely]] { return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::einval); }
 
@@ -740,6 +922,32 @@ namespace uwvm::vm::interpreter::wasi
 
     ::std::int_least32_t fd_allocate(::std::int_least32_t arg0, ::std::int_least64_t arg1, ::std::int_least64_t arg2) noexcept
     {
+#ifdef _DEBUG
+        ::fast_io::io::perr(::uwvm::u8err,
+                                u8"\033[0m"
+    #ifdef __MSDOS__
+                                u8"\033[37m"
+    #else
+                                u8"\033[97m"
+    #endif
+                                u8"uwvm: "
+    #ifdef __MSDOS__
+                                u8"\033[34m"
+    #else
+                                u8"\033[94m"
+    #endif
+                                u8"[debug] "
+                                u8"\033[0m"
+    #ifdef __MSDOS__
+                                u8"\033[37m"
+    #else
+                                u8"\033[97m"
+    #endif
+                                u8"WASI: "
+                                u8"fd_allocate"
+                                u8"\n"
+                                u8"\033[0m");
+#endif
         auto const ofd{get_original_wasm_fd_p(::uwvm::vm::interpreter::wasi::wasm_fd_storages, arg0)};
         if(ofd == nullptr) [[unlikely]] { return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::einval); }
 
@@ -775,6 +983,32 @@ namespace uwvm::vm::interpreter::wasi
 
     ::std::int_least32_t fd_close(::std::int_least32_t arg0) noexcept
     {
+#ifdef _DEBUG
+        ::fast_io::io::perr(::uwvm::u8err,
+                                u8"\033[0m"
+    #ifdef __MSDOS__
+                                u8"\033[37m"
+    #else
+                                u8"\033[97m"
+    #endif
+                                u8"uwvm: "
+    #ifdef __MSDOS__
+                                u8"\033[34m"
+    #else
+                                u8"\033[94m"
+    #endif
+                                u8"[debug] "
+                                u8"\033[0m"
+    #ifdef __MSDOS__
+                                u8"\033[37m"
+    #else
+                                u8"\033[97m"
+    #endif
+                                u8"WASI: "
+                                u8"fd_close"
+                                u8"\n"
+                                u8"\033[0m");
+#endif
         auto const ofd{get_original_wasm_fd_p(::uwvm::vm::interpreter::wasi::wasm_fd_storages, arg0)};
         if(ofd == nullptr) [[unlikely]] { return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::einval); }
 
@@ -794,6 +1028,32 @@ namespace uwvm::vm::interpreter::wasi
 
     ::std::int_least32_t fd_datasync(::std::int_least32_t arg0) noexcept
     {
+#ifdef _DEBUG
+        ::fast_io::io::perr(::uwvm::u8err,
+                                u8"\033[0m"
+    #ifdef __MSDOS__
+                                u8"\033[37m"
+    #else
+                                u8"\033[97m"
+    #endif
+                                u8"uwvm: "
+    #ifdef __MSDOS__
+                                u8"\033[34m"
+    #else
+                                u8"\033[94m"
+    #endif
+                                u8"[debug] "
+                                u8"\033[0m"
+    #ifdef __MSDOS__
+                                u8"\033[37m"
+    #else
+                                u8"\033[97m"
+    #endif
+                                u8"WASI: "
+                                u8"fd_datasync"
+                                u8"\n"
+                                u8"\033[0m");
+#endif
         auto const ofd{get_original_wasm_fd_p(::uwvm::vm::interpreter::wasi::wasm_fd_storages, arg0)};
         if(ofd == nullptr) [[unlikely]] { return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::einval); }
 
@@ -828,6 +1088,32 @@ namespace uwvm::vm::interpreter::wasi
 
     ::std::int_least32_t fd_sync(::std::int_least32_t arg0) noexcept
     {
+#ifdef _DEBUG
+        ::fast_io::io::perr(::uwvm::u8err,
+                                u8"\033[0m"
+    #ifdef __MSDOS__
+                                u8"\033[37m"
+    #else
+                                u8"\033[97m"
+    #endif
+                                u8"uwvm: "
+    #ifdef __MSDOS__
+                                u8"\033[34m"
+    #else
+                                u8"\033[94m"
+    #endif
+                                u8"[debug] "
+                                u8"\033[0m"
+    #ifdef __MSDOS__
+                                u8"\033[37m"
+    #else
+                                u8"\033[97m"
+    #endif
+                                u8"WASI: "
+                                u8"fd_sync"
+                                u8"\n"
+                                u8"\033[0m");
+#endif
         auto const ofd{get_original_wasm_fd_p(::uwvm::vm::interpreter::wasi::wasm_fd_storages, arg0)};
         if(ofd == nullptr) [[unlikely]] { return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::einval); }
 
@@ -858,6 +1144,32 @@ namespace uwvm::vm::interpreter::wasi
 
     ::std::int_least32_t fd_fdstat_get(::std::int_least32_t arg0, ::std::int_least32_t arg1) noexcept
     {
+#ifdef _DEBUG
+        ::fast_io::io::perr(::uwvm::u8err,
+                                u8"\033[0m"
+    #ifdef __MSDOS__
+                                u8"\033[37m"
+    #else
+                                u8"\033[97m"
+    #endif
+                                u8"uwvm: "
+    #ifdef __MSDOS__
+                                u8"\033[34m"
+    #else
+                                u8"\033[94m"
+    #endif
+                                u8"[debug] "
+                                u8"\033[0m"
+    #ifdef __MSDOS__
+                                u8"\033[37m"
+    #else
+                                u8"\033[97m"
+    #endif
+                                u8"WASI: "
+                                u8"fd_fdstat_get"
+                                u8"\n"
+                                u8"\033[0m");
+#endif
         auto const ofd{get_original_wasm_fd_p(::uwvm::vm::interpreter::wasi::wasm_fd_storages, arg0)};
         if(ofd == nullptr) [[unlikely]] { return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::einval); }
 
@@ -1006,6 +1318,32 @@ namespace uwvm::vm::interpreter::wasi
 
     ::std::int_least32_t fd_fdstat_set_flags(::std::int_least32_t arg0, ::std::int_least32_t arg1) noexcept
     {
+#ifdef _DEBUG
+        ::fast_io::io::perr(::uwvm::u8err,
+                                u8"\033[0m"
+    #ifdef __MSDOS__
+                                u8"\033[37m"
+    #else
+                                u8"\033[97m"
+    #endif
+                                u8"uwvm: "
+    #ifdef __MSDOS__
+                                u8"\033[34m"
+    #else
+                                u8"\033[94m"
+    #endif
+                                u8"[debug] "
+                                u8"\033[0m"
+    #ifdef __MSDOS__
+                                u8"\033[37m"
+    #else
+                                u8"\033[97m"
+    #endif
+                                u8"WASI: "
+                                u8"fd_fdstat_set_flags"
+                                u8"\n"
+                                u8"\033[0m");
+#endif
         auto const ofd{get_original_wasm_fd_p(::uwvm::vm::interpreter::wasi::wasm_fd_storages, arg0)};
         if(ofd == nullptr) [[unlikely]] { return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::einval); }
 
@@ -1100,6 +1438,32 @@ namespace uwvm::vm::interpreter::wasi
 
     ::std::int_least32_t fd_fdstat_set_rights(::std::int_least32_t arg0, ::std::int_least64_t arg1, ::std::int_least64_t arg2) noexcept
     {
+#ifdef _DEBUG
+        ::fast_io::io::perr(::uwvm::u8err,
+                                u8"\033[0m"
+    #ifdef __MSDOS__
+                                u8"\033[37m"
+    #else
+                                u8"\033[97m"
+    #endif
+                                u8"uwvm: "
+    #ifdef __MSDOS__
+                                u8"\033[34m"
+    #else
+                                u8"\033[94m"
+    #endif
+                                u8"[debug] "
+                                u8"\033[0m"
+    #ifdef __MSDOS__
+                                u8"\033[37m"
+    #else
+                                u8"\033[97m"
+    #endif
+                                u8"WASI: "
+                                u8"fd_fdstat_set_rights"
+                                u8"\n"
+                                u8"\033[0m");
+#endif
         auto const gfd{get_original_wasm_fd_p(::uwvm::vm::interpreter::wasi::wasm_fd_storages, arg0)};
         if(gfd == nullptr) [[unlikely]] { return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::einval); }
 
@@ -1117,6 +1481,32 @@ namespace uwvm::vm::interpreter::wasi
 
     ::std::int_least32_t fd_filestat_get(::std::int_least32_t arg0, ::std::int_least32_t arg1) noexcept
     {
+#ifdef _DEBUG
+        ::fast_io::io::perr(::uwvm::u8err,
+                                u8"\033[0m"
+    #ifdef __MSDOS__
+                                u8"\033[37m"
+    #else
+                                u8"\033[97m"
+    #endif
+                                u8"uwvm: "
+    #ifdef __MSDOS__
+                                u8"\033[34m"
+    #else
+                                u8"\033[94m"
+    #endif
+                                u8"[debug] "
+                                u8"\033[0m"
+    #ifdef __MSDOS__
+                                u8"\033[37m"
+    #else
+                                u8"\033[97m"
+    #endif
+                                u8"WASI: "
+                                u8"fd_filestat_get"
+                                u8"\n"
+                                u8"\033[0m");
+#endif
         auto const ofd{get_original_wasm_fd_p(::uwvm::vm::interpreter::wasi::wasm_fd_storages, arg0)};
         if(ofd == nullptr) [[unlikely]] { return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::einval); }
 
@@ -1276,6 +1666,32 @@ namespace uwvm::vm::interpreter::wasi
 
     ::std::int_least32_t fd_filestat_set_size(::std::int_least32_t arg0, ::std::int_least64_t arg1) noexcept
     {
+#ifdef _DEBUG
+        ::fast_io::io::perr(::uwvm::u8err,
+                                u8"\033[0m"
+    #ifdef __MSDOS__
+                                u8"\033[37m"
+    #else
+                                u8"\033[97m"
+    #endif
+                                u8"uwvm: "
+    #ifdef __MSDOS__
+                                u8"\033[34m"
+    #else
+                                u8"\033[94m"
+    #endif
+                                u8"[debug] "
+                                u8"\033[0m"
+    #ifdef __MSDOS__
+                                u8"\033[37m"
+    #else
+                                u8"\033[97m"
+    #endif
+                                u8"WASI: "
+                                u8"fd_filestat_set_size"
+                                u8"\n"
+                                u8"\033[0m");
+#endif
         auto const ofd{get_original_wasm_fd_p(::uwvm::vm::interpreter::wasi::wasm_fd_storages, arg0)};
         if(ofd == nullptr) [[unlikely]] { return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::einval); }
 
@@ -1308,6 +1724,32 @@ namespace uwvm::vm::interpreter::wasi
     ::std::int_least32_t
         fd_filestat_set_times(::std::int_least32_t arg0, ::std::int_least64_t arg1, ::std::int_least64_t arg2, ::std::int_least32_t arg3) noexcept
     {
+#ifdef _DEBUG
+        ::fast_io::io::perr(::uwvm::u8err,
+                                u8"\033[0m"
+    #ifdef __MSDOS__
+                                u8"\033[37m"
+    #else
+                                u8"\033[97m"
+    #endif
+                                u8"uwvm: "
+    #ifdef __MSDOS__
+                                u8"\033[34m"
+    #else
+                                u8"\033[94m"
+    #endif
+                                u8"[debug] "
+                                u8"\033[0m"
+    #ifdef __MSDOS__
+                                u8"\033[37m"
+    #else
+                                u8"\033[97m"
+    #endif
+                                u8"WASI: "
+                                u8"fd_filestat_set_times"
+                                u8"\n"
+                                u8"\033[0m");
+#endif
         auto const ofd{get_original_wasm_fd_p(::uwvm::vm::interpreter::wasi::wasm_fd_storages, arg0)};
         if(ofd == nullptr) [[unlikely]] { return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::einval); }
 
@@ -1430,39 +1872,131 @@ namespace uwvm::vm::interpreter::wasi
 
     ::std::int_least32_t fd_prestat_get(::std::int_least32_t arg0, ::std::int_least32_t arg1) noexcept
     {
-        auto const ofd{get_original_wasm_fd_p(::uwvm::vm::interpreter::wasi::wasm_fd_storages, arg0)};
-        if(ofd == nullptr) [[unlikely]] { return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::einval); }
-
-        auto& gfd{*ofd};
-#if 0
-        ::fast_io::io_lock_guard fd_look{*gfd.fd_mutex};
+#ifdef _DEBUG
+        ::fast_io::io::perr(::uwvm::u8err,
+                                u8"\033[0m"
+    #ifdef __MSDOS__
+                                u8"\033[37m"
+    #else
+                                u8"\033[97m"
+    #endif
+                                u8"uwvm: "
+    #ifdef __MSDOS__
+                                u8"\033[34m"
+    #else
+                                u8"\033[94m"
+    #endif
+                                u8"[debug] "
+                                u8"\033[0m"
+    #ifdef __MSDOS__
+                                u8"\033[37m"
+    #else
+                                u8"\033[97m"
+    #endif
+                                u8"WASI: "
+                                u8"fd_prestat_get"
+                                u8"\n"
+                                u8"\033[0m");
 #endif
-        auto const fd{gfd.fd};
+        auto& memory{::uwvm::vm::interpreter::memories.front()};
+        auto const memory_begin{memory.memory_begin};
+        auto const memory_length{memory.memory_length};
+        auto const memory_end{memory_begin + memory_length};
+        ::std::byte* const cvt_begin{memory_begin + static_cast<::std::size_t>(static_cast<::std::uint_least32_t>(arg1))};
 
-        if(fd == -1) [[unlikely]] { return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::einval); }
-        // No support required
-        return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::efault);
+        if(static_cast<::std::size_t>(memory_end - cvt_begin) < 8 || cvt_begin > memory_end) [[unlikely]]
+        {
+            return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::eaddrnotavail);
+        }
+
+        ::fast_io::freestanding::my_memset(cvt_begin, 0, 4);
+
+        ::std::uint_least32_t sz{1u};
+         auto const le_1{::fast_io::little_endian(sz)};
+        ::fast_io::freestanding::my_memcpy(cvt_begin + 4, __builtin_addressof(le_1), sizeof(le_1));
+
+        return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::esuccess);
     }
 
     ::std::int_least32_t fd_prestat_dir_name(::std::int_least32_t arg0, ::std::int_least32_t arg1, ::std::int_least32_t arg2) noexcept
     {
-        auto const ofd{get_original_wasm_fd_p(::uwvm::vm::interpreter::wasi::wasm_fd_storages, arg0)};
-        if(ofd == nullptr) [[unlikely]] { return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::einval); }
-
-        auto& gfd{*ofd};
-#if 0
-        ::fast_io::io_lock_guard fd_look{*gfd.fd_mutex};
+#ifdef _DEBUG
+        ::fast_io::io::perr(::uwvm::u8err,
+                                u8"\033[0m"
+    #ifdef __MSDOS__
+                                u8"\033[37m"
+    #else
+                                u8"\033[97m"
+    #endif
+                                u8"uwvm: "
+    #ifdef __MSDOS__
+                                u8"\033[34m"
+    #else
+                                u8"\033[94m"
+    #endif
+                                u8"[debug] "
+                                u8"\033[0m"
+    #ifdef __MSDOS__
+                                u8"\033[37m"
+    #else
+                                u8"\033[97m"
+    #endif
+                                u8"WASI: "
+                                u8"fd_prestat_dir_name"
+                                u8"\n"
+                                u8"\033[0m");
 #endif
-        auto const fd{gfd.fd};
+        auto& memory{::uwvm::vm::interpreter::memories.front()};
+        auto const memory_begin{memory.memory_begin};
+        auto const memory_length{memory.memory_length};
+        auto const memory_end{memory_begin + memory_length};
+        ::std::byte* const cvt_begin{memory_begin + static_cast<::std::size_t>(static_cast<::std::uint_least32_t>(arg1))};
+        auto const cvt_length{static_cast<::std::size_t>(static_cast<::std::uint_least32_t>(arg2))};
+        
+        if(static_cast<::std::size_t>(memory_end - cvt_begin) < cvt_length || cvt_begin > memory_end) [[unlikely]]
+        {
+            return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::eaddrnotavail);
+        }
 
-        if(fd == -1) [[unlikely]] { return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::einval); }
-        // No support required
-        return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::efault);
+        if(cvt_length == 0) [[unlikely]] { return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::einval); }
+
+        decltype(auto) temp_str{u8"."};
+
+        ::fast_io::freestanding::my_memcpy(cvt_begin, temp_str, sizeof(temp_str));
+
+        return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::esuccess);
     }
 
     ::std::int_least32_t
         fd_pread(::std::int_least32_t arg0, ::std::int_least32_t arg1, ::std::int_least32_t arg2, ::std::int_least64_t arg3, ::std::int_least32_t arg4) noexcept
     {
+#ifdef _DEBUG
+        ::fast_io::io::perr(::uwvm::u8err,
+                                u8"\033[0m"
+    #ifdef __MSDOS__
+                                u8"\033[37m"
+    #else
+                                u8"\033[97m"
+    #endif
+                                u8"uwvm: "
+    #ifdef __MSDOS__
+                                u8"\033[34m"
+    #else
+                                u8"\033[94m"
+    #endif
+                                u8"[debug] "
+                                u8"\033[0m"
+    #ifdef __MSDOS__
+                                u8"\033[37m"
+    #else
+                                u8"\033[97m"
+    #endif
+                                u8"WASI: "
+                                u8"fd_pread"
+                                u8"\n"
+                                u8"\033[0m");
+#endif
+
         auto const ofd{get_original_wasm_fd_p(::uwvm::vm::interpreter::wasi::wasm_fd_storages, arg0)};
         if(ofd == nullptr) [[unlikely]] { return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::einval); }
 
@@ -1572,6 +2106,33 @@ namespace uwvm::vm::interpreter::wasi
                                    ::std::int_least64_t arg3,
                                    ::std::int_least32_t arg4) noexcept
     {
+#ifdef _DEBUG
+        ::fast_io::io::perr(::uwvm::u8err,
+                                u8"\033[0m"
+    #ifdef __MSDOS__
+                                u8"\033[37m"
+    #else
+                                u8"\033[97m"
+    #endif
+                                u8"uwvm: "
+    #ifdef __MSDOS__
+                                u8"\033[34m"
+    #else
+                                u8"\033[94m"
+    #endif
+                                u8"[debug] "
+                                u8"\033[0m"
+    #ifdef __MSDOS__
+                                u8"\033[37m"
+    #else
+                                u8"\033[97m"
+    #endif
+                                u8"WASI: "
+                                u8"fd_pwrite"
+                                u8"\n"
+                                u8"\033[0m");
+#endif
+
         auto const ofd{get_original_wasm_fd_p(::uwvm::vm::interpreter::wasi::wasm_fd_storages, arg0)};
         if(ofd == nullptr) [[unlikely]] { return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::einval); }
 
@@ -1678,6 +2239,33 @@ namespace uwvm::vm::interpreter::wasi
 
     ::std::int_least32_t fd_read(::std::int_least32_t arg0, ::std::int_least32_t arg1, ::std::int_least32_t arg2, ::std::int_least32_t arg3) noexcept
     {
+#ifdef _DEBUG
+        ::fast_io::io::perr(::uwvm::u8err,
+                                u8"\033[0m"
+    #ifdef __MSDOS__
+                                u8"\033[37m"
+    #else
+                                u8"\033[97m"
+    #endif
+                                u8"uwvm: "
+    #ifdef __MSDOS__
+                                u8"\033[34m"
+    #else
+                                u8"\033[94m"
+    #endif
+                                u8"[debug] "
+                                u8"\033[0m"
+    #ifdef __MSDOS__
+                                u8"\033[37m"
+    #else
+                                u8"\033[97m"
+    #endif
+                                u8"WASI: "
+                                u8"fd_read"
+                                u8"\n"
+                                u8"\033[0m");
+#endif
+
         auto const ofd{get_original_wasm_fd_p(::uwvm::vm::interpreter::wasi::wasm_fd_storages, arg0)};
         if(ofd == nullptr) [[unlikely]] { return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::einval); }
 
@@ -1804,6 +2392,33 @@ namespace uwvm::vm::interpreter::wasi
                                     ::std::int_least64_t arg3,
                                     ::std::int_least32_t arg4) noexcept
     {
+#ifdef _DEBUG
+        ::fast_io::io::perr(::uwvm::u8err,
+                                u8"\033[0m"
+    #ifdef __MSDOS__
+                                u8"\033[37m"
+    #else
+                                u8"\033[97m"
+    #endif
+                                u8"uwvm: "
+    #ifdef __MSDOS__
+                                u8"\033[34m"
+    #else
+                                u8"\033[94m"
+    #endif
+                                u8"[debug] "
+                                u8"\033[0m"
+    #ifdef __MSDOS__
+                                u8"\033[37m"
+    #else
+                                u8"\033[97m"
+    #endif
+                                u8"WASI: "
+                                u8"fd_readdir"
+                                u8"\n"
+                                u8"\033[0m");
+#endif
+
         auto const ofd{get_original_wasm_fd_p(::uwvm::vm::interpreter::wasi::wasm_fd_storages, arg0)};
         if(ofd == nullptr) [[unlikely]] { return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::einval); }
 
@@ -1959,6 +2574,33 @@ namespace uwvm::vm::interpreter::wasi
 
     ::std::int_least32_t fd_renumber(::std::int_least32_t arg0, ::std::int_least32_t arg1) noexcept
     {
+#ifdef _DEBUG
+        ::fast_io::io::perr(::uwvm::u8err,
+                                u8"\033[0m"
+    #ifdef __MSDOS__
+                                u8"\033[37m"
+    #else
+                                u8"\033[97m"
+    #endif
+                                u8"uwvm: "
+    #ifdef __MSDOS__
+                                u8"\033[34m"
+    #else
+                                u8"\033[94m"
+    #endif
+                                u8"[debug] "
+                                u8"\033[0m"
+    #ifdef __MSDOS__
+                                u8"\033[37m"
+    #else
+                                u8"\033[97m"
+    #endif
+                                u8"WASI: "
+                                u8"fd_renumber"
+                                u8"\n"
+                                u8"\033[0m");
+#endif
+
         if(arg0 == arg1) [[unlikely]] { return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::esuccess); }
 
         auto const ofd{get_original_wasm_fd_p(::uwvm::vm::interpreter::wasi::wasm_fd_storages, arg0)};
@@ -2000,6 +2642,33 @@ namespace uwvm::vm::interpreter::wasi
 
     ::std::int_least32_t fd_seek(::std::int_least32_t arg0, ::std::int_least64_t arg1, ::std::int_least32_t arg2, ::std::int_least32_t arg3) noexcept
     {
+#ifdef _DEBUG
+        ::fast_io::io::perr(::uwvm::u8err,
+                                u8"\033[0m"
+    #ifdef __MSDOS__
+                                u8"\033[37m"
+    #else
+                                u8"\033[97m"
+    #endif
+                                u8"uwvm: "
+    #ifdef __MSDOS__
+                                u8"\033[34m"
+    #else
+                                u8"\033[94m"
+    #endif
+                                u8"[debug] "
+                                u8"\033[0m"
+    #ifdef __MSDOS__
+                                u8"\033[37m"
+    #else
+                                u8"\033[97m"
+    #endif
+                                u8"WASI: "
+                                u8"fd_seek"
+                                u8"\n"
+                                u8"\033[0m");
+#endif
+
         auto const ofd{get_original_wasm_fd_p(::uwvm::vm::interpreter::wasi::wasm_fd_storages, arg0)};
         if(ofd == nullptr) [[unlikely]] { return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::einval); }
 
@@ -2061,6 +2730,33 @@ namespace uwvm::vm::interpreter::wasi
 
     ::std::int_least32_t fd_tell(::std::int_least32_t arg0, ::std::int_least32_t arg1) noexcept
     {
+#ifdef _DEBUG
+        ::fast_io::io::perr(::uwvm::u8err,
+                                u8"\033[0m"
+    #ifdef __MSDOS__
+                                u8"\033[37m"
+    #else
+                                u8"\033[97m"
+    #endif
+                                u8"uwvm: "
+    #ifdef __MSDOS__
+                                u8"\033[34m"
+    #else
+                                u8"\033[94m"
+    #endif
+                                u8"[debug] "
+                                u8"\033[0m"
+    #ifdef __MSDOS__
+                                u8"\033[37m"
+    #else
+                                u8"\033[97m"
+    #endif
+                                u8"WASI: "
+                                u8"fd_tell"
+                                u8"\n"
+                                u8"\033[0m");
+#endif
+
         auto const ofd{get_original_wasm_fd_p(::uwvm::vm::interpreter::wasi::wasm_fd_storages, arg0)};
         if(ofd == nullptr) [[unlikely]] { return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::einval); }
 
@@ -2097,6 +2793,33 @@ namespace uwvm::vm::interpreter::wasi
 
     ::std::int_least32_t fd_write(::std::int_least32_t arg0, ::std::int_least32_t arg1, ::std::int_least32_t arg2, ::std::int_least32_t arg3) noexcept
     {
+#ifdef _DEBUG
+        ::fast_io::io::perr(::uwvm::u8err,
+                                u8"\033[0m"
+    #ifdef __MSDOS__
+                                u8"\033[37m"
+    #else
+                                u8"\033[97m"
+    #endif
+                                u8"uwvm: "
+    #ifdef __MSDOS__
+                                u8"\033[34m"
+    #else
+                                u8"\033[94m"
+    #endif
+                                u8"[debug] "
+                                u8"\033[0m"
+    #ifdef __MSDOS__
+                                u8"\033[37m"
+    #else
+                                u8"\033[97m"
+    #endif
+                                u8"WASI: "
+                                u8"fd_write"
+                                u8"\n"
+                                u8"\033[0m");
+#endif
+
         auto const ofd{get_original_wasm_fd_p(::uwvm::vm::interpreter::wasi::wasm_fd_storages, arg0)};
         if(ofd == nullptr) [[unlikely]] { return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::einval); }
 
@@ -2243,6 +2966,33 @@ namespace uwvm::vm::interpreter::wasi
                                    ::std::int_least32_t arg7,
                                    ::std::int_least32_t arg8) noexcept
     {
+#ifdef _DEBUG
+        ::fast_io::io::perr(::uwvm::u8err,
+                                u8"\033[0m"
+    #ifdef __MSDOS__
+                                u8"\033[37m"
+    #else
+                                u8"\033[97m"
+    #endif
+                                u8"uwvm: "
+    #ifdef __MSDOS__
+                                u8"\033[34m"
+    #else
+                                u8"\033[94m"
+    #endif
+                                u8"[debug] "
+                                u8"\033[0m"
+    #ifdef __MSDOS__
+                                u8"\033[37m"
+    #else
+                                u8"\033[97m"
+    #endif
+                                u8"WASI: "
+                                u8"path_open"
+                                u8"\n"
+                                u8"\033[0m");
+#endif
+
         int pfd{};
         ::fast_io::native_mutex* ofd_mutex{};
 
@@ -2405,48 +3155,48 @@ namespace uwvm::vm::interpreter::wasi
             return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::efault);
         }
 #else
-        ::std::uintmax_t fd_flags{};
+        ::std::uintmax_t sys_fd_flags{};
         if((flags_u16 & static_cast<::std::uint_least16_t>(::uwvm::vm::interpreter::wasi::fdflags_t::fdflag_append)) ==
            static_cast<::std::uint_least16_t>(::uwvm::vm::interpreter::wasi::fdflags_t::fdflag_append))
         {
     #ifdef O_APPEND
-            fd_flags |= O_APPEND;
+            sys_fd_flags |= O_APPEND;
     #endif
         }
         if((flags_u16 & static_cast<::std::uint_least16_t>(::uwvm::vm::interpreter::wasi::fdflags_t::fdflag_dsync)) ==
            static_cast<::std::uint_least16_t>(::uwvm::vm::interpreter::wasi::fdflags_t::fdflag_dsync))
         {
     #ifdef O_DSYNC
-            fd_flags |= O_DSYNC;
+            sys_fd_flags |= O_DSYNC;
     #endif
         }
         if((flags_u16 & static_cast<::std::uint_least16_t>(::uwvm::vm::interpreter::wasi::fdflags_t::fdflag_nonblock)) ==
            static_cast<::std::uint_least16_t>(::uwvm::vm::interpreter::wasi::fdflags_t::fdflag_nonblock))
         {
     #ifdef O_NONBLOCK
-            fd_flags |= O_NONBLOCK;
+            sys_fd_flags |= O_NONBLOCK;
     #endif
         }
         if((flags_u16 & static_cast<::std::uint_least16_t>(::uwvm::vm::interpreter::wasi::fdflags_t::fdflag_rsync)) ==
            static_cast<::std::uint_least16_t>(::uwvm::vm::interpreter::wasi::fdflags_t::fdflag_rsync))
         {
     #ifdef O_RSYNC
-            fd_flags |= O_RSYNC;
+            sys_fd_flags |= O_RSYNC;
     #endif
         }
         if((flags_u16 & static_cast<::std::uint_least16_t>(::uwvm::vm::interpreter::wasi::fdflags_t::fdflag_sync)) ==
            static_cast<::std::uint_least16_t>(::uwvm::vm::interpreter::wasi::fdflags_t::fdflag_sync))
         {
     #ifdef O_SYNC
-            fd_flags |= O_SYNC;
+            sys_fd_flags |= O_SYNC;
     #endif
         }
 
         if(
     #if defined(__linux__) && defined(__NR_fcntl)
-            ::fast_io::system_call<__NR_fcntl, int>(fd, F_SETFL, fd_flags)
+            ::fast_io::system_call<__NR_fcntl, int>(sys_fd, F_SETFL, sys_fd_flags)
     #else
-            ::uwvm::posix::fcntl(fd, F_SETFL, fd_flags)
+            ::uwvm::posix::fcntl(sys_fd, F_SETFL, sys_fd_flags)
     #endif
             != 0) [[unlikely]]
         {
