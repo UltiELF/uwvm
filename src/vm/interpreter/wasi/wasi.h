@@ -2058,7 +2058,41 @@ namespace uwvm::vm::interpreter::wasi
         return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::esuccess);
     }
 
-    ::std::int_least32_t fd_tell(::std::int_least32_t arg0, ::std::int_least32_t arg1) noexcept { return {}; }
+    ::std::int_least32_t fd_tell(::std::int_least32_t arg0, ::std::int_least32_t arg1) noexcept
+    {
+        auto const ofd{get_original_wasm_fd_p(::uwvm::vm::interpreter::wasi::wasm_fd_storages, arg0)};
+        if(ofd == nullptr) [[unlikely]] { return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::einval); }
+
+        auto& gfd{*ofd};
+        ::fast_io::io_lock_guard fd_look{*gfd.fd_mutex};
+        if((static_cast<::std::uint_least64_t>(gfd.rights_base) & static_cast<::std::uint_least64_t>(::uwvm::vm::interpreter::wasi::rights_t::right_fd_tell)) !=
+           static_cast<::std::uint_least64_t>(::uwvm::vm::interpreter::wasi::rights_t::right_fd_tell)) [[unlikely]]
+        {
+            return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::einval);
+        }
+
+        auto const pfd{gfd.fd};
+
+        auto& memory{::uwvm::vm::interpreter::memories.front()};
+        auto const memory_begin{memory.memory_begin};
+        auto const memory_length{memory.memory_length};
+        auto const memory_end{memory_begin + memory_length};
+
+        ::std::byte* const cvt_begin{memory_begin + static_cast<::std::size_t>(static_cast<::std::uint_least32_t>(arg1))};
+
+        if(static_cast<::std::size_t>(memory_end - cvt_begin) < 8u || cvt_begin > memory_end) [[unlikely]]
+        {
+            return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::eaddrnotavail);
+        }
+
+        auto const ret_off{::fast_io::operations::io_stream_seek_bytes(::fast_io::posix_io_observer{pfd}, 0, ::fast_io::seekdir::cur)};
+
+        auto const new_off{static_cast<::std::uint_least64_t>(ret_off)};
+        auto const le_new_off{::fast_io::little_endian(new_off)};
+        ::fast_io::freestanding::my_memcpy(cvt_begin, __builtin_addressof(le_new_off), sizeof(le_new_off));
+
+        return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::esuccess);
+    }
 
     ::std::int_least32_t fd_write(::std::int_least32_t arg0, ::std::int_least32_t arg1, ::std::int_least32_t arg2, ::std::int_least32_t arg3) noexcept
     {
