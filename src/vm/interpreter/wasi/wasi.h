@@ -627,7 +627,10 @@ namespace uwvm::vm::interpreter::wasi
 
     ::std::int_least32_t fd_advise(::std::int_least32_t arg0, ::std::int_least64_t arg1, ::std::int_least64_t arg2, ::std::int_least32_t arg3) noexcept
     {
-        auto const gfd{get_fd(::uwvm::vm::interpreter::wasi::wasm_fd_storages, arg0)};
+        auto const ofd{get_original_wasm_fd_p(::uwvm::vm::interpreter::wasi::wasm_fd_storages, arg0)};
+        if(ofd == nullptr) [[unlikely]] { return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::einval); }
+
+        auto& gfd{*ofd};
         ::fast_io::io_lock_guard fd_look{*gfd.fd_mutex};
         auto const fd{gfd.fd};
 
@@ -728,7 +731,10 @@ namespace uwvm::vm::interpreter::wasi
 
     ::std::int_least32_t fd_allocate(::std::int_least32_t arg0, ::std::int_least64_t arg1, ::std::int_least64_t arg2) noexcept
     {
-        auto const gfd{get_fd(::uwvm::vm::interpreter::wasi::wasm_fd_storages, arg0)};
+        auto const ofd{get_original_wasm_fd_p(::uwvm::vm::interpreter::wasi::wasm_fd_storages, arg0)};
+        if(ofd == nullptr) [[unlikely]] { return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::einval); }
+
+        auto& gfd{*ofd};
         ::fast_io::io_lock_guard fd_look{*gfd.fd_mutex};
         auto const fd{gfd.fd};
 
@@ -753,7 +759,10 @@ namespace uwvm::vm::interpreter::wasi
 
     ::std::int_least32_t fd_close(::std::int_least32_t arg0) noexcept
     {
-        auto const gfd{get_fd(::uwvm::vm::interpreter::wasi::wasm_fd_storages, arg0)};
+        auto const ofd{get_original_wasm_fd_p(::uwvm::vm::interpreter::wasi::wasm_fd_storages, arg0)};
+        if(ofd == nullptr) [[unlikely]] { return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::einval); }
+
+        auto& gfd{*ofd};
         ::fast_io::io_lock_guard fd_look{*gfd.fd_mutex};
         auto const fd{gfd.fd};
 
@@ -769,7 +778,10 @@ namespace uwvm::vm::interpreter::wasi
 
     ::std::int_least32_t fd_datasync(::std::int_least32_t arg0) noexcept
     {
-        auto const gfd{get_fd(::uwvm::vm::interpreter::wasi::wasm_fd_storages, arg0)};
+        auto const ofd{get_original_wasm_fd_p(::uwvm::vm::interpreter::wasi::wasm_fd_storages, arg0)};
+        if(ofd == nullptr) [[unlikely]] { return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::einval); }
+
+        auto& gfd{*ofd};
         ::fast_io::io_lock_guard fd_look{*gfd.fd_mutex};
         auto const fd{gfd.fd};
 
@@ -793,7 +805,10 @@ namespace uwvm::vm::interpreter::wasi
 
     ::std::int_least32_t fd_sync(::std::int_least32_t arg0) noexcept
     {
-        auto const gfd{get_fd(::uwvm::vm::interpreter::wasi::wasm_fd_storages, arg0)};
+        auto const ofd{get_original_wasm_fd_p(::uwvm::vm::interpreter::wasi::wasm_fd_storages, arg0)};
+        if(ofd == nullptr) [[unlikely]] { return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::einval); }
+
+        auto& gfd{*ofd};
         ::fast_io::io_lock_guard fd_look{*gfd.fd_mutex};
         auto const fd{gfd.fd};
 
@@ -814,7 +829,10 @@ namespace uwvm::vm::interpreter::wasi
 
     ::std::int_least32_t fd_fdstat_get(::std::int_least32_t arg0, ::std::int_least32_t arg1) noexcept
     {
-        auto const gfd{get_fd(::uwvm::vm::interpreter::wasi::wasm_fd_storages, arg0)};
+        auto const ofd{get_original_wasm_fd_p(::uwvm::vm::interpreter::wasi::wasm_fd_storages, arg0)};
+        if(ofd == nullptr) [[unlikely]] { return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::einval); }
+
+        auto& gfd{*ofd};
         ::fast_io::io_lock_guard fd_look{*gfd.fd_mutex};
         auto const fd{gfd.fd};
 
@@ -833,10 +851,10 @@ namespace uwvm::vm::interpreter::wasi
             return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::efault);
         }
 
-        ::uwvm::vm::interpreter::wasi::filetype_t fs_filetype{};                                                                 // 0
-        ::uwvm::vm::interpreter::wasi::fdflags_t fs_flags{};                                                                     // 2
-        ::uwvm::vm::interpreter::wasi::rights_t fs_rights_base{static_cast<::uwvm::vm::interpreter::wasi::rights_t>(-1)};        // 8
-        ::uwvm::vm::interpreter::wasi::rights_t fs_rights_inheriting{static_cast<::uwvm::vm::interpreter::wasi::rights_t>(-1)};  // 16
+        ::uwvm::vm::interpreter::wasi::filetype_t fs_filetype{};                           // 0
+        ::uwvm::vm::interpreter::wasi::fdflags_t fs_flags{};                               // 2
+        ::uwvm::vm::interpreter::wasi::rights_t fs_rights_base{gfd.rights_base};           // 8
+        ::uwvm::vm::interpreter::wasi::rights_t fs_rights_inheriting{gfd.rights_inherit};  // 16
 
         ::fast_io::posix_io_observer fpio{fd};
 
@@ -959,7 +977,10 @@ namespace uwvm::vm::interpreter::wasi
 
     ::std::int_least32_t fd_fdstat_set_flags(::std::int_least32_t arg0, ::std::int_least32_t arg1) noexcept
     {
-        auto const gfd{get_fd(::uwvm::vm::interpreter::wasi::wasm_fd_storages, arg0)};
+        auto const ofd{get_original_wasm_fd_p(::uwvm::vm::interpreter::wasi::wasm_fd_storages, arg0)};
+        if(ofd == nullptr) [[unlikely]] { return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::einval); }
+
+        auto& gfd{*ofd};
         ::fast_io::io_lock_guard fd_look{*gfd.fd_mutex};
         auto const fd{gfd.fd};
 
@@ -1049,20 +1070,27 @@ namespace uwvm::vm::interpreter::wasi
 
     ::std::int_least32_t fd_fdstat_set_rights(::std::int_least32_t arg0, ::std::int_least64_t arg1, ::std::int_least64_t arg2) noexcept
     {
-        auto const gfd{get_fd(::uwvm::vm::interpreter::wasi::wasm_fd_storages, arg0)};
-#if 0
-        ::fast_io::io_lock_guard fd_look{*gfd.fd_mutex};
-#endif
-        auto const fd{gfd.fd};
+        auto const gfd{get_original_wasm_fd_p(::uwvm::vm::interpreter::wasi::wasm_fd_storages, arg0)};
+        if(gfd == nullptr) [[unlikely]] { return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::einval); }
+
+        ::fast_io::io_lock_guard fd_look{*gfd->fd_mutex};
+        auto const fd{gfd->fd};
 
         if(fd == -1) [[unlikely]] { return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::einval); }
-        // No support required
+
+        gfd->rights_base = static_cast<::uwvm::vm::interpreter::wasi::rights_t>(arg1);
+
+        gfd->rights_base = static_cast<::uwvm::vm::interpreter::wasi::rights_t>(arg2);
+
         return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::efault);
     }
 
     ::std::int_least32_t fd_filestat_get(::std::int_least32_t arg0, ::std::int_least32_t arg1) noexcept
     {
-        auto const gfd{get_fd(::uwvm::vm::interpreter::wasi::wasm_fd_storages, arg0)};
+        auto const ofd{get_original_wasm_fd_p(::uwvm::vm::interpreter::wasi::wasm_fd_storages, arg0)};
+        if(ofd == nullptr) [[unlikely]] { return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::einval); }
+
+        auto& gfd{*ofd};
         ::fast_io::io_lock_guard fd_look{*gfd.fd_mutex};
         auto const fd{gfd.fd};
 
@@ -1212,7 +1240,10 @@ namespace uwvm::vm::interpreter::wasi
 
     ::std::int_least32_t fd_filestat_set_size(::std::int_least32_t arg0, ::std::int_least64_t arg1) noexcept
     {
-        auto const gfd{get_fd(::uwvm::vm::interpreter::wasi::wasm_fd_storages, arg0)};
+        auto const ofd{get_original_wasm_fd_p(::uwvm::vm::interpreter::wasi::wasm_fd_storages, arg0)};
+        if(ofd == nullptr) [[unlikely]] { return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::einval); }
+
+        auto& gfd{*ofd};
         ::fast_io::io_lock_guard fd_look{*gfd.fd_mutex};
         auto const fd{gfd.fd};
 
@@ -1235,7 +1266,10 @@ namespace uwvm::vm::interpreter::wasi
     ::std::int_least32_t
         fd_filestat_set_times(::std::int_least32_t arg0, ::std::int_least64_t arg1, ::std::int_least64_t arg2, ::std::int_least32_t arg3) noexcept
     {
-        auto const gfd{get_fd(::uwvm::vm::interpreter::wasi::wasm_fd_storages, arg0)};
+        auto const ofd{get_original_wasm_fd_p(::uwvm::vm::interpreter::wasi::wasm_fd_storages, arg0)};
+        if(ofd == nullptr) [[unlikely]] { return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::einval); }
+
+        auto& gfd{*ofd};
         ::fast_io::io_lock_guard fd_look{*gfd.fd_mutex};
         auto const fd{gfd.fd};
 
@@ -1348,7 +1382,10 @@ namespace uwvm::vm::interpreter::wasi
 
     ::std::int_least32_t fd_prestat_get(::std::int_least32_t arg0, ::std::int_least32_t arg1) noexcept
     {
-        auto const gfd{get_fd(::uwvm::vm::interpreter::wasi::wasm_fd_storages, arg0)};
+        auto const ofd{get_original_wasm_fd_p(::uwvm::vm::interpreter::wasi::wasm_fd_storages, arg0)};
+        if(ofd == nullptr) [[unlikely]] { return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::einval); }
+
+        auto& gfd{*ofd};
 #if 0
         ::fast_io::io_lock_guard fd_look{*gfd.fd_mutex};
 #endif
@@ -1361,7 +1398,10 @@ namespace uwvm::vm::interpreter::wasi
 
     ::std::int_least32_t fd_prestat_dir_name(::std::int_least32_t arg0, ::std::int_least32_t arg1, ::std::int_least32_t arg2) noexcept
     {
-        auto const gfd{get_fd(::uwvm::vm::interpreter::wasi::wasm_fd_storages, arg0)};
+        auto const ofd{get_original_wasm_fd_p(::uwvm::vm::interpreter::wasi::wasm_fd_storages, arg0)};
+        if(ofd == nullptr) [[unlikely]] { return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::einval); }
+
+        auto& gfd{*ofd};
 #if 0
         ::fast_io::io_lock_guard fd_look{*gfd.fd_mutex};
 #endif
@@ -1375,7 +1415,10 @@ namespace uwvm::vm::interpreter::wasi
     ::std::int_least32_t
         fd_pread(::std::int_least32_t arg0, ::std::int_least32_t arg1, ::std::int_least32_t arg2, ::std::int_least64_t arg3, ::std::int_least32_t arg4) noexcept
     {
-        auto const gfd{get_fd(::uwvm::vm::interpreter::wasi::wasm_fd_storages, arg0)};
+        auto const ofd{get_original_wasm_fd_p(::uwvm::vm::interpreter::wasi::wasm_fd_storages, arg0)};
+        if(ofd == nullptr) [[unlikely]] { return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::einval); }
+
+        auto& gfd{*ofd};
         ::fast_io::io_lock_guard fd_look{*gfd.fd_mutex};
         auto const pfd{gfd.fd};
 
@@ -1475,7 +1518,10 @@ namespace uwvm::vm::interpreter::wasi
                                    ::std::int_least64_t arg3,
                                    ::std::int_least32_t arg4) noexcept
     {
-        auto const gfd{get_fd(::uwvm::vm::interpreter::wasi::wasm_fd_storages, arg0)};
+        auto const ofd{get_original_wasm_fd_p(::uwvm::vm::interpreter::wasi::wasm_fd_storages, arg0)};
+        if(ofd == nullptr) [[unlikely]] { return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::einval); }
+
+        auto& gfd{*ofd};
         ::fast_io::io_lock_guard fd_look{*gfd.fd_mutex};
         auto const pfd{gfd.fd};
 
@@ -1571,7 +1617,10 @@ namespace uwvm::vm::interpreter::wasi
 
     ::std::int_least32_t fd_read(::std::int_least32_t arg0, ::std::int_least32_t arg1, ::std::int_least32_t arg2, ::std::int_least32_t arg3) noexcept
     {
-        auto const gfd{get_fd(::uwvm::vm::interpreter::wasi::wasm_fd_storages, arg0)};
+        auto const ofd{get_original_wasm_fd_p(::uwvm::vm::interpreter::wasi::wasm_fd_storages, arg0)};
+        if(ofd == nullptr) [[unlikely]] { return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::einval); }
+
+        auto& gfd{*ofd};
         ::fast_io::io_lock_guard fd_look{*gfd.fd_mutex};
         auto const pfd{gfd.fd};
 
@@ -1689,7 +1738,10 @@ namespace uwvm::vm::interpreter::wasi
                                     ::std::int_least64_t arg3,
                                     ::std::int_least32_t arg4) noexcept
     {
-        auto const gfd{get_fd(::uwvm::vm::interpreter::wasi::wasm_fd_storages, arg0)};
+        auto const ofd{get_original_wasm_fd_p(::uwvm::vm::interpreter::wasi::wasm_fd_storages, arg0)};
+        if(ofd == nullptr) [[unlikely]] { return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::einval); }
+
+        auto& gfd{*ofd};
         ::fast_io::io_lock_guard fd_look{*gfd.fd_mutex};
         auto const pfd{gfd.fd};
 
@@ -1837,7 +1889,10 @@ namespace uwvm::vm::interpreter::wasi
     {
         if(arg0 == arg1) [[unlikely]] { return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::esuccess); }
 
-        auto const gfd{get_fd(::uwvm::vm::interpreter::wasi::wasm_fd_storages, arg0)};
+        auto const ofd{get_original_wasm_fd_p(::uwvm::vm::interpreter::wasi::wasm_fd_storages, arg0)};
+        if(ofd == nullptr) [[unlikely]] { return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::einval); }
+
+        auto& gfd{*ofd};
         ::fast_io::io_lock_guard fd_look{*gfd.fd_mutex};
 
         auto const old_sys_fd{gfd.fd};
@@ -1873,7 +1928,10 @@ namespace uwvm::vm::interpreter::wasi
 
     ::std::int_least32_t fd_seek(::std::int_least32_t arg0, ::std::int_least64_t arg1, ::std::int_least32_t arg2, ::std::int_least32_t arg3) noexcept
     {
-        auto const gfd{get_fd(::uwvm::vm::interpreter::wasi::wasm_fd_storages, arg0)};
+        auto const ofd{get_original_wasm_fd_p(::uwvm::vm::interpreter::wasi::wasm_fd_storages, arg0)};
+        if(ofd == nullptr) [[unlikely]] { return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::einval); }
+
+        auto& gfd{*ofd};
         ::fast_io::io_lock_guard fd_look{*gfd.fd_mutex};
         auto const pfd{gfd.fd};
 
@@ -1927,7 +1985,10 @@ namespace uwvm::vm::interpreter::wasi
 
     ::std::int_least32_t fd_write(::std::int_least32_t arg0, ::std::int_least32_t arg1, ::std::int_least32_t arg2, ::std::int_least32_t arg3) noexcept
     {
-        auto const gfd{get_fd(::uwvm::vm::interpreter::wasi::wasm_fd_storages, arg0)};
+        auto const ofd{get_original_wasm_fd_p(::uwvm::vm::interpreter::wasi::wasm_fd_storages, arg0)};
+        if(ofd == nullptr) [[unlikely]] { return static_cast<::std::int_least32_t>(::uwvm::vm::interpreter::wasi::errno_t::einval); }
+
+        auto& gfd{*ofd};
         ::fast_io::io_lock_guard fd_look{*gfd.fd_mutex};
         auto const pfd{gfd.fd};
 

@@ -16,7 +16,9 @@ namespace uwvm::vm::interpreter::wasi
         ::std::size_t close_pos{SIZE_MAX};
 
         // ===== wasi fd =====
-        ::uwvm::vm::interpreter::wasi::rights_t rights{static_cast<::uwvm::vm::interpreter::wasi::rights_t>(-1)};
+        ::uwvm::vm::interpreter::wasi::rights_t rights_base{static_cast<::uwvm::vm::interpreter::wasi::rights_t>(-1)};
+        ::uwvm::vm::interpreter::wasi::rights_t rights_inherit{static_cast<::uwvm::vm::interpreter::wasi::rights_t>(-1)};
+
         handle fd{-1};
 
         // ====== for vm ======
@@ -40,25 +42,32 @@ namespace uwvm::vm::interpreter::wasi
 
         // shared mutex
 
-        wasm_fd(wasm_fd const& other) noexcept : fd_mutex{other.fd_mutex}, fd{other.fd}, close_pos{other.close_pos}, rights{other.rights}, copy_mutex{true} {}
+        wasm_fd(wasm_fd const& other) noexcept :
+            fd_mutex{other.fd_mutex}, fd{other.fd}, close_pos{other.close_pos}, rights_base{other.rights_base}, rights_inherit{other.rights_inherit},
+            copy_mutex{true}
+        {
+        }
 
         wasm_fd& operator= (wasm_fd const& other) noexcept
         {
             fd_mutex = other.fd_mutex;
             fd = other.fd;
             close_pos = other.close_pos;
-            rights = other.rights;
+            rights_base = other.rights_base;
+            rights_inherit = other.rights_inherit;
             copy_mutex = true;
             return *this;
         }
 
         wasm_fd(wasm_fd&& other) noexcept :
-            fd{other.fd}, fd_mutex{other.fd_mutex}, close_pos{other.close_pos}, rights{other.rights}, copy_mutex{other.copy_mutex}
+            fd{other.fd}, fd_mutex{other.fd_mutex}, close_pos{other.close_pos}, rights_base{other.rights_base}, rights_inherit{other.rights_inherit},
+            copy_mutex{other.copy_mutex}
         {
             other.fd = -1;
             other.fd_mutex = nullptr;
             other.close_pos = SIZE_MAX;
-            other.rights = static_cast<::uwvm::vm::interpreter::wasi::rights_t>(-1);
+            other.rights_base = static_cast<::uwvm::vm::interpreter::wasi::rights_t>(-1);
+            other.rights_inherit = static_cast<::uwvm::vm::interpreter::wasi::rights_t>(-1);
             other.copy_mutex = false;
         }
 
@@ -67,12 +76,14 @@ namespace uwvm::vm::interpreter::wasi
             fd = other.fd;
             fd_mutex = other.fd_mutex;
             close_pos = other.close_pos;
-            rights = other.rights;
+            rights_base = other.rights_base;
+            rights_inherit = other.rights_inherit;
             copy_mutex = other.copy_mutex;
             other.fd = -1;
             other.fd_mutex = nullptr;
             other.close_pos = SIZE_MAX;
-            other.rights = static_cast<::uwvm::vm::interpreter::wasi::rights_t>(-1);
+            other.rights_base = static_cast<::uwvm::vm::interpreter::wasi::rights_t>(-1);
+            other.rights_inherit = static_cast<::uwvm::vm::interpreter::wasi::rights_t>(-1);
             other.copy_mutex = false;
             return *this;
         }
@@ -83,7 +94,8 @@ namespace uwvm::vm::interpreter::wasi
         {
             fd = -1;
             close_pos = SIZE_MAX;
-            rights = static_cast<::uwvm::vm::interpreter::wasi::rights_t>(-1);
+            rights_base = static_cast<::uwvm::vm::interpreter::wasi::rights_t>(-1);
+            rights_inherit = static_cast<::uwvm::vm::interpreter::wasi::rights_t>(-1);
 
             if(fd_mutex != nullptr) [[likely]]
             {
@@ -129,7 +141,8 @@ namespace uwvm::vm::interpreter::wasi
         wasm_fd_storage.closes.reserve(min_fd);
     }
 
-    inline ::uwvm::vm::interpreter::wasi::wasm_fd get_fd(wasm_fd_storage_t& wasm_fd_storage, ::std::int_least32_t wfd) noexcept
+#ifdef UWVM_ENABLE_COPYED_WASMFD
+    inline ::uwvm::vm::interpreter::wasi::wasm_fd get_copy_fd(wasm_fd_storage_t& wasm_fd_storage, ::std::int_least32_t wfd) noexcept
     {
         auto const wasm_fd_pos{static_cast<::std::size_t>(wfd)};
         ::fast_io::io_lock_guard fds_lock{wasm_fd_storage.fds_mutex};
@@ -144,6 +157,15 @@ namespace uwvm::vm::interpreter::wasi
             auto const ret{wasm_fd_storage.opens.index_unchecked(wasm_fd_pos)};
             return ret;
         }
+    }
+#endif
+
+    inline ::uwvm::vm::interpreter::wasi::wasm_fd* get_original_wasm_fd_p(wasm_fd_storage_t& wasm_fd_storage, ::std::int_least32_t wfd) noexcept
+    {
+        auto const wasm_fd_pos{static_cast<::std::size_t>(wfd)};
+        ::fast_io::io_lock_guard fds_lock{wasm_fd_storage.fds_mutex};
+        if(wasm_fd_storage.opens.size() <= wasm_fd_pos) [[unlikely]] { return nullptr; }
+        else { return wasm_fd_storage.opens.begin() + wasm_fd_pos; }
     }
 
     inline bool reset_fd(wasm_fd_storage_t& wasm_fd_storage, ::std::int_least32_t wfd, int fd) noexcept
@@ -174,13 +196,14 @@ namespace uwvm::vm::interpreter::wasi
         }
     }
 
-    struct create_and_get_wasm_fd_t
+#ifdef UWVM_ENABLE_COPYED_WASMFD
+    struct create_and_get_copy_wasm_fd_t
     {
         ::std::int_least32_t wfd{};
         wasm_fd fd{};
     };
 
-    inline create_and_get_wasm_fd_t create_and_get_wasm_fd(wasm_fd_storage_t& wasm_fd_storage, int fd) noexcept
+    inline create_and_get_copy_wasm_fd_t create_and_get_copy_wasm_fd(wasm_fd_storage_t& wasm_fd_storage, int fd) noexcept
     {
         ::fast_io::io_lock_guard fds_lock{wasm_fd_storage.fds_mutex};
         if(wasm_fd_storage.closes.empty())
@@ -198,6 +221,34 @@ namespace uwvm::vm::interpreter::wasi
             auto& pfd{wasm_fd_storage.opens.index_unchecked(pos)};
             pfd.fd = fd;
             // shared mutex
+            return {static_cast<::std::int_least32_t>(pos), pfd};
+        }
+    }
+#endif
+
+    struct create_and_get_original_wasm_fd_p_t
+    {
+        ::std::int_least32_t wfd{};
+        wasm_fd* fd{};
+    };
+
+    inline create_and_get_original_wasm_fd_p_t create_and_get_original_wasm_fd_p(wasm_fd_storage_t& wasm_fd_storage, int fd) noexcept
+    {
+        ::fast_io::io_lock_guard fds_lock{wasm_fd_storage.fds_mutex};
+        if(wasm_fd_storage.closes.empty())
+        {
+            if(wasm_fd_storage.opens.size() >= ::uwvm::vm::interpreter::wasi::wasi_fd_limit) [[unlikely]] { return {-1, {}}; }
+            auto pos_p{__builtin_addressof(wasm_fd_storage.opens.emplace_back(fd))};
+            auto const ret{static_cast<::std::int_least32_t>(pos_p - wasm_fd_storage.opens.begin())};
+            return {ret, pos_p};
+        }
+        else
+        {
+            auto const pos{wasm_fd_storage.closes.back_unchecked()};
+            wasm_fd_storage.closes.pop_back_unchecked();
+            auto const pfd{wasm_fd_storage.opens.begin() + pos};
+            pfd->fd = fd;
+
             return {static_cast<::std::int_least32_t>(pos), pfd};
         }
     }
@@ -285,13 +336,14 @@ namespace uwvm::vm::interpreter::wasi
         return true;
     }
 
-    struct set_and_get_wasm_fd_t
+#ifdef UWVM_ENABLE_COPYED_WASMFD
+    struct set_and_get_copy_wasm_fd_t
     {
         bool success{};
         wasm_fd fd{};
     };
 
-    inline set_and_get_wasm_fd_t set_and_get_wasm_fd(wasm_fd_storage_t& wasm_fd_storage, ::std::int_least32_t wfd, int fd) noexcept
+    inline set_and_get_copy_wasm_fd_t set_and_get_copy_wasm_fd(wasm_fd_storage_t& wasm_fd_storage, ::std::int_least32_t wfd, int fd) noexcept
     {
         auto const wasm_fd_pos{static_cast<::std::size_t>(wfd)};
         ::fast_io::io_lock_guard fds_lock{wasm_fd_storage.fds_mutex};
@@ -334,6 +386,59 @@ namespace uwvm::vm::interpreter::wasi
             else { fd_need_check.fd = fd; }
 
             return {true, fd_need_check};
+        }
+    }
+#endif
+
+    struct set_and_get_original_wasm_fd_p_t
+    {
+        bool success{};
+        wasm_fd* fd{};
+    };
+
+    inline set_and_get_original_wasm_fd_p_t set_and_get_original_wasm_fd_p(wasm_fd_storage_t& wasm_fd_storage, ::std::int_least32_t wfd, int fd) noexcept
+    {
+        auto const wasm_fd_pos{static_cast<::std::size_t>(wfd)};
+        ::fast_io::io_lock_guard fds_lock{wasm_fd_storage.fds_mutex};
+        if(wasm_fd_pos >= ::uwvm::vm::interpreter::wasi::wasi_fd_limit) [[unlikely]] { return {false, {}}; }
+        if(wasm_fd_storage.opens.size() <= wasm_fd_pos)
+        {
+            wasm_fd_storage.opens.reserve(wasm_fd_pos + 1);
+            if constexpr(::fast_io::freestanding::is_zero_default_constructible_v<wasm_fd>)
+            {
+                ::fast_io::freestanding::bytes_clear_n(reinterpret_cast<::std::byte*>(wasm_fd_storage.opens.imp.curr_ptr),
+                                                       static_cast<::std::size_t>(reinterpret_cast<::std::byte*>(wasm_fd_storage.opens.imp.end_ptr) -
+                                                                                  reinterpret_cast<::std::byte*>(wasm_fd_storage.opens.imp.curr_ptr)));
+                wasm_fd_storage.opens.imp.curr_ptr = wasm_fd_storage.opens.imp.end_ptr;
+            }
+            else
+            {
+                for(; wasm_fd_storage.opens.imp.curr_ptr != wasm_fd_storage.opens.imp.end_ptr; ++wasm_fd_storage.opens.imp.curr_ptr)
+                {
+                    ::std::construct_at(wasm_fd_storage.opens.imp.curr_ptr);
+                }
+            }
+
+            auto const fd_need_check_p{wasm_fd_storage.opens.begin() + wasm_fd_pos};
+            fd_need_check_p->fd = fd;
+
+            return {true, fd_need_check_p};
+        }
+        else
+        {
+            auto& fd_need_check{wasm_fd_storage.opens.index_unchecked(wasm_fd_pos)};
+            if(fd_need_check.fd == -1)
+            {
+                if(fd_need_check.close_pos < wasm_fd_storage.closes.size()) [[likely]]
+                {
+                    wasm_fd_storage.closes.erase_index_unchecked(fd_need_check.close_pos);
+                }
+                fd_need_check.close_pos = SIZE_MAX;
+                fd_need_check.fd = fd;
+            }
+            else { fd_need_check.fd = fd; }
+
+            return {true, __builtin_addressof(fd_need_check)};
         }
     }
 
@@ -398,14 +503,16 @@ namespace uwvm::vm::interpreter::wasi
         }
     }
 
-    struct set_and_get_wasm_fd_and_system_fd_t
+#ifdef UWVM_ENABLE_COPYED_WASMFD
+    struct set_and_get_copy_wasm_fd_and_system_fd_t
     {
         bool success{};
         wasm_fd fd{};
         int sys_fd{-1};
     };
 
-    inline set_and_get_wasm_fd_and_system_fd_t set_and_get_wasm_fd_and_system_fd(wasm_fd_storage_t& wasm_fd_storage, ::std::int_least32_t wfd, int fd) noexcept
+    inline set_and_get_copy_wasm_fd_and_system_fd_t
+        set_and_get_copy_wasm_fd_and_system_fd(wasm_fd_storage_t& wasm_fd_storage, ::std::int_least32_t wfd, int fd) noexcept
     {
         auto const wasm_fd_pos{static_cast<::std::size_t>(wfd)};
         ::fast_io::io_lock_guard fds_lock{wasm_fd_storage.fds_mutex};
@@ -457,6 +564,70 @@ namespace uwvm::vm::interpreter::wasi
             }
 
             return {true, fd_need_check, sys_fd};
+        }
+    }
+#endif
+
+    struct set_and_get_original_wasm_fd_p_and_system_fd_t
+    {
+        bool success{};
+        wasm_fd* fd{};
+        int sys_fd{-1};
+    };
+
+    inline set_and_get_original_wasm_fd_p_and_system_fd_t
+        set_and_get_original_wasm_fd_p_and_system_fd(wasm_fd_storage_t& wasm_fd_storage, ::std::int_least32_t wfd, int fd) noexcept
+    {
+        auto const wasm_fd_pos{static_cast<::std::size_t>(wfd)};
+        ::fast_io::io_lock_guard fds_lock{wasm_fd_storage.fds_mutex};
+
+        if(wasm_fd_pos >= ::uwvm::vm::interpreter::wasi::wasi_fd_limit) [[unlikely]] { return {false, {}, -1}; }
+
+        int sys_fd{-1};
+        if(wasm_fd_storage.opens.size() <= wasm_fd_pos)
+        {
+            wasm_fd_storage.opens.reserve(wasm_fd_pos + 1);
+            if constexpr(::fast_io::freestanding::is_zero_default_constructible_v<wasm_fd>)
+            {
+                ::fast_io::freestanding::bytes_clear_n(reinterpret_cast<::std::byte*>(wasm_fd_storage.opens.imp.curr_ptr),
+                                                       static_cast<::std::size_t>(reinterpret_cast<::std::byte*>(wasm_fd_storage.opens.imp.end_ptr) -
+                                                                                  reinterpret_cast<::std::byte*>(wasm_fd_storage.opens.imp.curr_ptr)));
+                wasm_fd_storage.opens.imp.curr_ptr = wasm_fd_storage.opens.imp.end_ptr;
+            }
+            else
+            {
+                for(; wasm_fd_storage.opens.imp.curr_ptr != wasm_fd_storage.opens.imp.end_ptr; ++wasm_fd_storage.opens.imp.curr_ptr)
+                {
+                    ::std::construct_at(wasm_fd_storage.opens.imp.curr_ptr);
+                }
+            }
+
+            auto& fd_need_check{wasm_fd_storage.opens.index_unchecked(wasm_fd_pos)};
+            sys_fd = fd_need_check.fd;
+            fd_need_check.fd = fd;
+
+            return {true, __builtin_addressof(fd_need_check), sys_fd};
+        }
+        else
+        {
+            auto& fd_need_check{wasm_fd_storage.opens.index_unchecked(wasm_fd_pos)};
+            if(fd_need_check.fd == -1)
+            {
+                if(fd_need_check.close_pos < wasm_fd_storage.closes.size()) [[likely]]
+                {
+                    wasm_fd_storage.closes.erase_index_unchecked(fd_need_check.close_pos);
+                }
+                fd_need_check.close_pos = SIZE_MAX;
+                sys_fd = fd_need_check.fd;
+                fd_need_check.fd = fd;
+            }
+            else
+            {
+                sys_fd = fd_need_check.fd;
+                fd_need_check.fd = fd;
+            }
+
+            return {true, __builtin_addressof(fd_need_check), sys_fd};
         }
     }
 
