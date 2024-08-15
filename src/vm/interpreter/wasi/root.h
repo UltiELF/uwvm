@@ -4,5 +4,5 @@
 
 namespace uwvm::vm::interpreter::wasi
 {
-    ::fast_io::dir_file root_path{};
+    inline ::fast_io::dir_file root_path{};
 }

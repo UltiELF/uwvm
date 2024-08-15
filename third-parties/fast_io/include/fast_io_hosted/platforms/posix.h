@@ -58,6 +58,7 @@
 #if defined(__MSDOS__)
 #include <libc/fd_props.h>
 #include "../../fast_io_dsal/string.h"
+#include "../../fast_io_dsal/string_view.h"
 #endif
 
 namespace fast_io
@@ -845,7 +846,30 @@ inline int my_posix_openat(int dirfd, char const *pathname, int flags, mode_t mo
 			system_call_throw_error<always_terminate>(-1);
 			return -1;
 		}
-		::fast_io::tlc::string pn{::fast_io::tlc::concat_fast_io_tlc(::fast_io::mnp::os_c_str(pathname_cstr), "\\", ::fast_io::mnp::os_c_str(pathname))};
+
+		// check vaildity
+		::fast_io::cstring_view para_pathname{::fast_io::mnp::os_c_str(pathname)};
+		if(auto const sz{para_pathname.size()}; sz == 0 || sz > 255) [[unlikely]] 
+		{
+			return -1;
+		}
+
+		if(auto const fc{para_pathname.front_unchecked()}; fc == '+' || fc == '-' || fc == '.') [[unlikely]] 
+		{
+			return -1;
+		}
+
+		for(auto const fc: para_pathname)
+		{
+			if(fc == '/' || fc == '\\' || fc == '\t' || fc == '\b' || fc == '@' || fc == '#' || fc == '$' || fc == '%' || fc == '^' || fc == '&' ||
+			   fc == '*' || fc == '(' || fc == ')' || fc == '[' || fc == ']') [[unlikely]] 
+			{
+				return -1;
+			}
+		}
+
+		// concat
+		::fast_io::tlc::string pn{::fast_io::tlc::concat_fast_io_tlc(::fast_io::mnp::os_c_str(pathname_cstr), "\\", para_pathname)};
 		int fd{::open(pn.c_str(), flags, mode)};
 		system_call_throw_error<always_terminate>(fd);
 		return fd;
