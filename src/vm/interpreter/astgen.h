@@ -131,6 +131,8 @@ namespace uwvm::vm::interpreter
 
                 case ::uwvm::wasm::op_basic::block:
                 {
+                    op.int_func = __builtin_addressof(::uwvm::vm::interpreter::func::nop);
+
                     ++curr;
 
                     ::uwvm::wasm::value_type vt{};
@@ -246,6 +248,8 @@ namespace uwvm::vm::interpreter
                 }
                 case ::uwvm::wasm::op_basic::loop:
                 {
+                    op.int_func = __builtin_addressof(::uwvm::vm::interpreter::func::nop);
+
                     ++curr;
 
                     ::uwvm::wasm::value_type vt{};
@@ -548,6 +552,8 @@ namespace uwvm::vm::interpreter
                 }
                 case ::uwvm::wasm::op_basic::end:
                 {
+                    op.int_func = __builtin_addressof(::uwvm::vm::interpreter::func::nop);
+
                     if(ga_flow_r.empty()) [[unlikely]]
                     {
                         ::fast_io::io::perr(::uwvm::u8err,
@@ -4661,6 +4667,8 @@ namespace uwvm::vm::interpreter
                 }
                 case ::uwvm::wasm::op_basic::nop:
                 {
+                    op.int_func = __builtin_addressof(::uwvm::vm::interpreter::func::nop);
+
                     ++curr;
                     break;
                 }

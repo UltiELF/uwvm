@@ -115,6 +115,7 @@ $ xmake install -o OutputPath
 $ xmake f -m [release|releasedbg|debug] -p [windows|mingw|macosx|linux|iphoneos ..] -a [x86_64|i386|arm|aarch64 ..] --cppstdlib=[default|libstdc++|libc++] ..
 ```
 * Currently, only MSVC 14.30+ GCC 14+ and LLVM 18+ are supported.
+* It is recommended to use llvm or msvc on Windows. The results of gcc's libgcc have problems with the implementation of tls, resulting in 10 times slower efficiency.
 * Please add the parameter ``` --static=n ``` when compiling on Android. Android cannot statically link libc。
 
 * To compile systems compatible with Win10 (default) or below, please add parameters

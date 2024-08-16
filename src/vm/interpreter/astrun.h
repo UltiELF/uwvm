@@ -237,12 +237,7 @@ namespace uwvm::vm::interpreter
                                       uwvm_sm_r.stack.size());
 #endif
 
-                if(uwvm_sm_r.curr_op->int_func) [[likely]]
-                {
-                    // run
-                    uwvm_sm_r.curr_op->int_func(uwvm_sm_r.curr_op->code_begin, uwvm_sm_r);
-                }
-                else { ++uwvm_sm_r.curr_op; }
+                uwvm_sm_r.curr_op->int_func(uwvm_sm_r.curr_op->code_begin, uwvm_sm_r);
             }
 
             // reset local point

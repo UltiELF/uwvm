@@ -12,6 +12,15 @@
 
 namespace uwvm::vm::interpreter::func
 {
+#if __has_cpp_attribute(__gnu__::__hot__)
+    [[__gnu__::__hot__]]
+#endif
+    inline void
+        nop(::std::byte const* curr, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
+    {
+        ++sm.curr_op ;
+    }
+
 #if __has_cpp_attribute(__gnu__::__cold__)
     [[__gnu__::__cold__]]
 #endif
