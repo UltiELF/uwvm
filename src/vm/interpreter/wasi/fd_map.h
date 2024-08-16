@@ -299,21 +299,27 @@ namespace uwvm::vm::interpreter::wasi
         if(wasm_fd_pos >= ::uwvm::vm::interpreter::wasi::wasi_fd_limit) [[unlikely]] { return false; }
         if(wasm_fd_storage.opens.size() <= wasm_fd_pos)
         {
+            auto const size_temp{wasm_fd_storage.opens.size()};
             wasm_fd_storage.opens.reserve(wasm_fd_pos + 1);
             if constexpr(::fast_io::freestanding::is_zero_default_constructible_v<wasm_fd>)
             {
-                ::fast_io::freestanding::bytes_clear_n(reinterpret_cast<::std::byte*>(wasm_fd_storage.opens.imp.curr_ptr),
-                                                       static_cast<::std::size_t>(reinterpret_cast<::std::byte*>(wasm_fd_storage.opens.imp.end_ptr) -
-                                                                                  reinterpret_cast<::std::byte*>(wasm_fd_storage.opens.imp.curr_ptr)));
-                wasm_fd_storage.opens.imp.curr_ptr = wasm_fd_storage.opens.imp.end_ptr;
+                auto const end{wasm_fd_storage.opens.imp.curr_ptr + (wasm_fd_pos + 1u - size_temp)};
+                ::fast_io::freestanding::bytes_clear_n(
+                    reinterpret_cast<::std::byte*>(wasm_fd_storage.opens.imp.curr_ptr),
+                    static_cast<::std::size_t>(reinterpret_cast<::std::byte*>(end) - reinterpret_cast<::std::byte*>(wasm_fd_storage.opens.imp.curr_ptr)));
+                wasm_fd_storage.opens.imp.curr_ptr = end;
             }
             else
             {
-                for(; wasm_fd_storage.opens.imp.curr_ptr != wasm_fd_storage.opens.imp.end_ptr; ++wasm_fd_storage.opens.imp.curr_ptr)
+                auto const end{wasm_fd_storage.opens.imp.curr_ptr + (wasm_fd_pos + 1u - size_temp)};
+                for(; wasm_fd_storage.opens.imp.curr_ptr != end; ++wasm_fd_storage.opens.imp.curr_ptr)
                 {
                     ::std::construct_at(wasm_fd_storage.opens.imp.curr_ptr);
                 }
             }
+
+            auto const new_size{wasm_fd_storage.opens.size()};
+            for(::std::size_t i{size_temp}; i < new_size - 1; i++) { wasm_fd_storage.closes.push_back(i); }
 
             auto& fd_need_check{wasm_fd_storage.opens.index_unchecked(wasm_fd_pos)};
             fd_need_check.fd = fd;
@@ -350,21 +356,27 @@ namespace uwvm::vm::interpreter::wasi
         if(wasm_fd_pos >= ::uwvm::vm::interpreter::wasi::wasi_fd_limit) [[unlikely]] { return {false, {}}; }
         if(wasm_fd_storage.opens.size() <= wasm_fd_pos)
         {
+            auto const size_temp{wasm_fd_storage.opens.size()};
             wasm_fd_storage.opens.reserve(wasm_fd_pos + 1);
             if constexpr(::fast_io::freestanding::is_zero_default_constructible_v<wasm_fd>)
             {
-                ::fast_io::freestanding::bytes_clear_n(reinterpret_cast<::std::byte*>(wasm_fd_storage.opens.imp.curr_ptr),
-                                                       static_cast<::std::size_t>(reinterpret_cast<::std::byte*>(wasm_fd_storage.opens.imp.end_ptr) -
-                                                                                  reinterpret_cast<::std::byte*>(wasm_fd_storage.opens.imp.curr_ptr)));
-                wasm_fd_storage.opens.imp.curr_ptr = wasm_fd_storage.opens.imp.end_ptr;
+                auto const end{wasm_fd_storage.opens.imp.curr_ptr + (wasm_fd_pos + 1u - size_temp)};
+                ::fast_io::freestanding::bytes_clear_n(
+                    reinterpret_cast<::std::byte*>(wasm_fd_storage.opens.imp.curr_ptr),
+                    static_cast<::std::size_t>(reinterpret_cast<::std::byte*>(end) - reinterpret_cast<::std::byte*>(wasm_fd_storage.opens.imp.curr_ptr)));
+                wasm_fd_storage.opens.imp.curr_ptr = end;
             }
             else
             {
-                for(; wasm_fd_storage.opens.imp.curr_ptr != wasm_fd_storage.opens.imp.end_ptr; ++wasm_fd_storage.opens.imp.curr_ptr)
+                auto const end{wasm_fd_storage.opens.imp.curr_ptr + (wasm_fd_pos + 1u - size_temp)};
+                for(; wasm_fd_storage.opens.imp.curr_ptr != end; ++wasm_fd_storage.opens.imp.curr_ptr)
                 {
                     ::std::construct_at(wasm_fd_storage.opens.imp.curr_ptr);
                 }
             }
+
+            auto const new_size{wasm_fd_storage.opens.size()};
+            for(::std::size_t i{size_temp}; i < new_size - 1; i++) { wasm_fd_storage.closes.push_back(i); }
 
             auto& fd_need_check{wasm_fd_storage.opens.index_unchecked(wasm_fd_pos)};
             fd_need_check.fd = fd;
@@ -403,21 +415,27 @@ namespace uwvm::vm::interpreter::wasi
         if(wasm_fd_pos >= ::uwvm::vm::interpreter::wasi::wasi_fd_limit) [[unlikely]] { return {false, {}}; }
         if(wasm_fd_storage.opens.size() <= wasm_fd_pos)
         {
+            auto const size_temp{wasm_fd_storage.opens.size()};
             wasm_fd_storage.opens.reserve(wasm_fd_pos + 1);
             if constexpr(::fast_io::freestanding::is_zero_default_constructible_v<wasm_fd>)
             {
-                ::fast_io::freestanding::bytes_clear_n(reinterpret_cast<::std::byte*>(wasm_fd_storage.opens.imp.curr_ptr),
-                                                       static_cast<::std::size_t>(reinterpret_cast<::std::byte*>(wasm_fd_storage.opens.imp.end_ptr) -
-                                                                                  reinterpret_cast<::std::byte*>(wasm_fd_storage.opens.imp.curr_ptr)));
-                wasm_fd_storage.opens.imp.curr_ptr = wasm_fd_storage.opens.imp.end_ptr;
+                auto const end{wasm_fd_storage.opens.imp.curr_ptr + (wasm_fd_pos + 1u - size_temp)};
+                ::fast_io::freestanding::bytes_clear_n(
+                    reinterpret_cast<::std::byte*>(wasm_fd_storage.opens.imp.curr_ptr),
+                    static_cast<::std::size_t>(reinterpret_cast<::std::byte*>(end) - reinterpret_cast<::std::byte*>(wasm_fd_storage.opens.imp.curr_ptr)));
+                wasm_fd_storage.opens.imp.curr_ptr = end;
             }
             else
             {
-                for(; wasm_fd_storage.opens.imp.curr_ptr != wasm_fd_storage.opens.imp.end_ptr; ++wasm_fd_storage.opens.imp.curr_ptr)
+                auto const end{wasm_fd_storage.opens.imp.curr_ptr + (wasm_fd_pos + 1u - size_temp)};
+                for(; wasm_fd_storage.opens.imp.curr_ptr != end; ++wasm_fd_storage.opens.imp.curr_ptr)
                 {
                     ::std::construct_at(wasm_fd_storage.opens.imp.curr_ptr);
                 }
             }
+
+            auto const new_size{wasm_fd_storage.opens.size()};
+            for(::std::size_t i{size_temp}; i < new_size - 1; i++) { wasm_fd_storage.closes.push_back(i); }
 
             auto const fd_need_check_p{wasm_fd_storage.opens.begin() + wasm_fd_pos};
             fd_need_check_p->fd = fd;
@@ -458,21 +476,27 @@ namespace uwvm::vm::interpreter::wasi
         int sys_fd{-1};
         if(wasm_fd_storage.opens.size() <= wasm_fd_pos)
         {
+            auto const size_temp{wasm_fd_storage.opens.size()};
             wasm_fd_storage.opens.reserve(wasm_fd_pos + 1);
             if constexpr(::fast_io::freestanding::is_zero_default_constructible_v<wasm_fd>)
             {
-                ::fast_io::freestanding::bytes_clear_n(reinterpret_cast<::std::byte*>(wasm_fd_storage.opens.imp.curr_ptr),
-                                                       static_cast<::std::size_t>(reinterpret_cast<::std::byte*>(wasm_fd_storage.opens.imp.end_ptr) -
-                                                                                  reinterpret_cast<::std::byte*>(wasm_fd_storage.opens.imp.curr_ptr)));
-                wasm_fd_storage.opens.imp.curr_ptr = wasm_fd_storage.opens.imp.end_ptr;
+                auto const end{wasm_fd_storage.opens.imp.curr_ptr + (wasm_fd_pos + 1u - size_temp)};
+                ::fast_io::freestanding::bytes_clear_n(
+                    reinterpret_cast<::std::byte*>(wasm_fd_storage.opens.imp.curr_ptr),
+                    static_cast<::std::size_t>(reinterpret_cast<::std::byte*>(end) - reinterpret_cast<::std::byte*>(wasm_fd_storage.opens.imp.curr_ptr)));
+                wasm_fd_storage.opens.imp.curr_ptr = end;
             }
             else
             {
-                for(; wasm_fd_storage.opens.imp.curr_ptr != wasm_fd_storage.opens.imp.end_ptr; ++wasm_fd_storage.opens.imp.curr_ptr)
+                auto const end{wasm_fd_storage.opens.imp.curr_ptr + (wasm_fd_pos + 1u - size_temp)};
+                for(; wasm_fd_storage.opens.imp.curr_ptr != end; ++wasm_fd_storage.opens.imp.curr_ptr)
                 {
                     ::std::construct_at(wasm_fd_storage.opens.imp.curr_ptr);
                 }
             }
+
+            auto const new_size{wasm_fd_storage.opens.size()};
+            for(::std::size_t i{size_temp}; i < new_size - 1; i++) { wasm_fd_storage.closes.push_back(i); }
 
             auto& fd_need_check{wasm_fd_storage.opens.index_unchecked(wasm_fd_pos)};
             sys_fd = fd_need_check.fd;
@@ -522,21 +546,27 @@ namespace uwvm::vm::interpreter::wasi
         int sys_fd{-1};
         if(wasm_fd_storage.opens.size() <= wasm_fd_pos)
         {
+            auto const size_temp{wasm_fd_storage.opens.size()};
             wasm_fd_storage.opens.reserve(wasm_fd_pos + 1);
             if constexpr(::fast_io::freestanding::is_zero_default_constructible_v<wasm_fd>)
             {
-                ::fast_io::freestanding::bytes_clear_n(reinterpret_cast<::std::byte*>(wasm_fd_storage.opens.imp.curr_ptr),
-                                                       static_cast<::std::size_t>(reinterpret_cast<::std::byte*>(wasm_fd_storage.opens.imp.end_ptr) -
-                                                                                  reinterpret_cast<::std::byte*>(wasm_fd_storage.opens.imp.curr_ptr)));
-                wasm_fd_storage.opens.imp.curr_ptr = wasm_fd_storage.opens.imp.end_ptr;
+                auto const end{wasm_fd_storage.opens.imp.curr_ptr + (wasm_fd_pos + 1u - size_temp)};
+                ::fast_io::freestanding::bytes_clear_n(
+                    reinterpret_cast<::std::byte*>(wasm_fd_storage.opens.imp.curr_ptr),
+                    static_cast<::std::size_t>(reinterpret_cast<::std::byte*>(end) - reinterpret_cast<::std::byte*>(wasm_fd_storage.opens.imp.curr_ptr)));
+                wasm_fd_storage.opens.imp.curr_ptr = end;
             }
             else
             {
-                for(; wasm_fd_storage.opens.imp.curr_ptr != wasm_fd_storage.opens.imp.end_ptr; ++wasm_fd_storage.opens.imp.curr_ptr)
+                auto const end{wasm_fd_storage.opens.imp.curr_ptr + (wasm_fd_pos + 1u - size_temp)};
+                for(; wasm_fd_storage.opens.imp.curr_ptr != end; ++wasm_fd_storage.opens.imp.curr_ptr)
                 {
                     ::std::construct_at(wasm_fd_storage.opens.imp.curr_ptr);
                 }
             }
+
+            auto const new_size{wasm_fd_storage.opens.size()};
+            for(::std::size_t i{size_temp}; i < new_size - 1; i++) { wasm_fd_storage.closes.push_back(i); }
 
             auto& fd_need_check{wasm_fd_storage.opens.index_unchecked(wasm_fd_pos)};
             sys_fd = fd_need_check.fd;
@@ -586,21 +616,27 @@ namespace uwvm::vm::interpreter::wasi
         int sys_fd{-1};
         if(wasm_fd_storage.opens.size() <= wasm_fd_pos)
         {
+            auto const size_temp{wasm_fd_storage.opens.size()};
             wasm_fd_storage.opens.reserve(wasm_fd_pos + 1);
             if constexpr(::fast_io::freestanding::is_zero_default_constructible_v<wasm_fd>)
             {
-                ::fast_io::freestanding::bytes_clear_n(reinterpret_cast<::std::byte*>(wasm_fd_storage.opens.imp.curr_ptr),
-                                                       static_cast<::std::size_t>(reinterpret_cast<::std::byte*>(wasm_fd_storage.opens.imp.end_ptr) -
-                                                                                  reinterpret_cast<::std::byte*>(wasm_fd_storage.opens.imp.curr_ptr)));
-                wasm_fd_storage.opens.imp.curr_ptr = wasm_fd_storage.opens.imp.end_ptr;
+                auto const end{wasm_fd_storage.opens.imp.curr_ptr + (wasm_fd_pos + 1u - size_temp)};
+                ::fast_io::freestanding::bytes_clear_n(
+                    reinterpret_cast<::std::byte*>(wasm_fd_storage.opens.imp.curr_ptr),
+                    static_cast<::std::size_t>(reinterpret_cast<::std::byte*>(end) - reinterpret_cast<::std::byte*>(wasm_fd_storage.opens.imp.curr_ptr)));
+                wasm_fd_storage.opens.imp.curr_ptr = end;
             }
             else
             {
-                for(; wasm_fd_storage.opens.imp.curr_ptr != wasm_fd_storage.opens.imp.end_ptr; ++wasm_fd_storage.opens.imp.curr_ptr)
+                auto const end{wasm_fd_storage.opens.imp.curr_ptr + (wasm_fd_pos + 1u - size_temp)};
+                for(; wasm_fd_storage.opens.imp.curr_ptr != end; ++wasm_fd_storage.opens.imp.curr_ptr)
                 {
                     ::std::construct_at(wasm_fd_storage.opens.imp.curr_ptr);
                 }
             }
+
+            auto const new_size{wasm_fd_storage.opens.size()};
+            for(::std::size_t i{size_temp}; i < new_size - 1; i++) { wasm_fd_storage.closes.push_back(i); }
 
             auto& fd_need_check{wasm_fd_storage.opens.index_unchecked(wasm_fd_pos)};
             sys_fd = fd_need_check.fd;
