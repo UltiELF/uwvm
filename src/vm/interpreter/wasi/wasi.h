@@ -39,11 +39,15 @@ namespace uwvm::posix
 }  // namespace uwvm::posix
 #endif
 
+#ifdef _DEBUG
+    #define UWVM_TRACE_WASI_SYSCALL
+#endif
+
 namespace uwvm::vm::interpreter::wasi
 {
     ::std::int_least32_t args_get(::std::int_least32_t arg0, ::std::int_least32_t arg1) noexcept
     {
-#ifdef _DEBUG
+#ifdef UWVM_TRACE_WASI_SYSCALL
         ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
     #ifdef __MSDOS__
@@ -125,7 +129,7 @@ namespace uwvm::vm::interpreter::wasi
 
     ::std::int_least32_t args_sizes_get(::std::int_least32_t arg0, ::std::int_least32_t arg1) noexcept
     {
-#ifdef _DEBUG
+#ifdef UWVM_TRACE_WASI_SYSCALL
         ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
     #ifdef __MSDOS__
@@ -201,7 +205,7 @@ namespace uwvm::vm::interpreter::wasi
 
     ::std::int_least32_t environ_get(::std::int_least32_t arg0, ::std::int_least32_t arg1) noexcept
     {
-#ifdef _DEBUG
+#ifdef UWVM_TRACE_WASI_SYSCALL
         ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
     #ifdef __MSDOS__
@@ -426,7 +430,7 @@ namespace uwvm::vm::interpreter::wasi
 
     ::std::int_least32_t environ_sizes_get(::std::int_least32_t arg0, ::std::int_least32_t arg1) noexcept
     {
-#ifdef _DEBUG
+#ifdef UWVM_TRACE_WASI_SYSCALL
         ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
     #ifdef __MSDOS__
@@ -600,7 +604,7 @@ namespace uwvm::vm::interpreter::wasi
 
     ::std::int_least32_t clock_res_get(::std::int_least32_t arg0, ::std::int_least32_t arg1) noexcept
     {
-#ifdef _DEBUG
+#ifdef UWVM_TRACE_WASI_SYSCALL
         ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
     #ifdef __MSDOS__
@@ -692,7 +696,7 @@ namespace uwvm::vm::interpreter::wasi
 
     ::std::int_least32_t clock_time_get(::std::int_least32_t arg0, ::std::int_least64_t arg1, ::std::int_least32_t arg2) noexcept
     {
-#ifdef _DEBUG
+#ifdef UWVM_TRACE_WASI_SYSCALL
         ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
     #ifdef __MSDOS__
@@ -784,7 +788,7 @@ namespace uwvm::vm::interpreter::wasi
 
     ::std::int_least32_t fd_advise(::std::int_least32_t arg0, ::std::int_least64_t arg1, ::std::int_least64_t arg2, ::std::int_least32_t arg3) noexcept
     {
-#ifdef _DEBUG
+#ifdef UWVM_TRACE_WASI_SYSCALL
         ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
     #ifdef __MSDOS__
@@ -922,7 +926,7 @@ namespace uwvm::vm::interpreter::wasi
 
     ::std::int_least32_t fd_allocate(::std::int_least32_t arg0, ::std::int_least64_t arg1, ::std::int_least64_t arg2) noexcept
     {
-#ifdef _DEBUG
+#ifdef UWVM_TRACE_WASI_SYSCALL
         ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
     #ifdef __MSDOS__
@@ -983,7 +987,7 @@ namespace uwvm::vm::interpreter::wasi
 
     ::std::int_least32_t fd_close(::std::int_least32_t arg0) noexcept
     {
-#ifdef _DEBUG
+#ifdef UWVM_TRACE_WASI_SYSCALL
         ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
     #ifdef __MSDOS__
@@ -1028,7 +1032,7 @@ namespace uwvm::vm::interpreter::wasi
 
     ::std::int_least32_t fd_datasync(::std::int_least32_t arg0) noexcept
     {
-#ifdef _DEBUG
+#ifdef UWVM_TRACE_WASI_SYSCALL
         ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
     #ifdef __MSDOS__
@@ -1088,7 +1092,7 @@ namespace uwvm::vm::interpreter::wasi
 
     ::std::int_least32_t fd_sync(::std::int_least32_t arg0) noexcept
     {
-#ifdef _DEBUG
+#ifdef UWVM_TRACE_WASI_SYSCALL
         ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
     #ifdef __MSDOS__
@@ -1144,7 +1148,7 @@ namespace uwvm::vm::interpreter::wasi
 
     ::std::int_least32_t fd_fdstat_get(::std::int_least32_t arg0, ::std::int_least32_t arg1) noexcept
     {
-#ifdef _DEBUG
+#ifdef UWVM_TRACE_WASI_SYSCALL
         ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
     #ifdef __MSDOS__
@@ -1318,7 +1322,7 @@ namespace uwvm::vm::interpreter::wasi
 
     ::std::int_least32_t fd_fdstat_set_flags(::std::int_least32_t arg0, ::std::int_least32_t arg1) noexcept
     {
-#ifdef _DEBUG
+#ifdef UWVM_TRACE_WASI_SYSCALL
         ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
     #ifdef __MSDOS__
@@ -1438,7 +1442,7 @@ namespace uwvm::vm::interpreter::wasi
 
     ::std::int_least32_t fd_fdstat_set_rights(::std::int_least32_t arg0, ::std::int_least64_t arg1, ::std::int_least64_t arg2) noexcept
     {
-#ifdef _DEBUG
+#ifdef UWVM_TRACE_WASI_SYSCALL
         ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
     #ifdef __MSDOS__
@@ -1481,7 +1485,7 @@ namespace uwvm::vm::interpreter::wasi
 
     ::std::int_least32_t fd_filestat_get(::std::int_least32_t arg0, ::std::int_least32_t arg1) noexcept
     {
-#ifdef _DEBUG
+#ifdef UWVM_TRACE_WASI_SYSCALL
         ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
     #ifdef __MSDOS__
@@ -1666,7 +1670,7 @@ namespace uwvm::vm::interpreter::wasi
 
     ::std::int_least32_t fd_filestat_set_size(::std::int_least32_t arg0, ::std::int_least64_t arg1) noexcept
     {
-#ifdef _DEBUG
+#ifdef UWVM_TRACE_WASI_SYSCALL
         ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
     #ifdef __MSDOS__
@@ -1724,7 +1728,7 @@ namespace uwvm::vm::interpreter::wasi
     ::std::int_least32_t
         fd_filestat_set_times(::std::int_least32_t arg0, ::std::int_least64_t arg1, ::std::int_least64_t arg2, ::std::int_least32_t arg3) noexcept
     {
-#ifdef _DEBUG
+#ifdef UWVM_TRACE_WASI_SYSCALL
         ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
     #ifdef __MSDOS__
@@ -1872,7 +1876,7 @@ namespace uwvm::vm::interpreter::wasi
 
     ::std::int_least32_t fd_prestat_get(::std::int_least32_t arg0, ::std::int_least32_t arg1) noexcept
     {
-#ifdef _DEBUG
+#ifdef UWVM_TRACE_WASI_SYSCALL
         ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
     #ifdef __MSDOS__
@@ -1948,7 +1952,7 @@ namespace uwvm::vm::interpreter::wasi
 
     ::std::int_least32_t fd_prestat_dir_name(::std::int_least32_t arg0, ::std::int_least32_t arg1, ::std::int_least32_t arg2) noexcept
     {
-#ifdef _DEBUG
+#ifdef UWVM_TRACE_WASI_SYSCALL
         ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
     #ifdef __MSDOS__
@@ -2012,7 +2016,7 @@ namespace uwvm::vm::interpreter::wasi
     ::std::int_least32_t
         fd_pread(::std::int_least32_t arg0, ::std::int_least32_t arg1, ::std::int_least32_t arg2, ::std::int_least64_t arg3, ::std::int_least32_t arg4) noexcept
     {
-#ifdef _DEBUG
+#ifdef UWVM_TRACE_WASI_SYSCALL
         ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
     #ifdef __MSDOS__
@@ -2148,7 +2152,7 @@ namespace uwvm::vm::interpreter::wasi
                                    ::std::int_least64_t arg3,
                                    ::std::int_least32_t arg4) noexcept
     {
-#ifdef _DEBUG
+#ifdef UWVM_TRACE_WASI_SYSCALL
         ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
     #ifdef __MSDOS__
@@ -2281,7 +2285,7 @@ namespace uwvm::vm::interpreter::wasi
 
     ::std::int_least32_t fd_read(::std::int_least32_t arg0, ::std::int_least32_t arg1, ::std::int_least32_t arg2, ::std::int_least32_t arg3) noexcept
     {
-#ifdef _DEBUG
+#ifdef UWVM_TRACE_WASI_SYSCALL
         ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
     #ifdef __MSDOS__
@@ -2434,7 +2438,7 @@ namespace uwvm::vm::interpreter::wasi
                                     ::std::int_least64_t arg3,
                                     ::std::int_least32_t arg4) noexcept
     {
-#ifdef _DEBUG
+#ifdef UWVM_TRACE_WASI_SYSCALL
         ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
     #ifdef __MSDOS__
@@ -2616,7 +2620,7 @@ namespace uwvm::vm::interpreter::wasi
 
     ::std::int_least32_t fd_renumber(::std::int_least32_t arg0, ::std::int_least32_t arg1) noexcept
     {
-#ifdef _DEBUG
+#ifdef UWVM_TRACE_WASI_SYSCALL
         ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
     #ifdef __MSDOS__
@@ -2696,7 +2700,7 @@ namespace uwvm::vm::interpreter::wasi
 
     ::std::int_least32_t fd_seek(::std::int_least32_t arg0, ::std::int_least64_t arg1, ::std::int_least32_t arg2, ::std::int_least32_t arg3) noexcept
     {
-#ifdef _DEBUG
+#ifdef UWVM_TRACE_WASI_SYSCALL
         ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
     #ifdef __MSDOS__
@@ -2784,7 +2788,7 @@ namespace uwvm::vm::interpreter::wasi
 
     ::std::int_least32_t fd_tell(::std::int_least32_t arg0, ::std::int_least32_t arg1) noexcept
     {
-#ifdef _DEBUG
+#ifdef UWVM_TRACE_WASI_SYSCALL
         ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
     #ifdef __MSDOS__
@@ -2847,7 +2851,7 @@ namespace uwvm::vm::interpreter::wasi
 
     ::std::int_least32_t fd_write(::std::int_least32_t arg0, ::std::int_least32_t arg1, ::std::int_least32_t arg2, ::std::int_least32_t arg3) noexcept
     {
-#ifdef _DEBUG
+#ifdef UWVM_TRACE_WASI_SYSCALL
         ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
     #ifdef __MSDOS__
@@ -3020,7 +3024,7 @@ namespace uwvm::vm::interpreter::wasi
                                    ::std::int_least32_t arg7,
                                    ::std::int_least32_t arg8) noexcept
     {
-#ifdef _DEBUG
+#ifdef UWVM_TRACE_WASI_SYSCALL
         ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
     #ifdef __MSDOS__

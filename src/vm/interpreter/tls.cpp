@@ -10,6 +10,7 @@ thread_local ::fast_io::tlc::stack<::uwvm::vm::interpreter::details::d_flow_t, :
 
 thread_local ::uwvm::vm::interpreter::stack_machine(::uwvm::vm::interpreter::uwvm_sm){};
 
-thread_local ::fast_io::tlc::stack<::fast_io::tlc::u8string, ::fast_io::tlc::vector<::fast_io::tlc::u8string>>(::uwvm::vm::interpreter::int_call_stack){};
+thread_local ::fast_io::tlc::stack<::uwvm::wasm::local_function_type const*, ::fast_io::tlc::vector<::uwvm::wasm::local_function_type const*>>(
+    ::uwvm::vm::interpreter::int_call_stack){};
 
 #endif

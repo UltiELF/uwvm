@@ -7,10 +7,11 @@ namespace uwvm::vm::interpreter
 {
 #if !(defined(__wasi__) && !defined(UWVM_ENABLE_WASI_THREADS))
     extern thread_local ::uwvm::vm::interpreter::stack_machine uwvm_sm;
-    extern thread_local ::fast_io::tlc::stack<::fast_io::tlc::u8string, ::fast_io::tlc::vector<::fast_io::tlc::u8string>> int_call_stack;
+    extern thread_local ::fast_io::tlc::stack<::uwvm::wasm::local_function_type const*, ::fast_io::tlc::vector<::uwvm::wasm::local_function_type const*>>
+        int_call_stack;
 #else
     inline ::uwvm::vm::interpreter::stack_machine uwvm_sm{};
-    inline ::fast_io::tlc::stack<::fast_io::tlc::u8string, ::fast_io::tlc::vector<::fast_io::tlc::u8string>> int_call_stack{};
+    inline ::fast_io::tlc::stack<::uwvm::wasm::local_function_type const*, ::fast_io::tlc::vector<::uwvm::wasm::local_function_type const*>> int_call_stack{};
 
 #endif
 
@@ -20,6 +21,7 @@ namespace uwvm::vm::interpreter
         {
             // Just checking the stack is enough
             uwvm_sm.init();
+            int_call_stack.reserve(1024);
         }
 
         ::uwvm::prefetch(uwvm_sm.stack.get_container().cbegin());
@@ -27,22 +29,7 @@ namespace uwvm::vm::interpreter
 
         if(!a.operators.empty()) [[likely]]
         {
-            ::fast_io::tlc::u8string str{}; 
-            auto const lfbegin{::uwvm::global_wasm_module.functionsec.types.cbegin()};
-            if(a.ft->custom_name_begin)
-            {
-                str = ::fast_io::tlc::u8concat_fast_io_tlc(u8"func[",
-                                                           static_cast<::std::size_t>(a.ft - lfbegin),
-                                                           u8"] : ",
-                                                           ::fast_io::mnp::strvw(a.ft->custom_name_begin, a.ft->custom_name_end));
-            }
-            else
-            {
-                str = ::fast_io::tlc::u8concat_fast_io_tlc(u8"func[",
-                                                           static_cast<::std::size_t>(a.ft - lfbegin),
-                                                           u8"]");
-            }
-            int_call_stack.emplace(str);
+            int_call_stack.emplace(a.ft);
 
             // storage last op
             auto const last_begin_op{uwvm_sm.begin_op};
