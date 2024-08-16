@@ -66,7 +66,7 @@ namespace uwvm::vm::interpreter::memory
                     else { return SIZE_MAX; }
                 };
 
-                static auto const max{max_generate()};
+                auto const max{max_generate()};
 
                 if(sz <= max && memory_length / page_size <= max - sz) [[likely]]
                 {

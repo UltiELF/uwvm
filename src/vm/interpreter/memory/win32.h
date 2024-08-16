@@ -114,7 +114,7 @@ namespace uwvm::vm::interpreter::memory
                     else { return SIZE_MAX; }
                 };
 
-                static auto const max{max_generate()};
+                auto const max{max_generate()};
 
                 auto const mpslg2{system_page_size};
 
