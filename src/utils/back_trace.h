@@ -1,4 +1,6 @@
 ﻿#pragma once
+#include "../vm/interpreter/int_bt.h"
+
 #if 0
     #if defined(_MSC_VER)
         #include <stacktrace>
@@ -68,6 +70,7 @@ namespace uwvm
     inline void
         backtrace() noexcept
     {
+        
     }
 }  // namespace uwvm
 #endif

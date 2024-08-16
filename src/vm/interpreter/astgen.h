@@ -54,7 +54,7 @@ namespace uwvm::vm::interpreter
 
     // https://pengowray.github.io/wasm-ops/
 
-    inline ::uwvm::vm::interpreter::ast generate_ast(::uwvm::wasm::function_type const* lft, ::uwvm::wasm::func_body const& fb) noexcept
+    inline ::uwvm::vm::interpreter::ast generate_ast(::uwvm::wasm::local_function_type const* lft, ::uwvm::wasm::func_body const& fb) noexcept
     {
         // alias def
         using char8_t_may_alias_ptr
@@ -98,7 +98,7 @@ namespace uwvm::vm::interpreter
         temp.fb = __builtin_addressof(fb);
 
         // locals
-        ::std::size_t all_local_count{static_cast<::std::size_t>(lft->parameter_end - lft->parameter_begin)};
+        ::std::size_t all_local_count{static_cast<::std::size_t>(lft->func_type->parameter_end - lft->func_type->parameter_begin)};
         for(auto const& i: fb.locals) { all_local_count += i.count; }
         temp.local_size = all_local_count;
 

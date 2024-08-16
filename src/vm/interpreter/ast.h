@@ -179,7 +179,7 @@ namespace uwvm::vm::interpreter
     struct ast
     {
         ::fast_io::vector<operator_t> operators{};
-        ::uwvm::wasm::function_type const* ft{};
+        ::uwvm::wasm::local_function_type const* ft{};
         ::uwvm::wasm::func_body const* fb{};
         ::std::size_t local_size{};
     };

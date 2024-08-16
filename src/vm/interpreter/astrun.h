@@ -1,5 +1,4 @@
 ﻿#pragma once
-#include <back_trace.h>
 #include <prefetch.h>
 #include "ast.h"
 #include "aststorge.h"
@@ -8,8 +7,11 @@ namespace uwvm::vm::interpreter
 {
 #if !(defined(__wasi__) && !defined(UWVM_ENABLE_WASI_THREADS))
     extern thread_local ::uwvm::vm::interpreter::stack_machine uwvm_sm;
+    extern thread_local ::fast_io::tlc::stack<::fast_io::tlc::u8string, ::fast_io::tlc::vector<::fast_io::tlc::u8string>> int_call_stack;
 #else
     inline ::uwvm::vm::interpreter::stack_machine uwvm_sm{};
+    inline ::fast_io::tlc::stack<::fast_io::tlc::u8string, ::fast_io::tlc::vector<::fast_io::tlc::u8string>> int_call_stack{};
+
 #endif
 
     inline void run_ast(ast const& a) noexcept
@@ -25,6 +27,23 @@ namespace uwvm::vm::interpreter
 
         if(!a.operators.empty()) [[likely]]
         {
+            ::fast_io::tlc::u8string str{}; 
+            auto const lfbegin{::uwvm::global_wasm_module.functionsec.types.cbegin()};
+            if(a.ft->custom_name_begin)
+            {
+                str = ::fast_io::tlc::u8concat_fast_io_tlc(u8"func[",
+                                                           static_cast<::std::size_t>(a.ft - lfbegin),
+                                                           u8"] : ",
+                                                           ::fast_io::mnp::strvw(a.ft->custom_name_begin, a.ft->custom_name_end));
+            }
+            else
+            {
+                str = ::fast_io::tlc::u8concat_fast_io_tlc(u8"func[",
+                                                           static_cast<::std::size_t>(a.ft - lfbegin),
+                                                           u8"]");
+            }
+            int_call_stack.emplace(str);
+
             // storage last op
             auto const last_begin_op{uwvm_sm.begin_op};
             auto const last_curr_op{uwvm_sm.curr_op};
@@ -37,7 +56,8 @@ namespace uwvm::vm::interpreter
             uwvm_sm.end_op = end_op;
 
             // check stack
-            auto const& func_type{*a.ft};
+            auto const& local_func_type{*a.ft};
+            auto const& func_type{*local_func_type.func_type};
             auto const func_type_para_size{static_cast<::std::size_t>(func_type.parameter_end - func_type.parameter_begin)};
             auto const func_type_result_size{static_cast<::std::size_t>(func_type.result_end - func_type.result_begin)};
 
@@ -66,7 +86,7 @@ namespace uwvm::vm::interpreter
                                 u8"\n"
                                 u8"\033[0m"
                                 u8"Terminate.\n\n");
-                ::uwvm::backtrace();
+                ::uwvm::vm::interpreter::int_bt();
                 ::fast_io::fast_terminate();
             }
 
@@ -100,7 +120,7 @@ namespace uwvm::vm::interpreter
                                 u8"\n"
                                 u8"\033[0m"
                                 u8"Terminate.\n\n");
-                    ::uwvm::backtrace();
+                    ::uwvm::vm::interpreter::int_bt();
                     ::fast_io::fast_terminate();
                 }
                 --curr_st;
@@ -199,7 +219,7 @@ namespace uwvm::vm::interpreter
                                 u8"\n"
                                 u8"\033[0m"
                                 u8"Terminate.\n\n");
-                            ::uwvm::backtrace();
+                            ::uwvm::vm::interpreter::int_bt();
                             ::fast_io::fast_terminate();
                         }
                     }
@@ -216,7 +236,7 @@ namespace uwvm::vm::interpreter
             // run
             for(uwvm_sm.curr_op = begin_op; uwvm_sm.curr_op != end_op;)
             {
-#if 0 // debug
+#if 0  // debug
                 if(uwvm_sm.curr_op->code_begin - global_wasm_module.module_begin == 0x004225)
                 {
                     ::fast_io::io::perr(::uwvm::u8out, u8"enter\n");
@@ -228,10 +248,10 @@ namespace uwvm::vm::interpreter
                                       uwvm_sm.stack.size());
 #endif
 
-                if(uwvm_sm.curr_op->int_func) [[likely]] 
+                if(uwvm_sm.curr_op->int_func) [[likely]]
                 {
                     // run
-                    uwvm_sm.curr_op->int_func(uwvm_sm.curr_op->code_begin, uwvm_sm); 
+                    uwvm_sm.curr_op->int_func(uwvm_sm.curr_op->code_begin, uwvm_sm);
                 }
                 else { ++uwvm_sm.curr_op; }
             }
@@ -266,7 +286,7 @@ namespace uwvm::vm::interpreter
                                 u8"\n"
                                 u8"\033[0m"
                                 u8"Terminate.\n\n");
-                ::uwvm::backtrace();
+                ::uwvm::vm::interpreter::int_bt();
                 ::fast_io::fast_terminate();
             }
 
@@ -300,7 +320,7 @@ namespace uwvm::vm::interpreter
                                 u8"\n"
                                 u8"\033[0m"
                                 u8"Terminate.\n\n");
-                    ::uwvm::backtrace();
+                    ::uwvm::vm::interpreter::int_bt();
                     ::fast_io::fast_terminate();
                 }
                 --curr_st;
@@ -310,6 +330,8 @@ namespace uwvm::vm::interpreter
             uwvm_sm.begin_op = last_begin_op;
             uwvm_sm.curr_op = last_curr_op;
             uwvm_sm.end_op = last_end_op;
+
+            int_call_stack.pop();
         }
     }
 }  // namespace uwvm::vm::interpreter

@@ -38,7 +38,7 @@ namespace uwvm::vm::interpreter
                                 u8"\n"
                                 u8"\033[0m"
                                 u8"Terminate.\n\n");
-            ::uwvm::backtrace();
+            ::uwvm::vm::interpreter::int_bt();
             ::fast_io::fast_terminate();
         }
 
@@ -72,7 +72,7 @@ namespace uwvm::vm::interpreter
                                 u8"\n"
                                 u8"\033[0m"
                                 u8"Terminate.\n\n");
-                ::uwvm::backtrace();
+                ::uwvm::vm::interpreter::int_bt();
                 ::fast_io::fast_terminate();
             }
             --curr_st;
@@ -110,7 +110,7 @@ namespace uwvm::vm::interpreter
                                 u8"\n"
                                 u8"\033[0m"
                                 u8"Terminate.\n\n");
-            ::uwvm::backtrace();
+            ::uwvm::vm::interpreter::int_bt();
             ::fast_io::fast_terminate();
         }
 
@@ -144,7 +144,7 @@ namespace uwvm::vm::interpreter
                                 u8"\n"
                                 u8"\033[0m"
                                 u8"Terminate.\n\n");
-                ::uwvm::backtrace();
+                ::uwvm::vm::interpreter::int_bt();
                 ::fast_io::fast_terminate();
             }
             --curr_st;
