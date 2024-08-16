@@ -46,7 +46,7 @@ namespace uwvm::vm::interpreter
     namespace details
     {
 #if !(defined(__wasi__) && !defined(UWVM_ENABLE_WASI_THREADS))
-        extern thread_local ::fast_io::tlc::stack<d_flow_t, ::fast_io::tlc::vector<d_flow_t>> ga_flow;
+        inline thread_local ::fast_io::tlc::stack<d_flow_t, ::fast_io::tlc::vector<d_flow_t>> ga_flow{};
 #else
         inline ::fast_io::tlc::stack<d_flow_t, ::fast_io::tlc::vector<d_flow_t>> ga_flow{};
 #endif
@@ -67,7 +67,8 @@ namespace uwvm::vm::interpreter
             [[__gnu__::__may_alias__]]
 #endif
             = char8_t const*;
-        details::ga_flow.reserve(static_cast<::std::size_t>(2) * 1024);
+        auto& ga_flow_r{details::ga_flow};
+        ga_flow_r.reserve(static_cast<::std::size_t>(2) * 1024);
 
         auto const& wasmmod{::uwvm::global_wasm_module};
 
@@ -106,7 +107,7 @@ namespace uwvm::vm::interpreter
         temp.operators.reserve(static_cast<::std::size_t>(fb.end - fb.begin));
 
         // func flow
-        details::ga_flow.push({curr, nullptr, ::uwvm::vm::interpreter::flow_control_t::func});
+        ga_flow_r.push({curr, nullptr, ::uwvm::vm::interpreter::flow_control_t::func});
 
         for(; curr < end;)
         {
@@ -238,7 +239,7 @@ namespace uwvm::vm::interpreter
 
                     auto& op_ebr{temp.operators.emplace_back_unchecked(op)};
 
-                    details::ga_flow.push({op.code_begin, __builtin_addressof(op_ebr), ::uwvm::vm::interpreter::flow_control_t::block});
+                    ga_flow_r.push({op.code_begin, __builtin_addressof(op_ebr), ::uwvm::vm::interpreter::flow_control_t::block});
 
                     ++curr;
                     break;
@@ -352,7 +353,7 @@ namespace uwvm::vm::interpreter
                     }
 
                     auto& op_ebr{temp.operators.emplace_back_unchecked(op)};
-                    details::ga_flow.push({op.code_begin, __builtin_addressof(op_ebr), ::uwvm::vm::interpreter::flow_control_t::loop});
+                    ga_flow_r.push({op.code_begin, __builtin_addressof(op_ebr), ::uwvm::vm::interpreter::flow_control_t::loop});
 
                     ++curr;
                     break;
@@ -468,14 +469,14 @@ namespace uwvm::vm::interpreter
                     }
 
                     auto& op_ebr{temp.operators.emplace_back_unchecked(op)};
-                    details::ga_flow.push({op.code_begin, __builtin_addressof(op_ebr), ::uwvm::vm::interpreter::flow_control_t::if_});
+                    ga_flow_r.push({op.code_begin, __builtin_addressof(op_ebr), ::uwvm::vm::interpreter::flow_control_t::if_});
 
                     ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::else_:
                 {
-                    if(details::ga_flow.empty()) [[unlikely]]
+                    if(ga_flow_r.empty()) [[unlikely]]
                     {
                         ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -503,9 +504,9 @@ namespace uwvm::vm::interpreter
                         ::fast_io::fast_terminate();
                     }
 
-                    op.int_func = __builtin_addressof(::uwvm::vm::interpreter::func::br); // br == else
+                    op.int_func = __builtin_addressof(::uwvm::vm::interpreter::func::br);  // br == else
 
-                    auto& f{details::ga_flow.top_unchecked()};
+                    auto& f{ga_flow_r.top_unchecked()};
                     if(f.flow_e != ::uwvm::vm::interpreter::flow_control_t::if_) [[unlikely]]
                     {
                         ::fast_io::io::perr(::uwvm::u8err,
@@ -547,7 +548,7 @@ namespace uwvm::vm::interpreter
                 }
                 case ::uwvm::wasm::op_basic::end:
                 {
-                    if(details::ga_flow.empty()) [[unlikely]]
+                    if(ga_flow_r.empty()) [[unlikely]]
                     {
                         ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -577,7 +578,7 @@ namespace uwvm::vm::interpreter
 
                     auto& op_ebr{temp.operators.emplace_back_unchecked(op)};
 
-                    auto f{details::ga_flow.pop_element_unchecked()};
+                    auto f{ga_flow_r.pop_element_unchecked()};
                     switch(f.flow_e)
                     {
                         case ::uwvm::vm::interpreter::flow_control_t::func:
@@ -750,7 +751,7 @@ namespace uwvm::vm::interpreter
 
                     curr = reinterpret_cast<::std::byte const*>(next);
 
-                    auto const gfsz{details::ga_flow.size()};
+                    auto const gfsz{ga_flow_r.size()};
 
                     ++index;
 
@@ -784,7 +785,7 @@ namespace uwvm::vm::interpreter
 
                     auto& brop{temp.operators.emplace_back_unchecked(op)};
 
-                    details::ga_flow.get_container().index_unchecked(gfsz - index).brs.push_back(__builtin_addressof(brop));
+                    ga_flow_r.get_container().index_unchecked(gfsz - index).brs.push_back(__builtin_addressof(brop));
 
                     break;
                 }
@@ -833,7 +834,7 @@ namespace uwvm::vm::interpreter
 
                     curr = reinterpret_cast<::std::byte const*>(next);
 
-                    auto const gfsz{details::ga_flow.size()};
+                    auto const gfsz{ga_flow_r.size()};
 
                     ++index;
 
@@ -867,7 +868,7 @@ namespace uwvm::vm::interpreter
 
                     auto& brop{temp.operators.emplace_back_unchecked(op)};
 
-                    details::ga_flow.get_container().index_unchecked(gfsz - index).brs.push_back(__builtin_addressof(brop));
+                    ga_flow_r.get_container().index_unchecked(gfsz - index).brs.push_back(__builtin_addressof(brop));
 
                     break;
                 }
@@ -918,7 +919,7 @@ namespace uwvm::vm::interpreter
 
                     curr = reinterpret_cast<::std::byte const*>(next);
 
-                    auto const gfsz{details::ga_flow.size()};
+                    auto const gfsz{ga_flow_r.size()};
 
                     auto& vec{::uwvm::vm::interpreter::stroage.ext.emplace_back(table_size)};
 
@@ -1000,7 +1001,7 @@ namespace uwvm::vm::interpreter
                             ::fast_io::fast_terminate();
                         }
 
-                        details::ga_flow.get_container().index_unchecked(gfsz - index).brs.push_back(vec.begin() + i);
+                        ga_flow_r.get_container().index_unchecked(gfsz - index).brs.push_back(vec.begin() + i);
 
                         curr = reinterpret_cast<::std::byte const*>(next);
                     }
@@ -6177,7 +6178,7 @@ namespace uwvm::vm::interpreter
             }
         }
 
-        if(!details::ga_flow.empty()) [[unlikely]]
+        if(!ga_flow_r.empty()) [[unlikely]]
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"

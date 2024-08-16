@@ -6,9 +6,9 @@
 namespace uwvm::vm::interpreter
 {
 #if !(defined(__wasi__) && !defined(UWVM_ENABLE_WASI_THREADS))
-    extern thread_local ::uwvm::vm::interpreter::stack_machine uwvm_sm;
-    extern thread_local ::fast_io::tlc::stack<::uwvm::wasm::local_function_type const*, ::fast_io::tlc::vector<::uwvm::wasm::local_function_type const*>>
-        int_call_stack;
+    inline thread_local ::uwvm::vm::interpreter::stack_machine uwvm_sm{};
+    inline thread_local ::fast_io::tlc::stack<::uwvm::wasm::local_function_type const*, ::fast_io::tlc::vector<::uwvm::wasm::local_function_type const*>>
+        int_call_stack{};
 #else
     inline ::uwvm::vm::interpreter::stack_machine uwvm_sm{};
     inline ::fast_io::tlc::stack<::uwvm::wasm::local_function_type const*, ::fast_io::tlc::vector<::uwvm::wasm::local_function_type const*>> int_call_stack{};
@@ -17,30 +17,32 @@ namespace uwvm::vm::interpreter
 
     inline void run_ast(ast const& a) noexcept
     {
-        if(uwvm_sm.stack.empty()) [[unlikely]]
+        auto& uwvm_sm_r{uwvm_sm};
+        auto& int_call_stack_r{int_call_stack};
+        if(uwvm_sm_r.stack.empty()) [[unlikely]]
         {
             // Just checking the stack is enough
-            uwvm_sm.init();
-            int_call_stack.reserve(1024);
+            uwvm_sm_r.init();
+            int_call_stack_r.reserve(1024);
         }
 
-        ::uwvm::prefetch(uwvm_sm.stack.get_container().cbegin());
-        ::uwvm::prefetch(uwvm_sm.local_storages.get_container().cbegin());
+        ::uwvm::prefetch(uwvm_sm_r.stack.get_container().cbegin());
+        ::uwvm::prefetch(uwvm_sm_r.local_storages.get_container().cbegin());
 
         if(!a.operators.empty()) [[likely]]
         {
-            int_call_stack.emplace(a.ft);
+            int_call_stack_r.emplace(a.ft);
 
             // storage last op
-            auto const last_begin_op{uwvm_sm.begin_op};
-            auto const last_curr_op{uwvm_sm.curr_op};
-            auto const last_end_op{uwvm_sm.end_op};
+            auto const last_begin_op{uwvm_sm_r.begin_op};
+            auto const last_curr_op{uwvm_sm_r.curr_op};
+            auto const last_end_op{uwvm_sm_r.end_op};
 
             // prepare
             auto const begin_op{::std::to_address(a.operators.begin())};
             auto const end_op{::std::to_address(a.operators.end())};
-            uwvm_sm.begin_op = begin_op;
-            uwvm_sm.end_op = end_op;
+            uwvm_sm_r.begin_op = begin_op;
+            uwvm_sm_r.end_op = end_op;
 
             // check stack
             auto const& local_func_type{*a.ft};
@@ -48,7 +50,7 @@ namespace uwvm::vm::interpreter
             auto const func_type_para_size{static_cast<::std::size_t>(func_type.parameter_end - func_type.parameter_begin)};
             auto const func_type_result_size{static_cast<::std::size_t>(func_type.result_end - func_type.result_begin)};
 
-            if(uwvm_sm.stack.size() < func_type_para_size) [[unlikely]]
+            if(uwvm_sm_r.stack.size() < func_type_para_size) [[unlikely]]
             {
                 ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -77,7 +79,7 @@ namespace uwvm::vm::interpreter
                 ::fast_io::fast_terminate();
             }
 
-            auto curr_st{uwvm_sm.stack.get_container().cend() - 1};
+            auto curr_st{uwvm_sm_r.stack.get_container().cend() - 1};
             for(auto curr{func_type.parameter_end - 1}; curr != func_type.parameter_begin - 1; --curr)
             {
                 auto const curr_vt{*curr};
@@ -114,7 +116,7 @@ namespace uwvm::vm::interpreter
             }
 
             // local
-            auto& local_storage_c{uwvm_sm.local_storages.get_container()};
+            auto& local_storage_c{uwvm_sm_r.local_storages.get_container()};
             auto const last_local_size{local_storage_c.size()};
             auto local_curr{local_storage_c.imp.curr_ptr};
             auto local_end{local_storage_c.imp.end_ptr};
@@ -128,12 +130,12 @@ namespace uwvm::vm::interpreter
                 local_storage_size = static_cast<::std::size_t>(local_end - local_curr);
             }
 
-            auto const last_local_top{uwvm_sm.local_top};
-            uwvm_sm.local_top = static_cast<::std::size_t>(local_curr - local_storage_c.imp.begin_ptr);
+            auto const last_local_top{uwvm_sm_r.local_top};
+            uwvm_sm_r.local_top = static_cast<::std::size_t>(local_curr - local_storage_c.imp.begin_ptr);
             local_storage_c.imp.curr_ptr += a.local_size;
 
             auto local_curr_temp{local_curr};
-            auto const stack_cend{uwvm_sm.stack.get_container().cend()};
+            auto const stack_cend{uwvm_sm_r.stack.get_container().cend()};
             for(auto i{stack_cend - func_type_para_size}; i != stack_cend; ++i)
             {
                 *local_curr_temp = *i;
@@ -218,37 +220,37 @@ namespace uwvm::vm::interpreter
             ::uwvm::prefetch(local_curr);
 
             // set stack curr (Clear the parameter stack after writing the parameter stack to local)
-            uwvm_sm.stack.get_container().imp.curr_ptr -= func_type_para_size;
+            uwvm_sm_r.stack.get_container().imp.curr_ptr -= func_type_para_size;
 
             // run
-            for(uwvm_sm.curr_op = begin_op; uwvm_sm.curr_op != end_op;)
+            for(uwvm_sm_r.curr_op = begin_op; uwvm_sm_r.curr_op != end_op;)
             {
 #if 0  // debug
-                if(uwvm_sm.curr_op->code_begin - global_wasm_module.module_begin == 0x004225)
+                if(uwvm_sm_r.curr_op->code_begin - global_wasm_module.module_begin == 0x004225)
                 {
                     ::fast_io::io::perr(::uwvm::u8out, u8"enter\n");
                     __debugbreak();
                 }
                 ::fast_io::io::perrln(::uwvm::u8out,
-                                      ::fast_io::mnp::hex0x(static_cast<::std::size_t>(uwvm_sm.curr_op->code_begin - global_wasm_module.module_begin)),
+                                      ::fast_io::mnp::hex0x(static_cast<::std::size_t>(uwvm_sm_r.curr_op->code_begin - global_wasm_module.module_begin)),
                                       u8": ",
-                                      uwvm_sm.stack.size());
+                                      uwvm_sm_r.stack.size());
 #endif
 
-                if(uwvm_sm.curr_op->int_func) [[likely]]
+                if(uwvm_sm_r.curr_op->int_func) [[likely]]
                 {
                     // run
-                    uwvm_sm.curr_op->int_func(uwvm_sm.curr_op->code_begin, uwvm_sm);
+                    uwvm_sm_r.curr_op->int_func(uwvm_sm_r.curr_op->code_begin, uwvm_sm_r);
                 }
-                else { ++uwvm_sm.curr_op; }
+                else { ++uwvm_sm_r.curr_op; }
             }
 
             // reset local point
             local_storage_c.imp.curr_ptr = local_storage_c.imp.begin_ptr + last_local_size;
-            uwvm_sm.local_top = last_local_top;
+            uwvm_sm_r.local_top = last_local_top;
 
             // check stack
-            if(uwvm_sm.stack.size() < func_type_result_size) [[unlikely]]
+            if(uwvm_sm_r.stack.size() < func_type_result_size) [[unlikely]]
             {
                 ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -277,7 +279,7 @@ namespace uwvm::vm::interpreter
                 ::fast_io::fast_terminate();
             }
 
-            curr_st = uwvm_sm.stack.get_container().cend() - 1;
+            curr_st = uwvm_sm_r.stack.get_container().cend() - 1;
             for(auto curr{func_type.result_end - 1}; curr != func_type.result_begin - 1; --curr)
             {
                 auto const curr_vt{*curr};
@@ -314,11 +316,11 @@ namespace uwvm::vm::interpreter
             }
 
             // reset op
-            uwvm_sm.begin_op = last_begin_op;
-            uwvm_sm.curr_op = last_curr_op;
-            uwvm_sm.end_op = last_end_op;
+            uwvm_sm_r.begin_op = last_begin_op;
+            uwvm_sm_r.curr_op = last_curr_op;
+            uwvm_sm_r.end_op = last_end_op;
 
-            int_call_stack.pop();
+            int_call_stack_r.pop();
         }
     }
 }  // namespace uwvm::vm::interpreter

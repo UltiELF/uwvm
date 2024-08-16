@@ -115,7 +115,6 @@ $ xmake install -o OutputPath
 $ xmake f -m [release|releasedbg|debug] -p [windows|mingw|linux|sun|msdosdjgpp|bsd|freebsd|dragonflybsd|netbsd|openbsd|macosx|iphoneos|watchos|wasm-wasip1|wasm-wasip2|cross ..] -a [x86_64|i386|arm|aarch64 ..] --cppstdlib=[default|libstdc++|libc++] ..
 ```
 * 目前只支持 msvc 14.30+ ，gcc 14+ 以及 llvm 18+。
-* Windows 上建议使用 llvm 或 msvc，gcc 的 libgcc 的 emults 对 tls 实现有问题导致效率变慢10倍
 * Android 上编译请添加参数``` --static=n ```，安卓无法静态链接libc
 * 若要编译兼容 WIN10 (默认) 以下系统，请添加参数
 ```bash 
