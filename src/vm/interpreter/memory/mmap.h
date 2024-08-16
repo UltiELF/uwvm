@@ -110,8 +110,8 @@ namespace uwvm::vm::interpreter::memory
             {
                 auto const max_generate = [&msec]() noexcept -> ::std::size_t
                 {
-                    // do sth
-                    return msec.limits.max;
+                    if(msec.limits.present_max) { return msec.limits.max; }
+                    else { return SIZE_MAX; }
                 };
 
                 static auto const max{max_generate()};
