@@ -6,9 +6,9 @@
 #include <io_device.h>
 #include <instrinsic.h>
 
-#include "../../../wasm/memlimit.h"
-#include "../../../run/wasm_file.h"
-#include "../../../run/features.h"
+#include "../../wasm/memlimit.h"
+#include "../../run/wasm_file.h"
+#include "../../run/features.h"
 
 namespace uwvm::vm::memory
 {

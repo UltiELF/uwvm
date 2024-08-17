@@ -1,8 +1,8 @@
 ﻿#pragma once
 #include <fast_io.h>
 #include <io_device.h>
-#include "../../../wasm/memlimit.h"
-#include "../../../run/wasm_file.h"
+#include "../../wasm/memlimit.h"
+#include "../../run/wasm_file.h"
 
 namespace uwvm::vm::memory
 {
