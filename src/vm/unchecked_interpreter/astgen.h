@@ -1,10 +1,12 @@
 ﻿#pragma once
 #include <fast_io.h>
+#include <fast_io_dsal/vector.h>
 #include <fast_io_dsal/stack.h>
 #include <unfinished.h>
 #include "ast.h"
 #include "aststorge.h"
-#include "func/func.h"
+#include "func/mvp.h"
+#include "func/fcext.h"
 
 #include "../../run/features.h"
 #include "../../wasm/opcode.h"
@@ -1590,7 +1592,7 @@ namespace uwvm::vm::unchecked_interpreter
 #endif
                         = operator_t const*;
 
-                    op.ext.branch = reinterpret_cast<operator_t_const_may_alias_ptr>(::uwvm::vm::unchecked_interpreter::globals.globals + index);
+                    op.ext.branch = reinterpret_cast<operator_t_const_may_alias_ptr>(::uwvm::vm::globals.globals + index);
                     temp.operators.emplace_back_unchecked(op);
 
                     curr = reinterpret_cast<::std::byte const*>(next);
@@ -1674,7 +1676,7 @@ namespace uwvm::vm::unchecked_interpreter
 #endif
                         = operator_t const*;
 
-                    op.ext.branch = reinterpret_cast<operator_t_const_may_alias_ptr>(::uwvm::vm::unchecked_interpreter::globals.globals + index);
+                    op.ext.branch = reinterpret_cast<operator_t_const_may_alias_ptr>(::uwvm::vm::globals.globals + index);
                     temp.operators.emplace_back_unchecked(op);
 
                     curr = reinterpret_cast<::std::byte const*>(next);

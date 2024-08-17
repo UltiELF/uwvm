@@ -9,6 +9,13 @@
 #include "aststorge.h"
 #include "astrun.h"
 #include "stack/stack.h"
+#include "../../run/wasm_file.h"
+#include "../wasm.h"
+#include "../memory/memory.h"
+#include "../table.h"
+#include "../global.h"
+#include "../abi.h"
+#include "../wasm_exit.h"
 
 namespace uwvm::vm::unchecked_interpreter
 {

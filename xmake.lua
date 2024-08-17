@@ -637,6 +637,8 @@ target("uwvm")
 	add_files("src/vm/interpreter/int_bt.cpp")
 	--add_files("src/vm/interpreter/tls.cpp") -- duplicate symbol: thread-local initialization routine 
 
+	add_files("src/vm/unchecked_interpreter/func/**.cpp")
+
 	if is_plat("windows", "mingw") then 
 		add_files("src/program/uwvm.rc")
 	end

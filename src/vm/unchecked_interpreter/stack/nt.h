@@ -3,12 +3,15 @@
 #include <fast_io.h>
 #include <io_device.h>
 #include <instrinsic.h>
+#include "../stack_t.h"
 
 namespace uwvm::vm::unchecked_interpreter::stack
 {
     template <::fast_io::nt_family family>
     struct nt_family_stack_t
     {
+        inline static constexpr bool zw{family == ::fast_io::nt_family::zw};
+
         inline static ::std::size_t default_stack_size{static_cast<::std::size_t>(1024)};
 
         ::uwvm::vm::unchecked_interpreter::stack_t* storage{};
@@ -21,7 +24,7 @@ namespace uwvm::vm::unchecked_interpreter::stack
 
         void init() noexcept
         {
-            auto const stack_size{default_stack_size * sizeof(::uwvm::vm::unchecked_interpreter::stack_t)};
+            auto stack_size{default_stack_size * sizeof(::uwvm::vm::unchecked_interpreter::stack_t)};
             ::std::size_t total_pages_bytes{stack_size + static_cast<::std::size_t>(2 * 4096)};
 
             auto status{::fast_io::win32::nt::nt_allocate_virtual_memory<zw>(reinterpret_cast<void*>(-1),

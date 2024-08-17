@@ -5,6 +5,7 @@
 #include <fast_io.h>
 #include <io_device.h>
 #include <instrinsic.h>
+#include "../stack_t.h"
 
 namespace uwvm::vm::unchecked_interpreter::stack
 {

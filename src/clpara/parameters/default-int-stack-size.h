@@ -6,7 +6,11 @@
 
 #include <cmdline/parameter.h>
 #include "../../vm/interpreter/ast.h"
-
+#if UWVM_ENABLE_UNCHECKED_INTERPRETER &&                                                                                                                       \
+    ((defined(_WIN32) || defined(__CYGWIN__)) ||                                                                                                               \
+     (!defined(__NEWLIB__) && !defined(__MSDOS__) && (!defined(__wasm__) || (defined(__wasi__) && defined(_WASI_EMULATED_MMAN))) && __has_include(<sys/mman.h>)))
+    #include "../../vm/unchecked_interpreter/stack/stack.h"
+#endif
 namespace uwvm::parameter
 {
     namespace details
@@ -103,7 +107,11 @@ namespace uwvm::parameter
             }
 
             ::uwvm::vm::interpreter::stack_machine::default_int_stack_size = diss;
-
+#if UWVM_ENABLE_UNCHECKED_INTERPRETER &&                                                                                                                       \
+    ((defined(_WIN32) || defined(__CYGWIN__)) ||                                                                                                               \
+     (!defined(__NEWLIB__) && !defined(__MSDOS__) && (!defined(__wasm__) || (defined(__wasi__) && defined(_WASI_EMULATED_MMAN))) && __has_include(<sys/mman.h>)))
+            ::uwvm::vm::unchecked_interpreter::stack::stack_t::default_stack_size = diss;
+#endif
             return ::uwvm::cmdline::parameter_return_type::def;
         }
     }  // namespace details

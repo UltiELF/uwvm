@@ -5,77 +5,14 @@
 #include <unfinished.h>
 
 #include "../ast.h"
-#include "../global.h"
+#include "../../global.h"
 #include "../stack_t.h"
+#include "base.h"
 #include "../../memory/memory.h"
 #include "../../../run/wasm_file.h"
 
 namespace uwvm::vm::unchecked_interpreter::func
 {
-    namespace details
-    {
-#if __has_cpp_attribute(__gnu__::__always_inline__)
-        [[__gnu__::__always_inline__]]
-#elif __has_cpp_attribute(msvc::forceinline)
-        [[msvc::forceinline]]
-#endif
-        inline void
-            pop(::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
-        {
-            --stack_curr;
-        }
-
-#if __has_cpp_attribute(__gnu__::__always_inline__)
-        [[__gnu__::__always_inline__]]
-#elif __has_cpp_attribute(msvc::forceinline)
-        [[msvc::forceinline]]
-#endif
-        inline ::uwvm::vm::unchecked_interpreter::stack_t
-            pop_get_val(::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
-        {
-            --stack_curr;
-            return *stack_curr;
-        }
-
-#if __has_cpp_attribute(__gnu__::__always_inline__)
-        [[__gnu__::__always_inline__]]
-#elif __has_cpp_attribute(msvc::forceinline)
-        [[msvc::forceinline]]
-#endif
-        inline void
-            push(::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr, ::uwvm::vm::unchecked_interpreter::stack_t val) noexcept
-        {
-            *stack_curr = val;
-            ++stack_curr;
-        }
-
-#if __has_cpp_attribute(__gnu__::__always_inline__)
-        [[__gnu__::__always_inline__]]
-#elif __has_cpp_attribute(msvc::forceinline)
-        [[msvc::forceinline]]
-#endif
-        inline ::uwvm::vm::unchecked_interpreter::stack_t&
-            push_get_valref(::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr, ::uwvm::vm::unchecked_interpreter::stack_t val) noexcept
-        {
-            *stack_curr = val;
-            auto const ret{stack_curr};
-            ++stack_curr;
-            return *ret;
-        }
-
-#if __has_cpp_attribute(__gnu__::__always_inline__)
-        [[__gnu__::__always_inline__]]
-#elif __has_cpp_attribute(msvc::forceinline)
-        [[msvc::forceinline]]
-#endif
-        inline ::uwvm::vm::unchecked_interpreter::stack_t&
-            top(::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
-        {
-            return *(stack_curr - 1);
-        }
-
-    }  // namespace details
-
 #if __has_cpp_attribute(__gnu__::__hot__)
     [[__gnu__::__hot__]]
 #endif
@@ -344,7 +281,7 @@ namespace uwvm::vm::unchecked_interpreter::func
 #if __has_cpp_attribute(__gnu__::__may_alias__)
             [[__gnu__::__may_alias__]]
 #endif
-            = ::uwvm::vm::unchecked_interpreter::int_global_type const*;
+            = ::uwvm::vm::int_global_type const*;
 
         auto const& igt{*reinterpret_cast<int_global_type_const_may_alias_ptr>(curr_opt->ext.branch)};
 
@@ -369,10 +306,10 @@ namespace uwvm::vm::unchecked_interpreter::func
 #if __has_cpp_attribute(__gnu__::__may_alias__)
             [[__gnu__::__may_alias__]]
 #endif
-            = ::uwvm::vm::unchecked_interpreter::int_global_type const*;
+            = ::uwvm::vm::int_global_type const*;
 
         auto& igt{
-            *const_cast<::uwvm::vm::unchecked_interpreter::int_global_type*>(reinterpret_cast<int_global_type_const_may_alias_ptr>(curr_opt->ext.branch))};
+            *const_cast<::uwvm::vm::int_global_type*>(reinterpret_cast<int_global_type_const_may_alias_ptr>(curr_opt->ext.branch))};
 
         if(!igt.gt.is_mutable) [[unlikely]]
         {
@@ -405,7 +342,7 @@ namespace uwvm::vm::unchecked_interpreter::func
 
         auto const st{details::pop_get_val(stack_curr)};
 
-        auto const local_gt{::std::bit_cast<::uwvm::vm::unchecked_interpreter::int_global_type::value_t>(st)};
+        auto const local_gt{::std::bit_cast<::uwvm::vm::int_global_type::value_t>(st)};
         igt.value = local_gt;
 
         auto next_op{curr_opt + 1};

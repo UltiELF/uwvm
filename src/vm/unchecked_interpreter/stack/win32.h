@@ -3,6 +3,7 @@
 #include <fast_io.h>
 #include <io_device.h>
 #include <instrinsic.h>
+#include "../stack_t.h"
 
 namespace uwvm::vm::unchecked_interpreter::stack
 {
@@ -20,7 +21,7 @@ namespace uwvm::vm::unchecked_interpreter::stack
 
         void init() noexcept
         {
-            auto const stack_size{default_stack_size * sizeof(::uwvm::vm::unchecked_interpreter::stack_t)};
+            auto stack_size{default_stack_size * sizeof(::uwvm::vm::unchecked_interpreter::stack_t)};
             ::std::size_t total_pages_bytes{stack_size + static_cast<::std::size_t>(2 * 4096)};
 
             memory_begin =

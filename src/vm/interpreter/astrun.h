@@ -1,4 +1,6 @@
 ﻿#pragma once
+#include <fast_io.h>
+#include <io_device.h>
 #include <prefetch.h>
 #include "ast.h"
 #include "aststorge.h"
