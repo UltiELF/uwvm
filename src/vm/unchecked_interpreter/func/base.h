@@ -61,7 +61,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         [[msvc::forceinline]]
 #endif
         inline ::uwvm::vm::unchecked_interpreter::stack_t&
-            top(::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+            top(::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
         {
             return *(stack_curr - 1);
         }

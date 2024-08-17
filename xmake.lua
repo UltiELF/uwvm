@@ -101,7 +101,7 @@ option("fno-exceptions")
 option_end()
 
 option("uwvm-enable-ucint")
-	set_default(true)
+	set_default(false)
 	set_showmenu(true)
 	add_defines("UWVM_ENABLE_UNCHECKED_INTERPRETER")
 option_end()
@@ -132,8 +132,9 @@ function defopt()
 
 	-- fno-exceptions
 	local disable_cpp_exceptions = get_config("fno-exceptions")
+	local enable_ucint = get_config("uwvm-enable-ucint")
 
-	if disable_cpp_exceptions then
+	if disable_cpp_exceptions or enable_ucint then
 		set_exceptions("no-cxx")
 	end
 

@@ -20,7 +20,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         [[__gnu__::__hot__]]
 #endif
         inline void
-            memory_copy(::std::byte const* curr, ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,  ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+            memory_copy(::std::byte const* curr, ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,  ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
         {
 
             auto const para_sz{details::pop_get_val(stack_curr)};
@@ -73,7 +73,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         [[__gnu__::__hot__]]
 #endif
         inline void
-            memory_fill(::std::byte const* curr, ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,  ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+            memory_fill(::std::byte const* curr, ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,  ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
         {
             auto const para_sz{details::pop_get_val(stack_curr)};
             auto const para_bytev{details::pop_get_val(stack_curr)};

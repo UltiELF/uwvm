@@ -10,336 +10,328 @@ namespace uwvm::vm::unchecked_interpreter::wasi
 {
     // unchecked_interpreter compatibility layer
 
-    void int_args_get(::uwvm::vm::unchecked_interpreter::stack_t const* begin, ::uwvm::vm::unchecked_interpreter::stack_t * &stack_curr) noexcept
+    void int_args_get(::uwvm::vm::unchecked_interpreter::stack_t const* begin, ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
         ::std::int_least32_t ret{::uwvm::vm::wasi::args_get(begin[0].i32, begin[1].i32)};
         stack_curr = const_cast<::uwvm::vm::unchecked_interpreter::stack_t*>(begin);
 
-        ::uwvm::vm::unchecked_interpreter::func::details::push(stack_curr,::uwvm::vm::unchecked_interpreter::stack_t{.i32{ret}});
+        ::uwvm::vm::unchecked_interpreter::func::details::push(stack_curr, ::uwvm::vm::unchecked_interpreter::stack_t{.i32{ret}});
     }
 
-    void int_args_sizes_get(::uwvm::vm::unchecked_interpreter::stack_t const* begin, ::uwvm::vm::unchecked_interpreter::stack_t * &stack_curr) noexcept
+    void int_args_sizes_get(::uwvm::vm::unchecked_interpreter::stack_t const* begin, ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
         ::std::int_least32_t ret{::uwvm::vm::wasi::args_sizes_get(begin[0].i32, begin[1].i32)};
-       stack_curr = const_cast<::uwvm::vm::unchecked_interpreter::stack_t*>(begin);
-        ::uwvm::vm::unchecked_interpreter::func::details::push(stack_curr,::uwvm::vm::unchecked_interpreter::stack_t{.i32{ret}});
+        stack_curr = const_cast<::uwvm::vm::unchecked_interpreter::stack_t*>(begin);
+        ::uwvm::vm::unchecked_interpreter::func::details::push(stack_curr, ::uwvm::vm::unchecked_interpreter::stack_t{.i32{ret}});
     }
 
-    void int_environ_get(::uwvm::vm::unchecked_interpreter::stack_t const* begin, ::uwvm::vm::unchecked_interpreter::stack_t * &stack_curr) noexcept
+    void int_environ_get(::uwvm::vm::unchecked_interpreter::stack_t const* begin, ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
         ::std::int_least32_t ret{::uwvm::vm::wasi::environ_get(begin[0].i32, begin[1].i32)};
-       stack_curr = const_cast<::uwvm::vm::unchecked_interpreter::stack_t*>(begin);
-        ::uwvm::vm::unchecked_interpreter::func::details::push(stack_curr,::uwvm::vm::unchecked_interpreter::stack_t{.i32{ret}});
+        stack_curr = const_cast<::uwvm::vm::unchecked_interpreter::stack_t*>(begin);
+        ::uwvm::vm::unchecked_interpreter::func::details::push(stack_curr, ::uwvm::vm::unchecked_interpreter::stack_t{.i32{ret}});
     }
 
-    void int_environ_sizes_get(::uwvm::vm::unchecked_interpreter::stack_t const* begin, ::uwvm::vm::unchecked_interpreter::stack_t * &stack_curr) noexcept
+    void int_environ_sizes_get(::uwvm::vm::unchecked_interpreter::stack_t const* begin, ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
         ::std::int_least32_t ret{::uwvm::vm::wasi::environ_sizes_get(begin[0].i32, begin[1].i32)};
-       stack_curr = const_cast<::uwvm::vm::unchecked_interpreter::stack_t*>(begin);
-        ::uwvm::vm::unchecked_interpreter::func::details::push(stack_curr,::uwvm::vm::unchecked_interpreter::stack_t{.i32{ret}});
+        stack_curr = const_cast<::uwvm::vm::unchecked_interpreter::stack_t*>(begin);
+        ::uwvm::vm::unchecked_interpreter::func::details::push(stack_curr, ::uwvm::vm::unchecked_interpreter::stack_t{.i32{ret}});
     }
 
-    void int_clock_res_get(::uwvm::vm::unchecked_interpreter::stack_t const* begin, ::uwvm::vm::unchecked_interpreter::stack_t * &stack_curr) noexcept
+    void int_clock_res_get(::uwvm::vm::unchecked_interpreter::stack_t const* begin, ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
         ::std::int_least32_t ret{::uwvm::vm::wasi::clock_res_get(begin[0].i32, begin[1].i32)};
-       stack_curr = const_cast<::uwvm::vm::unchecked_interpreter::stack_t*>(begin);
-        ::uwvm::vm::unchecked_interpreter::func::details::push(stack_curr,::uwvm::vm::unchecked_interpreter::stack_t{.i32{ret}});
+        stack_curr = const_cast<::uwvm::vm::unchecked_interpreter::stack_t*>(begin);
+        ::uwvm::vm::unchecked_interpreter::func::details::push(stack_curr, ::uwvm::vm::unchecked_interpreter::stack_t{.i32{ret}});
     }
 
-    void int_clock_time_get(::uwvm::vm::unchecked_interpreter::stack_t const* begin, ::uwvm::vm::unchecked_interpreter::stack_t * &stack_curr) noexcept
+    void int_clock_time_get(::uwvm::vm::unchecked_interpreter::stack_t const* begin, ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
         ::std::int_least32_t ret{::uwvm::vm::wasi::clock_time_get(begin[0].i32, begin[1].i64, begin[2].i32)};
-       stack_curr = const_cast<::uwvm::vm::unchecked_interpreter::stack_t*>(begin);
-        ::uwvm::vm::unchecked_interpreter::func::details::push(stack_curr,::uwvm::vm::unchecked_interpreter::stack_t{.i32{ret}});
+        stack_curr = const_cast<::uwvm::vm::unchecked_interpreter::stack_t*>(begin);
+        ::uwvm::vm::unchecked_interpreter::func::details::push(stack_curr, ::uwvm::vm::unchecked_interpreter::stack_t{.i32{ret}});
     }
 
-    void int_fd_advise(::uwvm::vm::unchecked_interpreter::stack_t const* begin, ::uwvm::vm::unchecked_interpreter::stack_t * &stack_curr) noexcept
+    void int_fd_advise(::uwvm::vm::unchecked_interpreter::stack_t const* begin, ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
         ::std::int_least32_t ret{::uwvm::vm::wasi::fd_advise(begin[0].i32, begin[1].i64, begin[2].i64, begin[3].i32)};
-       stack_curr = const_cast<::uwvm::vm::unchecked_interpreter::stack_t*>(begin);
-        ::uwvm::vm::unchecked_interpreter::func::details::push(stack_curr,::uwvm::vm::unchecked_interpreter::stack_t{.i32{ret}});
+        stack_curr = const_cast<::uwvm::vm::unchecked_interpreter::stack_t*>(begin);
+        ::uwvm::vm::unchecked_interpreter::func::details::push(stack_curr, ::uwvm::vm::unchecked_interpreter::stack_t{.i32{ret}});
     }
 
-    void int_fd_allocate(::uwvm::vm::unchecked_interpreter::stack_t const* begin, ::uwvm::vm::unchecked_interpreter::stack_t * &stack_curr) noexcept
+    void int_fd_allocate(::uwvm::vm::unchecked_interpreter::stack_t const* begin, ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
         ::std::int_least32_t ret{::uwvm::vm::wasi::fd_allocate(begin[0].i32, begin[1].i64, begin[2].i64)};
-       stack_curr = const_cast<::uwvm::vm::unchecked_interpreter::stack_t*>(begin);
-        ::uwvm::vm::unchecked_interpreter::func::details::push(stack_curr,::uwvm::vm::unchecked_interpreter::stack_t{.i32{ret}});
+        stack_curr = const_cast<::uwvm::vm::unchecked_interpreter::stack_t*>(begin);
+        ::uwvm::vm::unchecked_interpreter::func::details::push(stack_curr, ::uwvm::vm::unchecked_interpreter::stack_t{.i32{ret}});
     }
 
-    void int_fd_close(::uwvm::vm::unchecked_interpreter::stack_t const* begin, ::uwvm::vm::unchecked_interpreter::stack_t * &stack_curr) noexcept
+    void int_fd_close(::uwvm::vm::unchecked_interpreter::stack_t const* begin, ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
         ::std::int_least32_t ret{::uwvm::vm::wasi::fd_close(begin[0].i32)};
-       stack_curr = const_cast<::uwvm::vm::unchecked_interpreter::stack_t*>(begin);
-        ::uwvm::vm::unchecked_interpreter::func::details::push(stack_curr,::uwvm::vm::unchecked_interpreter::stack_t{.i32{ret}});
+        stack_curr = const_cast<::uwvm::vm::unchecked_interpreter::stack_t*>(begin);
+        ::uwvm::vm::unchecked_interpreter::func::details::push(stack_curr, ::uwvm::vm::unchecked_interpreter::stack_t{.i32{ret}});
     }
 
-    void int_fd_datasync(::uwvm::vm::unchecked_interpreter::stack_t const* begin, ::uwvm::vm::unchecked_interpreter::stack_t * &stack_curr) noexcept
+    void int_fd_datasync(::uwvm::vm::unchecked_interpreter::stack_t const* begin, ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
         ::std::int_least32_t ret{::uwvm::vm::wasi::fd_datasync(begin[0].i32)};
-       stack_curr = const_cast<::uwvm::vm::unchecked_interpreter::stack_t*>(begin);
-        ::uwvm::vm::unchecked_interpreter::func::details::push(stack_curr,::uwvm::vm::unchecked_interpreter::stack_t{.i32{ret}});
+        stack_curr = const_cast<::uwvm::vm::unchecked_interpreter::stack_t*>(begin);
+        ::uwvm::vm::unchecked_interpreter::func::details::push(stack_curr, ::uwvm::vm::unchecked_interpreter::stack_t{.i32{ret}});
     }
 
-    void int_fd_fdstat_get(::uwvm::vm::unchecked_interpreter::stack_t const* begin, ::uwvm::vm::unchecked_interpreter::stack_t * &stack_curr) noexcept
+    void int_fd_fdstat_get(::uwvm::vm::unchecked_interpreter::stack_t const* begin, ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
         ::std::int_least32_t ret{::uwvm::vm::wasi::fd_fdstat_get(begin[0].i32, begin[1].i32)};
-       stack_curr = const_cast<::uwvm::vm::unchecked_interpreter::stack_t*>(begin);
-        ::uwvm::vm::unchecked_interpreter::func::details::push(stack_curr,::uwvm::vm::unchecked_interpreter::stack_t{.i32{ret}});
+        stack_curr = const_cast<::uwvm::vm::unchecked_interpreter::stack_t*>(begin);
+        ::uwvm::vm::unchecked_interpreter::func::details::push(stack_curr, ::uwvm::vm::unchecked_interpreter::stack_t{.i32{ret}});
     }
 
-    void int_fd_fdstat_set_flags(::uwvm::vm::unchecked_interpreter::stack_t const* begin, ::uwvm::vm::unchecked_interpreter::stack_t * &stack_curr) noexcept
+    void int_fd_fdstat_set_flags(::uwvm::vm::unchecked_interpreter::stack_t const* begin, ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
         ::std::int_least32_t ret{::uwvm::vm::wasi::fd_fdstat_set_flags(begin[0].i32, begin[1].i32)};
-       stack_curr = const_cast<::uwvm::vm::unchecked_interpreter::stack_t*>(begin);
-        ::uwvm::vm::unchecked_interpreter::func::details::push(stack_curr,::uwvm::vm::unchecked_interpreter::stack_t{.i32{ret}});
+        stack_curr = const_cast<::uwvm::vm::unchecked_interpreter::stack_t*>(begin);
+        ::uwvm::vm::unchecked_interpreter::func::details::push(stack_curr, ::uwvm::vm::unchecked_interpreter::stack_t{.i32{ret}});
     }
 
-    void int_fd_fdstat_set_rights(::uwvm::vm::unchecked_interpreter::stack_t const* begin, ::uwvm::vm::unchecked_interpreter::stack_t * &stack_curr) noexcept
+    void int_fd_fdstat_set_rights(::uwvm::vm::unchecked_interpreter::stack_t const* begin, ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
         ::std::int_least32_t ret{::uwvm::vm::wasi::fd_fdstat_set_rights(begin[0].i32, begin[1].i64, begin[2].i64)};
-       stack_curr = const_cast<::uwvm::vm::unchecked_interpreter::stack_t*>(begin);
-        ::uwvm::vm::unchecked_interpreter::func::details::push(stack_curr,::uwvm::vm::unchecked_interpreter::stack_t{.i32{ret}});
+        stack_curr = const_cast<::uwvm::vm::unchecked_interpreter::stack_t*>(begin);
+        ::uwvm::vm::unchecked_interpreter::func::details::push(stack_curr, ::uwvm::vm::unchecked_interpreter::stack_t{.i32{ret}});
     }
 
-    void int_fd_filestat_get(::uwvm::vm::unchecked_interpreter::stack_t const* begin, ::uwvm::vm::unchecked_interpreter::stack_t * &stack_curr) noexcept
+    void int_fd_filestat_get(::uwvm::vm::unchecked_interpreter::stack_t const* begin, ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
         ::std::int_least32_t ret{::uwvm::vm::wasi::fd_filestat_get(begin[0].i32, begin[1].i32)};
-       stack_curr = const_cast<::uwvm::vm::unchecked_interpreter::stack_t*>(begin);
-        ::uwvm::vm::unchecked_interpreter::func::details::push(stack_curr,::uwvm::vm::unchecked_interpreter::stack_t{.i32{ret}});
+        stack_curr = const_cast<::uwvm::vm::unchecked_interpreter::stack_t*>(begin);
+        ::uwvm::vm::unchecked_interpreter::func::details::push(stack_curr, ::uwvm::vm::unchecked_interpreter::stack_t{.i32{ret}});
     }
 
-    void int_fd_filestat_set_size(::uwvm::vm::unchecked_interpreter::stack_t const* begin, ::uwvm::vm::unchecked_interpreter::stack_t * &stack_curr) noexcept
+    void int_fd_filestat_set_size(::uwvm::vm::unchecked_interpreter::stack_t const* begin, ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
         ::std::int_least32_t ret{::uwvm::vm::wasi::fd_filestat_set_size(begin[0].i32, begin[1].i64)};
-       stack_curr = const_cast<::uwvm::vm::unchecked_interpreter::stack_t*>(begin);
-        ::uwvm::vm::unchecked_interpreter::func::details::push(stack_curr,::uwvm::vm::unchecked_interpreter::stack_t{.i32{ret}});
+        stack_curr = const_cast<::uwvm::vm::unchecked_interpreter::stack_t*>(begin);
+        ::uwvm::vm::unchecked_interpreter::func::details::push(stack_curr, ::uwvm::vm::unchecked_interpreter::stack_t{.i32{ret}});
     }
 
-    void int_fd_filestat_set_times(::uwvm::vm::unchecked_interpreter::stack_t const* begin, ::uwvm::vm::unchecked_interpreter::stack_t * &stack_curr) noexcept
+    void int_fd_filestat_set_times(::uwvm::vm::unchecked_interpreter::stack_t const* begin, ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
         ::std::int_least32_t ret{::uwvm::vm::wasi::fd_filestat_set_times(begin[0].i32, begin[1].i64, begin[2].i64, begin[3].i32)};
-       stack_curr = const_cast<::uwvm::vm::unchecked_interpreter::stack_t*>(begin);
-        ::uwvm::vm::unchecked_interpreter::func::details::push(stack_curr,::uwvm::vm::unchecked_interpreter::stack_t{.i32{ret}});
+        stack_curr = const_cast<::uwvm::vm::unchecked_interpreter::stack_t*>(begin);
+        ::uwvm::vm::unchecked_interpreter::func::details::push(stack_curr, ::uwvm::vm::unchecked_interpreter::stack_t{.i32{ret}});
     }
 
-    void int_fd_pread(::uwvm::vm::unchecked_interpreter::stack_t const* begin, ::uwvm::vm::unchecked_interpreter::stack_t * &stack_curr) noexcept
+    void int_fd_pread(::uwvm::vm::unchecked_interpreter::stack_t const* begin, ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
         ::std::int_least32_t ret{::uwvm::vm::wasi::fd_pread(begin[0].i32, begin[1].i32, begin[2].i32, begin[3].i64, begin[4].i32)};
-       stack_curr = const_cast<::uwvm::vm::unchecked_interpreter::stack_t*>(begin);
-        ::uwvm::vm::unchecked_interpreter::func::details::push(stack_curr,::uwvm::vm::unchecked_interpreter::stack_t{.i32{ret}});
+        stack_curr = const_cast<::uwvm::vm::unchecked_interpreter::stack_t*>(begin);
+        ::uwvm::vm::unchecked_interpreter::func::details::push(stack_curr, ::uwvm::vm::unchecked_interpreter::stack_t{.i32{ret}});
     }
 
-    void int_fd_prestat_get(::uwvm::vm::unchecked_interpreter::stack_t const* begin, ::uwvm::vm::unchecked_interpreter::stack_t * &stack_curr) noexcept
+    void int_fd_prestat_get(::uwvm::vm::unchecked_interpreter::stack_t const* begin, ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
         ::std::int_least32_t ret{::uwvm::vm::wasi::fd_prestat_get(begin[0].i32, begin[1].i32)};
-       stack_curr = const_cast<::uwvm::vm::unchecked_interpreter::stack_t*>(begin);
-        ::uwvm::vm::unchecked_interpreter::func::details::push(stack_curr,::uwvm::vm::unchecked_interpreter::stack_t{.i32{ret}});
+        stack_curr = const_cast<::uwvm::vm::unchecked_interpreter::stack_t*>(begin);
+        ::uwvm::vm::unchecked_interpreter::func::details::push(stack_curr, ::uwvm::vm::unchecked_interpreter::stack_t{.i32{ret}});
     }
 
-    void int_fd_prestat_dir_name(::uwvm::vm::unchecked_interpreter::stack_t const* begin, ::uwvm::vm::unchecked_interpreter::stack_t * &stack_curr) noexcept
+    void int_fd_prestat_dir_name(::uwvm::vm::unchecked_interpreter::stack_t const* begin, ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
         ::std::int_least32_t ret{::uwvm::vm::wasi::fd_prestat_dir_name(begin[0].i32, begin[1].i32, begin[2].i32)};
-       stack_curr = const_cast<::uwvm::vm::unchecked_interpreter::stack_t*>(begin);
-        ::uwvm::vm::unchecked_interpreter::func::details::push(stack_curr,::uwvm::vm::unchecked_interpreter::stack_t{.i32{ret}});
+        stack_curr = const_cast<::uwvm::vm::unchecked_interpreter::stack_t*>(begin);
+        ::uwvm::vm::unchecked_interpreter::func::details::push(stack_curr, ::uwvm::vm::unchecked_interpreter::stack_t{.i32{ret}});
     }
 
-    void int_fd_pwrite(::uwvm::vm::unchecked_interpreter::stack_t const* begin, ::uwvm::vm::unchecked_interpreter::stack_t * &stack_curr) noexcept
+    void int_fd_pwrite(::uwvm::vm::unchecked_interpreter::stack_t const* begin, ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
         ::std::int_least32_t ret{::uwvm::vm::wasi::fd_pwrite(begin[0].i32, begin[1].i32, begin[2].i32, begin[3].i64, begin[4].i32)};
-       stack_curr = const_cast<::uwvm::vm::unchecked_interpreter::stack_t*>(begin);
-        ::uwvm::vm::unchecked_interpreter::func::details::push(stack_curr,::uwvm::vm::unchecked_interpreter::stack_t{.i32{ret}});
+        stack_curr = const_cast<::uwvm::vm::unchecked_interpreter::stack_t*>(begin);
+        ::uwvm::vm::unchecked_interpreter::func::details::push(stack_curr, ::uwvm::vm::unchecked_interpreter::stack_t{.i32{ret}});
     }
 
-    void int_fd_read(::uwvm::vm::unchecked_interpreter::stack_t const* begin, ::uwvm::vm::unchecked_interpreter::stack_t * &stack_curr) noexcept
+    void int_fd_read(::uwvm::vm::unchecked_interpreter::stack_t const* begin, ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
         ::std::int_least32_t ret{::uwvm::vm::wasi::fd_read(begin[0].i32, begin[1].i32, begin[2].i32, begin[3].i32)};
-       stack_curr = const_cast<::uwvm::vm::unchecked_interpreter::stack_t*>(begin);
-        ::uwvm::vm::unchecked_interpreter::func::details::push(stack_curr,::uwvm::vm::unchecked_interpreter::stack_t{.i32{ret}});
+        stack_curr = const_cast<::uwvm::vm::unchecked_interpreter::stack_t*>(begin);
+        ::uwvm::vm::unchecked_interpreter::func::details::push(stack_curr, ::uwvm::vm::unchecked_interpreter::stack_t{.i32{ret}});
     }
 
-    void int_fd_readdir(::uwvm::vm::unchecked_interpreter::stack_t const* begin, ::uwvm::vm::unchecked_interpreter::stack_t * &stack_curr) noexcept
+    void int_fd_readdir(::uwvm::vm::unchecked_interpreter::stack_t const* begin, ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
         ::std::int_least32_t ret{::uwvm::vm::wasi::fd_readdir(begin[0].i32, begin[1].i32, begin[2].i32, begin[3].i64, begin[4].i32)};
-       stack_curr = const_cast<::uwvm::vm::unchecked_interpreter::stack_t*>(begin);
-        ::uwvm::vm::unchecked_interpreter::func::details::push(stack_curr,::uwvm::vm::unchecked_interpreter::stack_t{.i32{ret}});
+        stack_curr = const_cast<::uwvm::vm::unchecked_interpreter::stack_t*>(begin);
+        ::uwvm::vm::unchecked_interpreter::func::details::push(stack_curr, ::uwvm::vm::unchecked_interpreter::stack_t{.i32{ret}});
     }
 
-    void int_fd_renumber(::uwvm::vm::unchecked_interpreter::stack_t const* begin, ::uwvm::vm::unchecked_interpreter::stack_t * &stack_curr) noexcept
+    void int_fd_renumber(::uwvm::vm::unchecked_interpreter::stack_t const* begin, ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
         ::std::int_least32_t ret{::uwvm::vm::wasi::fd_renumber(begin[0].i32, begin[1].i32)};
-       stack_curr = const_cast<::uwvm::vm::unchecked_interpreter::stack_t*>(begin);
-        ::uwvm::vm::unchecked_interpreter::func::details::push(stack_curr,::uwvm::vm::unchecked_interpreter::stack_t{.i32{ret}});
+        stack_curr = const_cast<::uwvm::vm::unchecked_interpreter::stack_t*>(begin);
+        ::uwvm::vm::unchecked_interpreter::func::details::push(stack_curr, ::uwvm::vm::unchecked_interpreter::stack_t{.i32{ret}});
     }
 
-    void int_fd_seek(::uwvm::vm::unchecked_interpreter::stack_t const* begin, ::uwvm::vm::unchecked_interpreter::stack_t * &stack_curr) noexcept
+    void int_fd_seek(::uwvm::vm::unchecked_interpreter::stack_t const* begin, ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
         ::std::int_least32_t ret{::uwvm::vm::wasi::fd_seek(begin[0].i32, begin[1].i64, begin[2].i32, begin[3].i32)};
-       stack_curr = const_cast<::uwvm::vm::unchecked_interpreter::stack_t*>(begin);
-        ::uwvm::vm::unchecked_interpreter::func::details::push(stack_curr,::uwvm::vm::unchecked_interpreter::stack_t{.i32{ret}});
+        stack_curr = const_cast<::uwvm::vm::unchecked_interpreter::stack_t*>(begin);
+        ::uwvm::vm::unchecked_interpreter::func::details::push(stack_curr, ::uwvm::vm::unchecked_interpreter::stack_t{.i32{ret}});
     }
 
-    void int_fd_sync(::uwvm::vm::unchecked_interpreter::stack_t const* begin, ::uwvm::vm::unchecked_interpreter::stack_t * &stack_curr) noexcept
+    void int_fd_sync(::uwvm::vm::unchecked_interpreter::stack_t const* begin, ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
         ::std::int_least32_t ret{::uwvm::vm::wasi::fd_sync(begin[0].i32)};
-       stack_curr = const_cast<::uwvm::vm::unchecked_interpreter::stack_t*>(begin);
-        ::uwvm::vm::unchecked_interpreter::func::details::push(stack_curr,::uwvm::vm::unchecked_interpreter::stack_t{.i32{ret}});
+        stack_curr = const_cast<::uwvm::vm::unchecked_interpreter::stack_t*>(begin);
+        ::uwvm::vm::unchecked_interpreter::func::details::push(stack_curr, ::uwvm::vm::unchecked_interpreter::stack_t{.i32{ret}});
     }
 
-    void int_fd_tell(::uwvm::vm::unchecked_interpreter::stack_t const* begin, ::uwvm::vm::unchecked_interpreter::stack_t * &stack_curr) noexcept
+    void int_fd_tell(::uwvm::vm::unchecked_interpreter::stack_t const* begin, ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
         ::std::int_least32_t ret{::uwvm::vm::wasi::fd_tell(begin[0].i32, begin[1].i32)};
-       stack_curr = const_cast<::uwvm::vm::unchecked_interpreter::stack_t*>(begin);
-        ::uwvm::vm::unchecked_interpreter::func::details::push(stack_curr,::uwvm::vm::unchecked_interpreter::stack_t{.i32{ret}});
+        stack_curr = const_cast<::uwvm::vm::unchecked_interpreter::stack_t*>(begin);
+        ::uwvm::vm::unchecked_interpreter::func::details::push(stack_curr, ::uwvm::vm::unchecked_interpreter::stack_t{.i32{ret}});
     }
 
-    void int_fd_write(::uwvm::vm::unchecked_interpreter::stack_t const* begin, ::uwvm::vm::unchecked_interpreter::stack_t * &stack_curr) noexcept
+    void int_fd_write(::uwvm::vm::unchecked_interpreter::stack_t const* begin, ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
         ::std::int_least32_t ret{::uwvm::vm::wasi::fd_write(begin[0].i32, begin[1].i32, begin[2].i32, begin[3].i32)};
-       stack_curr = const_cast<::uwvm::vm::unchecked_interpreter::stack_t*>(begin);
-        ::uwvm::vm::unchecked_interpreter::func::details::push(stack_curr,::uwvm::vm::unchecked_interpreter::stack_t{.i32{ret}});
+        stack_curr = const_cast<::uwvm::vm::unchecked_interpreter::stack_t*>(begin);
+        ::uwvm::vm::unchecked_interpreter::func::details::push(stack_curr, ::uwvm::vm::unchecked_interpreter::stack_t{.i32{ret}});
     }
 
-    void int_path_create_directory(::uwvm::vm::unchecked_interpreter::stack_t const* begin, ::uwvm::vm::unchecked_interpreter::stack_t * &stack_curr) noexcept
+    void int_path_create_directory(::uwvm::vm::unchecked_interpreter::stack_t const* begin, ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
         ::std::int_least32_t ret{::uwvm::vm::wasi::path_create_directory(begin[0].i32, begin[1].i32, begin[2].i32)};
-       stack_curr = const_cast<::uwvm::vm::unchecked_interpreter::stack_t*>(begin);
-        ::uwvm::vm::unchecked_interpreter::func::details::push(stack_curr,::uwvm::vm::unchecked_interpreter::stack_t{.i32{ret}});
+        stack_curr = const_cast<::uwvm::vm::unchecked_interpreter::stack_t*>(begin);
+        ::uwvm::vm::unchecked_interpreter::func::details::push(stack_curr, ::uwvm::vm::unchecked_interpreter::stack_t{.i32{ret}});
     }
 
-    void int_path_filestat_get(::uwvm::vm::unchecked_interpreter::stack_t const* begin, ::uwvm::vm::unchecked_interpreter::stack_t * &stack_curr) noexcept
+    void int_path_filestat_get(::uwvm::vm::unchecked_interpreter::stack_t const* begin, ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
         ::std::int_least32_t ret{::uwvm::vm::wasi::path_filestat_get(begin[0].i32, begin[1].i32, begin[2].i32, begin[3].i32, begin[4].i32)};
-       stack_curr = const_cast<::uwvm::vm::unchecked_interpreter::stack_t*>(begin);
-        ::uwvm::vm::unchecked_interpreter::func::details::push(stack_curr,::uwvm::vm::unchecked_interpreter::stack_t{.i32{ret}});
+        stack_curr = const_cast<::uwvm::vm::unchecked_interpreter::stack_t*>(begin);
+        ::uwvm::vm::unchecked_interpreter::func::details::push(stack_curr, ::uwvm::vm::unchecked_interpreter::stack_t{.i32{ret}});
     }
 
-    void int_path_filestat_set_times(::uwvm::vm::unchecked_interpreter::stack_t const* begin, ::uwvm::vm::unchecked_interpreter::stack_t * &stack_curr) noexcept
-    {
-        ::std::int_least32_t ret{::uwvm::vm::wasi::path_filestat_set_times(begin[0].i32,
-                                                                                        begin[1].i32,
-                                                                                        begin[2].i32,
-                                                                                        begin[3].i32,
-                                                                                        begin[4].i64,
-                                                                                        begin[5].i64,
-                                                                                        begin[6].i32)};
-       stack_curr = const_cast<::uwvm::vm::unchecked_interpreter::stack_t*>(begin);
-        ::uwvm::vm::unchecked_interpreter::func::details::push(stack_curr,::uwvm::vm::unchecked_interpreter::stack_t{.i32{ret}});
-    }
-
-    void int_path_link(::uwvm::vm::unchecked_interpreter::stack_t const* begin, ::uwvm::vm::unchecked_interpreter::stack_t * &stack_curr) noexcept
+    void int_path_filestat_set_times(::uwvm::vm::unchecked_interpreter::stack_t const* begin, ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
         ::std::int_least32_t ret{
-            ::uwvm::vm::wasi::path_link(begin[0].i32, begin[1].i32, begin[2].i32, begin[3].i32, begin[4].i32, begin[5].i32, begin[6].i32)};
-       stack_curr = const_cast<::uwvm::vm::unchecked_interpreter::stack_t*>(begin);
-        ::uwvm::vm::unchecked_interpreter::func::details::push(stack_curr,::uwvm::vm::unchecked_interpreter::stack_t{.i32{ret}});
+            ::uwvm::vm::wasi::path_filestat_set_times(begin[0].i32, begin[1].i32, begin[2].i32, begin[3].i32, begin[4].i64, begin[5].i64, begin[6].i32)};
+        stack_curr = const_cast<::uwvm::vm::unchecked_interpreter::stack_t*>(begin);
+        ::uwvm::vm::unchecked_interpreter::func::details::push(stack_curr, ::uwvm::vm::unchecked_interpreter::stack_t{.i32{ret}});
     }
 
-    void int_path_open(::uwvm::vm::unchecked_interpreter::stack_t const* begin, ::uwvm::vm::unchecked_interpreter::stack_t * &stack_curr) noexcept
+    void int_path_link(::uwvm::vm::unchecked_interpreter::stack_t const* begin, ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
+    {
+        ::std::int_least32_t ret{::uwvm::vm::wasi::path_link(begin[0].i32, begin[1].i32, begin[2].i32, begin[3].i32, begin[4].i32, begin[5].i32, begin[6].i32)};
+        stack_curr = const_cast<::uwvm::vm::unchecked_interpreter::stack_t*>(begin);
+        ::uwvm::vm::unchecked_interpreter::func::details::push(stack_curr, ::uwvm::vm::unchecked_interpreter::stack_t{.i32{ret}});
+    }
+
+    void int_path_open(::uwvm::vm::unchecked_interpreter::stack_t const* begin, ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
         ::std::int_least32_t ret{::uwvm::vm::wasi::path_open(begin[0].i32,
-                                                                          begin[1].i32,
-                                                                          begin[2].i32,
-                                                                          begin[3].i32,
-                                                                          begin[4].i32,
-                                                                          begin[5].i64,
-                                                                          begin[6].i64,
-                                                                          begin[7].i32,
-                                                                          begin[8].i32)};
-       stack_curr = const_cast<::uwvm::vm::unchecked_interpreter::stack_t*>(begin);
-        ::uwvm::vm::unchecked_interpreter::func::details::push(stack_curr,::uwvm::vm::unchecked_interpreter::stack_t{.i32{ret}});
+                                                             begin[1].i32,
+                                                             begin[2].i32,
+                                                             begin[3].i32,
+                                                             begin[4].i32,
+                                                             begin[5].i64,
+                                                             begin[6].i64,
+                                                             begin[7].i32,
+                                                             begin[8].i32)};
+        stack_curr = const_cast<::uwvm::vm::unchecked_interpreter::stack_t*>(begin);
+        ::uwvm::vm::unchecked_interpreter::func::details::push(stack_curr, ::uwvm::vm::unchecked_interpreter::stack_t{.i32{ret}});
     }
 
-    void int_path_readlink(::uwvm::vm::unchecked_interpreter::stack_t const* begin, ::uwvm::vm::unchecked_interpreter::stack_t * &stack_curr) noexcept
+    void int_path_readlink(::uwvm::vm::unchecked_interpreter::stack_t const* begin, ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
-        ::std::int_least32_t ret{
-            ::uwvm::vm::wasi::path_readlink(begin[0].i32, begin[1].i32, begin[2].i32, begin[3].i32, begin[4].i32, begin[5].i32)};
-       stack_curr = const_cast<::uwvm::vm::unchecked_interpreter::stack_t*>(begin);
-        ::uwvm::vm::unchecked_interpreter::func::details::push(stack_curr,::uwvm::vm::unchecked_interpreter::stack_t{.i32{ret}});
+        ::std::int_least32_t ret{::uwvm::vm::wasi::path_readlink(begin[0].i32, begin[1].i32, begin[2].i32, begin[3].i32, begin[4].i32, begin[5].i32)};
+        stack_curr = const_cast<::uwvm::vm::unchecked_interpreter::stack_t*>(begin);
+        ::uwvm::vm::unchecked_interpreter::func::details::push(stack_curr, ::uwvm::vm::unchecked_interpreter::stack_t{.i32{ret}});
     }
 
-    void int_path_remove_directory(::uwvm::vm::unchecked_interpreter::stack_t const* begin, ::uwvm::vm::unchecked_interpreter::stack_t * &stack_curr) noexcept
+    void int_path_remove_directory(::uwvm::vm::unchecked_interpreter::stack_t const* begin, ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
         ::std::int_least32_t ret{::uwvm::vm::wasi::path_remove_directory(begin[0].i32, begin[1].i32, begin[2].i32)};
-       stack_curr = const_cast<::uwvm::vm::unchecked_interpreter::stack_t*>(begin);
-        ::uwvm::vm::unchecked_interpreter::func::details::push(stack_curr,::uwvm::vm::unchecked_interpreter::stack_t{.i32{ret}});
+        stack_curr = const_cast<::uwvm::vm::unchecked_interpreter::stack_t*>(begin);
+        ::uwvm::vm::unchecked_interpreter::func::details::push(stack_curr, ::uwvm::vm::unchecked_interpreter::stack_t{.i32{ret}});
     }
 
-    void int_path_rename(::uwvm::vm::unchecked_interpreter::stack_t const* begin, ::uwvm::vm::unchecked_interpreter::stack_t * &stack_curr) noexcept
+    void int_path_rename(::uwvm::vm::unchecked_interpreter::stack_t const* begin, ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
-        ::std::int_least32_t ret{
-            ::uwvm::vm::wasi::path_rename(begin[0].i32, begin[1].i32, begin[2].i32, begin[3].i32, begin[4].i32, begin[5].i32)};
-       stack_curr = const_cast<::uwvm::vm::unchecked_interpreter::stack_t*>(begin);
-        ::uwvm::vm::unchecked_interpreter::func::details::push(stack_curr,::uwvm::vm::unchecked_interpreter::stack_t{.i32{ret}});
+        ::std::int_least32_t ret{::uwvm::vm::wasi::path_rename(begin[0].i32, begin[1].i32, begin[2].i32, begin[3].i32, begin[4].i32, begin[5].i32)};
+        stack_curr = const_cast<::uwvm::vm::unchecked_interpreter::stack_t*>(begin);
+        ::uwvm::vm::unchecked_interpreter::func::details::push(stack_curr, ::uwvm::vm::unchecked_interpreter::stack_t{.i32{ret}});
     }
 
-    void int_path_symlink(::uwvm::vm::unchecked_interpreter::stack_t const* begin, ::uwvm::vm::unchecked_interpreter::stack_t * &stack_curr) noexcept
+    void int_path_symlink(::uwvm::vm::unchecked_interpreter::stack_t const* begin, ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
         ::std::int_least32_t ret{::uwvm::vm::wasi::path_symlink(begin[0].i32, begin[1].i32, begin[2].i32, begin[3].i32, begin[4].i32)};
-       stack_curr = const_cast<::uwvm::vm::unchecked_interpreter::stack_t*>(begin);
-        ::uwvm::vm::unchecked_interpreter::func::details::push(stack_curr,::uwvm::vm::unchecked_interpreter::stack_t{.i32{ret}});
+        stack_curr = const_cast<::uwvm::vm::unchecked_interpreter::stack_t*>(begin);
+        ::uwvm::vm::unchecked_interpreter::func::details::push(stack_curr, ::uwvm::vm::unchecked_interpreter::stack_t{.i32{ret}});
     }
 
-    void int_path_unlink_file(::uwvm::vm::unchecked_interpreter::stack_t const* begin, ::uwvm::vm::unchecked_interpreter::stack_t * &stack_curr) noexcept
+    void int_path_unlink_file(::uwvm::vm::unchecked_interpreter::stack_t const* begin, ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
         ::std::int_least32_t ret{::uwvm::vm::wasi::path_unlink_file(begin[0].i32, begin[1].i32, begin[2].i32)};
-       stack_curr = const_cast<::uwvm::vm::unchecked_interpreter::stack_t*>(begin);
-        ::uwvm::vm::unchecked_interpreter::func::details::push(stack_curr,::uwvm::vm::unchecked_interpreter::stack_t{.i32{ret}});
+        stack_curr = const_cast<::uwvm::vm::unchecked_interpreter::stack_t*>(begin);
+        ::uwvm::vm::unchecked_interpreter::func::details::push(stack_curr, ::uwvm::vm::unchecked_interpreter::stack_t{.i32{ret}});
     }
 
-    void int_poll_oneoff(::uwvm::vm::unchecked_interpreter::stack_t const* begin, ::uwvm::vm::unchecked_interpreter::stack_t * &stack_curr) noexcept
+    void int_poll_oneoff(::uwvm::vm::unchecked_interpreter::stack_t const* begin, ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
         ::std::int_least32_t ret{::uwvm::vm::wasi::poll_oneoff(begin[0].i32, begin[1].i32, begin[2].i32, begin[3].i32)};
-       stack_curr = const_cast<::uwvm::vm::unchecked_interpreter::stack_t*>(begin);
-        ::uwvm::vm::unchecked_interpreter::func::details::push(stack_curr,::uwvm::vm::unchecked_interpreter::stack_t{.i32{ret}});
+        stack_curr = const_cast<::uwvm::vm::unchecked_interpreter::stack_t*>(begin);
+        ::uwvm::vm::unchecked_interpreter::func::details::push(stack_curr, ::uwvm::vm::unchecked_interpreter::stack_t{.i32{ret}});
     }
 
-    void int_proc_exit(::uwvm::vm::unchecked_interpreter::stack_t const* begin, ::uwvm::vm::unchecked_interpreter::stack_t * &stack_curr) noexcept
+    void int_proc_exit(::uwvm::vm::unchecked_interpreter::stack_t const* begin, ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
         ::uwvm::vm::wasi::proc_exit(begin[0].i32);
-       stack_curr = const_cast<::uwvm::vm::unchecked_interpreter::stack_t*>(begin);
+        stack_curr = const_cast<::uwvm::vm::unchecked_interpreter::stack_t*>(begin);
     }
 
-    void int_sched_yield(::uwvm::vm::unchecked_interpreter::stack_t const* begin, ::uwvm::vm::unchecked_interpreter::stack_t * &stack_curr) noexcept
+    void int_sched_yield(::uwvm::vm::unchecked_interpreter::stack_t const* begin, ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
         ::std::int_least32_t ret{::uwvm::vm::wasi::sched_yield()};
-       stack_curr = const_cast<::uwvm::vm::unchecked_interpreter::stack_t*>(begin);
-        ::uwvm::vm::unchecked_interpreter::func::details::push(stack_curr,::uwvm::vm::unchecked_interpreter::stack_t{.i32{ret}});
+        stack_curr = const_cast<::uwvm::vm::unchecked_interpreter::stack_t*>(begin);
+        ::uwvm::vm::unchecked_interpreter::func::details::push(stack_curr, ::uwvm::vm::unchecked_interpreter::stack_t{.i32{ret}});
     }
 
-    void int_random_get(::uwvm::vm::unchecked_interpreter::stack_t const* begin, ::uwvm::vm::unchecked_interpreter::stack_t * &stack_curr) noexcept
+    void int_random_get(::uwvm::vm::unchecked_interpreter::stack_t const* begin, ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
         ::std::int_least32_t ret{::uwvm::vm::wasi::random_get(begin[0].i32, begin[1].i32)};
-       stack_curr = const_cast<::uwvm::vm::unchecked_interpreter::stack_t*>(begin);
-        ::uwvm::vm::unchecked_interpreter::func::details::push(stack_curr,::uwvm::vm::unchecked_interpreter::stack_t{.i32{ret}});
+        stack_curr = const_cast<::uwvm::vm::unchecked_interpreter::stack_t*>(begin);
+        ::uwvm::vm::unchecked_interpreter::func::details::push(stack_curr, ::uwvm::vm::unchecked_interpreter::stack_t{.i32{ret}});
     }
 
-    void int_sock_accept(::uwvm::vm::unchecked_interpreter::stack_t const* begin, ::uwvm::vm::unchecked_interpreter::stack_t * &stack_curr) noexcept
+    void int_sock_accept(::uwvm::vm::unchecked_interpreter::stack_t const* begin, ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
         ::std::int_least32_t ret{::uwvm::vm::wasi::sock_accept(begin[0].i32, begin[1].i32, begin[2].i32)};
-       stack_curr = const_cast<::uwvm::vm::unchecked_interpreter::stack_t*>(begin);
-        ::uwvm::vm::unchecked_interpreter::func::details::push(stack_curr,::uwvm::vm::unchecked_interpreter::stack_t{.i32{ret}});
+        stack_curr = const_cast<::uwvm::vm::unchecked_interpreter::stack_t*>(begin);
+        ::uwvm::vm::unchecked_interpreter::func::details::push(stack_curr, ::uwvm::vm::unchecked_interpreter::stack_t{.i32{ret}});
     }
 
-    void int_sock_recv(::uwvm::vm::unchecked_interpreter::stack_t const* begin, ::uwvm::vm::unchecked_interpreter::stack_t * &stack_curr) noexcept
+    void int_sock_recv(::uwvm::vm::unchecked_interpreter::stack_t const* begin, ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
         ::std::int_least32_t ret{::uwvm::vm::wasi::sock_recv(begin[0].i32, begin[1].i32, begin[2].i32, begin[3].i32, begin[4].i32, begin[5].i32)};
-       stack_curr = const_cast<::uwvm::vm::unchecked_interpreter::stack_t*>(begin);
-        ::uwvm::vm::unchecked_interpreter::func::details::push(stack_curr,::uwvm::vm::unchecked_interpreter::stack_t{.i32{ret}});
+        stack_curr = const_cast<::uwvm::vm::unchecked_interpreter::stack_t*>(begin);
+        ::uwvm::vm::unchecked_interpreter::func::details::push(stack_curr, ::uwvm::vm::unchecked_interpreter::stack_t{.i32{ret}});
     }
 
-    void int_sock_send(::uwvm::vm::unchecked_interpreter::stack_t const* begin, ::uwvm::vm::unchecked_interpreter::stack_t * &stack_curr) noexcept
+    void int_sock_send(::uwvm::vm::unchecked_interpreter::stack_t const* begin, ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
         ::std::int_least32_t ret{::uwvm::vm::wasi::sock_send(begin[0].i32, begin[1].i32, begin[2].i32, begin[3].i32, begin[4].i32)};
-       stack_curr = const_cast<::uwvm::vm::unchecked_interpreter::stack_t*>(begin);
-        ::uwvm::vm::unchecked_interpreter::func::details::push(stack_curr,::uwvm::vm::unchecked_interpreter::stack_t{.i32{ret}});
+        stack_curr = const_cast<::uwvm::vm::unchecked_interpreter::stack_t*>(begin);
+        ::uwvm::vm::unchecked_interpreter::func::details::push(stack_curr, ::uwvm::vm::unchecked_interpreter::stack_t{.i32{ret}});
     }
 
-    void int_sock_shutdown(::uwvm::vm::unchecked_interpreter::stack_t const* begin, ::uwvm::vm::unchecked_interpreter::stack_t * &stack_curr) noexcept
+    void int_sock_shutdown(::uwvm::vm::unchecked_interpreter::stack_t const* begin, ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
         ::std::int_least32_t ret{::uwvm::vm::wasi::sock_shutdown(begin[0].i32, begin[1].i32)};
-       stack_curr = const_cast<::uwvm::vm::unchecked_interpreter::stack_t*>(begin);
-        ::uwvm::vm::unchecked_interpreter::func::details::push(stack_curr,::uwvm::vm::unchecked_interpreter::stack_t{.i32{ret}});
+        stack_curr = const_cast<::uwvm::vm::unchecked_interpreter::stack_t*>(begin);
+        ::uwvm::vm::unchecked_interpreter::func::details::push(stack_curr, ::uwvm::vm::unchecked_interpreter::stack_t{.i32{ret}});
     }
 
     inline constexpr ::uwvm::vm::unchecked_interpreter::import_pair wasi_int_pair[]{
@@ -443,4 +435,4 @@ namespace uwvm::vm::unchecked_interpreter::wasi
 
     inline constexpr auto sizeof_wasi_hash_table{sizeof(wasi_hash_table)};
 
-}  // namespace uwvm::vm::wasi
+}  // namespace uwvm::vm::unchecked_interpreter::wasi

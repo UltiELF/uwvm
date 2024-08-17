@@ -51,8 +51,12 @@ $ uwvm <param1> <param2> ... --run <file> <argv1> <argv2> ...
 ```
 * 运行模式
 ```bash
---mode [objdump, int(默认)]
+--mode [objdump, int(默认), ucint]
+# objdump: 查看符号表
+# int: 解释器，wasm数据栈与local数据栈可扩展并带检查；内存操作检查；等等
+# ucint: 部分不检查解释器，wasm数据栈大小固定不检查，通过将数据栈的最左右页设置无读写执行权限进行虚拟机安全保护；local数据栈使用线程自身栈；内存操作检查；等等；性能比解释器快1.20倍
 ```
+
 * 加载 WASM ABI (默认自动检测)
 ```bash
 --abi [bare|emscripten|wasi]
@@ -128,6 +132,10 @@ $ xmake f -m [release|releasedbg|debug] -p [windows|mingw|linux|sun|msdosdjgpp|b
 * 使用llvm工具链 (部分使用 gcc 软连接 clang 的平台必须加上这个选项，比如 macos 与 android )
 ```bash 
 --use-llvm=y|n(default)
+```
+* 使用ucint (同时会自动禁用c++异常)
+```bash 
+--uwvm-enable-ucint=y|n(default)
 ```
 * 编译使用本地指令集
 ```bash 

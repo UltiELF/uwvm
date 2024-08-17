@@ -20,7 +20,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         nop(::std::byte const* curr,
             ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
             ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-            ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+            ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
         auto next_op{curr_opt + 1};
         next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
@@ -33,7 +33,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         unreachable(::std::byte const* curr,
                     ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                     ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                    ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                    ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
         ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -69,7 +69,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         if_(::std::byte const* curr,
             ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
             ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-            ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+            ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
         auto const st_i32{details::pop_get_val(stack_curr).i32};
 
@@ -100,7 +100,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         br(::std::byte const* curr,
            ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
            ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-           ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+           ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
         auto next_op{curr_opt->ext.end + 1};
         next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
@@ -113,7 +113,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         br_if(::std::byte const* curr,
               ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
               ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-              ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+              ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
         auto const st_i32{details::pop_get_val(stack_curr).i32};
 
@@ -136,7 +136,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         br_table(::std::byte const* curr,
                  ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                  ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                 ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                 ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
         auto const st_i32{details::pop_get_val(stack_curr).i32};
 
@@ -172,7 +172,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         return_(::std::byte const* curr,
                 ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                 ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
         return;
     }
@@ -184,7 +184,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         call(::std::byte const* curr,
              ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
              ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-             ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept;
+             ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept;
 
 #if __has_cpp_attribute(__gnu__::__hot__)
     [[__gnu__::__hot__]]
@@ -193,7 +193,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         call_indirect(::std::byte const* curr,
                       ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                       ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                      ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept;
+                      ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept;
 
 #if __has_cpp_attribute(__gnu__::__hot__)
     [[__gnu__::__hot__]]
@@ -202,7 +202,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         drop(::std::byte const* curr,
              ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
              ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-             ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+             ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
         details::pop(stack_curr);
 
@@ -217,7 +217,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         local_get(::std::byte const* curr,
                   ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                   ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                  ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                  ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
         auto const index{curr_opt->ext.sz2};
         auto const local{local_begin + index};
@@ -234,7 +234,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         local_set(::std::byte const* curr,
                   ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                   ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                  ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                  ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
         auto const index{curr_opt->ext.sz2};
         auto local{local_begin + index};
@@ -254,7 +254,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         local_tee(::std::byte const* curr,
                   ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                   ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                  ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                  ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
         auto const index{curr_opt->ext.sz2};
         auto local{local_begin + index};
@@ -273,7 +273,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         global_get(::std::byte const* curr,
                    ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                    ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                   ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                   ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
         auto const& wasmmod{::uwvm::global_wasm_module};
 
@@ -298,7 +298,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         global_set(::std::byte const* curr,
                    ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                    ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                   ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                   ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
         auto const& wasmmod{::uwvm::global_wasm_module};
 
@@ -308,8 +308,7 @@ namespace uwvm::vm::unchecked_interpreter::func
 #endif
             = ::uwvm::vm::int_global_type const*;
 
-        auto& igt{
-            *const_cast<::uwvm::vm::int_global_type*>(reinterpret_cast<int_global_type_const_may_alias_ptr>(curr_opt->ext.branch))};
+        auto& igt{*const_cast<::uwvm::vm::int_global_type*>(reinterpret_cast<int_global_type_const_may_alias_ptr>(curr_opt->ext.branch))};
 
         if(!igt.gt.is_mutable) [[unlikely]]
         {
@@ -356,7 +355,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         select(::std::byte const* curr,
                ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-               ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+               ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
 
         auto const cond{details::pop_get_val(stack_curr)};
@@ -375,7 +374,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         select_t(::std::byte const* curr,
                  ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                  ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                 ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                 ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
 
         auto const cond{details::pop_get_val(stack_curr)};
@@ -394,7 +393,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         i32_load(::std::byte const* curr,
                  ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                  ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                 ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                 ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
         auto const aligment{curr_opt->ext.sz1};
         auto const offset{curr_opt->ext.sz2};
@@ -405,6 +404,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         auto mem{reinterpret_cast<::std::size_t>(global_memory.memory_begin)};
         auto const mem_end{mem + global_memory.memory_length};
 
+        mem += static_cast<::std::size_t>(st.i32);
         mem += offset;
         mem = ((mem + (static_cast<::std::size_t>(1) << aligment) - 1) >> aligment) << aligment;
 
@@ -455,7 +455,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         i64_load(::std::byte const* curr,
                  ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                  ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                 ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                 ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
         auto const aligment{curr_opt->ext.sz1};
         auto const offset{curr_opt->ext.sz2};
@@ -466,6 +466,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         auto mem{reinterpret_cast<::std::size_t>(global_memory.memory_begin)};
         auto const mem_end{mem + global_memory.memory_length};
 
+        mem += static_cast<::std::size_t>(st.i32);
         mem += offset;
         mem = ((mem + (static_cast<::std::size_t>(1) << aligment) - 1) >> aligment) << aligment;
         if(static_cast<::std::size_t>(mem_end - mem) < sizeof(::std::uint_least64_t) || mem > mem_end) [[unlikely]]
@@ -515,7 +516,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         f32_load(::std::byte const* curr,
                  ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                  ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                 ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                 ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
         auto const aligment{curr_opt->ext.sz1};
         auto const offset{curr_opt->ext.sz2};
@@ -526,6 +527,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         auto mem{reinterpret_cast<::std::size_t>(global_memory.memory_begin)};
         auto const mem_end{mem + global_memory.memory_length};
 
+        mem += static_cast<::std::size_t>(st.i32);
         mem += offset;
         mem = ((mem + (static_cast<::std::size_t>(1) << aligment) - 1) >> aligment) << aligment;
         if(static_cast<::std::size_t>(mem_end - mem) < sizeof(::std::uint_least32_t) || mem > mem_end) [[unlikely]]
@@ -575,7 +577,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         f64_load(::std::byte const* curr,
                  ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                  ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                 ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                 ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
         auto const aligment{curr_opt->ext.sz1};
         auto const offset{curr_opt->ext.sz2};
@@ -586,6 +588,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         auto mem{reinterpret_cast<::std::size_t>(global_memory.memory_begin)};
         auto const mem_end{mem + global_memory.memory_length};
 
+        mem += static_cast<::std::size_t>(st.i32);
         mem += offset;
         mem = ((mem + (static_cast<::std::size_t>(1) << aligment) - 1) >> aligment) << aligment;
 
@@ -636,7 +639,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         i32_load8_s(::std::byte const* curr,
                     ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                     ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                    ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                    ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
         auto const aligment{curr_opt->ext.sz1};
         auto const offset{curr_opt->ext.sz2};
@@ -647,6 +650,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         auto mem{reinterpret_cast<::std::size_t>(global_memory.memory_begin)};
         auto const mem_end{mem + global_memory.memory_length};
 
+        mem += static_cast<::std::size_t>(st.i32);
         mem += offset;
         mem = ((mem + (static_cast<::std::size_t>(1) << aligment) - 1) >> aligment) << aligment;
 
@@ -696,7 +700,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         i32_load8_u(::std::byte const* curr,
                     ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                     ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                    ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                    ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
         auto const aligment{curr_opt->ext.sz1};
         auto const offset{curr_opt->ext.sz2};
@@ -707,6 +711,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         auto mem{reinterpret_cast<::std::size_t>(global_memory.memory_begin)};
         auto const mem_end{mem + global_memory.memory_length};
 
+        mem += static_cast<::std::size_t>(st.i32);
         mem += offset;
         mem = ((mem + (static_cast<::std::size_t>(1) << aligment) - 1) >> aligment) << aligment;
         if(static_cast<::std::size_t>(mem_end - mem) < sizeof(::std::uint_least8_t) || mem > mem_end) [[unlikely]]
@@ -755,7 +760,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         i32_load16_s(::std::byte const* curr,
                      ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                      ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                     ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                     ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
         auto const aligment{curr_opt->ext.sz1};
         auto const offset{curr_opt->ext.sz2};
@@ -766,6 +771,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         auto mem{reinterpret_cast<::std::size_t>(global_memory.memory_begin)};
         auto const mem_end{mem + global_memory.memory_length};
 
+        mem += static_cast<::std::size_t>(st.i32);
         mem += offset;
         mem = ((mem + (static_cast<::std::size_t>(1) << aligment) - 1) >> aligment) << aligment;
         if(static_cast<::std::size_t>(mem_end - mem) < sizeof(::std::uint_least16_t) || mem > mem_end) [[unlikely]]
@@ -814,7 +820,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         i32_load16_u(::std::byte const* curr,
                      ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                      ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                     ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                     ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
         auto const aligment{curr_opt->ext.sz1};
         auto const offset{curr_opt->ext.sz2};
@@ -825,6 +831,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         auto mem{reinterpret_cast<::std::size_t>(global_memory.memory_begin)};
         auto const mem_end{mem + global_memory.memory_length};
 
+        mem += static_cast<::std::size_t>(st.i32);
         mem += offset;
         mem = ((mem + (static_cast<::std::size_t>(1) << aligment) - 1) >> aligment) << aligment;
         if(static_cast<::std::size_t>(mem_end - mem) < sizeof(::std::uint_least16_t) || mem > mem_end) [[unlikely]]
@@ -873,7 +880,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         i64_load8_s(::std::byte const* curr,
                     ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                     ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                    ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                    ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
         auto const aligment{curr_opt->ext.sz1};
         auto const offset{curr_opt->ext.sz2};
@@ -884,6 +891,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         auto mem{reinterpret_cast<::std::size_t>(global_memory.memory_begin)};
         auto const mem_end{mem + global_memory.memory_length};
 
+        mem += static_cast<::std::size_t>(st.i32);
         mem += offset;
         mem = ((mem + (static_cast<::std::size_t>(1) << aligment) - 1) >> aligment) << aligment;
         if(static_cast<::std::size_t>(mem_end - mem) < sizeof(::std::uint_least8_t) || mem > mem_end) [[unlikely]]
@@ -932,7 +940,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         i64_load8_u(::std::byte const* curr,
                     ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                     ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                    ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                    ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
         auto const aligment{curr_opt->ext.sz1};
         auto const offset{curr_opt->ext.sz2};
@@ -943,6 +951,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         auto mem{reinterpret_cast<::std::size_t>(global_memory.memory_begin)};
         auto const mem_end{mem + global_memory.memory_length};
 
+        mem += static_cast<::std::size_t>(st.i32);
         mem += offset;
         mem = ((mem + (static_cast<::std::size_t>(1) << aligment) - 1) >> aligment) << aligment;
         if(static_cast<::std::size_t>(mem_end - mem) < sizeof(::std::uint_least8_t) || mem > mem_end) [[unlikely]]
@@ -990,7 +999,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         i64_load16_s(::std::byte const* curr,
                      ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                      ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                     ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                     ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
         auto const aligment{curr_opt->ext.sz1};
         auto const offset{curr_opt->ext.sz2};
@@ -1001,6 +1010,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         auto mem{reinterpret_cast<::std::size_t>(global_memory.memory_begin)};
         auto const mem_end{mem + global_memory.memory_length};
 
+        mem += static_cast<::std::size_t>(st.i32);
         mem += offset;
         mem = ((mem + (static_cast<::std::size_t>(1) << aligment) - 1) >> aligment) << aligment;
         if(static_cast<::std::size_t>(mem_end - mem) < sizeof(::std::uint_least16_t) || mem > mem_end) [[unlikely]]
@@ -1049,7 +1059,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         i64_load16_u(::std::byte const* curr,
                      ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                      ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                     ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                     ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
         auto const aligment{curr_opt->ext.sz1};
         auto const offset{curr_opt->ext.sz2};
@@ -1060,6 +1070,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         auto mem{reinterpret_cast<::std::size_t>(global_memory.memory_begin)};
         auto const mem_end{mem + global_memory.memory_length};
 
+        mem += static_cast<::std::size_t>(st.i32);
         mem += offset;
         mem = ((mem + (static_cast<::std::size_t>(1) << aligment) - 1) >> aligment) << aligment;
         if(static_cast<::std::size_t>(mem_end - mem) < sizeof(::std::uint_least16_t) || mem > mem_end) [[unlikely]]
@@ -1108,7 +1119,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         i64_load32_s(::std::byte const* curr,
                      ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                      ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                     ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                     ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
         auto const aligment{curr_opt->ext.sz1};
         auto const offset{curr_opt->ext.sz2};
@@ -1119,6 +1130,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         auto mem{reinterpret_cast<::std::size_t>(global_memory.memory_begin)};
         auto const mem_end{mem + global_memory.memory_length};
 
+        mem += static_cast<::std::size_t>(st.i32);
         mem += offset;
         mem = ((mem + (static_cast<::std::size_t>(1) << aligment) - 1) >> aligment) << aligment;
         if(static_cast<::std::size_t>(mem_end - mem) < sizeof(::std::uint_least32_t) || mem > mem_end) [[unlikely]]
@@ -1167,7 +1179,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         i64_load32_u(::std::byte const* curr,
                      ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                      ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                     ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                     ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
         auto const aligment{curr_opt->ext.sz1};
         auto const offset{curr_opt->ext.sz2};
@@ -1178,6 +1190,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         auto mem{reinterpret_cast<::std::size_t>(global_memory.memory_begin)};
         auto const mem_end{mem + global_memory.memory_length};
 
+        mem += static_cast<::std::size_t>(st.i32);
         mem += offset;
         mem = ((mem + (static_cast<::std::size_t>(1) << aligment) - 1) >> aligment) << aligment;
         if(static_cast<::std::size_t>(mem_end - mem) < sizeof(::std::uint_least32_t) || mem > mem_end) [[unlikely]]
@@ -1226,7 +1239,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         i32_store(::std::byte const* curr,
                   ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                   ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                  ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                  ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
         auto const aligment{curr_opt->ext.sz1};
         auto const offset{curr_opt->ext.sz2};
@@ -1239,6 +1252,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         auto mem{reinterpret_cast<::std::size_t>(global_memory.memory_begin)};
         auto const mem_end{mem + global_memory.memory_length};
 
+        mem += static_cast<::std::size_t>(st.i32);
         mem += offset;
         mem = ((mem + (static_cast<::std::size_t>(1) << aligment) - 1) >> aligment) << aligment;
         if(static_cast<::std::size_t>(mem_end - mem) < sizeof(::std::uint_least32_t) || mem > mem_end) [[unlikely]]
@@ -1285,7 +1299,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         i64_store(::std::byte const* curr,
                   ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                   ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                  ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                  ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
         auto const aligment{curr_opt->ext.sz1};
         auto const offset{curr_opt->ext.sz2};
@@ -1298,6 +1312,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         auto mem{reinterpret_cast<::std::size_t>(global_memory.memory_begin)};
         auto const mem_end{mem + global_memory.memory_length};
 
+        mem += static_cast<::std::size_t>(st.i32);
         mem += offset;
         mem = ((mem + (static_cast<::std::size_t>(1) << aligment) - 1) >> aligment) << aligment;
 
@@ -1345,7 +1360,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         f32_store(::std::byte const* curr,
                   ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                   ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                  ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                  ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
         auto const aligment{curr_opt->ext.sz1};
         auto const offset{curr_opt->ext.sz2};
@@ -1358,6 +1373,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         auto mem{reinterpret_cast<::std::size_t>(global_memory.memory_begin)};
         auto const mem_end{mem + global_memory.memory_length};
 
+        mem += static_cast<::std::size_t>(st.i32);
         mem += offset;
         mem = ((mem + (static_cast<::std::size_t>(1) << aligment) - 1) >> aligment) << aligment;
 
@@ -1405,7 +1421,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         f64_store(::std::byte const* curr,
                   ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                   ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                  ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                  ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
         auto const aligment{curr_opt->ext.sz1};
         auto const offset{curr_opt->ext.sz2};
@@ -1418,6 +1434,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         auto mem{reinterpret_cast<::std::size_t>(global_memory.memory_begin)};
         auto const mem_end{mem + global_memory.memory_length};
 
+        mem += static_cast<::std::size_t>(st.i32);
         mem += offset;
         mem = ((mem + (static_cast<::std::size_t>(1) << aligment) - 1) >> aligment) << aligment;
 
@@ -1465,7 +1482,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         i32_store8(::std::byte const* curr,
                    ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                    ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                   ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                   ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
         auto const aligment{curr_opt->ext.sz1};
         auto const offset{curr_opt->ext.sz2};
@@ -1478,6 +1495,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         auto mem{reinterpret_cast<::std::size_t>(global_memory.memory_begin)};
         auto const mem_end{mem + global_memory.memory_length};
 
+        mem += static_cast<::std::size_t>(st.i32);
         mem += offset;
         mem = ((mem + (static_cast<::std::size_t>(1) << aligment) - 1) >> aligment) << aligment;
         if(static_cast<::std::size_t>(mem_end - mem) < sizeof(::std::uint_least8_t) || mem > mem_end) [[unlikely]]
@@ -1524,7 +1542,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         i32_store16(::std::byte const* curr,
                     ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                     ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                    ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                    ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
         auto const aligment{curr_opt->ext.sz1};
         auto const offset{curr_opt->ext.sz2};
@@ -1537,6 +1555,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         auto mem{reinterpret_cast<::std::size_t>(global_memory.memory_begin)};
         auto const mem_end{mem + global_memory.memory_length};
 
+        mem += static_cast<::std::size_t>(st.i32);
         mem += offset;
         mem = ((mem + (static_cast<::std::size_t>(1) << aligment) - 1) >> aligment) << aligment;
         if(static_cast<::std::size_t>(mem_end - mem) < sizeof(::std::uint_least16_t) || mem > mem_end) [[unlikely]]
@@ -1583,7 +1602,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         i64_store8(::std::byte const* curr,
                    ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                    ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                   ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                   ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
         auto const aligment{curr_opt->ext.sz1};
         auto const offset{curr_opt->ext.sz2};
@@ -1596,6 +1615,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         auto mem{reinterpret_cast<::std::size_t>(global_memory.memory_begin)};
         auto const mem_end{mem + global_memory.memory_length};
 
+        mem += static_cast<::std::size_t>(st.i32);
         mem += offset;
         mem = ((mem + (static_cast<::std::size_t>(1) << aligment) - 1) >> aligment) << aligment;
         if(static_cast<::std::size_t>(mem_end - mem) < sizeof(::std::uint_least8_t) || mem > mem_end) [[unlikely]]
@@ -1642,7 +1662,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         i64_store16(::std::byte const* curr,
                     ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                     ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                    ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                    ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
         auto const aligment{curr_opt->ext.sz1};
         auto const offset{curr_opt->ext.sz2};
@@ -1655,6 +1675,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         auto mem{reinterpret_cast<::std::size_t>(global_memory.memory_begin)};
         auto const mem_end{mem + global_memory.memory_length};
 
+        mem += static_cast<::std::size_t>(st.i32);
         mem += offset;
         mem = ((mem + (static_cast<::std::size_t>(1) << aligment) - 1) >> aligment) << aligment;
         if(static_cast<::std::size_t>(mem_end - mem) < sizeof(::std::uint_least16_t) || mem > mem_end) [[unlikely]]
@@ -1701,7 +1722,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         i64_store32(::std::byte const* curr,
                     ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                     ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                    ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                    ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
         auto const aligment{curr_opt->ext.sz1};
         auto const offset{curr_opt->ext.sz2};
@@ -1714,6 +1735,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         auto mem{reinterpret_cast<::std::size_t>(global_memory.memory_begin)};
         auto const mem_end{mem + global_memory.memory_length};
 
+        mem += static_cast<::std::size_t>(st.i32);
         mem += offset;
         mem = ((mem + (static_cast<::std::size_t>(1) << aligment) - 1) >> aligment) << aligment;
         if(static_cast<::std::size_t>(mem_end - mem) < sizeof(::std::uint_least32_t) || mem > mem_end) [[unlikely]]
@@ -1760,7 +1782,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         memory_size(::std::byte const* curr,
                     ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                     ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                    ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                    ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
         using memory_t_const_may_alias_ptr
 #if __has_cpp_attribute(__gnu__::__may_alias__)
@@ -1782,7 +1804,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         memory_grow(::std::byte const* curr,
                     ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                     ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                    ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                    ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
         using memory_t_may_alias_ptr
 #if __has_cpp_attribute(__gnu__::__may_alias__)
@@ -1816,7 +1838,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         i32_const(::std::byte const* curr,
                   ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                   ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                  ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                  ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
         details::push(stack_curr, stack_t{.i32{curr_opt->ext.i32}});
         auto next_op{curr_opt + 1};
@@ -1830,7 +1852,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         i64_const(::std::byte const* curr,
                   ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                   ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                  ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                  ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
         details::push(stack_curr, stack_t{.i64{curr_opt->ext.i64}});
         auto next_op{curr_opt + 1};
@@ -1844,7 +1866,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         f32_const(::std::byte const* curr,
                   ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                   ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                  ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                  ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
         details::push(stack_curr, stack_t{.f32{curr_opt->ext.f32}});
         auto next_op{curr_opt + 1};
@@ -1858,7 +1880,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         f64_const(::std::byte const* curr,
                   ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                   ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                  ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                  ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
         details::push(stack_curr, stack_t{.f64{curr_opt->ext.f64}});
         auto next_op{curr_opt + 1};
@@ -1872,7 +1894,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         i32_eqz(::std::byte const* curr,
                 ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                 ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
 
         auto const num{details::pop_get_val(stack_curr)};
@@ -1890,7 +1912,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         i32_eq(::std::byte const* curr,
                ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-               ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+               ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
         auto const num2{details::pop_get_val(stack_curr)};
         auto const num1{details::pop_get_val(stack_curr)};
@@ -1908,7 +1930,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         i32_ne(::std::byte const* curr,
                ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-               ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+               ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
 
         auto const num2{details::pop_get_val(stack_curr)};
@@ -1927,7 +1949,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         i32_lt_s(::std::byte const* curr,
                  ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                  ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                 ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                 ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
         auto const num2{details::pop_get_val(stack_curr)};
         auto const num1{details::pop_get_val(stack_curr)};
@@ -1945,7 +1967,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         i32_lt_u(::std::byte const* curr,
                  ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                  ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                 ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                 ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
         auto const num2{details::pop_get_val(stack_curr)};
         auto const num1{details::pop_get_val(stack_curr)};
@@ -1965,7 +1987,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         i32_gt_s(::std::byte const* curr,
                  ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                  ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                 ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                 ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
 
         auto const num2{details::pop_get_val(stack_curr)};
@@ -1984,7 +2006,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         i32_gt_u(::std::byte const* curr,
                  ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                  ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                 ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                 ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
 
         auto const num2{details::pop_get_val(stack_curr)};
@@ -2005,7 +2027,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         i32_le_s(::std::byte const* curr,
                  ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                  ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                 ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                 ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
 
         auto const num2{details::pop_get_val(stack_curr)};
@@ -2024,7 +2046,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         i32_le_u(::std::byte const* curr,
                  ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                  ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                 ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                 ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
 
         auto const num2{details::pop_get_val(stack_curr)};
@@ -2045,7 +2067,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         i32_ge_s(::std::byte const* curr,
                  ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                  ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                 ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                 ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
 
         auto const num2{details::pop_get_val(stack_curr)};
@@ -2064,7 +2086,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         i32_ge_u(::std::byte const* curr,
                  ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                  ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                 ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                 ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
         auto const num2{details::pop_get_val(stack_curr)};
         auto const num1{details::pop_get_val(stack_curr)};
@@ -2084,7 +2106,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         i64_eqz(::std::byte const* curr,
                 ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                 ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
 
         auto const num{details::pop_get_val(stack_curr)};
@@ -2101,7 +2123,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         i64_eq(::std::byte const* curr,
                ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-               ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+               ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
 
         auto const num2{details::pop_get_val(stack_curr)};
@@ -2120,7 +2142,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         i64_ne(::std::byte const* curr,
                ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-               ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+               ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
 
         auto const num2{details::pop_get_val(stack_curr)};
@@ -2139,7 +2161,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         i64_lt_s(::std::byte const* curr,
                  ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                  ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                 ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                 ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
         auto const num2{details::pop_get_val(stack_curr)};
         auto const num1{details::pop_get_val(stack_curr)};
@@ -2157,7 +2179,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         i64_lt_u(::std::byte const* curr,
                  ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                  ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                 ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                 ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
         auto const num2{details::pop_get_val(stack_curr)};
         auto const num1{details::pop_get_val(stack_curr)};
@@ -2177,7 +2199,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         i64_gt_s(::std::byte const* curr,
                  ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                  ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                 ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                 ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
         auto const num2{details::pop_get_val(stack_curr)};
         auto const num1{details::pop_get_val(stack_curr)};
@@ -2195,7 +2217,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         i64_gt_u(::std::byte const* curr,
                  ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                  ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                 ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                 ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
         auto const num2{details::pop_get_val(stack_curr)};
         auto const num1{details::pop_get_val(stack_curr)};
@@ -2215,7 +2237,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         i64_le_s(::std::byte const* curr,
                  ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                  ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                 ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                 ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
         auto const num2{details::pop_get_val(stack_curr)};
         auto const num1{details::pop_get_val(stack_curr)};
@@ -2233,7 +2255,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         i64_le_u(::std::byte const* curr,
                  ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                  ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                 ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                 ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
 
         auto const num2{details::pop_get_val(stack_curr)};
@@ -2254,7 +2276,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         i64_ge_s(::std::byte const* curr,
                  ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                  ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                 ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                 ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
         auto const num2{details::pop_get_val(stack_curr)};
         auto const num1{details::pop_get_val(stack_curr)};
@@ -2272,7 +2294,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         i64_ge_u(::std::byte const* curr,
                  ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                  ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                 ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                 ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
         auto const num2{details::pop_get_val(stack_curr)};
         auto const num1{details::pop_get_val(stack_curr)};
@@ -2292,7 +2314,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         f32_eq(::std::byte const* curr,
                ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-               ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+               ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
 
         auto const num2{details::pop_get_val(stack_curr)};
@@ -2311,7 +2333,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         f32_ne(::std::byte const* curr,
                ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-               ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+               ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
         auto const num2{details::pop_get_val(stack_curr)};
         auto const num1{details::pop_get_val(stack_curr)};
@@ -2329,7 +2351,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         f32_lt(::std::byte const* curr,
                ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-               ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+               ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
         auto const num2{details::pop_get_val(stack_curr)};
         auto const num1{details::pop_get_val(stack_curr)};
@@ -2347,7 +2369,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         f32_gt(::std::byte const* curr,
                ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-               ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+               ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
         auto const num2{details::pop_get_val(stack_curr)};
         auto const num1{details::pop_get_val(stack_curr)};
@@ -2365,7 +2387,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         f32_le(::std::byte const* curr,
                ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-               ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+               ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
         auto const num2{details::pop_get_val(stack_curr)};
         auto const num1{details::pop_get_val(stack_curr)};
@@ -2383,7 +2405,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         f32_ge(::std::byte const* curr,
                ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-               ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+               ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
         auto const num2{details::pop_get_val(stack_curr)};
         auto const num1{details::pop_get_val(stack_curr)};
@@ -2401,7 +2423,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         f64_eq(::std::byte const* curr,
                ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-               ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+               ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
         auto const num2{details::pop_get_val(stack_curr)};
         auto const num1{details::pop_get_val(stack_curr)};
@@ -2419,7 +2441,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         f64_ne(::std::byte const* curr,
                ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-               ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+               ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
         auto const num2{details::pop_get_val(stack_curr)};
         auto const num1{details::pop_get_val(stack_curr)};
@@ -2437,7 +2459,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         f64_lt(::std::byte const* curr,
                ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-               ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+               ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
         auto const num2{details::pop_get_val(stack_curr)};
         auto const num1{details::pop_get_val(stack_curr)};
@@ -2455,7 +2477,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         f64_gt(::std::byte const* curr,
                ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-               ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+               ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
 
         auto const num2{details::pop_get_val(stack_curr)};
@@ -2474,7 +2496,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         f64_le(::std::byte const* curr,
                ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-               ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+               ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
         auto const num2{details::pop_get_val(stack_curr)};
         auto const num1{details::pop_get_val(stack_curr)};
@@ -2492,7 +2514,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         f64_ge(::std::byte const* curr,
                ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-               ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+               ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
         auto const num2{details::pop_get_val(stack_curr)};
         auto const num1{details::pop_get_val(stack_curr)};
@@ -2510,7 +2532,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         i32_clz(::std::byte const* curr,
                 ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                 ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
         auto const num{details::pop_get_val(stack_curr)};
 
@@ -2527,7 +2549,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         i32_ctz(::std::byte const* curr,
                 ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                 ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
         auto const num{details::pop_get_val(stack_curr)};
 
@@ -2547,7 +2569,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         i32_popcnt(::std::byte const* curr,
                    ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                    ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                   ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                   ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
         auto const num{details::pop_get_val(stack_curr)};
 
@@ -2564,7 +2586,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         i32_add(::std::byte const* curr,
                 ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                 ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
 
         auto const num2{details::pop_get_val(stack_curr)};
@@ -2583,7 +2605,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         i32_sub(::std::byte const* curr,
                 ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                 ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
 
         auto const num2{details::pop_get_val(stack_curr)};
@@ -2602,7 +2624,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         i32_mul(::std::byte const* curr,
                 ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                 ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
 
         auto const num2{details::pop_get_val(stack_curr)};
@@ -2621,7 +2643,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         i32_div_s(::std::byte const* curr,
                   ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                   ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                  ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                  ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
         auto const num2{details::pop_get_val(stack_curr)};
         auto const num1{details::pop_get_val(stack_curr)};
@@ -2639,7 +2661,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         i32_div_u(::std::byte const* curr,
                   ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                   ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                  ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                  ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
 
         auto const num2{details::pop_get_val(stack_curr)};
@@ -2661,7 +2683,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         i32_rem_s(::std::byte const* curr,
                   ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                   ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                  ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                  ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
 
         auto const num2{details::pop_get_val(stack_curr)};
@@ -2680,7 +2702,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         i32_rem_u(::std::byte const* curr,
                   ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                   ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                  ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                  ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
 
         auto const num2{details::pop_get_val(stack_curr)};
@@ -2702,7 +2724,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         i32_and(::std::byte const* curr,
                 ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                 ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
         auto const num2{details::pop_get_val(stack_curr)};
         auto const num1{details::pop_get_val(stack_curr)};
@@ -2720,7 +2742,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         i32_or(::std::byte const* curr,
                ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-               ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+               ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
 
         auto const num2{details::pop_get_val(stack_curr)};
@@ -2739,7 +2761,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         i32_xor(::std::byte const* curr,
                 ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                 ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
 
         auto const num2{details::pop_get_val(stack_curr)};
@@ -2758,7 +2780,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         i32_shl(::std::byte const* curr,
                 ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                 ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
 
         auto const num2{details::pop_get_val(stack_curr)};
@@ -2777,7 +2799,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         i32_shr_s(::std::byte const* curr,
                   ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                   ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                  ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                  ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
 
         auto const num2{details::pop_get_val(stack_curr)};
@@ -2796,7 +2818,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         i32_shr_u(::std::byte const* curr,
                   ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                   ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                  ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                  ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
 
         auto const num2{details::pop_get_val(stack_curr)};
@@ -2818,7 +2840,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         i32_rotl(::std::byte const* curr,
                  ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                  ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                 ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                 ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
         auto const num2{details::pop_get_val(stack_curr)};
         auto const num1{details::pop_get_val(stack_curr)};
@@ -2839,7 +2861,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         i32_rotr(::std::byte const* curr,
                  ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                  ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                 ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                 ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
         auto const num2{details::pop_get_val(stack_curr)};
         auto const num1{details::pop_get_val(stack_curr)};
@@ -2860,7 +2882,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         i64_clz(::std::byte const* curr,
                 ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                 ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
 
         auto const num{details::pop_get_val(stack_curr)};
@@ -2881,7 +2903,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         i64_ctz(::std::byte const* curr,
                 ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                 ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
         auto const num{details::pop_get_val(stack_curr)};
 
@@ -2901,7 +2923,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         i64_popcnt(::std::byte const* curr,
                    ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                    ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                   ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                   ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
         auto const num{details::pop_get_val(stack_curr)};
 
@@ -2918,7 +2940,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         i64_add(::std::byte const* curr,
                 ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                 ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
 
         auto const num2{details::pop_get_val(stack_curr)};
@@ -2937,7 +2959,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         i64_sub(::std::byte const* curr,
                 ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                 ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
         auto const num2{details::pop_get_val(stack_curr)};
         auto const num1{details::pop_get_val(stack_curr)};
@@ -2955,7 +2977,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         i64_mul(::std::byte const* curr,
                 ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                 ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
 
         auto const num2{details::pop_get_val(stack_curr)};
@@ -2974,7 +2996,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         i64_div_s(::std::byte const* curr,
                   ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                   ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                  ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                  ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
         auto const num2{details::pop_get_val(stack_curr)};
         auto const num1{details::pop_get_val(stack_curr)};
@@ -2992,7 +3014,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         i64_div_u(::std::byte const* curr,
                   ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                   ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                  ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                  ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
         auto const num2{details::pop_get_val(stack_curr)};
         auto const num1{details::pop_get_val(stack_curr)};
@@ -3013,7 +3035,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         i64_rem_s(::std::byte const* curr,
                   ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                   ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                  ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                  ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
         auto const num2{details::pop_get_val(stack_curr)};
         auto const num1{details::pop_get_val(stack_curr)};
@@ -3031,7 +3053,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         i64_rem_u(::std::byte const* curr,
                   ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                   ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                  ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                  ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
         auto const num2{details::pop_get_val(stack_curr)};
         auto const num1{details::pop_get_val(stack_curr)};
@@ -3052,7 +3074,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         i64_and(::std::byte const* curr,
                 ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                 ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
 
         auto const num2{details::pop_get_val(stack_curr)};
@@ -3071,7 +3093,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         i64_or(::std::byte const* curr,
                ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-               ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+               ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
 
         auto const num2{details::pop_get_val(stack_curr)};
@@ -3090,7 +3112,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         i64_xor(::std::byte const* curr,
                 ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                 ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
         auto const num2{details::pop_get_val(stack_curr)};
         auto const num1{details::pop_get_val(stack_curr)};
@@ -3108,7 +3130,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         i64_shl(::std::byte const* curr,
                 ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                 ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
         auto const num2{details::pop_get_val(stack_curr)};
         auto const num1{details::pop_get_val(stack_curr)};
@@ -3126,7 +3148,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         i64_shr_s(::std::byte const* curr,
                   ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                   ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                  ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                  ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
         auto const num2{details::pop_get_val(stack_curr)};
         auto const num1{details::pop_get_val(stack_curr)};
@@ -3144,7 +3166,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         i64_shr_u(::std::byte const* curr,
                   ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                   ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                  ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                  ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
 
         auto const num2{details::pop_get_val(stack_curr)};
@@ -3166,7 +3188,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         i64_rotl(::std::byte const* curr,
                  ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                  ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                 ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                 ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
         auto const num2{details::pop_get_val(stack_curr)};
         auto const num1{details::pop_get_val(stack_curr)};
@@ -3187,7 +3209,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         i64_rotr(::std::byte const* curr,
                  ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                  ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                 ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                 ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
         auto const num2{details::pop_get_val(stack_curr)};
         auto const num1{details::pop_get_val(stack_curr)};
@@ -3208,7 +3230,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         f32_abs(::std::byte const* curr,
                 ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                 ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
         auto const num{details::pop_get_val(stack_curr)};
 
@@ -3225,7 +3247,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         f32_neg(::std::byte const* curr,
                 ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                 ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
         auto const num{details::pop_get_val(stack_curr)};
 
@@ -3242,7 +3264,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         f32_ceil(::std::byte const* curr,
                  ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                  ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                 ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                 ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
         auto const num{details::pop_get_val(stack_curr)};
 
@@ -3259,7 +3281,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         f32_floor(::std::byte const* curr,
                   ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                   ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                  ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                  ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
 
         auto const num{details::pop_get_val(stack_curr)};
@@ -3277,7 +3299,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         f32_trunc(::std::byte const* curr,
                   ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                   ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                  ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                  ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
         auto const num{details::pop_get_val(stack_curr)};
 
@@ -3294,7 +3316,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         f32_nearest(::std::byte const* curr,
                     ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                     ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                    ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                    ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
         auto const num{details::pop_get_val(stack_curr)};
 
@@ -3311,7 +3333,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         f32_sqrt(::std::byte const* curr,
                  ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                  ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                 ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                 ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
         auto const num{details::pop_get_val(stack_curr)};
 
@@ -3328,7 +3350,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         f32_add(::std::byte const* curr,
                 ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                 ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
         auto const num2{details::pop_get_val(stack_curr)};
         auto const num1{details::pop_get_val(stack_curr)};
@@ -3346,7 +3368,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         f32_sub(::std::byte const* curr,
                 ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                 ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
 
         auto const num2{details::pop_get_val(stack_curr)};
@@ -3365,7 +3387,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         f32_mul(::std::byte const* curr,
                 ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                 ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
 
         auto const num2{details::pop_get_val(stack_curr)};
@@ -3384,7 +3406,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         f32_div(::std::byte const* curr,
                 ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                 ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
 
         auto const num2{details::pop_get_val(stack_curr)};
@@ -3403,7 +3425,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         f32_min(::std::byte const* curr,
                 ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                 ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
         auto const num2{details::pop_get_val(stack_curr)};
         auto const num1{details::pop_get_val(stack_curr)};
@@ -3421,7 +3443,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         f32_max(::std::byte const* curr,
                 ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                 ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
         auto const num2{details::pop_get_val(stack_curr)};
         auto const num1{details::pop_get_val(stack_curr)};
@@ -3439,7 +3461,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         f32_copysign(::std::byte const* curr,
                      ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                      ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                     ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                     ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
         auto const num2{details::pop_get_val(stack_curr)};
         auto const num1{details::pop_get_val(stack_curr)};
@@ -3457,7 +3479,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         f64_abs(::std::byte const* curr,
                 ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                 ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
         auto const num{details::pop_get_val(stack_curr)};
 
@@ -3474,7 +3496,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         f64_neg(::std::byte const* curr,
                 ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                 ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
         auto const num{details::pop_get_val(stack_curr)};
 
@@ -3491,7 +3513,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         f64_ceil(::std::byte const* curr,
                  ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                  ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                 ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                 ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
         auto const num{details::pop_get_val(stack_curr)};
 
@@ -3508,7 +3530,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         f64_floor(::std::byte const* curr,
                   ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                   ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                  ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                  ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
         auto const num{details::pop_get_val(stack_curr)};
 
@@ -3525,7 +3547,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         f64_trunc(::std::byte const* curr,
                   ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                   ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                  ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                  ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
         auto const num{details::pop_get_val(stack_curr)};
 
@@ -3542,7 +3564,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         f64_nearest(::std::byte const* curr,
                     ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                     ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                    ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                    ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
         auto const num{details::pop_get_val(stack_curr)};
 
@@ -3559,7 +3581,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         f64_sqrt(::std::byte const* curr,
                  ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                  ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                 ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                 ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
         auto const num{details::pop_get_val(stack_curr)};
 
@@ -3576,7 +3598,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         f64_add(::std::byte const* curr,
                 ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                 ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
 
         auto const num2{details::pop_get_val(stack_curr)};
@@ -3595,7 +3617,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         f64_sub(::std::byte const* curr,
                 ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                 ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
         auto const num2{details::pop_get_val(stack_curr)};
         auto const num1{details::pop_get_val(stack_curr)};
@@ -3613,7 +3635,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         f64_mul(::std::byte const* curr,
                 ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                 ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
         auto const num2{details::pop_get_val(stack_curr)};
         auto const num1{details::pop_get_val(stack_curr)};
@@ -3631,7 +3653,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         f64_div(::std::byte const* curr,
                 ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                 ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
         auto const num2{details::pop_get_val(stack_curr)};
         auto const num1{details::pop_get_val(stack_curr)};
@@ -3649,7 +3671,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         f64_min(::std::byte const* curr,
                 ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                 ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
         auto const num2{details::pop_get_val(stack_curr)};
         auto const num1{details::pop_get_val(stack_curr)};
@@ -3667,7 +3689,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         f64_max(::std::byte const* curr,
                 ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                 ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
         auto const num2{details::pop_get_val(stack_curr)};
         auto const num1{details::pop_get_val(stack_curr)};
@@ -3685,7 +3707,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         f64_copysign(::std::byte const* curr,
                      ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                      ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                     ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                     ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
         auto const num2{details::pop_get_val(stack_curr)};
         auto const num1{details::pop_get_val(stack_curr)};
@@ -3703,7 +3725,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         i32_wrap_i64(::std::byte const* curr,
                      ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                      ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                     ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                     ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
         auto const num{details::pop_get_val(stack_curr)};
 
@@ -3720,7 +3742,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         i32_trunc_f32_s(::std::byte const* curr,
                         ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                         ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                        ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                        ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
 
         auto const num{details::pop_get_val(stack_curr)};
@@ -3738,7 +3760,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         i32_trunc_f32_u(::std::byte const* curr,
                         ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                         ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                        ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                        ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
 
         auto const num{details::pop_get_val(stack_curr)};
@@ -3756,7 +3778,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         i32_trunc_f64_s(::std::byte const* curr,
                         ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                         ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                        ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                        ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
         auto const num{details::pop_get_val(stack_curr)};
 
@@ -3773,7 +3795,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         i32_trunc_f64_u(::std::byte const* curr,
                         ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                         ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                        ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                        ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
         auto const num{details::pop_get_val(stack_curr)};
 
@@ -3790,7 +3812,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         i64_extend_i32_s(::std::byte const* curr,
                          ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                          ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                         ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                         ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
         auto const num{details::pop_get_val(stack_curr)};
 
@@ -3807,7 +3829,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         i64_extend_i32_u(::std::byte const* curr,
                          ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                          ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                         ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                         ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
 
         auto const num{details::pop_get_val(stack_curr)};
@@ -3825,7 +3847,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         i64_trunc_f32_s(::std::byte const* curr,
                         ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                         ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                        ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                        ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
         auto const num{details::pop_get_val(stack_curr)};
 
@@ -3842,7 +3864,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         i64_trunc_f32_u(::std::byte const* curr,
                         ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                         ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                        ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                        ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
 
         auto const num{details::pop_get_val(stack_curr)};
@@ -3860,7 +3882,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         i64_trunc_f64_s(::std::byte const* curr,
                         ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                         ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                        ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                        ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
         auto const num{details::pop_get_val(stack_curr)};
 
@@ -3877,7 +3899,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         i64_trunc_f64_u(::std::byte const* curr,
                         ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                         ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                        ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                        ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
 
         auto const num{details::pop_get_val(stack_curr)};
@@ -3895,7 +3917,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         f32_convert_i32_s(::std::byte const* curr,
                           ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                           ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                          ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                          ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
 
         auto const num{details::pop_get_val(stack_curr)};
@@ -3913,7 +3935,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         f32_convert_i32_u(::std::byte const* curr,
                           ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                           ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                          ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                          ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
 
         auto const num{details::pop_get_val(stack_curr)};
@@ -3931,7 +3953,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         f32_convert_i64_s(::std::byte const* curr,
                           ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                           ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                          ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                          ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
 
         auto const num{details::pop_get_val(stack_curr)};
@@ -3949,7 +3971,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         f32_convert_i64_u(::std::byte const* curr,
                           ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                           ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                          ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                          ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
 
         auto const num{details::pop_get_val(stack_curr)};
@@ -3967,7 +3989,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         f32_demote_f64(::std::byte const* curr,
                        ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                        ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                       ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                       ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
 
         auto const num{details::pop_get_val(stack_curr)};
@@ -3985,7 +4007,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         f64_convert_i32_s(::std::byte const* curr,
                           ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                           ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                          ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                          ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
 
         auto const num{details::pop_get_val(stack_curr)};
@@ -4003,7 +4025,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         f64_convert_i32_u(::std::byte const* curr,
                           ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                           ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                          ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                          ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
         auto const num{details::pop_get_val(stack_curr)};
 
@@ -4020,7 +4042,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         f64_convert_i64_s(::std::byte const* curr,
                           ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                           ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                          ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                          ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
 
         auto const num{details::pop_get_val(stack_curr)};
@@ -4038,7 +4060,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         f64_convert_i64_u(::std::byte const* curr,
                           ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                           ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                          ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                          ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
         auto const num{details::pop_get_val(stack_curr)};
 
@@ -4055,7 +4077,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         f64_promote_f32(::std::byte const* curr,
                         ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                         ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                        ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                        ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
         auto const num{details::pop_get_val(stack_curr)};
 
@@ -4072,7 +4094,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         i32_reinterpret_f32(::std::byte const* curr,
                             ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                             ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                            ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                            ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
 
         auto const num{details::pop_get_val(stack_curr)};
@@ -4090,7 +4112,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         i64_reinterpret_f64(::std::byte const* curr,
                             ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                             ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                            ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                            ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
 
         auto const num{details::pop_get_val(stack_curr)};
@@ -4108,7 +4130,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         f32_reinterpret_i32(::std::byte const* curr,
                             ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                             ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                            ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                            ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
         auto const num{details::pop_get_val(stack_curr)};
 
@@ -4125,7 +4147,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         f64_reinterpret_i64(::std::byte const* curr,
                             ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                             ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                            ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                            ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
 
         auto const num{details::pop_get_val(stack_curr)};
@@ -4143,7 +4165,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         i32_extend8_s(::std::byte const* curr,
                       ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                       ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                      ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                      ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
         auto const num{details::pop_get_val(stack_curr)};
 
@@ -4160,7 +4182,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         i32_extend16_s(::std::byte const* curr,
                        ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                        ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                       ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                       ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
 
         auto const num{details::pop_get_val(stack_curr)};
@@ -4178,7 +4200,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         i64_extend8_s(::std::byte const* curr,
                       ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                       ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                      ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                      ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
 
         auto const num{details::pop_get_val(stack_curr)};
@@ -4196,7 +4218,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         i64_extend16_s(::std::byte const* curr,
                        ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                        ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                       ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                       ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
 
         auto const num{details::pop_get_val(stack_curr)};
@@ -4214,7 +4236,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         i64_extend32_s(::std::byte const* curr,
                        ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                        ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                       ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                       ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
 
         auto const num{details::pop_get_val(stack_curr)};

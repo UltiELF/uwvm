@@ -11,7 +11,7 @@
 void ::uwvm::vm::unchecked_interpreter::func::call(::std::byte const* curr,
                                                    ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                                                    ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                                                   ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                                                   ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
 {
     auto const& wasmmod{::uwvm::global_wasm_module};
 
@@ -45,7 +45,7 @@ void ::uwvm::vm::unchecked_interpreter::func::call(::std::byte const* curr,
 void ::uwvm::vm::unchecked_interpreter::func::call_indirect(::std::byte const* curr,
                                                             ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                                                             ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                                                            ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                                                            ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
 {
     auto const& wasmmod{::uwvm::global_wasm_module};
 

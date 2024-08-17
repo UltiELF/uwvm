@@ -5,7 +5,7 @@
 
 namespace uwvm::vm::unchecked_interpreter
 {
-    inline void call_import_func(::std::size_t index, ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+    inline void call_import_func(::std::size_t index, ::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr) noexcept
     {
         auto const imfun{::uwvm::global_wasm_module.importsec.func_types.index_unchecked(index)};
 
@@ -17,7 +17,5 @@ namespace uwvm::vm::unchecked_interpreter
         auto const func{::uwvm::vm::unchecked_interpreter::imports.index_unchecked(index)};
 
         func(stack_curr - func_type_para_size, stack_curr);
-
-
     }
 }  // namespace uwvm::vm::unchecked_interpreter

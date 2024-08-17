@@ -51,7 +51,9 @@ $ uwvm <param1> <param2> ... --run <file> <argv1> <argv2> ...
 ```
 * Running mode
 ```bash
---mode [objdump, int(default)]
+--mode [objdump, int(default), ucint]
+# int: interpreter, wasm data stack and local data stack can be expanded and checked; Memory operation check; and so on
+# ucint: Some do not check the interpreter, and the size of the wasm data stack is fixed without checking. Virtual machine security is protected by setting the leftmost and rightmost pages of the data stack with no read/write execution permissions; The local data stack uses the thread's own stack; Memory operation check; And so on; 125% faster performance than interpreter
 ```
 * Loading WASM ABI (default auto detection)
 ```bash
@@ -129,6 +131,10 @@ $ xmake f -m [release|releasedbg|debug] -p [windows|mingw|macosx|linux|iphoneos 
 * Using the llvm toolchain (This option must be added to some platforms that use gcc soft connection to clang, such as macos and android)
 ```bash 
 --use-llvm=y|n(default)
+```
+* Use ucint (c++ exceptions will be automatically disabled at the same time)
+```bash 
+--uwvm-enable-ucint=y|n(default)
 ```
 * Compile using local instruction sets
 ```bash 
