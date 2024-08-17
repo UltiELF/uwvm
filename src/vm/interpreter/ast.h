@@ -140,7 +140,7 @@ namespace uwvm::vm::interpreter
         }
     };
 
-    using int_func_t = void (*)(::std::byte const*, stack_machine&);
+    using int_func_t = void (*)(::std::byte const*, stack_machine&) noexcept;
 
     struct ext_t
     {

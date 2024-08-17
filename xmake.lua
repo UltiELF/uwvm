@@ -184,7 +184,7 @@ function defopt()
 		if is_kind("binary") then
 			set_policy("build.optimization.lto", true)
 		end
-	elseif is_mode("debug") then
+	elseif is_mode("debug") then	
 		set_optimize("none")
 		set_symbols("debug")
 		add_defines("_DEBUG")

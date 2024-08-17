@@ -32,7 +32,7 @@ namespace uwvm::vm::unchecked_interpreter
     using int_func_t = void (*)(::std::byte const* curr,
                                 operator_t const* curr_opt,
                                 ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                                ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr);
+                                ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept;
 
     struct ext_t
     {
