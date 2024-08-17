@@ -43,15 +43,6 @@ namespace fast_io::freestanding
 
 namespace uwvm::vm::interpreter
 {
-    namespace details
-    {
-#if !(defined(__wasi__) && !defined(UWVM_ENABLE_WASI_THREADS))
-        inline thread_local ::fast_io::tlc::stack<d_flow_t, ::fast_io::tlc::vector<d_flow_t>> ga_flow{};
-#else
-        inline ::fast_io::tlc::stack<d_flow_t, ::fast_io::tlc::vector<d_flow_t>> ga_flow{};
-#endif
-    }  // namespace details
-
     // https://pengowray.github.io/wasm-ops/
 
     inline ::uwvm::vm::interpreter::ast generate_ast(::uwvm::wasm::local_function_type const* lft, ::uwvm::wasm::func_body const& fb) noexcept
@@ -67,8 +58,9 @@ namespace uwvm::vm::interpreter
             [[__gnu__::__may_alias__]]
 #endif
             = char8_t const*;
-        auto& ga_flow_r{details::ga_flow};
-        ga_flow_r.reserve(static_cast<::std::size_t>(2) * 1024);
+        ::fast_io::tlc::stack<details::d_flow_t, ::fast_io::tlc::vector<details::d_flow_t>> ga_flow{};
+        auto& ga_flow_r{ga_flow};
+        ga_flow_r.reserve(16);
 
         auto const& wasmmod{::uwvm::global_wasm_module};
 
