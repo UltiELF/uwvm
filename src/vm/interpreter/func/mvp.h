@@ -7,7 +7,7 @@
 #include "../int_bt.h"
 #include "../ast.h"
 #include "../global.h"
-#include "../memory/memory.h"
+#include "../../memory/memory.h"
 #include "../../../run/wasm_file.h"
 
 namespace uwvm::vm::interpreter::func
@@ -4106,7 +4106,7 @@ namespace uwvm::vm::interpreter::func
 #if __has_cpp_attribute(__gnu__::__may_alias__)
             [[__gnu__::__may_alias__]]
 #endif
-            = ::uwvm::vm::interpreter::memory::memory_t const*;
+            = ::uwvm::vm::memory::memory_t const*;
         auto const mem{reinterpret_cast<memory_t_const_may_alias_ptr>(sm.curr_op->ext.branch)};
 
         sm.stack.push(stack_t{.i32{static_cast<::std::int_least32_t>(mem->get_page_size())}, .vt{::uwvm::wasm::value_type::i32}});
@@ -4124,7 +4124,7 @@ namespace uwvm::vm::interpreter::func
 #if __has_cpp_attribute(__gnu__::__may_alias__)
             [[__gnu__::__may_alias__]]
 #endif
-            = ::uwvm::vm::interpreter::memory::memory_t*;
+            = ::uwvm::vm::memory::memory_t*;
         auto mem{reinterpret_cast<memory_t_may_alias_ptr>(const_cast<::uwvm::vm::interpreter::operator_t*>(sm.curr_op->ext.branch))};
 
         if(sm.stack.empty()) [[unlikely]]

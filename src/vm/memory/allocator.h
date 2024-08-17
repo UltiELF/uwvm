@@ -4,7 +4,7 @@
 #include "../../../wasm/memlimit.h"
 #include "../../../run/wasm_file.h"
 
-namespace uwvm::vm::interpreter::memory
+namespace uwvm::vm::memory
 {
     template <typename A>
     struct basic_memory_t
@@ -178,18 +178,18 @@ namespace uwvm::vm::interpreter::memory
 
     using memory_t = basic_memory_t<::fast_io::native_global_allocator>;
 
-}  // namespace uwvm::vm::interpreter::memory
+}  // namespace uwvm::vm::memory
 
 namespace fast_io::freestanding
 {
     template <typename A>
-    struct is_trivially_relocatable<::uwvm::vm::interpreter::memory::basic_memory_t<A>>
+    struct is_trivially_relocatable<::uwvm::vm::memory::basic_memory_t<A>>
     {
         inline static constexpr bool value = true;
     };
 
     template <typename A>
-    struct is_zero_default_constructible<::uwvm::vm::interpreter::memory::basic_memory_t<A>>
+    struct is_zero_default_constructible<::uwvm::vm::memory::basic_memory_t<A>>
     {
         inline static constexpr bool value = true;
     };

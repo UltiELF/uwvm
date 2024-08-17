@@ -7,7 +7,7 @@
 #include "../../../run/wasm_file.h"
 #include "../../../run/features.h"
 
-namespace uwvm::vm::interpreter::memory
+namespace uwvm::vm::memory
 {
     namespace details
     {
@@ -257,18 +257,18 @@ namespace uwvm::vm::interpreter::memory
         ~memory_t() { clean(); }
     };
 
-}  // namespace uwvm::vm::interpreter::memory
+}  // namespace uwvm::vm::memory
 
 namespace fast_io::freestanding
 {
     template <>
-    struct is_trivially_relocatable<::uwvm::vm::interpreter::memory::memory_t>
+    struct is_trivially_relocatable<::uwvm::vm::memory::memory_t>
     {
         inline static constexpr bool value = true;
     };
 
     template <>
-    struct is_zero_default_constructible<::uwvm::vm::interpreter::memory::memory_t>
+    struct is_zero_default_constructible<::uwvm::vm::memory::memory_t>
     {
         inline static constexpr bool value = true;
     };

@@ -18,7 +18,7 @@
 #include "root.h"
 #include "../../run/wasm_file.h"
 #include "../../clpara/parsing_result.h"
-#include "../interpreter/memory/memory.h"
+#include "../memory/memory.h"
 #include "../wasm_exit.h"
 
 #if (!defined(__NEWLIB__) || defined(__CYGWIN__)) && !defined(_WIN32) && __has_include(<dirent.h>) && !defined(_PICOLIBC__)

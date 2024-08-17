@@ -12,6 +12,10 @@
 #include "../wasm/custom.h"
 #include "objdump.h"
 #include "../vm/interpreter/int.h"
+#if (defined(_WIN32) || defined(__CYGWIN__)) ||                                                                                                                \
+    (!defined(__NEWLIB__) && !defined(__MSDOS__) && (!defined(__wasm__) || (defined(__wasi__) && defined(_WASI_EMULATED_MMAN))) && __has_include(<sys/mman.h>))
+    #include "../vm/unchecked_interpreter/ucint.h"
+#endif
 
 namespace uwvm
 {
@@ -101,6 +105,14 @@ namespace uwvm
                 ::uwvm::vm::interpreter::interpret();
                 break;
             }
+#if (defined(_WIN32) || defined(__CYGWIN__)) ||                                                                                                                \
+    (!defined(__NEWLIB__) && !defined(__MSDOS__) && (!defined(__wasm__) || (defined(__wasi__) && defined(_WASI_EMULATED_MMAN))) && __has_include(<sys/mman.h>))
+            case ::uwvm::mode::unchecked_interpreter:
+            {
+                ::uwvm::vm::unchecked_interpreter::unchecked_interpret();
+                break;
+            }
+#endif
             default: ::fast_io::unreachable();
         }
     }

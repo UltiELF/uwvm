@@ -4,5 +4,5 @@
 
 namespace uwvm::vm::interpreter
 {
-    inline ::fast_io::vector<::uwvm::vm::interpreter::memory::memory_t> memories{};
+    inline ::fast_io::vector<::uwvm::vm::memory::memory_t> memories{};
 }

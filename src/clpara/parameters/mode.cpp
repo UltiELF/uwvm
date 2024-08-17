@@ -6,7 +6,7 @@
 [[__gnu__::__cold__]]
 #endif
 ::uwvm::cmdline::parameter_return_type(::uwvm::parameter::details::mode_callback)(::uwvm::cmdline::parameter_parsing_results* sres,
-                                                                               ::fast_io::vector<::uwvm::cmdline::parameter_parsing_results>& pres) noexcept
+                                                                                  ::fast_io::vector<::uwvm::cmdline::parameter_parsing_results>& pres) noexcept
 {
     auto sresp1{sres + 1};
     if(sresp1 == pres.cend() || sresp1->type != ::uwvm::cmdline::parameter_parsing_results_type::arg) [[unlikely]]
@@ -30,7 +30,12 @@
                             u8"\033[36m"
                             u8"[--mode|-m] "
                             u8"\033[32m"
-                            u8"[objdump, int(default)]"
+                            u8"[objdump, int(default)"
+#if (defined(_WIN32) || defined(__CYGWIN__)) ||                                                                                                                \
+    (!defined(__NEWLIB__) && !defined(__MSDOS__) && (!defined(__wasm__) || (defined(__wasi__) && defined(_WASI_EMULATED_MMAN))) && __has_include(<sys/mman.h>))
+                            u8", ucint"
+#endif
+                            u8"]"
                             u8"\033[0m"
                             u8"\n\n");
         return ::uwvm::cmdline::parameter_return_type::return_m1_imme;
@@ -39,6 +44,10 @@
     sresp1->type = ::uwvm::cmdline::parameter_parsing_results_type::occupied_arg;
     if(auto s1s{sresp1->str}; s1s == "objdump") { ::uwvm::running_mode = ::uwvm::mode::objdump; }
     else if(s1s == "int") { ::uwvm::running_mode = ::uwvm::mode::interpreter; }
+#if (defined(_WIN32) || defined(__CYGWIN__)) ||                                                                                                                \
+    (!defined(__NEWLIB__) && !defined(__MSDOS__) && (!defined(__wasm__) || (defined(__wasi__) && defined(_WASI_EMULATED_MMAN))) && __has_include(<sys/mman.h>))
+    else if(s1s == "ucint") { ::uwvm::running_mode = ::uwvm::mode::unchecked_interpreter; }
+#endif
     else
     {
         ::fast_io::io::perr(::uwvm::u8err,
@@ -74,7 +83,12 @@
                             u8"\033[36m"
                             u8"[--mode|-m] "
                             u8"\033[32m"
-                            u8"[objdump, int(default)]"
+                            u8"[objdump, int(default)"
+#if (defined(_WIN32) || defined(__CYGWIN__)) ||                                                                                                                \
+    (!defined(__NEWLIB__) && !defined(__MSDOS__) && (!defined(__wasm__) || (defined(__wasi__) && defined(_WASI_EMULATED_MMAN))) && __has_include(<sys/mman.h>))
+                            u8", ucint"
+#endif
+                            u8"]"
                             u8"\033[0m"
                             u8"\n\n");
         return ::uwvm::cmdline::parameter_return_type::return_m1_imme;

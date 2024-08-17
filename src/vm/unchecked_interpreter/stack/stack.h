@@ -9,6 +9,6 @@
 #elif !defined(__NEWLIB__) && !defined(__MSDOS__) && (!defined(__wasm__) || (defined(__wasi__) && defined(_WASI_EMULATED_MMAN))) && __has_include(<sys/mman.h>)
     #include "mmap.h"
 #else
-    #include "allocator.h"
+    #error "unsupported platform"
 #endif
 

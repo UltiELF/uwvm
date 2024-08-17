@@ -7,7 +7,7 @@
 #include "../../run/wasm_file.h"
 #include "../wasm.h"
 
-#include "memory/memory.h"
+#include "../memory/memory.h"
 #include "table/table.h"
 
 #include "ast.h"

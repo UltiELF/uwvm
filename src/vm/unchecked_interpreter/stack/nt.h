@@ -3,9 +3,8 @@
 #include <fast_io.h>
 #include <io_device.h>
 #include <instrinsic.h>
-#include "../ast.h"
 
-namespace uwvm::vm::interpreter::stack
+namespace uwvm::vm::unchecked_interpreter::stack
 {
     template <::fast_io::nt_family family>
     struct nt_family_stack_t
