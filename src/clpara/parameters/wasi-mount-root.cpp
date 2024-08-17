@@ -1,5 +1,5 @@
 #include "wasi-mount-root.h"
-#include "../../vm/interpreter/wasi/root.h"
+#include "../../vm/wasi/root.h"
 
 ::uwvm::cmdline::parameter_return_type(::uwvm::parameter::details::wasi_mount_root_callback)(
     ::uwvm::cmdline::parameter_parsing_results* sres,
@@ -41,7 +41,7 @@
     try
 #endif
     {
-        ::uwvm::vm::interpreter::wasi::root_path = ::fast_io::dir_file{str};
+        ::uwvm::vm::wasi::root_path = ::fast_io::dir_file{str};
     }
 #ifdef __cpp_exceptions
     catch(::fast_io::error e)

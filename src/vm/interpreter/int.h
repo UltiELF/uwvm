@@ -18,7 +18,7 @@
 
 #include "astgen.h"
 #include "astrun.h"
-#include "wasm_exit.h"
+#include "../wasm_exit.h"
 
 namespace uwvm::vm::interpreter
 {

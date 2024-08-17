@@ -2,7 +2,7 @@
 #include <cstdint>
 #include <cstddef>
 
-namespace uwvm::vm::interpreter::wasi
+namespace uwvm::vm::wasi
 {
     enum class wasi_intptr_t : ::std::int_least32_t
     {

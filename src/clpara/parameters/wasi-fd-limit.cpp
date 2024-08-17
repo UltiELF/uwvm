@@ -1,5 +1,5 @@
 #include "wasi-fd-limit.h"
-#include "../../vm/interpreter/wasi/fd_limit.h"
+#include "../../vm/wasi/fd_limit.h"
 
 ::uwvm::cmdline::parameter_return_type(::uwvm::parameter::details::wasi_fd_limit_callback)(
     ::uwvm::cmdline::parameter_parsing_results* sres,
@@ -92,7 +92,7 @@
         return ::uwvm::cmdline::parameter_return_type::return_m1_imme;
     }
 
-    ::uwvm::vm::interpreter::wasi::wasi_fd_limit = limit_num;
+    ::uwvm::vm::wasi::wasi_fd_limit = limit_num;
 
     return ::uwvm::cmdline::parameter_return_type::def;
 }

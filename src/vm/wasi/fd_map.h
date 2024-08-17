@@ -4,7 +4,7 @@
 #include <fast_io_dsal/vector.h>
 #include "fd_limit.h"
 
-namespace uwvm::vm::interpreter::wasi
+namespace uwvm::vm::wasi
 {
     struct wasm_fd
     {
@@ -16,8 +16,8 @@ namespace uwvm::vm::interpreter::wasi
         ::std::size_t close_pos{SIZE_MAX};
 
         // ===== wasi fd =====
-        ::uwvm::vm::interpreter::wasi::rights_t rights_base{static_cast<::uwvm::vm::interpreter::wasi::rights_t>(-1)};
-        ::uwvm::vm::interpreter::wasi::rights_t rights_inherit{static_cast<::uwvm::vm::interpreter::wasi::rights_t>(-1)};
+        ::uwvm::vm::wasi::rights_t rights_base{static_cast<::uwvm::vm::wasi::rights_t>(-1)};
+        ::uwvm::vm::wasi::rights_t rights_inherit{static_cast<::uwvm::vm::wasi::rights_t>(-1)};
 
         handle fd{-1};
 
@@ -66,8 +66,8 @@ namespace uwvm::vm::interpreter::wasi
             other.fd = -1;
             other.fd_mutex = nullptr;
             other.close_pos = SIZE_MAX;
-            other.rights_base = static_cast<::uwvm::vm::interpreter::wasi::rights_t>(-1);
-            other.rights_inherit = static_cast<::uwvm::vm::interpreter::wasi::rights_t>(-1);
+            other.rights_base = static_cast<::uwvm::vm::wasi::rights_t>(-1);
+            other.rights_inherit = static_cast<::uwvm::vm::wasi::rights_t>(-1);
             other.copy_mutex = false;
         }
 
@@ -82,8 +82,8 @@ namespace uwvm::vm::interpreter::wasi
             other.fd = -1;
             other.fd_mutex = nullptr;
             other.close_pos = SIZE_MAX;
-            other.rights_base = static_cast<::uwvm::vm::interpreter::wasi::rights_t>(-1);
-            other.rights_inherit = static_cast<::uwvm::vm::interpreter::wasi::rights_t>(-1);
+            other.rights_base = static_cast<::uwvm::vm::wasi::rights_t>(-1);
+            other.rights_inherit = static_cast<::uwvm::vm::wasi::rights_t>(-1);
             other.copy_mutex = false;
             return *this;
         }
@@ -94,8 +94,8 @@ namespace uwvm::vm::interpreter::wasi
         {
             fd = -1;
             close_pos = SIZE_MAX;
-            rights_base = static_cast<::uwvm::vm::interpreter::wasi::rights_t>(-1);
-            rights_inherit = static_cast<::uwvm::vm::interpreter::wasi::rights_t>(-1);
+            rights_base = static_cast<::uwvm::vm::wasi::rights_t>(-1);
+            rights_inherit = static_cast<::uwvm::vm::wasi::rights_t>(-1);
 
             if(fd_mutex != nullptr) [[likely]]
             {
@@ -113,36 +113,36 @@ namespace uwvm::vm::interpreter::wasi
         operator int& () noexcept { return fd; }
 #endif
     };
-}  // namespace uwvm::vm::interpreter::wasi
+}  // namespace uwvm::vm::wasi
 
 namespace fast_io::freestanding
 {
     template <>
-    struct is_trivially_relocatable<::uwvm::vm::interpreter::wasi::wasm_fd>
+    struct is_trivially_relocatable<::uwvm::vm::wasi::wasm_fd>
     {
         inline static constexpr bool value = true;
     };
 }  // namespace fast_io::freestanding
 
-namespace uwvm::vm::interpreter::wasi
+namespace uwvm::vm::wasi
 {
 
     struct wasm_fd_storage_t
     {
-        ::fast_io::vector<::uwvm::vm::interpreter::wasi::wasm_fd> opens{};
+        ::fast_io::vector<::uwvm::vm::wasi::wasm_fd> opens{};
         ::fast_io::vector<::std::size_t> closes{};
         ::fast_io::native_mutex fds_mutex{};
     };
 
     inline void init(wasm_fd_storage_t& wasm_fd_storage) noexcept
     {
-        auto const min_fd{::std::min(static_cast<::std::size_t>(1024), ::uwvm::vm::interpreter::wasi::wasi_fd_limit)};
+        auto const min_fd{::std::min(static_cast<::std::size_t>(1024), ::uwvm::vm::wasi::wasi_fd_limit)};
         wasm_fd_storage.opens.reserve(min_fd);
         wasm_fd_storage.closes.reserve(min_fd);
     }
 
 #ifdef UWVM_ENABLE_COPYED_WASMFD
-    inline ::uwvm::vm::interpreter::wasi::wasm_fd get_copy_fd(wasm_fd_storage_t& wasm_fd_storage, ::std::int_least32_t wfd) noexcept
+    inline ::uwvm::vm::wasi::wasm_fd get_copy_fd(wasm_fd_storage_t& wasm_fd_storage, ::std::int_least32_t wfd) noexcept
     {
         auto const wasm_fd_pos{static_cast<::std::size_t>(wfd)};
         ::fast_io::io_lock_guard fds_lock{wasm_fd_storage.fds_mutex};
@@ -160,7 +160,7 @@ namespace uwvm::vm::interpreter::wasi
     }
 #endif
 
-    inline ::uwvm::vm::interpreter::wasi::wasm_fd* get_original_wasm_fd_p(wasm_fd_storage_t& wasm_fd_storage, ::std::int_least32_t wfd) noexcept
+    inline ::uwvm::vm::wasi::wasm_fd* get_original_wasm_fd_p(wasm_fd_storage_t& wasm_fd_storage, ::std::int_least32_t wfd) noexcept
     {
         auto const wasm_fd_pos{static_cast<::std::size_t>(wfd)};
         ::fast_io::io_lock_guard fds_lock{wasm_fd_storage.fds_mutex};
@@ -182,7 +182,7 @@ namespace uwvm::vm::interpreter::wasi
         ::fast_io::io_lock_guard fds_lock{wasm_fd_storage.fds_mutex};
         if(wasm_fd_storage.closes.empty())
         {
-            if(wasm_fd_storage.opens.size() >= ::uwvm::vm::interpreter::wasi::wasi_fd_limit) [[unlikely]] { return -1; }
+            if(wasm_fd_storage.opens.size() >= ::uwvm::vm::wasi::wasi_fd_limit) [[unlikely]] { return -1; }
             auto const pos_p{__builtin_addressof(wasm_fd_storage.opens.emplace_back(fd))};
             auto const ret{static_cast<::std::int_least32_t>(pos_p - wasm_fd_storage.opens.begin())};
             return ret;
@@ -208,7 +208,7 @@ namespace uwvm::vm::interpreter::wasi
         ::fast_io::io_lock_guard fds_lock{wasm_fd_storage.fds_mutex};
         if(wasm_fd_storage.closes.empty())
         {
-            if(wasm_fd_storage.opens.size() >= ::uwvm::vm::interpreter::wasi::wasi_fd_limit) [[unlikely]] { return {-1, {}}; }
+            if(wasm_fd_storage.opens.size() >= ::uwvm::vm::wasi::wasi_fd_limit) [[unlikely]] { return {-1, {}}; }
             auto const pos_p{__builtin_addressof(wasm_fd_storage.opens.emplace_back(fd))};
             auto const ret{static_cast<::std::int_least32_t>(pos_p - wasm_fd_storage.opens.begin())};
             // shared mutex
@@ -237,7 +237,7 @@ namespace uwvm::vm::interpreter::wasi
         ::fast_io::io_lock_guard fds_lock{wasm_fd_storage.fds_mutex};
         if(wasm_fd_storage.closes.empty())
         {
-            if(wasm_fd_storage.opens.size() >= ::uwvm::vm::interpreter::wasi::wasi_fd_limit) [[unlikely]] { return {-1, {}}; }
+            if(wasm_fd_storage.opens.size() >= ::uwvm::vm::wasi::wasi_fd_limit) [[unlikely]] { return {-1, {}}; }
             auto pos_p{__builtin_addressof(wasm_fd_storage.opens.emplace_back(fd))};
             auto const ret{static_cast<::std::int_least32_t>(pos_p - wasm_fd_storage.opens.begin())};
             return {ret, pos_p};
@@ -296,7 +296,7 @@ namespace uwvm::vm::interpreter::wasi
     {
         auto const wasm_fd_pos{static_cast<::std::size_t>(wfd)};
         ::fast_io::io_lock_guard fds_lock{wasm_fd_storage.fds_mutex};
-        if(wasm_fd_pos >= ::uwvm::vm::interpreter::wasi::wasi_fd_limit) [[unlikely]] { return false; }
+        if(wasm_fd_pos >= ::uwvm::vm::wasi::wasi_fd_limit) [[unlikely]] { return false; }
         if(wasm_fd_storage.opens.size() <= wasm_fd_pos)
         {
             auto const size_temp{wasm_fd_storage.opens.size()};
@@ -353,7 +353,7 @@ namespace uwvm::vm::interpreter::wasi
     {
         auto const wasm_fd_pos{static_cast<::std::size_t>(wfd)};
         ::fast_io::io_lock_guard fds_lock{wasm_fd_storage.fds_mutex};
-        if(wasm_fd_pos >= ::uwvm::vm::interpreter::wasi::wasi_fd_limit) [[unlikely]] { return {false, {}}; }
+        if(wasm_fd_pos >= ::uwvm::vm::wasi::wasi_fd_limit) [[unlikely]] { return {false, {}}; }
         if(wasm_fd_storage.opens.size() <= wasm_fd_pos)
         {
             auto const size_temp{wasm_fd_storage.opens.size()};
@@ -412,7 +412,7 @@ namespace uwvm::vm::interpreter::wasi
     {
         auto const wasm_fd_pos{static_cast<::std::size_t>(wfd)};
         ::fast_io::io_lock_guard fds_lock{wasm_fd_storage.fds_mutex};
-        if(wasm_fd_pos >= ::uwvm::vm::interpreter::wasi::wasi_fd_limit) [[unlikely]] { return {false, {}}; }
+        if(wasm_fd_pos >= ::uwvm::vm::wasi::wasi_fd_limit) [[unlikely]] { return {false, {}}; }
         if(wasm_fd_storage.opens.size() <= wasm_fd_pos)
         {
             auto const size_temp{wasm_fd_storage.opens.size()};
@@ -471,7 +471,7 @@ namespace uwvm::vm::interpreter::wasi
         auto const wasm_fd_pos{static_cast<::std::size_t>(wfd)};
         ::fast_io::io_lock_guard fds_lock{wasm_fd_storage.fds_mutex};
 
-        if(wasm_fd_pos >= ::uwvm::vm::interpreter::wasi::wasi_fd_limit) [[unlikely]] { return {false, -1}; }
+        if(wasm_fd_pos >= ::uwvm::vm::wasi::wasi_fd_limit) [[unlikely]] { return {false, -1}; }
 
         int sys_fd{-1};
         if(wasm_fd_storage.opens.size() <= wasm_fd_pos)
@@ -541,7 +541,7 @@ namespace uwvm::vm::interpreter::wasi
         auto const wasm_fd_pos{static_cast<::std::size_t>(wfd)};
         ::fast_io::io_lock_guard fds_lock{wasm_fd_storage.fds_mutex};
 
-        if(wasm_fd_pos >= ::uwvm::vm::interpreter::wasi::wasi_fd_limit) [[unlikely]] { return {false, {}, -1}; }
+        if(wasm_fd_pos >= ::uwvm::vm::wasi::wasi_fd_limit) [[unlikely]] { return {false, {}, -1}; }
 
         int sys_fd{-1};
         if(wasm_fd_storage.opens.size() <= wasm_fd_pos)
@@ -611,7 +611,7 @@ namespace uwvm::vm::interpreter::wasi
         auto const wasm_fd_pos{static_cast<::std::size_t>(wfd)};
         ::fast_io::io_lock_guard fds_lock{wasm_fd_storage.fds_mutex};
 
-        if(wasm_fd_pos >= ::uwvm::vm::interpreter::wasi::wasi_fd_limit) [[unlikely]] { return {false, {}, -1}; }
+        if(wasm_fd_pos >= ::uwvm::vm::wasi::wasi_fd_limit) [[unlikely]] { return {false, {}, -1}; }
 
         int sys_fd{-1};
         if(wasm_fd_storage.opens.size() <= wasm_fd_pos)
@@ -670,18 +670,18 @@ namespace uwvm::vm::interpreter::wasi
     // storage
     inline wasm_fd_storage_t wasm_fd_storages{};
 
-}  // namespace uwvm::vm::interpreter::wasi
+}  // namespace uwvm::vm::wasi
 
 namespace fast_io::freestanding
 {
     template <>
-    struct is_trivially_relocatable<::uwvm::vm::interpreter::wasi::wasm_fd_storage_t>
+    struct is_trivially_relocatable<::uwvm::vm::wasi::wasm_fd_storage_t>
     {
         inline static constexpr bool value = true;
     };
 
     template <>
-    struct is_zero_default_constructible<::uwvm::vm::interpreter::wasi::wasm_fd_storage_t>
+    struct is_zero_default_constructible<::uwvm::vm::wasi::wasm_fd_storage_t>
     {
         inline static constexpr bool value = true;
     };
