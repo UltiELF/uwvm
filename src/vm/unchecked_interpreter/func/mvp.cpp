@@ -8,7 +8,10 @@
 #if __has_cpp_attribute(__gnu__::__hot__)
 [[__gnu__::__hot__]]
 #endif
-void ::uwvm::vm::interpreter::func::call(::std::byte const* curr, ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,  ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+void ::uwvm::vm::unchecked_interpreter::func::call(::std::byte const* curr,
+                                                   ::uwvm::vm::unchecked_unchecked_interpreter::operator_t const* curr_opt,
+                                                   ::uwvm::vm::unchecked_unchecked_interpreter::stack_t* local_begin,
+                                                   ::uwvm::vm::unchecked_unchecked_interpreter::stack_t* stack_curr) noexcept
 {
     auto const& wasmmod{::uwvm::global_wasm_module};
 
@@ -23,21 +26,25 @@ void ::uwvm::vm::interpreter::func::call(::std::byte const* curr, ::uwvm::vm::un
     if(all_func_index >= import_function_count)
     {
         auto const index{all_func_index - import_function_count};
-        auto& ast_temp{::uwvm::vm::interpreter::stroage.asts.index_unchecked(index)};
+        auto& ast_temp{::uwvm::vm::unchecked_interpreter::stroage.asts.index_unchecked(index)};
         if(ast_temp.operators.empty()) [[unlikely]]
         {
-            ast_temp = ::uwvm::vm::interpreter::generate_ast(wasmmod.functionsec.types.begin() + index, wasmmod.codesec.bodies.index_unchecked(index));
+            ast_temp =
+                ::uwvm::vm::unchecked_interpreter::generate_ast(wasmmod.functionsec.types.begin() + index, wasmmod.codesec.bodies.index_unchecked(index));
         }
-        ::uwvm::vm::interpreter::run_ast(ast_temp);
+        ::uwvm::vm::unchecked_interpreter::run_ast(ast_temp);
     }
-    else { ::uwvm::vm::interpreter::call_import_func(all_func_index, sm); }
+    else { ::uwvm::vm::unchecked_interpreter::call_import_func(all_func_index, sm); }
     ++sm.curr_op;
 }
 
 #if __has_cpp_attribute(__gnu__::__hot__)
 [[__gnu__::__hot__]]
 #endif
-void ::uwvm::vm::interpreter::func::call_indirect(::std::byte const* curr, ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,  ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+void ::uwvm::vm::unchecked_interpreter::func::call_indirect(::std::byte const* curr,
+                                                            ::uwvm::vm::unchecked_unchecked_interpreter::operator_t const* curr_opt,
+                                                            ::uwvm::vm::unchecked_unchecked_interpreter::stack_t* local_begin,
+                                                            ::uwvm::vm::unchecked_unchecked_interpreter::stack_t* stack_curr) noexcept
 {
     auto const& wasmmod{::uwvm::global_wasm_module};
 
@@ -70,7 +77,7 @@ void ::uwvm::vm::interpreter::func::call_indirect(::std::byte const* curr, ::uwv
                                 u8"\n"
                                 u8"\033[0m"
                                 u8"Terminate.\n\n");
-        ::uwvm::vm::interpreter::int_bt();
+        ::uwvm::vm::unchecked_interpreter::int_bt();
         ::fast_io::fast_terminate();
     }
 
@@ -101,7 +108,7 @@ void ::uwvm::vm::interpreter::func::call_indirect(::std::byte const* curr, ::uwv
                                 u8"\n"
                                 u8"\033[0m"
                                 u8"Terminate.\n\n");
-        ::uwvm::vm::interpreter::int_bt();
+        ::uwvm::vm::unchecked_interpreter::int_bt();
         ::fast_io::fast_terminate();
     }
 
@@ -113,7 +120,7 @@ void ::uwvm::vm::interpreter::func::call_indirect(::std::byte const* curr, ::uwv
 
     auto const type_p{reinterpret_cast<function_type_const_may_alias_ptr>(sm.curr_op->ext.branch)};
 
-    auto& table{::uwvm::vm::interpreter::table::table_enum.front_unchecked()};
+    auto& table{::uwvm::vm::unchecked_interpreter::table::table_enum.front_unchecked()};
     auto const st_sz{static_cast<::std::size_t>(st.i32)};
     if(st_sz >= table.size()) [[unlikely]]
     {
@@ -140,7 +147,7 @@ void ::uwvm::vm::interpreter::func::call_indirect(::std::byte const* curr, ::uwv
                                 u8"\n"
                                 u8"\033[0m"
                                 u8"Terminate.\n\n");
-        ::uwvm::vm::interpreter::int_bt();
+        ::uwvm::vm::unchecked_interpreter::int_bt();
         ::fast_io::fast_terminate();
     }
     auto const func_index{table.index_unchecked(st_sz)};
@@ -172,10 +179,10 @@ void ::uwvm::vm::interpreter::func::call_indirect(::std::byte const* curr, ::uwv
                                 u8"\n"
                                 u8"\033[0m"
                                 u8"Terminate.\n\n");
-            ::uwvm::vm::interpreter::int_bt();
+            ::uwvm::vm::unchecked_interpreter::int_bt();
             ::fast_io::fast_terminate();
         }
-        ::uwvm::vm::interpreter::call_import_func(func_index, sm);
+        ::uwvm::vm::unchecked_interpreter::call_import_func(func_index, sm);
     }
     else if(func_index < func_count)
     {
@@ -206,16 +213,16 @@ void ::uwvm::vm::interpreter::func::call_indirect(::std::byte const* curr, ::uwv
                                 u8"\n"
                                 u8"\033[0m"
                                 u8"Terminate.\n\n");
-            ::uwvm::vm::interpreter::int_bt();
+            ::uwvm::vm::unchecked_interpreter::int_bt();
             ::fast_io::fast_terminate();
         }
 
-        auto& ast_temp{::uwvm::vm::interpreter::stroage.asts.index_unchecked(index)};
+        auto& ast_temp{::uwvm::vm::unchecked_interpreter::stroage.asts.index_unchecked(index)};
         if(ast_temp.operators.empty()) [[unlikely]]
         {
-            ast_temp = ::uwvm::vm::interpreter::generate_ast(local_func_type, wasmmod.codesec.bodies.index_unchecked(index));
+            ast_temp = ::uwvm::vm::unchecked_interpreter::generate_ast(local_func_type, wasmmod.codesec.bodies.index_unchecked(index));
         }
-        ::uwvm::vm::interpreter::run_ast(ast_temp);
+        ::uwvm::vm::unchecked_interpreter::run_ast(ast_temp);
     }
     else [[unlikely]]
     {
@@ -242,7 +249,7 @@ void ::uwvm::vm::interpreter::func::call_indirect(::std::byte const* curr, ::uwv
                                     u8"\n"
                                     u8"\033[0m"
                                     u8"Terminate.\n\n");
-        ::uwvm::vm::interpreter::int_bt();
+        ::uwvm::vm::unchecked_interpreter::int_bt();
         ::fast_io::fast_terminate();
     }
     ++sm.curr_op;

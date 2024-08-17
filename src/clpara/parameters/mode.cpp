@@ -31,7 +31,7 @@
                             u8"[--mode|-m] "
                             u8"\033[32m"
                             u8"[objdump, int(default)"
-#if false &&                                                                                                                                                   \
+#if UWVM_ENABLE_UNCHECKED_INTERPRETER &&                                                                                                                                                   \
     ((defined(_WIN32) || defined(__CYGWIN__)) ||                                                                                                               \
      (!defined(__NEWLIB__) && !defined(__MSDOS__) && (!defined(__wasm__) || (defined(__wasi__) && defined(_WASI_EMULATED_MMAN))) && __has_include(<sys/mman.h>)))
                             u8", ucint"
@@ -45,7 +45,7 @@
     sresp1->type = ::uwvm::cmdline::parameter_parsing_results_type::occupied_arg;
     if(auto s1s{sresp1->str}; s1s == "objdump") { ::uwvm::running_mode = ::uwvm::mode::objdump; }
     else if(s1s == "int") { ::uwvm::running_mode = ::uwvm::mode::interpreter; }
-#if false &&                                                                                                                                                   \
+#if UWVM_ENABLE_UNCHECKED_INTERPRETER &&                                                                                                                                                   \
     ((defined(_WIN32) || defined(__CYGWIN__)) ||                                                                                                               \
      (!defined(__NEWLIB__) && !defined(__MSDOS__) && (!defined(__wasm__) || (defined(__wasi__) && defined(_WASI_EMULATED_MMAN))) && __has_include(<sys/mman.h>)))
     else if(s1s == "ucint") { ::uwvm::running_mode = ::uwvm::mode::unchecked_interpreter; }

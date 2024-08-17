@@ -6,7 +6,7 @@
 namespace uwvm::vm::unchecked_interpreter
 {
 
-    inline void run_ast(ast const& a) noexcept
+    inline void run_ast(ast const& a, ::uwvm::vm::unchecked_interpreter::stack_t * stack) noexcept
     {
         auto& uwvm_sm_r{uwvm_sm};
         auto& int_call_stack_r{int_call_stack};

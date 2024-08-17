@@ -1,7 +1,7 @@
 ﻿#include "mvp.h"
 #include "../astgen.h"
 #include "../astrun.h"
-#include "../table/table.h"
+#include "../../table.h"
 
 #include "call_import.h"
 
@@ -113,7 +113,7 @@ void ::uwvm::vm::interpreter::func::call_indirect(::std::byte const* curr, ::uwv
 
     auto const type_p{reinterpret_cast<function_type_const_may_alias_ptr>(sm.curr_op->ext.branch)};
 
-    auto& table{::uwvm::vm::interpreter::table::table_enum.front_unchecked()};
+    auto& table{::uwvm::vm::table::table_enum.front_unchecked()};
     auto const st_sz{static_cast<::std::size_t>(st.i32)};
     if(st_sz >= table.size()) [[unlikely]]
     {

@@ -81,6 +81,8 @@ option("use-mimalloc")
 	set_showmenu(true)
 option_end()
 
+-- for dev --
+
 option("uwvm-test")
 	set_default(false)
 	set_showmenu(true)
@@ -98,6 +100,18 @@ option("fno-exceptions")
 	set_showmenu(true)
 option_end()
 
+option("uwvm-enable-ucint")
+	set_default(true)
+	set_showmenu(true)
+	add_defines("UWVM_ENABLE_UNCHECKED_INTERPRETER")
+option_end()
+
+option("uwvm-trace-wasi-syscall")
+	set_default(false)
+	set_showmenu(true)
+	add_defines("UWVM_TRACE_WASI_SYSCALL")
+option_end()
+
 function defopt()
 	set_languages("c11", "cxx23")
 
@@ -107,8 +121,14 @@ function defopt()
 	--timer
 	add_options("timer")
 
-	--test
-	add_options("uwvm-test")
+	--timer
+	add_options("timer")
+
+	--ucint
+	add_options("uwvm-enable-ucint")
+
+	--trace-syscall
+	add_options("uwvm-trace-wasi-syscall")
 
 	-- fno-exceptions
 	local disable_cpp_exceptions = get_config("fno-exceptions")

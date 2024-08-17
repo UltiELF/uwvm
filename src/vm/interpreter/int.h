@@ -8,7 +8,7 @@
 #include "../wasm.h"
 
 #include "../memory/memory.h"
-#include "table/table.h"
+#include "../table.h"
 
 #include "ast.h"
 #include "aststorge.h"
@@ -212,13 +212,13 @@ namespace uwvm::vm::interpreter
         }
 
         // init table
-        ::uwvm::vm::interpreter::table::table_enum = ::fast_io::vector<::fast_io::vector<::std::size_t>>(table_count);
+        ::uwvm::vm::table::table_enum = ::fast_io::vector<::fast_io::vector<::std::size_t>>(table_count);
 
         // enum to table
 
         if(local_table_count != 0) [[likely]]
         {
-            auto& table{::uwvm::vm::interpreter::table::table_enum.front_unchecked()};
+            auto& table{::uwvm::vm::table::table_enum.front_unchecked()};
             auto const& local_table{wasmmod.tablesec.types.front_unchecked()};
             ::std::size_t all_sz{};
             for(auto const& i: wasmmod.elemsec.elem_segments) { all_sz += i.elem_count; }

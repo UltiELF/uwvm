@@ -25,7 +25,7 @@ namespace uwvm::vm::unchecked_interpreter::func
             --stack_curr;
         }
 
-        #if __has_cpp_attribute(__gnu__::__always_inline__)
+#if __has_cpp_attribute(__gnu__::__always_inline__)
         [[__gnu__::__always_inline__]]
 #elif __has_cpp_attribute(msvc::forceinline)
         [[msvc::forceinline]]
@@ -37,7 +37,7 @@ namespace uwvm::vm::unchecked_interpreter::func
             return *stack_curr;
         }
 
-        #if __has_cpp_attribute(__gnu__::__always_inline__)
+#if __has_cpp_attribute(__gnu__::__always_inline__)
         [[__gnu__::__always_inline__]]
 #elif __has_cpp_attribute(msvc::forceinline)
         [[msvc::forceinline]]
@@ -47,7 +47,6 @@ namespace uwvm::vm::unchecked_interpreter::func
         {
             *stack_curr = val;
             ++stack_curr;
-
         }
 
 #if __has_cpp_attribute(__gnu__::__always_inline__)
@@ -55,7 +54,7 @@ namespace uwvm::vm::unchecked_interpreter::func
 #elif __has_cpp_attribute(msvc::forceinline)
         [[msvc::forceinline]]
 #endif
-        inline ::uwvm::vm::unchecked_interpreter::stack_t &
+        inline ::uwvm::vm::unchecked_interpreter::stack_t&
             push_get_valref(::uwvm::vm::unchecked_interpreter::stack_t*& stack_curr, ::uwvm::vm::unchecked_interpreter::stack_t val) noexcept
         {
             *stack_curr = val;
@@ -63,7 +62,19 @@ namespace uwvm::vm::unchecked_interpreter::func
             ++stack_curr;
             return *ret;
         }
-    }
+
+#if __has_cpp_attribute(__gnu__::__always_inline__)
+        [[__gnu__::__always_inline__]]
+#elif __has_cpp_attribute(msvc::forceinline)
+        [[msvc::forceinline]]
+#endif
+        inline ::uwvm::vm::unchecked_interpreter::stack_t&
+            top(::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+        {
+            return *(stack_curr - 1);
+        }
+
+    }  // namespace details
 
 #if __has_cpp_attribute(__gnu__::__hot__)
     [[__gnu__::__hot__]]
@@ -72,7 +83,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         nop(::std::byte const* curr,
             ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
             ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-           ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+            ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
     {
         auto next_op{curr_opt + 1};
         next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
@@ -85,7 +96,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         unreachable(::std::byte const* curr,
                     ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                     ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                   ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                    ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
     {
         ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\033[0m"
@@ -121,7 +132,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         if_(::std::byte const* curr,
             ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
             ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-           ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+            ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
     {
         auto const st_i32{details::pop_get_val(stack_curr).i32};
 
@@ -132,8 +143,8 @@ namespace uwvm::vm::unchecked_interpreter::func
         }
         else
         {
-            if(curr_opt->ext.branch) 
-            { 
+            if(curr_opt->ext.branch)
+            {
                 auto next_op{curr_opt->ext.branch + 1};
                 next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
             }
@@ -152,7 +163,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         br(::std::byte const* curr,
            ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
            ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-          ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+           ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
     {
         auto next_op{curr_opt->ext.end + 1};
         next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
@@ -165,11 +176,9 @@ namespace uwvm::vm::unchecked_interpreter::func
         br_if(::std::byte const* curr,
               ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
               ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-             ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+              ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
     {
         auto const st_i32{details::pop_get_val(stack_curr).i32};
-
-
 
         if(st_i32)
         {
@@ -178,10 +187,9 @@ namespace uwvm::vm::unchecked_interpreter::func
         }
         else
         {
-            auto next_op{curr_opt+ 1};
+            auto next_op{curr_opt + 1};
             next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
         }
-    }
     }
 
 #if __has_cpp_attribute(__gnu__::__hot__)
@@ -191,10 +199,9 @@ namespace uwvm::vm::unchecked_interpreter::func
         br_table(::std::byte const* curr,
                  ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                  ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                 ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
     {
         auto const st_i32{details::pop_get_val(stack_curr).i32};
-
 
         using vec_op_const_p_const_may_alias_ptr
 #if __has_cpp_attribute(__gnu__::__may_alias__)
@@ -211,17 +218,14 @@ namespace uwvm::vm::unchecked_interpreter::func
             auto const& op{vec.back()};
             auto next_op{op.ext.end + 1};
             next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
-
         }
         else
         {
             auto const& op{vec.index_unchecked(jump_index)};
             auto next_op{op.ext.end + 1};
             next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
-
         }
     }
-
 
     // to do
 #if __has_cpp_attribute(__gnu__::__hot__)
@@ -231,7 +235,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         return_(::std::byte const* curr,
                 ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                 ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-               ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
     {
         return;
     }
@@ -243,7 +247,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         call(::std::byte const* curr,
              ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
              ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-            ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept;
+             ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept;
 
 #if __has_cpp_attribute(__gnu__::__hot__)
     [[__gnu__::__hot__]]
@@ -252,7 +256,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         call_indirect(::std::byte const* curr,
                       ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                       ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                     ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept;
+                      ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept;
 
 #if __has_cpp_attribute(__gnu__::__hot__)
     [[__gnu__::__hot__]]
@@ -261,13 +265,12 @@ namespace uwvm::vm::unchecked_interpreter::func
         drop(::std::byte const* curr,
              ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
              ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-            ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+             ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
     {
         details::pop(stack_curr);
 
         auto next_op{curr_opt + 1};
         next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
-
     }
 
 #if __has_cpp_attribute(__gnu__::__hot__)
@@ -277,13 +280,14 @@ namespace uwvm::vm::unchecked_interpreter::func
         local_get(::std::byte const* curr,
                   ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                   ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                 ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                  ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
     {
         auto const index{curr_opt->ext.sz2};
         auto const local{local_begin + index};
-        auto const st_i32{details::push(stack_curr, *local)};
+        details::push(stack_curr, *local);
 
-                auto next_op{curr_opt + 1}; next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
+        auto next_op{curr_opt + 1};
+        next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
     }
 
 #if __has_cpp_attribute(__gnu__::__hot__)
@@ -293,17 +297,17 @@ namespace uwvm::vm::unchecked_interpreter::func
         local_set(::std::byte const* curr,
                   ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                   ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                 ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                  ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
     {
         auto const index{curr_opt->ext.sz2};
-        auto local {local_begin + index};
+        auto local{local_begin + index};
 
         auto const st{details::pop_get_val(stack_curr)};
 
         *local = st;
-                auto next_op{curr_opt + 1}; next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
+        auto next_op{curr_opt + 1};
+        next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
     }
-
 
     // to do
 #if __has_cpp_attribute(__gnu__::__hot__)
@@ -313,44 +317,16 @@ namespace uwvm::vm::unchecked_interpreter::func
         local_tee(::std::byte const* curr,
                   ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                   ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                 ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                  ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
     {
         auto const index{curr_opt->ext.sz2};
         auto local{local_begin + index};
 
-        auto const& st{sm.stack.top_unchecked()};
+        auto const& st{details::top(stack_curr)};
 
-        if(st.vt != local_type) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data type not match local type."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
-
-            ::fast_io::fast_terminate();
-        }
-
-        local = st;
-                auto next_op{curr_opt + 1}; next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
+        *local = st;
+        auto next_op{curr_opt + 1};
+        next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
     }
 
 #if __has_cpp_attribute(__gnu__::__hot__)
@@ -360,7 +336,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         global_get(::std::byte const* curr,
                    ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                    ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                  ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                   ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
     {
         auto const& wasmmod{::uwvm::global_wasm_module};
 
@@ -370,17 +346,12 @@ namespace uwvm::vm::unchecked_interpreter::func
 #endif
             = ::uwvm::vm::unchecked_interpreter::int_global_type const*;
 
-        auto const& igt{*reinterpret_cast<int_global_type_const_may_alias_ptr>(sm.curr_op->ext.branch)};
+        auto const& igt{*reinterpret_cast<int_global_type_const_may_alias_ptr>(curr_opt->ext.branch)};
 
-        struct temp_t
-        {
-            ::uwvm::vm::unchecked_interpreter::int_global_type::value_t value{};
-            ::uwvm::wasm::value_type vt{};
-        };
+        details::push(stack_curr, ::std::bit_cast<::uwvm::vm::unchecked_interpreter::stack_t>(igt.value));
 
-        sm.stack.push(::std::bit_cast<::uwvm::vm::unchecked_interpreter::stack_t>(temp_t{.value{igt.value}, .vt{igt.gt.type}}));
-
-                auto next_op{curr_opt + 1}; next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
+        auto next_op{curr_opt + 1};
+        next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
     }
 
 #if __has_cpp_attribute(__gnu__::__hot__)
@@ -390,7 +361,7 @@ namespace uwvm::vm::unchecked_interpreter::func
         global_set(::std::byte const* curr,
                    ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                    ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                  ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                   ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
     {
         auto const& wasmmod{::uwvm::global_wasm_module};
 
@@ -401,7 +372,7 @@ namespace uwvm::vm::unchecked_interpreter::func
             = ::uwvm::vm::unchecked_interpreter::int_global_type const*;
 
         auto& igt{
-            *const_cast<::uwvm::vm::unchecked_interpreter::int_global_type*>(reinterpret_cast<int_global_type_const_may_alias_ptr>(sm.curr_op->ext.branch))};
+            *const_cast<::uwvm::vm::unchecked_interpreter::int_global_type*>(reinterpret_cast<int_global_type_const_may_alias_ptr>(curr_opt->ext.branch))};
 
         if(!igt.gt.is_mutable) [[unlikely]]
         {
@@ -432,76 +403,13 @@ namespace uwvm::vm::unchecked_interpreter::func
             ::fast_io::fast_terminate();
         }
 
-        if(sm.stack.empty()) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data stack is empty."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
+        auto const st{details::pop_get_val(stack_curr)};
 
-            ::fast_io::fast_terminate();
-        }
+        auto const local_gt{::std::bit_cast<::uwvm::vm::unchecked_interpreter::int_global_type::value_t>(st)};
+        igt.value = local_gt;
 
-        auto const st{sm.stack.pop_element_unchecked()};
-
-        if(st.vt != igt.gt.type) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data type not match local type."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
-
-            ::fast_io::fast_terminate();
-        }
-
-        struct temp_t
-        {
-            ::uwvm::vm::unchecked_interpreter::int_global_type::value_t value{};
-            ::uwvm::wasm::value_type vt{};
-        };
-
-        auto const local_gt{::std::bit_cast<temp_t>(st)};
-        igt.value = local_gt.value;
-
-                auto next_op{curr_opt + 1}; next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
+        auto next_op{curr_opt + 1};
+        next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
     }
 
 #if __has_cpp_attribute(__gnu__::__hot__)
@@ -511,112 +419,16 @@ namespace uwvm::vm::unchecked_interpreter::func
         select(::std::byte const* curr,
                ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-              ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+               ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
     {
-        if(sm.stack.size() < 3) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The number of data in the data stack is less than 3."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
 
-            ::fast_io::fast_terminate();
-        }
+        auto const cond{details::pop_get_val(stack_curr)};
+        auto const i2{details::pop_get_val(stack_curr)};
 
-        auto const cond{sm.stack.pop_element_unchecked()};
-        auto const i2{sm.stack.pop_element_unchecked()};
+        if(!cond.i32) { details::top(stack_curr) = i2; }
 
-        switch(i2.vt)
-        {
-            case ::uwvm::wasm::value_type::i32: [[fallthrough]];
-            case ::uwvm::wasm::value_type::i64: [[fallthrough]];
-            case ::uwvm::wasm::value_type::f32: [[fallthrough]];
-            case ::uwvm::wasm::value_type::f64: [[fallthrough]];
-            case ::uwvm::wasm::value_type::v128: break;
-
-            case ::uwvm::wasm::value_type::externref: [[fallthrough]];
-            case ::uwvm::wasm::value_type::funcref:
-            {
-                ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The type is not number type."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
-
-                ::fast_io::fast_terminate();
-            }
-            default: ::fast_io::unreachable();
-        }
-
-        if(cond.vt != ::uwvm::wasm::value_type::i32) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data type is not i32."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
-
-            ::fast_io::fast_terminate();
-        }
-
-        if(!cond.i32) { sm.stack.get_container().back_unchecked() = i2; }
-
-                auto next_op{curr_opt + 1}; next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
+        auto next_op{curr_opt + 1};
+        next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
     }
 
 #if __has_cpp_attribute(__gnu__::__hot__)
@@ -626,101 +438,16 @@ namespace uwvm::vm::unchecked_interpreter::func
         select_t(::std::byte const* curr,
                  ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                  ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                 ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
     {
-        if(sm.stack.size() < 3) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The number of data in the data stack is less than 3."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
 
-            ::fast_io::fast_terminate();
-        }
+        auto const cond{details::pop_get_val(stack_curr)};
+        auto const i2{details::pop_get_val(stack_curr)};
 
-        auto const cond{sm.stack.pop_element_unchecked()};
-        auto const i2{sm.stack.pop_element_unchecked()};
+        if(!cond.i32) { details::top(stack_curr) = i2; }
 
-        if(cond.vt != ::uwvm::wasm::value_type::i32) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data type is not i32."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
-
-            ::fast_io::fast_terminate();
-        }
-
-        if(cond.vt != ::uwvm::wasm::value_type::i32) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data type is not i32."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
-
-            ::fast_io::fast_terminate();
-        }
-
-        if(!cond.i32) { sm.stack.get_container().back_unchecked() = i2; }
-
-                auto next_op{curr_opt + 1}; next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
+        auto next_op{curr_opt + 1};
+        next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
     }
 
 #if __has_cpp_attribute(__gnu__::__hot__)
@@ -730,89 +457,16 @@ namespace uwvm::vm::unchecked_interpreter::func
         i32_load(::std::byte const* curr,
                  ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                  ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                 ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
     {
-        auto const aligment{sm.curr_op->ext.sz1};
-        auto const offset{sm.curr_op->ext.sz2};
+        auto const aligment{curr_opt->ext.sz1};
+        auto const offset{curr_opt->ext.sz2};
 
-        if(sm.stack.empty()) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data stack is empty."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
+        auto const st{details::pop_get_val(stack_curr)};
 
-            ::fast_io::fast_terminate();
-        }
-
-        auto const st{sm.stack.pop_element_unchecked()};
-
-        auto& global_memory{::uwvm::vm::unchecked_interpreter::memories.front_unchecked()};
+        auto& global_memory{::uwvm::vm::memories.front_unchecked()};
         auto mem{reinterpret_cast<::std::size_t>(global_memory.memory_begin)};
         auto const mem_end{mem + global_memory.memory_length};
-
-        switch(st.vt)
-        {
-            case ::uwvm::wasm::value_type::i32:
-                [[likely]]
-                {
-                    mem += static_cast<::std::size_t>(st.i32);
-                    break;
-                }
-            case ::uwvm::wasm::value_type::i64:
-            {
-                mem += static_cast<::std::size_t>(st.i64);
-                break;
-            }
-            default:
-                [[unlikely]]
-                {
-                    ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data type not match local type."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
-
-                    ::fast_io::fast_terminate();
-                }
-        }
 
         mem += offset;
         mem = ((mem + (static_cast<::std::size_t>(1) << aligment) - 1) >> aligment) << aligment;
@@ -851,9 +505,10 @@ namespace uwvm::vm::unchecked_interpreter::func
         ::fast_io::freestanding::my_memcpy(__builtin_addressof(ml), reinterpret_cast<void const*>(mem), sizeof(ml));
         auto const pl{static_cast<::std::int_least32_t>(::fast_io::little_endian(ml))};
 
-        sm.stack.push_unchecked(stack_t{.i32{pl}, .vt{::uwvm::wasm::value_type::i32}});
+        details::push(stack_curr, stack_t{.i32{pl}});
 
-                auto next_op{curr_opt + 1}; next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
+        auto next_op{curr_opt + 1};
+        next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
     }
 
 #if __has_cpp_attribute(__gnu__::__hot__)
@@ -863,89 +518,16 @@ namespace uwvm::vm::unchecked_interpreter::func
         i64_load(::std::byte const* curr,
                  ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                  ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                 ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
     {
-        auto const aligment{sm.curr_op->ext.sz1};
-        auto const offset{sm.curr_op->ext.sz2};
+        auto const aligment{curr_opt->ext.sz1};
+        auto const offset{curr_opt->ext.sz2};
 
-        if(sm.stack.empty()) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data stack is empty."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
+        auto const st{details::pop_get_val(stack_curr)};
 
-            ::fast_io::fast_terminate();
-        }
-
-        auto const st{sm.stack.pop_element_unchecked()};
-
-        auto& global_memory{::uwvm::vm::unchecked_interpreter::memories.front_unchecked()};
+        auto& global_memory{::uwvm::vm::memories.front_unchecked()};
         auto mem{reinterpret_cast<::std::size_t>(global_memory.memory_begin)};
         auto const mem_end{mem + global_memory.memory_length};
-
-        switch(st.vt)
-        {
-            case ::uwvm::wasm::value_type::i32:
-                [[likely]]
-                {
-                    mem += static_cast<::std::size_t>(st.i32);
-                    break;
-                }
-            case ::uwvm::wasm::value_type::i64:
-            {
-                mem += static_cast<::std::size_t>(st.i64);
-                break;
-            }
-            default:
-                [[unlikely]]
-                {
-                    ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data type not match local type."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
-
-                    ::fast_io::fast_terminate();
-                }
-        }
 
         mem += offset;
         mem = ((mem + (static_cast<::std::size_t>(1) << aligment) - 1) >> aligment) << aligment;
@@ -983,9 +565,10 @@ namespace uwvm::vm::unchecked_interpreter::func
         ::fast_io::freestanding::my_memcpy(__builtin_addressof(ml), reinterpret_cast<void const*>(mem), sizeof(ml));
         auto const pl{static_cast<::std::int_least64_t>(::fast_io::little_endian(ml))};
 
-        sm.stack.push_unchecked(stack_t{.i64{pl}, .vt{::uwvm::wasm::value_type::i64}});
+        details::push(stack_curr, stack_t{.i64{pl}});
 
-                auto next_op{curr_opt + 1}; next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
+        auto next_op{curr_opt + 1};
+        next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
     }
 
 #if __has_cpp_attribute(__gnu__::__hot__)
@@ -995,89 +578,16 @@ namespace uwvm::vm::unchecked_interpreter::func
         f32_load(::std::byte const* curr,
                  ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                  ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                 ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
     {
-        auto const aligment{sm.curr_op->ext.sz1};
-        auto const offset{sm.curr_op->ext.sz2};
+        auto const aligment{curr_opt->ext.sz1};
+        auto const offset{curr_opt->ext.sz2};
 
-        if(sm.stack.empty()) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data stack is empty."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
+        auto const st{details::pop_get_val(stack_curr)};
 
-            ::fast_io::fast_terminate();
-        }
-
-        auto const st{sm.stack.pop_element_unchecked()};
-
-        auto& global_memory{::uwvm::vm::unchecked_interpreter::memories.front_unchecked()};
+        auto& global_memory{::uwvm::vm::memories.front_unchecked()};
         auto mem{reinterpret_cast<::std::size_t>(global_memory.memory_begin)};
         auto const mem_end{mem + global_memory.memory_length};
-
-        switch(st.vt)
-        {
-            case ::uwvm::wasm::value_type::i32:
-                [[likely]]
-                {
-                    mem += static_cast<::std::size_t>(st.i32);
-                    break;
-                }
-            case ::uwvm::wasm::value_type::i64:
-            {
-                mem += static_cast<::std::size_t>(st.i64);
-                break;
-            }
-            default:
-                [[unlikely]]
-                {
-                    ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data type not match local type."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
-
-                    ::fast_io::fast_terminate();
-                }
-        }
 
         mem += offset;
         mem = ((mem + (static_cast<::std::size_t>(1) << aligment) - 1) >> aligment) << aligment;
@@ -1115,9 +625,10 @@ namespace uwvm::vm::unchecked_interpreter::func
         ::fast_io::freestanding::my_memcpy(__builtin_addressof(ml), reinterpret_cast<void const*>(mem), sizeof(ml));
         auto const pl{::std::bit_cast<::uwvm::wasm::wasm_f32>(::fast_io::little_endian(ml))};
 
-        sm.stack.push_unchecked(stack_t{.f32{pl}, .vt{::uwvm::wasm::value_type::f32}});
+        details::push(stack_curr, stack_t{.f32{pl}});
 
-                auto next_op{curr_opt + 1}; next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
+        auto next_op{curr_opt + 1};
+        next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
     }
 
 #if __has_cpp_attribute(__gnu__::__hot__)
@@ -1127,89 +638,16 @@ namespace uwvm::vm::unchecked_interpreter::func
         f64_load(::std::byte const* curr,
                  ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                  ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                 ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
     {
-        auto const aligment{sm.curr_op->ext.sz1};
-        auto const offset{sm.curr_op->ext.sz2};
+        auto const aligment{curr_opt->ext.sz1};
+        auto const offset{curr_opt->ext.sz2};
 
-        if(sm.stack.empty()) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data stack is empty."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
+        auto const st{details::pop_get_val(stack_curr)};
 
-            ::fast_io::fast_terminate();
-        }
-
-        auto const st{sm.stack.pop_element_unchecked()};
-
-        auto& global_memory{::uwvm::vm::unchecked_interpreter::memories.front_unchecked()};
+        auto& global_memory{::uwvm::vm::memories.front_unchecked()};
         auto mem{reinterpret_cast<::std::size_t>(global_memory.memory_begin)};
         auto const mem_end{mem + global_memory.memory_length};
-
-        switch(st.vt)
-        {
-            case ::uwvm::wasm::value_type::i32:
-                [[likely]]
-                {
-                    mem += static_cast<::std::size_t>(st.i32);
-                    break;
-                }
-            case ::uwvm::wasm::value_type::i64:
-            {
-                mem += static_cast<::std::size_t>(st.i64);
-                break;
-            }
-            default:
-                [[unlikely]]
-                {
-                    ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data type not match local type."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
-
-                    ::fast_io::fast_terminate();
-                }
-        }
 
         mem += offset;
         mem = ((mem + (static_cast<::std::size_t>(1) << aligment) - 1) >> aligment) << aligment;
@@ -1248,9 +686,10 @@ namespace uwvm::vm::unchecked_interpreter::func
         ::fast_io::freestanding::my_memcpy(__builtin_addressof(ml), reinterpret_cast<void const*>(mem), sizeof(ml));
         auto const pl{::std::bit_cast<::uwvm::wasm::wasm_f64>(::fast_io::little_endian(ml))};
 
-        sm.stack.push_unchecked(stack_t{.f64{pl}, .vt{::uwvm::wasm::value_type::f64}});
+        details::push(stack_curr, stack_t{.f64{pl}});
 
-                auto next_op{curr_opt + 1}; next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
+        auto next_op{curr_opt + 1};
+        next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
     }
 
 #if __has_cpp_attribute(__gnu__::__hot__)
@@ -1260,89 +699,16 @@ namespace uwvm::vm::unchecked_interpreter::func
         i32_load8_s(::std::byte const* curr,
                     ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                     ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                   ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                    ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
     {
-        auto const aligment{sm.curr_op->ext.sz1};
-        auto const offset{sm.curr_op->ext.sz2};
+        auto const aligment{curr_opt->ext.sz1};
+        auto const offset{curr_opt->ext.sz2};
 
-        if(sm.stack.empty()) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data stack is empty."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
+        auto const st{details::pop_get_val(stack_curr)};
 
-            ::fast_io::fast_terminate();
-        }
-
-        auto const st{sm.stack.pop_element_unchecked()};
-
-        auto& global_memory{::uwvm::vm::unchecked_interpreter::memories.front_unchecked()};
+        auto& global_memory{::uwvm::vm::memories.front_unchecked()};
         auto mem{reinterpret_cast<::std::size_t>(global_memory.memory_begin)};
         auto const mem_end{mem + global_memory.memory_length};
-
-        switch(st.vt)
-        {
-            case ::uwvm::wasm::value_type::i32:
-                [[likely]]
-                {
-                    mem += static_cast<::std::size_t>(st.i32);
-                    break;
-                }
-            case ::uwvm::wasm::value_type::i64:
-            {
-                mem += static_cast<::std::size_t>(st.i64);
-                break;
-            }
-            default:
-                [[unlikely]]
-                {
-                    ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data type not match local type."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
-
-                    ::fast_io::fast_terminate();
-                }
-        }
 
         mem += offset;
         mem = ((mem + (static_cast<::std::size_t>(1) << aligment) - 1) >> aligment) << aligment;
@@ -1381,8 +747,9 @@ namespace uwvm::vm::unchecked_interpreter::func
         ::fast_io::freestanding::my_memcpy(__builtin_addressof(ml), reinterpret_cast<void const*>(mem), sizeof(ml));
         auto const pl{static_cast<::std::int_least8_t>(::fast_io::little_endian(ml))};
 
-        sm.stack.push_unchecked(stack_t{.i32{static_cast<::std::int_least32_t>(pl)}, .vt{::uwvm::wasm::value_type::i32}});
-                auto next_op{curr_opt + 1}; next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
+        details::push(stack_curr, stack_t{.i32{static_cast<::std::int_least32_t>(pl)}});
+        auto next_op{curr_opt + 1};
+        next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
     }
 
 #if __has_cpp_attribute(__gnu__::__hot__)
@@ -1392,89 +759,16 @@ namespace uwvm::vm::unchecked_interpreter::func
         i32_load8_u(::std::byte const* curr,
                     ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                     ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                   ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                    ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
     {
-        auto const aligment{sm.curr_op->ext.sz1};
-        auto const offset{sm.curr_op->ext.sz2};
+        auto const aligment{curr_opt->ext.sz1};
+        auto const offset{curr_opt->ext.sz2};
 
-        if(sm.stack.empty()) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data stack is empty."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
+        auto const st{details::pop_get_val(stack_curr)};
 
-            ::fast_io::fast_terminate();
-        }
-
-        auto const st{sm.stack.pop_element_unchecked()};
-
-        auto& global_memory{::uwvm::vm::unchecked_interpreter::memories.front_unchecked()};
+        auto& global_memory{::uwvm::vm::memories.front_unchecked()};
         auto mem{reinterpret_cast<::std::size_t>(global_memory.memory_begin)};
         auto const mem_end{mem + global_memory.memory_length};
-
-        switch(st.vt)
-        {
-            case ::uwvm::wasm::value_type::i32:
-                [[likely]]
-                {
-                    mem += static_cast<::std::size_t>(st.i32);
-                    break;
-                }
-            case ::uwvm::wasm::value_type::i64:
-            {
-                mem += static_cast<::std::size_t>(st.i64);
-                break;
-            }
-            default:
-                [[unlikely]]
-                {
-                    ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data type not match local type."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
-
-                    ::fast_io::fast_terminate();
-                }
-        }
 
         mem += offset;
         mem = ((mem + (static_cast<::std::size_t>(1) << aligment) - 1) >> aligment) << aligment;
@@ -1512,8 +806,9 @@ namespace uwvm::vm::unchecked_interpreter::func
         ::fast_io::freestanding::my_memcpy(__builtin_addressof(ml), reinterpret_cast<void const*>(mem), sizeof(ml));
         auto const pl{static_cast<::std::uint_least8_t>(::fast_io::little_endian(ml))};
 
-        sm.stack.push_unchecked(stack_t{.i32{static_cast<::std::int_least32_t>(pl)}, .vt{::uwvm::wasm::value_type::i32}});
-                auto next_op{curr_opt + 1}; next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
+        details::push(stack_curr, stack_t{.i32{static_cast<::std::int_least32_t>(pl)}});
+        auto next_op{curr_opt + 1};
+        next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
     }
 
 #if __has_cpp_attribute(__gnu__::__hot__)
@@ -1523,89 +818,16 @@ namespace uwvm::vm::unchecked_interpreter::func
         i32_load16_s(::std::byte const* curr,
                      ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                      ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                    ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                     ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
     {
-        auto const aligment{sm.curr_op->ext.sz1};
-        auto const offset{sm.curr_op->ext.sz2};
+        auto const aligment{curr_opt->ext.sz1};
+        auto const offset{curr_opt->ext.sz2};
 
-        if(sm.stack.empty()) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data stack is empty."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
+        auto const st{details::pop_get_val(stack_curr)};
 
-            ::fast_io::fast_terminate();
-        }
-
-        auto const st{sm.stack.pop_element_unchecked()};
-
-        auto& global_memory{::uwvm::vm::unchecked_interpreter::memories.front_unchecked()};
+        auto& global_memory{::uwvm::vm::memories.front_unchecked()};
         auto mem{reinterpret_cast<::std::size_t>(global_memory.memory_begin)};
         auto const mem_end{mem + global_memory.memory_length};
-
-        switch(st.vt)
-        {
-            case ::uwvm::wasm::value_type::i32:
-                [[likely]]
-                {
-                    mem += static_cast<::std::size_t>(st.i32);
-                    break;
-                }
-            case ::uwvm::wasm::value_type::i64:
-            {
-                mem += static_cast<::std::size_t>(st.i64);
-                break;
-            }
-            default:
-                [[unlikely]]
-                {
-                    ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data type not match local type."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
-
-                    ::fast_io::fast_terminate();
-                }
-        }
 
         mem += offset;
         mem = ((mem + (static_cast<::std::size_t>(1) << aligment) - 1) >> aligment) << aligment;
@@ -1643,8 +865,9 @@ namespace uwvm::vm::unchecked_interpreter::func
         ::fast_io::freestanding::my_memcpy(__builtin_addressof(ml), reinterpret_cast<void const*>(mem), sizeof(ml));
         auto const pl{static_cast<::std::int_least16_t>(::fast_io::little_endian(ml))};
 
-        sm.stack.push_unchecked(stack_t{.i32{static_cast<::std::int_least32_t>(pl)}, .vt{::uwvm::wasm::value_type::i32}});
-                auto next_op{curr_opt + 1}; next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
+        details::push(stack_curr, stack_t{.i32{static_cast<::std::int_least32_t>(pl)}});
+        auto next_op{curr_opt + 1};
+        next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
     }
 
 #if __has_cpp_attribute(__gnu__::__hot__)
@@ -1654,89 +877,16 @@ namespace uwvm::vm::unchecked_interpreter::func
         i32_load16_u(::std::byte const* curr,
                      ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                      ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                    ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                     ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
     {
-        auto const aligment{sm.curr_op->ext.sz1};
-        auto const offset{sm.curr_op->ext.sz2};
+        auto const aligment{curr_opt->ext.sz1};
+        auto const offset{curr_opt->ext.sz2};
 
-        if(sm.stack.empty()) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data stack is empty."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
+        auto const st{details::pop_get_val(stack_curr)};
 
-            ::fast_io::fast_terminate();
-        }
-
-        auto const st{sm.stack.pop_element_unchecked()};
-
-        auto& global_memory{::uwvm::vm::unchecked_interpreter::memories.front_unchecked()};
+        auto& global_memory{::uwvm::vm::memories.front_unchecked()};
         auto mem{reinterpret_cast<::std::size_t>(global_memory.memory_begin)};
         auto const mem_end{mem + global_memory.memory_length};
-
-        switch(st.vt)
-        {
-            case ::uwvm::wasm::value_type::i32:
-                [[likely]]
-                {
-                    mem += static_cast<::std::size_t>(st.i32);
-                    break;
-                }
-            case ::uwvm::wasm::value_type::i64:
-            {
-                mem += static_cast<::std::size_t>(st.i64);
-                break;
-            }
-            default:
-                [[unlikely]]
-                {
-                    ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data type not match local type."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
-
-                    ::fast_io::fast_terminate();
-                }
-        }
 
         mem += offset;
         mem = ((mem + (static_cast<::std::size_t>(1) << aligment) - 1) >> aligment) << aligment;
@@ -1774,8 +924,9 @@ namespace uwvm::vm::unchecked_interpreter::func
         ::fast_io::freestanding::my_memcpy(__builtin_addressof(ml), reinterpret_cast<void const*>(mem), sizeof(ml));
         auto const pl{static_cast<::std::uint_least16_t>(::fast_io::little_endian(ml))};
 
-        sm.stack.push_unchecked(stack_t{.i32{static_cast<::std::int_least32_t>(pl)}, .vt{::uwvm::wasm::value_type::i32}});
-                auto next_op{curr_opt + 1}; next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
+        details::push(stack_curr, stack_t{.i32{static_cast<::std::int_least32_t>(pl)}});
+        auto next_op{curr_opt + 1};
+        next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
     }
 
 #if __has_cpp_attribute(__gnu__::__hot__)
@@ -1785,89 +936,16 @@ namespace uwvm::vm::unchecked_interpreter::func
         i64_load8_s(::std::byte const* curr,
                     ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                     ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                   ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                    ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
     {
-        auto const aligment{sm.curr_op->ext.sz1};
-        auto const offset{sm.curr_op->ext.sz2};
+        auto const aligment{curr_opt->ext.sz1};
+        auto const offset{curr_opt->ext.sz2};
 
-        if(sm.stack.empty()) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data stack is empty."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
+        auto const st{details::pop_get_val(stack_curr)};
 
-            ::fast_io::fast_terminate();
-        }
-
-        auto const st{sm.stack.pop_element_unchecked()};
-
-        auto& global_memory{::uwvm::vm::unchecked_interpreter::memories.front_unchecked()};
+        auto& global_memory{::uwvm::vm::memories.front_unchecked()};
         auto mem{reinterpret_cast<::std::size_t>(global_memory.memory_begin)};
         auto const mem_end{mem + global_memory.memory_length};
-
-        switch(st.vt)
-        {
-            case ::uwvm::wasm::value_type::i32:
-                [[likely]]
-                {
-                    mem += static_cast<::std::size_t>(st.i32);
-                    break;
-                }
-            case ::uwvm::wasm::value_type::i64:
-            {
-                mem += static_cast<::std::size_t>(st.i64);
-                break;
-            }
-            default:
-                [[unlikely]]
-                {
-                    ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data type not match local type."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
-
-                    ::fast_io::fast_terminate();
-                }
-        }
 
         mem += offset;
         mem = ((mem + (static_cast<::std::size_t>(1) << aligment) - 1) >> aligment) << aligment;
@@ -1905,8 +983,9 @@ namespace uwvm::vm::unchecked_interpreter::func
         ::fast_io::freestanding::my_memcpy(__builtin_addressof(ml), reinterpret_cast<void const*>(mem), sizeof(ml));
         auto const pl{static_cast<::std::int_least8_t>(::fast_io::little_endian(ml))};
 
-        sm.stack.push_unchecked(stack_t{.i64{static_cast<::std::int_least64_t>(pl)}, .vt{::uwvm::wasm::value_type::i64}});
-                auto next_op{curr_opt + 1}; next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
+        details::push(stack_curr, stack_t{.i64{static_cast<::std::int_least64_t>(pl)}});
+        auto next_op{curr_opt + 1};
+        next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
     }
 
 #if __has_cpp_attribute(__gnu__::__hot__)
@@ -1916,89 +995,16 @@ namespace uwvm::vm::unchecked_interpreter::func
         i64_load8_u(::std::byte const* curr,
                     ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                     ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                   ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                    ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
     {
-        auto const aligment{sm.curr_op->ext.sz1};
-        auto const offset{sm.curr_op->ext.sz2};
+        auto const aligment{curr_opt->ext.sz1};
+        auto const offset{curr_opt->ext.sz2};
 
-        if(sm.stack.empty()) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data stack is empty."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
+        auto const st{details::pop_get_val(stack_curr)};
 
-            ::fast_io::fast_terminate();
-        }
-
-        auto const st{sm.stack.pop_element_unchecked()};
-
-        auto& global_memory{::uwvm::vm::unchecked_interpreter::memories.front_unchecked()};
+        auto& global_memory{::uwvm::vm::memories.front_unchecked()};
         auto mem{reinterpret_cast<::std::size_t>(global_memory.memory_begin)};
         auto const mem_end{mem + global_memory.memory_length};
-
-        switch(st.vt)
-        {
-            case ::uwvm::wasm::value_type::i32:
-                [[likely]]
-                {
-                    mem += static_cast<::std::size_t>(st.i32);
-                    break;
-                }
-            case ::uwvm::wasm::value_type::i64:
-            {
-                mem += static_cast<::std::size_t>(st.i64);
-                break;
-            }
-            default:
-                [[unlikely]]
-                {
-                    ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data type not match local type."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
-
-                    ::fast_io::fast_terminate();
-                }
-        }
 
         mem += offset;
         mem = ((mem + (static_cast<::std::size_t>(1) << aligment) - 1) >> aligment) << aligment;
@@ -2036,8 +1042,9 @@ namespace uwvm::vm::unchecked_interpreter::func
         ::fast_io::freestanding::my_memcpy(__builtin_addressof(ml), reinterpret_cast<void const*>(mem), sizeof(ml));
         auto const pl{static_cast<::std::uint_least8_t>(::fast_io::little_endian(ml))};
 
-        sm.stack.push_unchecked(stack_t{.i64{static_cast<::std::int_least64_t>(pl)}, .vt{::uwvm::wasm::value_type::i64}});
-                auto next_op{curr_opt + 1}; next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
+        details::push(stack_curr, stack_t{.i64{static_cast<::std::int_least64_t>(pl)}});
+        auto next_op{curr_opt + 1};
+        next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
     }
 #if __has_cpp_attribute(__gnu__::__hot__)
     [[__gnu__::__hot__]]
@@ -2046,89 +1053,16 @@ namespace uwvm::vm::unchecked_interpreter::func
         i64_load16_s(::std::byte const* curr,
                      ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                      ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                    ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                     ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
     {
-        auto const aligment{sm.curr_op->ext.sz1};
-        auto const offset{sm.curr_op->ext.sz2};
+        auto const aligment{curr_opt->ext.sz1};
+        auto const offset{curr_opt->ext.sz2};
 
-        if(sm.stack.empty()) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data stack is empty."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
+        auto const st{details::pop_get_val(stack_curr)};
 
-            ::fast_io::fast_terminate();
-        }
-
-        auto const st{sm.stack.pop_element_unchecked()};
-
-        auto& global_memory{::uwvm::vm::unchecked_interpreter::memories.front_unchecked()};
+        auto& global_memory{::uwvm::vm::memories.front_unchecked()};
         auto mem{reinterpret_cast<::std::size_t>(global_memory.memory_begin)};
         auto const mem_end{mem + global_memory.memory_length};
-
-        switch(st.vt)
-        {
-            case ::uwvm::wasm::value_type::i32:
-                [[likely]]
-                {
-                    mem += static_cast<::std::size_t>(st.i32);
-                    break;
-                }
-            case ::uwvm::wasm::value_type::i64:
-            {
-                mem += static_cast<::std::size_t>(st.i64);
-                break;
-            }
-            default:
-                [[unlikely]]
-                {
-                    ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data type not match local type."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
-
-                    ::fast_io::fast_terminate();
-                }
-        }
 
         mem += offset;
         mem = ((mem + (static_cast<::std::size_t>(1) << aligment) - 1) >> aligment) << aligment;
@@ -2166,8 +1100,9 @@ namespace uwvm::vm::unchecked_interpreter::func
         ::fast_io::freestanding::my_memcpy(__builtin_addressof(ml), reinterpret_cast<void const*>(mem), sizeof(ml));
         auto const pl{static_cast<::std::int_least16_t>(::fast_io::little_endian(ml))};
 
-        sm.stack.push_unchecked(stack_t{.i64{static_cast<::std::int_least64_t>(pl)}, .vt{::uwvm::wasm::value_type::i64}});
-                auto next_op{curr_opt + 1}; next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
+        details::push(stack_curr, stack_t{.i64{static_cast<::std::int_least64_t>(pl)}});
+        auto next_op{curr_opt + 1};
+        next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
     }
 
 #if __has_cpp_attribute(__gnu__::__hot__)
@@ -2177,89 +1112,16 @@ namespace uwvm::vm::unchecked_interpreter::func
         i64_load16_u(::std::byte const* curr,
                      ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                      ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                    ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                     ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
     {
-        auto const aligment{sm.curr_op->ext.sz1};
-        auto const offset{sm.curr_op->ext.sz2};
+        auto const aligment{curr_opt->ext.sz1};
+        auto const offset{curr_opt->ext.sz2};
 
-        if(sm.stack.empty()) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data stack is empty."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
+        auto const st{details::pop_get_val(stack_curr)};
 
-            ::fast_io::fast_terminate();
-        }
-
-        auto const st{sm.stack.pop_element_unchecked()};
-
-        auto& global_memory{::uwvm::vm::unchecked_interpreter::memories.front_unchecked()};
+        auto& global_memory{::uwvm::vm::memories.front_unchecked()};
         auto mem{reinterpret_cast<::std::size_t>(global_memory.memory_begin)};
         auto const mem_end{mem + global_memory.memory_length};
-
-        switch(st.vt)
-        {
-            case ::uwvm::wasm::value_type::i32:
-                [[likely]]
-                {
-                    mem += static_cast<::std::size_t>(st.i32);
-                    break;
-                }
-            case ::uwvm::wasm::value_type::i64:
-            {
-                mem += static_cast<::std::size_t>(st.i64);
-                break;
-            }
-            default:
-                [[unlikely]]
-                {
-                    ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data type not match local type."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
-
-                    ::fast_io::fast_terminate();
-                }
-        }
 
         mem += offset;
         mem = ((mem + (static_cast<::std::size_t>(1) << aligment) - 1) >> aligment) << aligment;
@@ -2297,8 +1159,9 @@ namespace uwvm::vm::unchecked_interpreter::func
         ::fast_io::freestanding::my_memcpy(__builtin_addressof(ml), reinterpret_cast<void const*>(mem), sizeof(ml));
         auto const pl{static_cast<::std::uint_least16_t>(::fast_io::little_endian(ml))};
 
-        sm.stack.push_unchecked(stack_t{.i64{static_cast<::std::int_least64_t>(pl)}, .vt{::uwvm::wasm::value_type::i64}});
-                auto next_op{curr_opt + 1}; next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
+        details::push(stack_curr, stack_t{.i64{static_cast<::std::int_least64_t>(pl)}});
+        auto next_op{curr_opt + 1};
+        next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
     }
 
 #if __has_cpp_attribute(__gnu__::__hot__)
@@ -2308,89 +1171,16 @@ namespace uwvm::vm::unchecked_interpreter::func
         i64_load32_s(::std::byte const* curr,
                      ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                      ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                    ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                     ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
     {
-        auto const aligment{sm.curr_op->ext.sz1};
-        auto const offset{sm.curr_op->ext.sz2};
+        auto const aligment{curr_opt->ext.sz1};
+        auto const offset{curr_opt->ext.sz2};
 
-        if(sm.stack.empty()) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data stack is empty."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
+        auto const st{details::pop_get_val(stack_curr)};
 
-            ::fast_io::fast_terminate();
-        }
-
-        auto const st{sm.stack.pop_element_unchecked()};
-
-        auto& global_memory{::uwvm::vm::unchecked_interpreter::memories.front_unchecked()};
+        auto& global_memory{::uwvm::vm::memories.front_unchecked()};
         auto mem{reinterpret_cast<::std::size_t>(global_memory.memory_begin)};
         auto const mem_end{mem + global_memory.memory_length};
-
-        switch(st.vt)
-        {
-            case ::uwvm::wasm::value_type::i32:
-                [[likely]]
-                {
-                    mem += static_cast<::std::size_t>(st.i32);
-                    break;
-                }
-            case ::uwvm::wasm::value_type::i64:
-            {
-                mem += static_cast<::std::size_t>(st.i64);
-                break;
-            }
-            default:
-                [[unlikely]]
-                {
-                    ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data type not match local type."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
-
-                    ::fast_io::fast_terminate();
-                }
-        }
 
         mem += offset;
         mem = ((mem + (static_cast<::std::size_t>(1) << aligment) - 1) >> aligment) << aligment;
@@ -2428,8 +1218,9 @@ namespace uwvm::vm::unchecked_interpreter::func
         ::fast_io::freestanding::my_memcpy(__builtin_addressof(ml), reinterpret_cast<void const*>(mem), sizeof(ml));
         auto const pl{static_cast<::std::int_least32_t>(::fast_io::little_endian(ml))};
 
-        sm.stack.push_unchecked(stack_t{.i64{static_cast<::std::int_least64_t>(pl)}, .vt{::uwvm::wasm::value_type::i64}});
-                auto next_op{curr_opt + 1}; next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
+        details::push(stack_curr, stack_t{.i64{static_cast<::std::int_least64_t>(pl)}});
+        auto next_op{curr_opt + 1};
+        next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
     }
 
 #if __has_cpp_attribute(__gnu__::__hot__)
@@ -2439,89 +1230,16 @@ namespace uwvm::vm::unchecked_interpreter::func
         i64_load32_u(::std::byte const* curr,
                      ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                      ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                    ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                     ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
     {
-        auto const aligment{sm.curr_op->ext.sz1};
-        auto const offset{sm.curr_op->ext.sz2};
+        auto const aligment{curr_opt->ext.sz1};
+        auto const offset{curr_opt->ext.sz2};
 
-        if(sm.stack.empty()) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data stack is empty."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
+        auto const st{details::pop_get_val(stack_curr)};
 
-            ::fast_io::fast_terminate();
-        }
-
-        auto const st{sm.stack.pop_element_unchecked()};
-
-        auto& global_memory{::uwvm::vm::unchecked_interpreter::memories.front_unchecked()};
+        auto& global_memory{::uwvm::vm::memories.front_unchecked()};
         auto mem{reinterpret_cast<::std::size_t>(global_memory.memory_begin)};
         auto const mem_end{mem + global_memory.memory_length};
-
-        switch(st.vt)
-        {
-            case ::uwvm::wasm::value_type::i32:
-                [[likely]]
-                {
-                    mem += static_cast<::std::size_t>(st.i32);
-                    break;
-                }
-            case ::uwvm::wasm::value_type::i64:
-            {
-                mem += static_cast<::std::size_t>(st.i64);
-                break;
-            }
-            default:
-                [[unlikely]]
-                {
-                    ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data type not match local type."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
-
-                    ::fast_io::fast_terminate();
-                }
-        }
 
         mem += offset;
         mem = ((mem + (static_cast<::std::size_t>(1) << aligment) - 1) >> aligment) << aligment;
@@ -2559,8 +1277,9 @@ namespace uwvm::vm::unchecked_interpreter::func
         ::fast_io::freestanding::my_memcpy(__builtin_addressof(ml), reinterpret_cast<void const*>(mem), sizeof(ml));
         auto const pl{static_cast<::std::uint_least32_t>(::fast_io::little_endian(ml))};
 
-        sm.stack.push_unchecked(stack_t{.i64{static_cast<::std::int_least64_t>(pl)}, .vt{::uwvm::wasm::value_type::i64}});
-                auto next_op{curr_opt + 1}; next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
+        details::push(stack_curr, stack_t{.i64{static_cast<::std::int_least64_t>(pl)}});
+        auto next_op{curr_opt + 1};
+        next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
     }
 
 #if __has_cpp_attribute(__gnu__::__hot__)
@@ -2570,120 +1289,18 @@ namespace uwvm::vm::unchecked_interpreter::func
         i32_store(::std::byte const* curr,
                   ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                   ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                 ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                  ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
     {
-        auto const aligment{sm.curr_op->ext.sz1};
-        auto const offset{sm.curr_op->ext.sz2};
+        auto const aligment{curr_opt->ext.sz1};
+        auto const offset{curr_opt->ext.sz2};
 
-        if(sm.stack.size() < 2) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data stack is empty."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
+        auto const num{details::pop_get_val(stack_curr)};
 
-            ::fast_io::fast_terminate();
-        }
+        auto const st{details::pop_get_val(stack_curr)};
 
-        auto const num{sm.stack.pop_element_unchecked()};
-
-        if(num.vt != ::uwvm::wasm::value_type::i32) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data type is not i32."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
-
-            ::fast_io::fast_terminate();
-        }
-
-        auto const st{sm.stack.pop_element_unchecked()};
-
-        auto& global_memory{::uwvm::vm::unchecked_interpreter::memories.front_unchecked()};
+        auto& global_memory{::uwvm::vm::memories.front_unchecked()};
         auto mem{reinterpret_cast<::std::size_t>(global_memory.memory_begin)};
         auto const mem_end{mem + global_memory.memory_length};
-
-        switch(st.vt)
-        {
-            case ::uwvm::wasm::value_type::i32:
-                [[likely]]
-                {
-                    mem += static_cast<::std::size_t>(st.i32);
-                    break;
-                }
-            case ::uwvm::wasm::value_type::i64:
-            {
-                mem += static_cast<::std::size_t>(st.i64);
-                break;
-            }
-            default:
-                [[unlikely]]
-                {
-                    ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data type not match local type."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
-
-                    ::fast_io::fast_terminate();
-                }
-        }
 
         mem += offset;
         mem = ((mem + (static_cast<::std::size_t>(1) << aligment) - 1) >> aligment) << aligment;
@@ -2720,7 +1337,8 @@ namespace uwvm::vm::unchecked_interpreter::func
 
         ::fast_io::freestanding::my_memcpy(reinterpret_cast<void*>(mem), __builtin_addressof(ml), sizeof(ml));
 
-                auto next_op{curr_opt + 1}; next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
+        auto next_op{curr_opt + 1};
+        next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
     }
 
 #if __has_cpp_attribute(__gnu__::__hot__)
@@ -2730,120 +1348,18 @@ namespace uwvm::vm::unchecked_interpreter::func
         i64_store(::std::byte const* curr,
                   ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                   ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                 ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                  ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
     {
-        auto const aligment{sm.curr_op->ext.sz1};
-        auto const offset{sm.curr_op->ext.sz2};
+        auto const aligment{curr_opt->ext.sz1};
+        auto const offset{curr_opt->ext.sz2};
 
-        if(sm.stack.size() < 2) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data stack is empty."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
+        auto const num{details::pop_get_val(stack_curr)};
 
-            ::fast_io::fast_terminate();
-        }
+        auto const st{details::pop_get_val(stack_curr)};
 
-        auto const num{sm.stack.pop_element_unchecked()};
-
-        if(num.vt != ::uwvm::wasm::value_type::i64) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data type is not i64."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
-
-            ::fast_io::fast_terminate();
-        }
-
-        auto const st{sm.stack.pop_element_unchecked()};
-
-        auto& global_memory{::uwvm::vm::unchecked_interpreter::memories.front_unchecked()};
+        auto& global_memory{::uwvm::vm::memories.front_unchecked()};
         auto mem{reinterpret_cast<::std::size_t>(global_memory.memory_begin)};
         auto const mem_end{mem + global_memory.memory_length};
-
-        switch(st.vt)
-        {
-            case ::uwvm::wasm::value_type::i32:
-                [[likely]]
-                {
-                    mem += static_cast<::std::size_t>(st.i32);
-                    break;
-                }
-            case ::uwvm::wasm::value_type::i64:
-            {
-                mem += static_cast<::std::size_t>(st.i64);
-                break;
-            }
-            default:
-                [[unlikely]]
-                {
-                    ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data type not match local type."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
-
-                    ::fast_io::fast_terminate();
-                }
-        }
 
         mem += offset;
         mem = ((mem + (static_cast<::std::size_t>(1) << aligment) - 1) >> aligment) << aligment;
@@ -2881,7 +1397,8 @@ namespace uwvm::vm::unchecked_interpreter::func
 
         ::fast_io::freestanding::my_memcpy(reinterpret_cast<void*>(mem), __builtin_addressof(ml), sizeof(ml));
 
-                auto next_op{curr_opt + 1}; next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
+        auto next_op{curr_opt + 1};
+        next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
     }
 
 #if __has_cpp_attribute(__gnu__::__hot__)
@@ -2891,120 +1408,18 @@ namespace uwvm::vm::unchecked_interpreter::func
         f32_store(::std::byte const* curr,
                   ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                   ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                 ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                  ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
     {
-        auto const aligment{sm.curr_op->ext.sz1};
-        auto const offset{sm.curr_op->ext.sz2};
+        auto const aligment{curr_opt->ext.sz1};
+        auto const offset{curr_opt->ext.sz2};
 
-        if(sm.stack.size() < 2) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data stack is empty."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
+        auto const num{details::pop_get_val(stack_curr)};
 
-            ::fast_io::fast_terminate();
-        }
+        auto const st{details::pop_get_val(stack_curr)};
 
-        auto const num{sm.stack.pop_element_unchecked()};
-
-        if(num.vt != ::uwvm::wasm::value_type::f32) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data type is not f32."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
-
-            ::fast_io::fast_terminate();
-        }
-
-        auto const st{sm.stack.pop_element_unchecked()};
-
-        auto& global_memory{::uwvm::vm::unchecked_interpreter::memories.front_unchecked()};
+        auto& global_memory{::uwvm::vm::memories.front_unchecked()};
         auto mem{reinterpret_cast<::std::size_t>(global_memory.memory_begin)};
         auto const mem_end{mem + global_memory.memory_length};
-
-        switch(st.vt)
-        {
-            case ::uwvm::wasm::value_type::i32:
-                [[likely]]
-                {
-                    mem += static_cast<::std::size_t>(st.i32);
-                    break;
-                }
-            case ::uwvm::wasm::value_type::i64:
-            {
-                mem += static_cast<::std::size_t>(st.i64);
-                break;
-            }
-            default:
-                [[unlikely]]
-                {
-                    ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data type not match local type."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
-
-                    ::fast_io::fast_terminate();
-                }
-        }
 
         mem += offset;
         mem = ((mem + (static_cast<::std::size_t>(1) << aligment) - 1) >> aligment) << aligment;
@@ -3042,7 +1457,8 @@ namespace uwvm::vm::unchecked_interpreter::func
 
         ::fast_io::freestanding::my_memcpy(reinterpret_cast<void*>(mem), __builtin_addressof(ml), sizeof(ml));
 
-                auto next_op{curr_opt + 1}; next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
+        auto next_op{curr_opt + 1};
+        next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
     }
 
 #if __has_cpp_attribute(__gnu__::__hot__)
@@ -3052,120 +1468,18 @@ namespace uwvm::vm::unchecked_interpreter::func
         f64_store(::std::byte const* curr,
                   ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                   ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                 ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                  ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
     {
-        auto const aligment{sm.curr_op->ext.sz1};
-        auto const offset{sm.curr_op->ext.sz2};
+        auto const aligment{curr_opt->ext.sz1};
+        auto const offset{curr_opt->ext.sz2};
 
-        if(sm.stack.size() < 2) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data stack is empty."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
+        auto const num{details::pop_get_val(stack_curr)};
 
-            ::fast_io::fast_terminate();
-        }
+        auto const st{details::pop_get_val(stack_curr)};
 
-        auto const num{sm.stack.pop_element_unchecked()};
-
-        if(num.vt != ::uwvm::wasm::value_type::f64) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data type is not f64."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
-
-            ::fast_io::fast_terminate();
-        }
-
-        auto const st{sm.stack.pop_element_unchecked()};
-
-        auto& global_memory{::uwvm::vm::unchecked_interpreter::memories.front_unchecked()};
+        auto& global_memory{::uwvm::vm::memories.front_unchecked()};
         auto mem{reinterpret_cast<::std::size_t>(global_memory.memory_begin)};
         auto const mem_end{mem + global_memory.memory_length};
-
-        switch(st.vt)
-        {
-            case ::uwvm::wasm::value_type::i32:
-                [[likely]]
-                {
-                    mem += static_cast<::std::size_t>(st.i32);
-                    break;
-                }
-            case ::uwvm::wasm::value_type::i64:
-            {
-                mem += static_cast<::std::size_t>(st.i64);
-                break;
-            }
-            default:
-                [[unlikely]]
-                {
-                    ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data type not match local type."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
-
-                    ::fast_io::fast_terminate();
-                }
-        }
 
         mem += offset;
         mem = ((mem + (static_cast<::std::size_t>(1) << aligment) - 1) >> aligment) << aligment;
@@ -3203,7 +1517,8 @@ namespace uwvm::vm::unchecked_interpreter::func
 
         ::fast_io::freestanding::my_memcpy(reinterpret_cast<void*>(mem), __builtin_addressof(ml), sizeof(ml));
 
-                auto next_op{curr_opt + 1}; next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
+        auto next_op{curr_opt + 1};
+        next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
     }
 
 #if __has_cpp_attribute(__gnu__::__hot__)
@@ -3213,120 +1528,18 @@ namespace uwvm::vm::unchecked_interpreter::func
         i32_store8(::std::byte const* curr,
                    ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                    ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                  ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                   ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
     {
-        auto const aligment{sm.curr_op->ext.sz1};
-        auto const offset{sm.curr_op->ext.sz2};
+        auto const aligment{curr_opt->ext.sz1};
+        auto const offset{curr_opt->ext.sz2};
 
-        if(sm.stack.size() < 2) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data stack is empty."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
+        auto const num{details::pop_get_val(stack_curr)};
 
-            ::fast_io::fast_terminate();
-        }
+        auto const st{details::pop_get_val(stack_curr)};
 
-        auto const num{sm.stack.pop_element_unchecked()};
-
-        if(num.vt != ::uwvm::wasm::value_type::i32) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data type is not i32."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
-
-            ::fast_io::fast_terminate();
-        }
-
-        auto const st{sm.stack.pop_element_unchecked()};
-
-        auto& global_memory{::uwvm::vm::unchecked_interpreter::memories.front_unchecked()};
+        auto& global_memory{::uwvm::vm::memories.front_unchecked()};
         auto mem{reinterpret_cast<::std::size_t>(global_memory.memory_begin)};
         auto const mem_end{mem + global_memory.memory_length};
-
-        switch(st.vt)
-        {
-            case ::uwvm::wasm::value_type::i32:
-                [[likely]]
-                {
-                    mem += static_cast<::std::size_t>(st.i32);
-                    break;
-                }
-            case ::uwvm::wasm::value_type::i64:
-            {
-                mem += static_cast<::std::size_t>(st.i64);
-                break;
-            }
-            default:
-                [[unlikely]]
-                {
-                    ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data type not match local type."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
-
-                    ::fast_io::fast_terminate();
-                }
-        }
 
         mem += offset;
         mem = ((mem + (static_cast<::std::size_t>(1) << aligment) - 1) >> aligment) << aligment;
@@ -3363,7 +1576,8 @@ namespace uwvm::vm::unchecked_interpreter::func
 
         ::fast_io::freestanding::my_memcpy(reinterpret_cast<void*>(mem), __builtin_addressof(ml), sizeof(ml));
 
-                auto next_op{curr_opt + 1}; next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
+        auto next_op{curr_opt + 1};
+        next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
     }
 
 #if __has_cpp_attribute(__gnu__::__hot__)
@@ -3373,120 +1587,18 @@ namespace uwvm::vm::unchecked_interpreter::func
         i32_store16(::std::byte const* curr,
                     ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                     ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                   ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                    ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
     {
-        auto const aligment{sm.curr_op->ext.sz1};
-        auto const offset{sm.curr_op->ext.sz2};
+        auto const aligment{curr_opt->ext.sz1};
+        auto const offset{curr_opt->ext.sz2};
 
-        if(sm.stack.size() < 2) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data stack is empty."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
+        auto const num{details::pop_get_val(stack_curr)};
 
-            ::fast_io::fast_terminate();
-        }
+        auto const st{details::pop_get_val(stack_curr)};
 
-        auto const num{sm.stack.pop_element_unchecked()};
-
-        if(num.vt != ::uwvm::wasm::value_type::i32) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data type is not i32."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
-
-            ::fast_io::fast_terminate();
-        }
-
-        auto const st{sm.stack.pop_element_unchecked()};
-
-        auto& global_memory{::uwvm::vm::unchecked_interpreter::memories.front_unchecked()};
+        auto& global_memory{::uwvm::vm::memories.front_unchecked()};
         auto mem{reinterpret_cast<::std::size_t>(global_memory.memory_begin)};
         auto const mem_end{mem + global_memory.memory_length};
-
-        switch(st.vt)
-        {
-            case ::uwvm::wasm::value_type::i32:
-                [[likely]]
-                {
-                    mem += static_cast<::std::size_t>(st.i32);
-                    break;
-                }
-            case ::uwvm::wasm::value_type::i64:
-            {
-                mem += static_cast<::std::size_t>(st.i64);
-                break;
-            }
-            default:
-                [[unlikely]]
-                {
-                    ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data type not match local type."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
-
-                    ::fast_io::fast_terminate();
-                }
-        }
 
         mem += offset;
         mem = ((mem + (static_cast<::std::size_t>(1) << aligment) - 1) >> aligment) << aligment;
@@ -3523,7 +1635,8 @@ namespace uwvm::vm::unchecked_interpreter::func
 
         ::fast_io::freestanding::my_memcpy(reinterpret_cast<void*>(mem), __builtin_addressof(ml), sizeof(ml));
 
-                auto next_op{curr_opt + 1}; next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
+        auto next_op{curr_opt + 1};
+        next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
     }
 
 #if __has_cpp_attribute(__gnu__::__hot__)
@@ -3533,120 +1646,18 @@ namespace uwvm::vm::unchecked_interpreter::func
         i64_store8(::std::byte const* curr,
                    ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                    ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                  ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                   ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
     {
-        auto const aligment{sm.curr_op->ext.sz1};
-        auto const offset{sm.curr_op->ext.sz2};
+        auto const aligment{curr_opt->ext.sz1};
+        auto const offset{curr_opt->ext.sz2};
 
-        if(sm.stack.size() < 2) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data stack is empty."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
+        auto const num{details::pop_get_val(stack_curr)};
 
-            ::fast_io::fast_terminate();
-        }
+        auto const st{details::pop_get_val(stack_curr)};
 
-        auto const num{sm.stack.pop_element_unchecked()};
-
-        if(num.vt != ::uwvm::wasm::value_type::i64) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data type is not i64."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
-
-            ::fast_io::fast_terminate();
-        }
-
-        auto const st{sm.stack.pop_element_unchecked()};
-
-        auto& global_memory{::uwvm::vm::unchecked_interpreter::memories.front_unchecked()};
+        auto& global_memory{::uwvm::vm::memories.front_unchecked()};
         auto mem{reinterpret_cast<::std::size_t>(global_memory.memory_begin)};
         auto const mem_end{mem + global_memory.memory_length};
-
-        switch(st.vt)
-        {
-            case ::uwvm::wasm::value_type::i32:
-                [[likely]]
-                {
-                    mem += static_cast<::std::size_t>(st.i32);
-                    break;
-                }
-            case ::uwvm::wasm::value_type::i64:
-            {
-                mem += static_cast<::std::size_t>(st.i64);
-                break;
-            }
-            default:
-                [[unlikely]]
-                {
-                    ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data type not match local type."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
-
-                    ::fast_io::fast_terminate();
-                }
-        }
 
         mem += offset;
         mem = ((mem + (static_cast<::std::size_t>(1) << aligment) - 1) >> aligment) << aligment;
@@ -3683,7 +1694,8 @@ namespace uwvm::vm::unchecked_interpreter::func
 
         ::fast_io::freestanding::my_memcpy(reinterpret_cast<void*>(mem), __builtin_addressof(ml), sizeof(ml));
 
-                auto next_op{curr_opt + 1}; next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
+        auto next_op{curr_opt + 1};
+        next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
     }
 
 #if __has_cpp_attribute(__gnu__::__hot__)
@@ -3693,120 +1705,18 @@ namespace uwvm::vm::unchecked_interpreter::func
         i64_store16(::std::byte const* curr,
                     ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                     ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                   ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                    ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
     {
-        auto const aligment{sm.curr_op->ext.sz1};
-        auto const offset{sm.curr_op->ext.sz2};
+        auto const aligment{curr_opt->ext.sz1};
+        auto const offset{curr_opt->ext.sz2};
 
-        if(sm.stack.size() < 2) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data stack is empty."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
+        auto const num{details::pop_get_val(stack_curr)};
 
-            ::fast_io::fast_terminate();
-        }
+        auto const st{details::pop_get_val(stack_curr)};
 
-        auto const num{sm.stack.pop_element_unchecked()};
-
-        if(num.vt != ::uwvm::wasm::value_type::i64) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data type is not i64."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
-
-            ::fast_io::fast_terminate();
-        }
-
-        auto const st{sm.stack.pop_element_unchecked()};
-
-        auto& global_memory{::uwvm::vm::unchecked_interpreter::memories.front_unchecked()};
+        auto& global_memory{::uwvm::vm::memories.front_unchecked()};
         auto mem{reinterpret_cast<::std::size_t>(global_memory.memory_begin)};
         auto const mem_end{mem + global_memory.memory_length};
-
-        switch(st.vt)
-        {
-            case ::uwvm::wasm::value_type::i32:
-                [[likely]]
-                {
-                    mem += static_cast<::std::size_t>(st.i32);
-                    break;
-                }
-            case ::uwvm::wasm::value_type::i64:
-            {
-                mem += static_cast<::std::size_t>(st.i64);
-                break;
-            }
-            default:
-                [[unlikely]]
-                {
-                    ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data type not match local type."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
-
-                    ::fast_io::fast_terminate();
-                }
-        }
 
         mem += offset;
         mem = ((mem + (static_cast<::std::size_t>(1) << aligment) - 1) >> aligment) << aligment;
@@ -3843,7 +1753,8 @@ namespace uwvm::vm::unchecked_interpreter::func
 
         ::fast_io::freestanding::my_memcpy(reinterpret_cast<void*>(mem), __builtin_addressof(ml), sizeof(ml));
 
-                auto next_op{curr_opt + 1}; next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
+        auto next_op{curr_opt + 1};
+        next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
     }
 
 #if __has_cpp_attribute(__gnu__::__hot__)
@@ -3853,120 +1764,18 @@ namespace uwvm::vm::unchecked_interpreter::func
         i64_store32(::std::byte const* curr,
                     ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                     ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                   ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                    ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
     {
-        auto const aligment{sm.curr_op->ext.sz1};
-        auto const offset{sm.curr_op->ext.sz2};
+        auto const aligment{curr_opt->ext.sz1};
+        auto const offset{curr_opt->ext.sz2};
 
-        if(sm.stack.size() < 2) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data stack is empty."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
+        auto const num{details::pop_get_val(stack_curr)};
 
-            ::fast_io::fast_terminate();
-        }
+        auto const st{details::pop_get_val(stack_curr)};
 
-        auto const num{sm.stack.pop_element_unchecked()};
-
-        if(num.vt != ::uwvm::wasm::value_type::i64) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data type is not i64."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
-
-            ::fast_io::fast_terminate();
-        }
-
-        auto const st{sm.stack.pop_element_unchecked()};
-
-        auto& global_memory{::uwvm::vm::unchecked_interpreter::memories.front_unchecked()};
+        auto& global_memory{::uwvm::vm::memories.front_unchecked()};
         auto mem{reinterpret_cast<::std::size_t>(global_memory.memory_begin)};
         auto const mem_end{mem + global_memory.memory_length};
-
-        switch(st.vt)
-        {
-            case ::uwvm::wasm::value_type::i32:
-                [[likely]]
-                {
-                    mem += static_cast<::std::size_t>(st.i32);
-                    break;
-                }
-            case ::uwvm::wasm::value_type::i64:
-            {
-                mem += static_cast<::std::size_t>(st.i64);
-                break;
-            }
-            default:
-                [[unlikely]]
-                {
-                    ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data type not match local type."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
-
-                    ::fast_io::fast_terminate();
-                }
-        }
 
         mem += offset;
         mem = ((mem + (static_cast<::std::size_t>(1) << aligment) - 1) >> aligment) << aligment;
@@ -4003,7 +1812,8 @@ namespace uwvm::vm::unchecked_interpreter::func
 
         ::fast_io::freestanding::my_memcpy(reinterpret_cast<void*>(mem), __builtin_addressof(ml), sizeof(ml));
 
-                auto next_op{curr_opt + 1}; next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
+        auto next_op{curr_opt + 1};
+        next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
     }
 
 #if __has_cpp_attribute(__gnu__::__hot__)
@@ -4013,18 +1823,19 @@ namespace uwvm::vm::unchecked_interpreter::func
         memory_size(::std::byte const* curr,
                     ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                     ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                   ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                    ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
     {
         using memory_t_const_may_alias_ptr
 #if __has_cpp_attribute(__gnu__::__may_alias__)
             [[__gnu__::__may_alias__]]
 #endif
             = ::uwvm::vm::memory::memory_t const*;
-        auto const mem{reinterpret_cast<memory_t_const_may_alias_ptr>(sm.curr_op->ext.branch)};
+        auto const mem{reinterpret_cast<memory_t_const_may_alias_ptr>(curr_opt->ext.branch)};
 
-        sm.stack.push(stack_t{.i32{static_cast<::std::int_least32_t>(mem->get_page_size())}, .vt{::uwvm::wasm::value_type::i32}});
+        details::push(stack_curr, stack_t{.i32{static_cast<::std::int_least32_t>(mem->get_page_size())}});
 
-                auto next_op{curr_opt + 1}; next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
+        auto next_op{curr_opt + 1};
+        next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
     }
 
 #if __has_cpp_attribute(__gnu__::__hot__)
@@ -4034,78 +1845,20 @@ namespace uwvm::vm::unchecked_interpreter::func
         memory_grow(::std::byte const* curr,
                     ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                     ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                   ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                    ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
     {
         using memory_t_may_alias_ptr
 #if __has_cpp_attribute(__gnu__::__may_alias__)
             [[__gnu__::__may_alias__]]
 #endif
             = ::uwvm::vm::memory::memory_t*;
-        auto mem{reinterpret_cast<memory_t_may_alias_ptr>(const_cast<::uwvm::vm::unchecked_interpreter::operator_t*>(sm.curr_op->ext.branch))};
+        auto mem{reinterpret_cast<memory_t_may_alias_ptr>(const_cast<::uwvm::vm::unchecked_interpreter::operator_t*>(curr_opt->ext.branch))};
 
-        if(sm.stack.empty()) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data stack is empty."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
-
-            ::fast_io::fast_terminate();
-        }
-
-        auto const num{sm.stack.pop_element_unchecked()};
-
-        if(num.vt != ::uwvm::wasm::value_type::i32) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data type is not i32."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
-
-            ::fast_io::fast_terminate();
-        }
+        auto const num{details::pop_get_val(stack_curr)};
 
         // Due to the overcommit mechanism, failure situations are not considered
 
-        sm.stack.push_unchecked(stack_t{.i32{static_cast<::std::int_least32_t>(mem->get_page_size())}, .vt{::uwvm::wasm::value_type::i32}});
+        details::push(stack_curr, stack_t{.i32{static_cast<::std::int_least32_t>(mem->get_page_size())}});
 
         using memory_type_const_may_alias_ptr
 #if __has_cpp_attribute(__gnu__::__may_alias__)
@@ -4113,9 +1866,10 @@ namespace uwvm::vm::unchecked_interpreter::func
 #endif
             = ::uwvm::wasm::memory_type const*;
 
-        mem->grow_by_memory_type(*reinterpret_cast<memory_type_const_may_alias_ptr>(sm.curr_op->ext.end), static_cast<::std::size_t>(num.i32));
+        mem->grow_by_memory_type(*reinterpret_cast<memory_type_const_may_alias_ptr>(curr_opt->ext.end), static_cast<::std::size_t>(num.i32));
 
-                auto next_op{curr_opt + 1}; next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
+        auto next_op{curr_opt + 1};
+        next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
     }
 
 #if __has_cpp_attribute(__gnu__::__hot__)
@@ -4125,10 +1879,11 @@ namespace uwvm::vm::unchecked_interpreter::func
         i32_const(::std::byte const* curr,
                   ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                   ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                 ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                  ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
     {
-        sm.stack.push(stack_t{.i32{sm.curr_op->ext.i32}, .vt{::uwvm::wasm::value_type::i32}});
-                auto next_op{curr_opt + 1}; next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
+        details::push(stack_curr, stack_t{.i32{curr_opt->ext.i32}});
+        auto next_op{curr_opt + 1};
+        next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
     }
 
 #if __has_cpp_attribute(__gnu__::__hot__)
@@ -4138,10 +1893,11 @@ namespace uwvm::vm::unchecked_interpreter::func
         i64_const(::std::byte const* curr,
                   ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                   ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                 ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                  ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
     {
-        sm.stack.push(stack_t{.i64{sm.curr_op->ext.i64}, .vt{::uwvm::wasm::value_type::i64}});
-                auto next_op{curr_opt + 1}; next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
+        details::push(stack_curr, stack_t{.i64{curr_opt->ext.i64}});
+        auto next_op{curr_opt + 1};
+        next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
     }
 
 #if __has_cpp_attribute(__gnu__::__hot__)
@@ -4151,10 +1907,11 @@ namespace uwvm::vm::unchecked_interpreter::func
         f32_const(::std::byte const* curr,
                   ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                   ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                 ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                  ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
     {
-        sm.stack.push(stack_t{.f32{sm.curr_op->ext.f32}, .vt{::uwvm::wasm::value_type::f32}});
-                auto next_op{curr_opt + 1}; next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
+        details::push(stack_curr, stack_t{.f32{curr_opt->ext.f32}});
+        auto next_op{curr_opt + 1};
+        next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
     }
 
 #if __has_cpp_attribute(__gnu__::__hot__)
@@ -4164,10 +1921,11 @@ namespace uwvm::vm::unchecked_interpreter::func
         f64_const(::std::byte const* curr,
                   ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                   ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                 ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                  ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
     {
-        sm.stack.push(stack_t{.f64{sm.curr_op->ext.f64}, .vt{::uwvm::wasm::value_type::f64}});
-                auto next_op{curr_opt + 1}; next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
+        details::push(stack_curr, stack_t{.f64{curr_opt->ext.f64}});
+        auto next_op{curr_opt + 1};
+        next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
     }
 
 #if __has_cpp_attribute(__gnu__::__hot__)
@@ -4177,71 +1935,15 @@ namespace uwvm::vm::unchecked_interpreter::func
         i32_eqz(::std::byte const* curr,
                 ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                 ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-               ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
     {
-        if(sm.stack.empty()) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data stack is empty."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
 
-            ::fast_io::fast_terminate();
-        }
+        auto const num{details::pop_get_val(stack_curr)};
 
-        auto const num{sm.stack.pop_element_unchecked()};
+        details::push(stack_curr, stack_t{.i32{static_cast<::std::int_least32_t>(num.i32 == 0)}});
 
-        if(num.vt != ::uwvm::wasm::value_type::i32) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data type is not i32."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
-
-            ::fast_io::fast_terminate();
-        }
-
-        sm.stack.push_unchecked(stack_t{.i32{static_cast<::std::int_least32_t>(num.i32 == 0)}, .vt{::uwvm::wasm::value_type::i32}});
-
-                auto next_op{curr_opt + 1}; next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
+        auto next_op{curr_opt + 1};
+        next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
     }
 
 #if __has_cpp_attribute(__gnu__::__hot__)
@@ -4251,72 +1953,15 @@ namespace uwvm::vm::unchecked_interpreter::func
         i32_eq(::std::byte const* curr,
                ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-              ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+               ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
     {
-        if(sm.stack.size() < 2) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data stack is empty."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
+        auto const num2{details::pop_get_val(stack_curr)};
+        auto const num1{details::pop_get_val(stack_curr)};
 
-            ::fast_io::fast_terminate();
-        }
+        details::push(stack_curr, stack_t{.i32{static_cast<::std::int_least32_t>(num1.i32 == num2.i32)}});
 
-        auto const num2{sm.stack.pop_element_unchecked()};
-        auto const num1{sm.stack.pop_element_unchecked()};
-
-        if(num1.vt != ::uwvm::wasm::value_type::i32 || num2.vt != ::uwvm::wasm::value_type::i32) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data type is not i32."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
-
-            ::fast_io::fast_terminate();
-        }
-
-        sm.stack.push_unchecked(stack_t{.i32{static_cast<::std::int_least32_t>(num1.i32 == num2.i32)}, .vt{::uwvm::wasm::value_type::i32}});
-
-                auto next_op{curr_opt + 1}; next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
+        auto next_op{curr_opt + 1};
+        next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
     }
 
 #if __has_cpp_attribute(__gnu__::__hot__)
@@ -4326,72 +1971,16 @@ namespace uwvm::vm::unchecked_interpreter::func
         i32_ne(::std::byte const* curr,
                ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-              ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+               ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
     {
-        if(sm.stack.size() < 2) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data stack is empty."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
 
-            ::fast_io::fast_terminate();
-        }
+        auto const num2{details::pop_get_val(stack_curr)};
+        auto const num1{details::pop_get_val(stack_curr)};
 
-        auto const num2{sm.stack.pop_element_unchecked()};
-        auto const num1{sm.stack.pop_element_unchecked()};
+        details::push(stack_curr, stack_t{.i32{static_cast<::std::int_least32_t>(num1.i32 != num2.i32)}});
 
-        if(num1.vt != ::uwvm::wasm::value_type::i32 || num2.vt != ::uwvm::wasm::value_type::i32) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data type is not i32."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
-
-            ::fast_io::fast_terminate();
-        }
-
-        sm.stack.push_unchecked(stack_t{.i32{static_cast<::std::int_least32_t>(num1.i32 != num2.i32)}, .vt{::uwvm::wasm::value_type::i32}});
-
-                auto next_op{curr_opt + 1}; next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
+        auto next_op{curr_opt + 1};
+        next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
     }
 
 #if __has_cpp_attribute(__gnu__::__hot__)
@@ -4401,72 +1990,15 @@ namespace uwvm::vm::unchecked_interpreter::func
         i32_lt_s(::std::byte const* curr,
                  ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                  ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                 ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
     {
-        if(sm.stack.size() < 2) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data stack is empty."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
+        auto const num2{details::pop_get_val(stack_curr)};
+        auto const num1{details::pop_get_val(stack_curr)};
 
-            ::fast_io::fast_terminate();
-        }
+        details::push(stack_curr, stack_t{.i32{static_cast<::std::int_least32_t>(num1.i32 < num2.i32)}});
 
-        auto const num2{sm.stack.pop_element_unchecked()};
-        auto const num1{sm.stack.pop_element_unchecked()};
-
-        if(num1.vt != ::uwvm::wasm::value_type::i32 || num2.vt != ::uwvm::wasm::value_type::i32) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data type is not i32."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
-
-            ::fast_io::fast_terminate();
-        }
-
-        sm.stack.push_unchecked(stack_t{.i32{static_cast<::std::int_least32_t>(num1.i32 < num2.i32)}, .vt{::uwvm::wasm::value_type::i32}});
-
-                auto next_op{curr_opt + 1}; next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
+        auto next_op{curr_opt + 1};
+        next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
     }
 
 #if __has_cpp_attribute(__gnu__::__hot__)
@@ -4476,74 +2008,17 @@ namespace uwvm::vm::unchecked_interpreter::func
         i32_lt_u(::std::byte const* curr,
                  ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                  ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                 ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
     {
-        if(sm.stack.size() < 2) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data stack is empty."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
+        auto const num2{details::pop_get_val(stack_curr)};
+        auto const num1{details::pop_get_val(stack_curr)};
 
-            ::fast_io::fast_terminate();
-        }
+        details::push(
+            stack_curr,
+            stack_t{.i32{static_cast<::std::int_least32_t>(static_cast<::std::uint_least32_t>(num1.i32) < static_cast<::std::uint_least32_t>(num2.i32))}});
 
-        auto const num2{sm.stack.pop_element_unchecked()};
-        auto const num1{sm.stack.pop_element_unchecked()};
-
-        if(num1.vt != ::uwvm::wasm::value_type::i32 || num2.vt != ::uwvm::wasm::value_type::i32) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data type is not i32."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
-
-            ::fast_io::fast_terminate();
-        }
-
-        sm.stack.push_unchecked(
-            stack_t{.i32{static_cast<::std::int_least32_t>(static_cast<::std::uint_least32_t>(num1.i32) < static_cast<::std::uint_least32_t>(num2.i32))},
-                    .vt{::uwvm::wasm::value_type::i32}});
-
-                auto next_op{curr_opt + 1}; next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
+        auto next_op{curr_opt + 1};
+        next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
     }
 
 #if __has_cpp_attribute(__gnu__::__hot__)
@@ -4553,72 +2028,16 @@ namespace uwvm::vm::unchecked_interpreter::func
         i32_gt_s(::std::byte const* curr,
                  ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                  ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                 ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
     {
-        if(sm.stack.size() < 2) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data stack is empty."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
 
-            ::fast_io::fast_terminate();
-        }
+        auto const num2{details::pop_get_val(stack_curr)};
+        auto const num1{details::pop_get_val(stack_curr)};
 
-        auto const num2{sm.stack.pop_element_unchecked()};
-        auto const num1{sm.stack.pop_element_unchecked()};
+        details::push(stack_curr, stack_t{.i32{static_cast<::std::int_least32_t>(num1.i32 > num2.i32)}});
 
-        if(num1.vt != ::uwvm::wasm::value_type::i32 || num2.vt != ::uwvm::wasm::value_type::i32) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data type is not i32."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
-
-            ::fast_io::fast_terminate();
-        }
-
-        sm.stack.push_unchecked(stack_t{.i32{static_cast<::std::int_least32_t>(num1.i32 > num2.i32)}, .vt{::uwvm::wasm::value_type::i32}});
-
-                auto next_op{curr_opt + 1}; next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
+        auto next_op{curr_opt + 1};
+        next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
     }
 
 #if __has_cpp_attribute(__gnu__::__hot__)
@@ -4628,74 +2047,18 @@ namespace uwvm::vm::unchecked_interpreter::func
         i32_gt_u(::std::byte const* curr,
                  ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                  ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                 ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
     {
-        if(sm.stack.size() < 2) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data stack is empty."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
 
-            ::fast_io::fast_terminate();
-        }
+        auto const num2{details::pop_get_val(stack_curr)};
+        auto const num1{details::pop_get_val(stack_curr)};
 
-        auto const num2{sm.stack.pop_element_unchecked()};
-        auto const num1{sm.stack.pop_element_unchecked()};
+        details::push(
+            stack_curr,
+            stack_t{.i32{static_cast<::std::int_least32_t>(static_cast<::std::uint_least32_t>(num1.i32) > static_cast<::std::uint_least32_t>(num2.i32))}});
 
-        if(num1.vt != ::uwvm::wasm::value_type::i32 || num2.vt != ::uwvm::wasm::value_type::i32) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data type is not i32."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
-
-            ::fast_io::fast_terminate();
-        }
-
-        sm.stack.push_unchecked(
-            stack_t{.i32{static_cast<::std::int_least32_t>(static_cast<::std::uint_least32_t>(num1.i32) > static_cast<::std::uint_least32_t>(num2.i32))},
-                    .vt{::uwvm::wasm::value_type::i32}});
-
-                auto next_op{curr_opt + 1}; next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
+        auto next_op{curr_opt + 1};
+        next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
     }
 
 #if __has_cpp_attribute(__gnu__::__hot__)
@@ -4705,72 +2068,16 @@ namespace uwvm::vm::unchecked_interpreter::func
         i32_le_s(::std::byte const* curr,
                  ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                  ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                 ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
     {
-        if(sm.stack.size() < 2) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data stack is empty."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
 
-            ::fast_io::fast_terminate();
-        }
+        auto const num2{details::pop_get_val(stack_curr)};
+        auto const num1{details::pop_get_val(stack_curr)};
 
-        auto const num2{sm.stack.pop_element_unchecked()};
-        auto const num1{sm.stack.pop_element_unchecked()};
+        details::push(stack_curr, stack_t{.i32{static_cast<::std::int_least32_t>(num1.i32 <= num2.i32)}});
 
-        if(num1.vt != ::uwvm::wasm::value_type::i32 || num2.vt != ::uwvm::wasm::value_type::i32) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data type is not i32."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
-
-            ::fast_io::fast_terminate();
-        }
-
-        sm.stack.push_unchecked(stack_t{.i32{static_cast<::std::int_least32_t>(num1.i32 <= num2.i32)}, .vt{::uwvm::wasm::value_type::i32}});
-
-                auto next_op{curr_opt + 1}; next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
+        auto next_op{curr_opt + 1};
+        next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
     }
 
 #if __has_cpp_attribute(__gnu__::__hot__)
@@ -4780,74 +2087,18 @@ namespace uwvm::vm::unchecked_interpreter::func
         i32_le_u(::std::byte const* curr,
                  ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                  ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                 ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
     {
-        if(sm.stack.size() < 2) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data stack is empty."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
 
-            ::fast_io::fast_terminate();
-        }
+        auto const num2{details::pop_get_val(stack_curr)};
+        auto const num1{details::pop_get_val(stack_curr)};
 
-        auto const num2{sm.stack.pop_element_unchecked()};
-        auto const num1{sm.stack.pop_element_unchecked()};
+        details::push(
+            stack_curr,
+            stack_t{.i32{static_cast<::std::int_least32_t>(static_cast<::std::uint_least32_t>(num1.i32) <= static_cast<::std::uint_least32_t>(num2.i32))}});
 
-        if(num1.vt != ::uwvm::wasm::value_type::i32 || num2.vt != ::uwvm::wasm::value_type::i32) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data type is not i32."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
-
-            ::fast_io::fast_terminate();
-        }
-
-        sm.stack.push_unchecked(
-            stack_t{.i32{static_cast<::std::int_least32_t>(static_cast<::std::uint_least32_t>(num1.i32) <= static_cast<::std::uint_least32_t>(num2.i32))},
-                    .vt{::uwvm::wasm::value_type::i32}});
-
-                auto next_op{curr_opt + 1}; next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
+        auto next_op{curr_opt + 1};
+        next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
     }
 
 #if __has_cpp_attribute(__gnu__::__hot__)
@@ -4857,72 +2108,16 @@ namespace uwvm::vm::unchecked_interpreter::func
         i32_ge_s(::std::byte const* curr,
                  ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                  ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                 ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
     {
-        if(sm.stack.size() < 2) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data stack is empty."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
 
-            ::fast_io::fast_terminate();
-        }
+        auto const num2{details::pop_get_val(stack_curr)};
+        auto const num1{details::pop_get_val(stack_curr)};
 
-        auto const num2{sm.stack.pop_element_unchecked()};
-        auto const num1{sm.stack.pop_element_unchecked()};
+        details::push(stack_curr, stack_t{.i32{static_cast<::std::int_least32_t>(num1.i32 >= num2.i32)}});
 
-        if(num1.vt != ::uwvm::wasm::value_type::i32 || num2.vt != ::uwvm::wasm::value_type::i32) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data type is not i32."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
-
-            ::fast_io::fast_terminate();
-        }
-
-        sm.stack.push_unchecked(stack_t{.i32{static_cast<::std::int_least32_t>(num1.i32 >= num2.i32)}, .vt{::uwvm::wasm::value_type::i32}});
-
-                auto next_op{curr_opt + 1}; next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
+        auto next_op{curr_opt + 1};
+        next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
     }
 
 #if __has_cpp_attribute(__gnu__::__hot__)
@@ -4932,74 +2127,17 @@ namespace uwvm::vm::unchecked_interpreter::func
         i32_ge_u(::std::byte const* curr,
                  ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                  ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                 ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
     {
-        if(sm.stack.size() < 2) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data stack is empty."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
+        auto const num2{details::pop_get_val(stack_curr)};
+        auto const num1{details::pop_get_val(stack_curr)};
 
-            ::fast_io::fast_terminate();
-        }
+        details::push(
+            stack_curr,
+            stack_t{.i32{static_cast<::std::int_least32_t>(static_cast<::std::uint_least32_t>(num1.i32) >= static_cast<::std::uint_least32_t>(num2.i32))}});
 
-        auto const num2{sm.stack.pop_element_unchecked()};
-        auto const num1{sm.stack.pop_element_unchecked()};
-
-        if(num1.vt != ::uwvm::wasm::value_type::i32 || num2.vt != ::uwvm::wasm::value_type::i32) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data type is not i32."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
-
-            ::fast_io::fast_terminate();
-        }
-
-        sm.stack.push_unchecked(
-            stack_t{.i32{static_cast<::std::int_least32_t>(static_cast<::std::uint_least32_t>(num1.i32) >= static_cast<::std::uint_least32_t>(num2.i32))},
-                    .vt{::uwvm::wasm::value_type::i32}});
-
-                auto next_op{curr_opt + 1}; next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
+        auto next_op{curr_opt + 1};
+        next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
     }
 
 #if __has_cpp_attribute(__gnu__::__hot__)
@@ -5009,71 +2147,14 @@ namespace uwvm::vm::unchecked_interpreter::func
         i64_eqz(::std::byte const* curr,
                 ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                 ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-               ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
     {
-        if(sm.stack.empty()) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data stack is empty."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
 
-            ::fast_io::fast_terminate();
-        }
+        auto const num{details::pop_get_val(stack_curr)};
+        details::push(stack_curr, stack_t{.i32{static_cast<::std::int_least32_t>(num.i64 == 0)}});
 
-        auto const num{sm.stack.pop_element_unchecked()};
-
-        if(num.vt != ::uwvm::wasm::value_type::i64) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data type is not i64."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
-
-            ::fast_io::fast_terminate();
-        }
-
-        sm.stack.push_unchecked(stack_t{.i32{static_cast<::std::int_least32_t>(num.i64 == 0)}, .vt{::uwvm::wasm::value_type::i32}});
-
-                auto next_op{curr_opt + 1}; next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
+        auto next_op{curr_opt + 1};
+        next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
     }
 
 #if __has_cpp_attribute(__gnu__::__hot__)
@@ -5083,72 +2164,16 @@ namespace uwvm::vm::unchecked_interpreter::func
         i64_eq(::std::byte const* curr,
                ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-              ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+               ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
     {
-        if(sm.stack.size() < 2) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data stack is empty."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
 
-            ::fast_io::fast_terminate();
-        }
+        auto const num2{details::pop_get_val(stack_curr)};
+        auto const num1{details::pop_get_val(stack_curr)};
 
-        auto const num2{sm.stack.pop_element_unchecked()};
-        auto const num1{sm.stack.pop_element_unchecked()};
+        details::push(stack_curr, stack_t{.i32{static_cast<::std::int_least32_t>(num1.i64 == num2.i64)}});
 
-        if(num1.vt != ::uwvm::wasm::value_type::i64 || num2.vt != ::uwvm::wasm::value_type::i64) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data type is not i64."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
-
-            ::fast_io::fast_terminate();
-        }
-
-        sm.stack.push_unchecked(stack_t{.i32{static_cast<::std::int_least32_t>(num1.i64 == num2.i64)}, .vt{::uwvm::wasm::value_type::i32}});
-
-                auto next_op{curr_opt + 1}; next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
+        auto next_op{curr_opt + 1};
+        next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
     }
 
 #if __has_cpp_attribute(__gnu__::__hot__)
@@ -5158,72 +2183,16 @@ namespace uwvm::vm::unchecked_interpreter::func
         i64_ne(::std::byte const* curr,
                ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-              ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+               ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
     {
-        if(sm.stack.size() < 2) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data stack is empty."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
 
-            ::fast_io::fast_terminate();
-        }
+        auto const num2{details::pop_get_val(stack_curr)};
+        auto const num1{details::pop_get_val(stack_curr)};
 
-        auto const num2{sm.stack.pop_element_unchecked()};
-        auto const num1{sm.stack.pop_element_unchecked()};
+        details::push(stack_curr, stack_t{.i32{static_cast<::std::int_least32_t>(num1.i64 != num2.i64)}});
 
-        if(num1.vt != ::uwvm::wasm::value_type::i64 || num2.vt != ::uwvm::wasm::value_type::i64) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data type is not i64."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
-
-            ::fast_io::fast_terminate();
-        }
-
-        sm.stack.push_unchecked(stack_t{.i32{static_cast<::std::int_least32_t>(num1.i64 != num2.i64)}, .vt{::uwvm::wasm::value_type::i32}});
-
-                auto next_op{curr_opt + 1}; next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
+        auto next_op{curr_opt + 1};
+        next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
     }
 
 #if __has_cpp_attribute(__gnu__::__hot__)
@@ -5233,72 +2202,15 @@ namespace uwvm::vm::unchecked_interpreter::func
         i64_lt_s(::std::byte const* curr,
                  ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                  ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                 ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
     {
-        if(sm.stack.size() < 2) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data stack is empty."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
+        auto const num2{details::pop_get_val(stack_curr)};
+        auto const num1{details::pop_get_val(stack_curr)};
 
-            ::fast_io::fast_terminate();
-        }
+        details::push(stack_curr, stack_t{.i32{static_cast<::std::int_least32_t>(num1.i64 < num2.i64)}});
 
-        auto const num2{sm.stack.pop_element_unchecked()};
-        auto const num1{sm.stack.pop_element_unchecked()};
-
-        if(num1.vt != ::uwvm::wasm::value_type::i64 || num2.vt != ::uwvm::wasm::value_type::i64) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data type is not i64."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
-
-            ::fast_io::fast_terminate();
-        }
-
-        sm.stack.push_unchecked(stack_t{.i32{static_cast<::std::int_least32_t>(num1.i64 < num2.i64)}, .vt{::uwvm::wasm::value_type::i32}});
-
-                auto next_op{curr_opt + 1}; next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
+        auto next_op{curr_opt + 1};
+        next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
     }
 
 #if __has_cpp_attribute(__gnu__::__hot__)
@@ -5308,74 +2220,17 @@ namespace uwvm::vm::unchecked_interpreter::func
         i64_lt_u(::std::byte const* curr,
                  ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                  ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                 ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
     {
-        if(sm.stack.size() < 2) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data stack is empty."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
+        auto const num2{details::pop_get_val(stack_curr)};
+        auto const num1{details::pop_get_val(stack_curr)};
 
-            ::fast_io::fast_terminate();
-        }
+        details::push(
+            stack_curr,
+            stack_t{.i32{static_cast<::std::int_least32_t>(static_cast<::std::uint_least64_t>(num1.i64) < static_cast<::std::uint_least64_t>(num2.i64))}});
 
-        auto const num2{sm.stack.pop_element_unchecked()};
-        auto const num1{sm.stack.pop_element_unchecked()};
-
-        if(num1.vt != ::uwvm::wasm::value_type::i64 || num2.vt != ::uwvm::wasm::value_type::i64) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data type is not i64."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
-
-            ::fast_io::fast_terminate();
-        }
-
-        sm.stack.push_unchecked(
-            stack_t{.i32{static_cast<::std::int_least32_t>(static_cast<::std::uint_least64_t>(num1.i64) < static_cast<::std::uint_least64_t>(num2.i64))},
-                    .vt{::uwvm::wasm::value_type::i32}});
-
-                auto next_op{curr_opt + 1}; next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
+        auto next_op{curr_opt + 1};
+        next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
     }
 
 #if __has_cpp_attribute(__gnu__::__hot__)
@@ -5385,72 +2240,15 @@ namespace uwvm::vm::unchecked_interpreter::func
         i64_gt_s(::std::byte const* curr,
                  ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                  ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                 ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
     {
-        if(sm.stack.size() < 2) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data stack is empty."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
+        auto const num2{details::pop_get_val(stack_curr)};
+        auto const num1{details::pop_get_val(stack_curr)};
 
-            ::fast_io::fast_terminate();
-        }
+        details::push(stack_curr, stack_t{.i32{static_cast<::std::int_least32_t>(num1.i64 > num2.i64)}});
 
-        auto const num2{sm.stack.pop_element_unchecked()};
-        auto const num1{sm.stack.pop_element_unchecked()};
-
-        if(num1.vt != ::uwvm::wasm::value_type::i64 || num2.vt != ::uwvm::wasm::value_type::i64) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data type is not i64."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
-
-            ::fast_io::fast_terminate();
-        }
-
-        sm.stack.push_unchecked(stack_t{.i32{static_cast<::std::int_least32_t>(num1.i64 > num2.i64)}, .vt{::uwvm::wasm::value_type::i32}});
-
-                auto next_op{curr_opt + 1}; next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
+        auto next_op{curr_opt + 1};
+        next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
     }
 
 #if __has_cpp_attribute(__gnu__::__hot__)
@@ -5460,74 +2258,17 @@ namespace uwvm::vm::unchecked_interpreter::func
         i64_gt_u(::std::byte const* curr,
                  ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                  ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                 ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
     {
-        if(sm.stack.size() < 2) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data stack is empty."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
+        auto const num2{details::pop_get_val(stack_curr)};
+        auto const num1{details::pop_get_val(stack_curr)};
 
-            ::fast_io::fast_terminate();
-        }
+        details::push(
+            stack_curr,
+            stack_t{.i32{static_cast<::std::int_least32_t>(static_cast<::std::uint_least64_t>(num1.i64) > static_cast<::std::uint_least64_t>(num2.i64))}});
 
-        auto const num2{sm.stack.pop_element_unchecked()};
-        auto const num1{sm.stack.pop_element_unchecked()};
-
-        if(num1.vt != ::uwvm::wasm::value_type::i64 || num2.vt != ::uwvm::wasm::value_type::i64) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data type is not i64."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
-
-            ::fast_io::fast_terminate();
-        }
-
-        sm.stack.push_unchecked(
-            stack_t{.i32{static_cast<::std::int_least32_t>(static_cast<::std::uint_least64_t>(num1.i64) > static_cast<::std::uint_least64_t>(num2.i64))},
-                    .vt{::uwvm::wasm::value_type::i32}});
-
-                auto next_op{curr_opt + 1}; next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
+        auto next_op{curr_opt + 1};
+        next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
     }
 
 #if __has_cpp_attribute(__gnu__::__hot__)
@@ -5537,72 +2278,15 @@ namespace uwvm::vm::unchecked_interpreter::func
         i64_le_s(::std::byte const* curr,
                  ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                  ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                 ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
     {
-        if(sm.stack.size() < 2) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data stack is empty."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
+        auto const num2{details::pop_get_val(stack_curr)};
+        auto const num1{details::pop_get_val(stack_curr)};
 
-            ::fast_io::fast_terminate();
-        }
+        details::push(stack_curr, stack_t{.i32{static_cast<::std::int_least32_t>(num1.i64 <= num2.i64)}});
 
-        auto const num2{sm.stack.pop_element_unchecked()};
-        auto const num1{sm.stack.pop_element_unchecked()};
-
-        if(num1.vt != ::uwvm::wasm::value_type::i64 || num2.vt != ::uwvm::wasm::value_type::i64) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data type is not i64."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
-
-            ::fast_io::fast_terminate();
-        }
-
-        sm.stack.push_unchecked(stack_t{.i32{static_cast<::std::int_least32_t>(num1.i64 <= num2.i64)}, .vt{::uwvm::wasm::value_type::i32}});
-
-                auto next_op{curr_opt + 1}; next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
+        auto next_op{curr_opt + 1};
+        next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
     }
 
 #if __has_cpp_attribute(__gnu__::__hot__)
@@ -5612,74 +2296,18 @@ namespace uwvm::vm::unchecked_interpreter::func
         i64_le_u(::std::byte const* curr,
                  ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                  ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                 ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
     {
-        if(sm.stack.size() < 2) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data stack is empty."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
 
-            ::fast_io::fast_terminate();
-        }
+        auto const num2{details::pop_get_val(stack_curr)};
+        auto const num1{details::pop_get_val(stack_curr)};
 
-        auto const num2{sm.stack.pop_element_unchecked()};
-        auto const num1{sm.stack.pop_element_unchecked()};
+        details::push(
+            stack_curr,
+            stack_t{.i32{static_cast<::std::int_least32_t>(static_cast<::std::uint_least64_t>(num1.i64) <= static_cast<::std::uint_least64_t>(num2.i64))}});
 
-        if(num1.vt != ::uwvm::wasm::value_type::i64 || num2.vt != ::uwvm::wasm::value_type::i64) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data type is not i64."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
-
-            ::fast_io::fast_terminate();
-        }
-
-        sm.stack.push_unchecked(
-            stack_t{.i32{static_cast<::std::int_least32_t>(static_cast<::std::uint_least64_t>(num1.i64) <= static_cast<::std::uint_least64_t>(num2.i64))},
-                    .vt{::uwvm::wasm::value_type::i32}});
-
-                auto next_op{curr_opt + 1}; next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
+        auto next_op{curr_opt + 1};
+        next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
     }
 
 #if __has_cpp_attribute(__gnu__::__hot__)
@@ -5689,72 +2317,15 @@ namespace uwvm::vm::unchecked_interpreter::func
         i64_ge_s(::std::byte const* curr,
                  ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                  ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                 ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
     {
-        if(sm.stack.size() < 2) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data stack is empty."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
+        auto const num2{details::pop_get_val(stack_curr)};
+        auto const num1{details::pop_get_val(stack_curr)};
 
-            ::fast_io::fast_terminate();
-        }
+        details::push(stack_curr, stack_t{.i32{static_cast<::std::int_least32_t>(num1.i64 >= num2.i64)}});
 
-        auto const num2{sm.stack.pop_element_unchecked()};
-        auto const num1{sm.stack.pop_element_unchecked()};
-
-        if(num1.vt != ::uwvm::wasm::value_type::i64 || num2.vt != ::uwvm::wasm::value_type::i64) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data type is not i64."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
-
-            ::fast_io::fast_terminate();
-        }
-
-        sm.stack.push_unchecked(stack_t{.i32{static_cast<::std::int_least32_t>(num1.i64 >= num2.i64)}, .vt{::uwvm::wasm::value_type::i32}});
-
-                auto next_op{curr_opt + 1}; next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
+        auto next_op{curr_opt + 1};
+        next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
     }
 
 #if __has_cpp_attribute(__gnu__::__hot__)
@@ -5764,74 +2335,17 @@ namespace uwvm::vm::unchecked_interpreter::func
         i64_ge_u(::std::byte const* curr,
                  ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                  ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                 ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
     {
-        if(sm.stack.size() < 2) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data stack is empty."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
+        auto const num2{details::pop_get_val(stack_curr)};
+        auto const num1{details::pop_get_val(stack_curr)};
 
-            ::fast_io::fast_terminate();
-        }
+        details::push(
+            stack_curr,
+            stack_t{.i32{static_cast<::std::int_least32_t>(static_cast<::std::uint_least64_t>(num1.i64) >= static_cast<::std::uint_least64_t>(num2.i64))}});
 
-        auto const num2{sm.stack.pop_element_unchecked()};
-        auto const num1{sm.stack.pop_element_unchecked()};
-
-        if(num1.vt != ::uwvm::wasm::value_type::i64 || num2.vt != ::uwvm::wasm::value_type::i64) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data type is not i64."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
-
-            ::fast_io::fast_terminate();
-        }
-
-        sm.stack.push_unchecked(
-            stack_t{.i32{static_cast<::std::int_least32_t>(static_cast<::std::uint_least64_t>(num1.i64) >= static_cast<::std::uint_least64_t>(num2.i64))},
-                    .vt{::uwvm::wasm::value_type::i32}});
-
-                auto next_op{curr_opt + 1}; next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
+        auto next_op{curr_opt + 1};
+        next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
     }
 
 #if __has_cpp_attribute(__gnu__::__hot__)
@@ -5841,72 +2355,16 @@ namespace uwvm::vm::unchecked_interpreter::func
         f32_eq(::std::byte const* curr,
                ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-              ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+               ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
     {
-        if(sm.stack.size() < 2) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data stack is empty."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
 
-            ::fast_io::fast_terminate();
-        }
+        auto const num2{details::pop_get_val(stack_curr)};
+        auto const num1{details::pop_get_val(stack_curr)};
 
-        auto const num2{sm.stack.pop_element_unchecked()};
-        auto const num1{sm.stack.pop_element_unchecked()};
+        details::push(stack_curr, stack_t{.i32{static_cast<::std::int_least32_t>(num1.f32 == num2.f32)}});
 
-        if(num1.vt != ::uwvm::wasm::value_type::f32 || num2.vt != ::uwvm::wasm::value_type::f32) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data type is not f32."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
-
-            ::fast_io::fast_terminate();
-        }
-
-        sm.stack.push_unchecked(stack_t{.i32{static_cast<::std::int_least32_t>(num1.f32 == num2.f32)}, .vt{::uwvm::wasm::value_type::i32}});
-
-                auto next_op{curr_opt + 1}; next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
+        auto next_op{curr_opt + 1};
+        next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
     }
 
 #if __has_cpp_attribute(__gnu__::__hot__)
@@ -5916,72 +2374,15 @@ namespace uwvm::vm::unchecked_interpreter::func
         f32_ne(::std::byte const* curr,
                ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-              ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+               ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
     {
-        if(sm.stack.size() < 2) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data stack is empty."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
+        auto const num2{details::pop_get_val(stack_curr)};
+        auto const num1{details::pop_get_val(stack_curr)};
 
-            ::fast_io::fast_terminate();
-        }
+        details::push(stack_curr, stack_t{.i32{static_cast<::std::int_least32_t>(num1.f32 != num2.f32)}});
 
-        auto const num2{sm.stack.pop_element_unchecked()};
-        auto const num1{sm.stack.pop_element_unchecked()};
-
-        if(num1.vt != ::uwvm::wasm::value_type::f32 || num2.vt != ::uwvm::wasm::value_type::f32) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data type is not f32."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
-
-            ::fast_io::fast_terminate();
-        }
-
-        sm.stack.push_unchecked(stack_t{.i32{static_cast<::std::int_least32_t>(num1.f32 != num2.f32)}, .vt{::uwvm::wasm::value_type::i32}});
-
-                auto next_op{curr_opt + 1}; next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
+        auto next_op{curr_opt + 1};
+        next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
     }
 
 #if __has_cpp_attribute(__gnu__::__hot__)
@@ -5991,72 +2392,15 @@ namespace uwvm::vm::unchecked_interpreter::func
         f32_lt(::std::byte const* curr,
                ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-              ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+               ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
     {
-        if(sm.stack.size() < 2) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data stack is empty."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
+        auto const num2{details::pop_get_val(stack_curr)};
+        auto const num1{details::pop_get_val(stack_curr)};
 
-            ::fast_io::fast_terminate();
-        }
+        details::push(stack_curr, stack_t{.i32{static_cast<::std::int_least32_t>(num1.f32 < num2.f32)}});
 
-        auto const num2{sm.stack.pop_element_unchecked()};
-        auto const num1{sm.stack.pop_element_unchecked()};
-
-        if(num1.vt != ::uwvm::wasm::value_type::f32 || num2.vt != ::uwvm::wasm::value_type::f32) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data type is not f32."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
-
-            ::fast_io::fast_terminate();
-        }
-
-        sm.stack.push_unchecked(stack_t{.i32{static_cast<::std::int_least32_t>(num1.f32 < num2.f32)}, .vt{::uwvm::wasm::value_type::i32}});
-
-                auto next_op{curr_opt + 1}; next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
+        auto next_op{curr_opt + 1};
+        next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
     }
 
 #if __has_cpp_attribute(__gnu__::__hot__)
@@ -6066,72 +2410,15 @@ namespace uwvm::vm::unchecked_interpreter::func
         f32_gt(::std::byte const* curr,
                ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-              ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+               ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
     {
-        if(sm.stack.size() < 2) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data stack is empty."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
+        auto const num2{details::pop_get_val(stack_curr)};
+        auto const num1{details::pop_get_val(stack_curr)};
 
-            ::fast_io::fast_terminate();
-        }
+        details::push(stack_curr, stack_t{.i32{static_cast<::std::int_least32_t>(num1.f32 > num2.f32)}});
 
-        auto const num2{sm.stack.pop_element_unchecked()};
-        auto const num1{sm.stack.pop_element_unchecked()};
-
-        if(num1.vt != ::uwvm::wasm::value_type::f32 || num2.vt != ::uwvm::wasm::value_type::f32) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data type is not f32."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
-
-            ::fast_io::fast_terminate();
-        }
-
-        sm.stack.push_unchecked(stack_t{.i32{static_cast<::std::int_least32_t>(num1.f32 > num2.f32)}, .vt{::uwvm::wasm::value_type::i32}});
-
-                auto next_op{curr_opt + 1}; next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
+        auto next_op{curr_opt + 1};
+        next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
     }
 
 #if __has_cpp_attribute(__gnu__::__hot__)
@@ -6141,72 +2428,15 @@ namespace uwvm::vm::unchecked_interpreter::func
         f32_le(::std::byte const* curr,
                ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-              ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+               ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
     {
-        if(sm.stack.size() < 2) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data stack is empty."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
+        auto const num2{details::pop_get_val(stack_curr)};
+        auto const num1{details::pop_get_val(stack_curr)};
 
-            ::fast_io::fast_terminate();
-        }
+        details::push(stack_curr, stack_t{.i32{static_cast<::std::int_least32_t>(num1.f32 <= num2.f32)}});
 
-        auto const num2{sm.stack.pop_element_unchecked()};
-        auto const num1{sm.stack.pop_element_unchecked()};
-
-        if(num1.vt != ::uwvm::wasm::value_type::f32 || num2.vt != ::uwvm::wasm::value_type::f32) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data type is not f32."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
-
-            ::fast_io::fast_terminate();
-        }
-
-        sm.stack.push_unchecked(stack_t{.i32{static_cast<::std::int_least32_t>(num1.f32 <= num2.f32)}, .vt{::uwvm::wasm::value_type::i32}});
-
-                auto next_op{curr_opt + 1}; next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
+        auto next_op{curr_opt + 1};
+        next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
     }
 
 #if __has_cpp_attribute(__gnu__::__hot__)
@@ -6216,72 +2446,15 @@ namespace uwvm::vm::unchecked_interpreter::func
         f32_ge(::std::byte const* curr,
                ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-              ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+               ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
     {
-        if(sm.stack.size() < 2) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data stack is empty."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
+        auto const num2{details::pop_get_val(stack_curr)};
+        auto const num1{details::pop_get_val(stack_curr)};
 
-            ::fast_io::fast_terminate();
-        }
+        details::push(stack_curr, stack_t{.i32{static_cast<::std::int_least32_t>(num1.f32 >= num2.f32)}});
 
-        auto const num2{sm.stack.pop_element_unchecked()};
-        auto const num1{sm.stack.pop_element_unchecked()};
-
-        if(num1.vt != ::uwvm::wasm::value_type::f32 || num2.vt != ::uwvm::wasm::value_type::f32) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data type is not f32."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
-
-            ::fast_io::fast_terminate();
-        }
-
-        sm.stack.push_unchecked(stack_t{.i32{static_cast<::std::int_least32_t>(num1.f32 >= num2.f32)}, .vt{::uwvm::wasm::value_type::i32}});
-
-                auto next_op{curr_opt + 1}; next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
+        auto next_op{curr_opt + 1};
+        next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
     }
 
 #if __has_cpp_attribute(__gnu__::__hot__)
@@ -6291,72 +2464,15 @@ namespace uwvm::vm::unchecked_interpreter::func
         f64_eq(::std::byte const* curr,
                ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-              ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+               ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
     {
-        if(sm.stack.size() < 2) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data stack is empty."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
+        auto const num2{details::pop_get_val(stack_curr)};
+        auto const num1{details::pop_get_val(stack_curr)};
 
-            ::fast_io::fast_terminate();
-        }
+        details::push(stack_curr, stack_t{.i32{static_cast<::std::int_least32_t>(num1.f64 == num2.f64)}});
 
-        auto const num2{sm.stack.pop_element_unchecked()};
-        auto const num1{sm.stack.pop_element_unchecked()};
-
-        if(num1.vt != ::uwvm::wasm::value_type::f64 || num2.vt != ::uwvm::wasm::value_type::f64) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data type is not f64."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
-
-            ::fast_io::fast_terminate();
-        }
-
-        sm.stack.push_unchecked(stack_t{.i32{static_cast<::std::int_least32_t>(num1.f64 == num2.f64)}, .vt{::uwvm::wasm::value_type::i32}});
-
-                auto next_op{curr_opt + 1}; next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
+        auto next_op{curr_opt + 1};
+        next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
     }
 
 #if __has_cpp_attribute(__gnu__::__hot__)
@@ -6366,72 +2482,15 @@ namespace uwvm::vm::unchecked_interpreter::func
         f64_ne(::std::byte const* curr,
                ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-              ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+               ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
     {
-        if(sm.stack.size() < 2) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data stack is empty."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
+        auto const num2{details::pop_get_val(stack_curr)};
+        auto const num1{details::pop_get_val(stack_curr)};
 
-            ::fast_io::fast_terminate();
-        }
+        details::push(stack_curr, stack_t{.i32{static_cast<::std::int_least32_t>(num1.f64 != num2.f64)}});
 
-        auto const num2{sm.stack.pop_element_unchecked()};
-        auto const num1{sm.stack.pop_element_unchecked()};
-
-        if(num1.vt != ::uwvm::wasm::value_type::f64 || num2.vt != ::uwvm::wasm::value_type::f64) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data type is not f64."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
-
-            ::fast_io::fast_terminate();
-        }
-
-        sm.stack.push_unchecked(stack_t{.i32{static_cast<::std::int_least32_t>(num1.f64 != num2.f64)}, .vt{::uwvm::wasm::value_type::i32}});
-
-                auto next_op{curr_opt + 1}; next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
+        auto next_op{curr_opt + 1};
+        next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
     }
 
 #if __has_cpp_attribute(__gnu__::__hot__)
@@ -6441,72 +2500,15 @@ namespace uwvm::vm::unchecked_interpreter::func
         f64_lt(::std::byte const* curr,
                ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-              ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+               ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
     {
-        if(sm.stack.size() < 2) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data stack is empty."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
+        auto const num2{details::pop_get_val(stack_curr)};
+        auto const num1{details::pop_get_val(stack_curr)};
 
-            ::fast_io::fast_terminate();
-        }
+        details::push(stack_curr, stack_t{.i32{static_cast<::std::int_least32_t>(num1.f64 < num2.f64)}});
 
-        auto const num2{sm.stack.pop_element_unchecked()};
-        auto const num1{sm.stack.pop_element_unchecked()};
-
-        if(num1.vt != ::uwvm::wasm::value_type::f64 || num2.vt != ::uwvm::wasm::value_type::f64) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data type is not f64."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
-
-            ::fast_io::fast_terminate();
-        }
-
-        sm.stack.push_unchecked(stack_t{.i32{static_cast<::std::int_least32_t>(num1.f64 < num2.f64)}, .vt{::uwvm::wasm::value_type::i32}});
-
-                auto next_op{curr_opt + 1}; next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
+        auto next_op{curr_opt + 1};
+        next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
     }
 
 #if __has_cpp_attribute(__gnu__::__hot__)
@@ -6516,72 +2518,16 @@ namespace uwvm::vm::unchecked_interpreter::func
         f64_gt(::std::byte const* curr,
                ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-              ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+               ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
     {
-        if(sm.stack.size() < 2) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data stack is empty."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
 
-            ::fast_io::fast_terminate();
-        }
+        auto const num2{details::pop_get_val(stack_curr)};
+        auto const num1{details::pop_get_val(stack_curr)};
 
-        auto const num2{sm.stack.pop_element_unchecked()};
-        auto const num1{sm.stack.pop_element_unchecked()};
+        details::push(stack_curr, stack_t{.i32{static_cast<::std::int_least32_t>(num1.f64 > num2.f64)}});
 
-        if(num1.vt != ::uwvm::wasm::value_type::f64 || num2.vt != ::uwvm::wasm::value_type::f64) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data type is not f64."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
-
-            ::fast_io::fast_terminate();
-        }
-
-        sm.stack.push_unchecked(stack_t{.i32{static_cast<::std::int_least32_t>(num1.f64 > num2.f64)}, .vt{::uwvm::wasm::value_type::i32}});
-
-                auto next_op{curr_opt + 1}; next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
+        auto next_op{curr_opt + 1};
+        next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
     }
 
 #if __has_cpp_attribute(__gnu__::__hot__)
@@ -6591,72 +2537,15 @@ namespace uwvm::vm::unchecked_interpreter::func
         f64_le(::std::byte const* curr,
                ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-              ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+               ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
     {
-        if(sm.stack.size() < 2) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data stack is empty."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
+        auto const num2{details::pop_get_val(stack_curr)};
+        auto const num1{details::pop_get_val(stack_curr)};
 
-            ::fast_io::fast_terminate();
-        }
+        details::push(stack_curr, stack_t{.i32{static_cast<::std::int_least32_t>(num1.f64 <= num2.f64)}});
 
-        auto const num2{sm.stack.pop_element_unchecked()};
-        auto const num1{sm.stack.pop_element_unchecked()};
-
-        if(num1.vt != ::uwvm::wasm::value_type::f64 || num2.vt != ::uwvm::wasm::value_type::f64) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data type is not f64."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
-
-            ::fast_io::fast_terminate();
-        }
-
-        sm.stack.push_unchecked(stack_t{.i32{static_cast<::std::int_least32_t>(num1.f64 <= num2.f64)}, .vt{::uwvm::wasm::value_type::i32}});
-
-                auto next_op{curr_opt + 1}; next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
+        auto next_op{curr_opt + 1};
+        next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
     }
 
 #if __has_cpp_attribute(__gnu__::__hot__)
@@ -6666,72 +2555,15 @@ namespace uwvm::vm::unchecked_interpreter::func
         f64_ge(::std::byte const* curr,
                ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-              ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+               ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
     {
-        if(sm.stack.size() < 2) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data stack is empty."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
+        auto const num2{details::pop_get_val(stack_curr)};
+        auto const num1{details::pop_get_val(stack_curr)};
 
-            ::fast_io::fast_terminate();
-        }
+        details::push(stack_curr, stack_t{.i32{static_cast<::std::int_least32_t>(num1.f64 >= num2.f64)}});
 
-        auto const num2{sm.stack.pop_element_unchecked()};
-        auto const num1{sm.stack.pop_element_unchecked()};
-
-        if(num1.vt != ::uwvm::wasm::value_type::f64 || num2.vt != ::uwvm::wasm::value_type::f64) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data type is not f64."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
-
-            ::fast_io::fast_terminate();
-        }
-
-        sm.stack.push_unchecked(stack_t{.i32{static_cast<::std::int_least32_t>(num1.f64 >= num2.f64)}, .vt{::uwvm::wasm::value_type::i32}});
-
-                auto next_op{curr_opt + 1}; next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
+        auto next_op{curr_opt + 1};
+        next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
     }
 
 #if __has_cpp_attribute(__gnu__::__hot__)
@@ -6741,72 +2573,14 @@ namespace uwvm::vm::unchecked_interpreter::func
         i32_clz(::std::byte const* curr,
                 ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                 ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-               ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
     {
-        if(sm.stack.empty()) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data stack is empty."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
+        auto const num{details::pop_get_val(stack_curr)};
 
-            ::fast_io::fast_terminate();
-        }
+        details::push(stack_curr, stack_t{.i32{static_cast<::std::int_least32_t>(::std::countl_zero(static_cast<::std::uint_least32_t>(num.i32)))}});
 
-        auto const num{sm.stack.pop_element_unchecked()};
-
-        if(num.vt != ::uwvm::wasm::value_type::i32) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data type is not i32."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
-
-            ::fast_io::fast_terminate();
-        }
-
-        sm.stack.push_unchecked(stack_t{.i32{static_cast<::std::int_least32_t>(::std::countl_zero(static_cast<::std::uint_least32_t>(num.i32)))},
-                                        .vt{::uwvm::wasm::value_type::i32}});
-
-                auto next_op{curr_opt + 1}; next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
+        auto next_op{curr_opt + 1};
+        next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
     }
 
 #if __has_cpp_attribute(__gnu__::__hot__)
@@ -6816,72 +2590,17 @@ namespace uwvm::vm::unchecked_interpreter::func
         i32_ctz(::std::byte const* curr,
                 ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                 ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-               ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
     {
-        if(sm.stack.empty()) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data stack is empty."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
+        auto const num{details::pop_get_val(stack_curr)};
 
-            ::fast_io::fast_terminate();
-        }
+        details::push(stack_curr,
+                      stack_t{
+                          .i32{static_cast<::std::int_least32_t>(::std::countr_zero(static_cast<::std::uint_least32_t>(num.i32)))},
+                      });
 
-        auto const num{sm.stack.pop_element_unchecked()};
-
-        if(num.vt != ::uwvm::wasm::value_type::i32) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data type is not i32."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
-
-            ::fast_io::fast_terminate();
-        }
-
-        sm.stack.push_unchecked(stack_t{.i32{static_cast<::std::int_least32_t>(::std::countr_zero(static_cast<::std::uint_least32_t>(num.i32)))},
-                                        .vt{::uwvm::wasm::value_type::i32}});
-
-                auto next_op{curr_opt + 1}; next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
+        auto next_op{curr_opt + 1};
+        next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
     }
 
 #if __has_cpp_attribute(__gnu__::__hot__)
@@ -6891,72 +2610,14 @@ namespace uwvm::vm::unchecked_interpreter::func
         i32_popcnt(::std::byte const* curr,
                    ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                    ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                  ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                   ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
     {
-        if(sm.stack.empty()) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data stack is empty."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
+        auto const num{details::pop_get_val(stack_curr)};
 
-            ::fast_io::fast_terminate();
-        }
+        details::push(stack_curr, stack_t{.i32{static_cast<::std::int_least32_t>(::std::popcount(static_cast<::std::uint_least32_t>(num.i32)))}});
 
-        auto const num{sm.stack.pop_element_unchecked()};
-
-        if(num.vt != ::uwvm::wasm::value_type::i32) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data type is not i32."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
-
-            ::fast_io::fast_terminate();
-        }
-
-        sm.stack.push_unchecked(
-            stack_t{.i32{static_cast<::std::int_least32_t>(::std::popcount(static_cast<::std::uint_least32_t>(num.i32)))}, .vt{::uwvm::wasm::value_type::i32}});
-
-                auto next_op{curr_opt + 1}; next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
+        auto next_op{curr_opt + 1};
+        next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
     }
 
 #if __has_cpp_attribute(__gnu__::__hot__)
@@ -6966,72 +2627,16 @@ namespace uwvm::vm::unchecked_interpreter::func
         i32_add(::std::byte const* curr,
                 ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                 ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-               ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
     {
-        if(sm.stack.size() < 2) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data stack is empty."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
 
-            ::fast_io::fast_terminate();
-        }
+        auto const num2{details::pop_get_val(stack_curr)};
+        auto const num1{details::pop_get_val(stack_curr)};
 
-        auto const num2{sm.stack.pop_element_unchecked()};
-        auto const num1{sm.stack.pop_element_unchecked()};
+        details::push(stack_curr, stack_t{.i32{static_cast<::std::int_least32_t>(num1.i32 + num2.i32)}});
 
-        if(num1.vt != ::uwvm::wasm::value_type::i32 || num2.vt != ::uwvm::wasm::value_type::i32) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data type is not i32."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
-
-            ::fast_io::fast_terminate();
-        }
-
-        sm.stack.push_unchecked(stack_t{.i32{static_cast<::std::int_least32_t>(num1.i32 + num2.i32)}, .vt{::uwvm::wasm::value_type::i32}});
-
-                auto next_op{curr_opt + 1}; next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
+        auto next_op{curr_opt + 1};
+        next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
     }
 
 #if __has_cpp_attribute(__gnu__::__hot__)
@@ -7041,72 +2646,16 @@ namespace uwvm::vm::unchecked_interpreter::func
         i32_sub(::std::byte const* curr,
                 ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                 ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-               ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
     {
-        if(sm.stack.size() < 2) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data stack is empty."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
 
-            ::fast_io::fast_terminate();
-        }
+        auto const num2{details::pop_get_val(stack_curr)};
+        auto const num1{details::pop_get_val(stack_curr)};
 
-        auto const num2{sm.stack.pop_element_unchecked()};
-        auto const num1{sm.stack.pop_element_unchecked()};
+        details::push(stack_curr, stack_t{.i32{static_cast<::std::int_least32_t>(num1.i32 - num2.i32)}});
 
-        if(num1.vt != ::uwvm::wasm::value_type::i32 || num2.vt != ::uwvm::wasm::value_type::i32) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data type is not i32."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
-
-            ::fast_io::fast_terminate();
-        }
-
-        sm.stack.push_unchecked(stack_t{.i32{static_cast<::std::int_least32_t>(num1.i32 - num2.i32)}, .vt{::uwvm::wasm::value_type::i32}});
-
-                auto next_op{curr_opt + 1}; next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
+        auto next_op{curr_opt + 1};
+        next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
     }
 
 #if __has_cpp_attribute(__gnu__::__hot__)
@@ -7116,72 +2665,16 @@ namespace uwvm::vm::unchecked_interpreter::func
         i32_mul(::std::byte const* curr,
                 ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                 ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-               ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
     {
-        if(sm.stack.size() < 2) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data stack is empty."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
 
-            ::fast_io::fast_terminate();
-        }
+        auto const num2{details::pop_get_val(stack_curr)};
+        auto const num1{details::pop_get_val(stack_curr)};
 
-        auto const num2{sm.stack.pop_element_unchecked()};
-        auto const num1{sm.stack.pop_element_unchecked()};
+        details::push(stack_curr, stack_t{.i32{static_cast<::std::int_least32_t>(num1.i32 * num2.i32)}});
 
-        if(num1.vt != ::uwvm::wasm::value_type::i32 || num2.vt != ::uwvm::wasm::value_type::i32) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data type is not i32."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
-
-            ::fast_io::fast_terminate();
-        }
-
-        sm.stack.push_unchecked(stack_t{.i32{static_cast<::std::int_least32_t>(num1.i32 * num2.i32)}, .vt{::uwvm::wasm::value_type::i32}});
-
-                auto next_op{curr_opt + 1}; next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
+        auto next_op{curr_opt + 1};
+        next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
     }
 
 #if __has_cpp_attribute(__gnu__::__hot__)
@@ -7191,72 +2684,15 @@ namespace uwvm::vm::unchecked_interpreter::func
         i32_div_s(::std::byte const* curr,
                   ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                   ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                 ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                  ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
     {
-        if(sm.stack.size() < 2) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data stack is empty."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
+        auto const num2{details::pop_get_val(stack_curr)};
+        auto const num1{details::pop_get_val(stack_curr)};
 
-            ::fast_io::fast_terminate();
-        }
+        details::push(stack_curr, stack_t{.i32{static_cast<::std::int_least32_t>(num1.i32 / num2.i32)}});
 
-        auto const num2{sm.stack.pop_element_unchecked()};
-        auto const num1{sm.stack.pop_element_unchecked()};
-
-        if(num1.vt != ::uwvm::wasm::value_type::i32 || num2.vt != ::uwvm::wasm::value_type::i32) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data type is not i32."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
-
-            ::fast_io::fast_terminate();
-        }
-
-        sm.stack.push_unchecked(stack_t{.i32{static_cast<::std::int_least32_t>(num1.i32 / num2.i32)}, .vt{::uwvm::wasm::value_type::i32}});
-
-                auto next_op{curr_opt + 1}; next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
+        auto next_op{curr_opt + 1};
+        next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
     }
 
 #if __has_cpp_attribute(__gnu__::__hot__)
@@ -7266,74 +2702,19 @@ namespace uwvm::vm::unchecked_interpreter::func
         i32_div_u(::std::byte const* curr,
                   ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                   ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                 ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                  ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
     {
-        if(sm.stack.size() < 2) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data stack is empty."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
 
-            ::fast_io::fast_terminate();
-        }
+        auto const num2{details::pop_get_val(stack_curr)};
+        auto const num1{details::pop_get_val(stack_curr)};
 
-        auto const num2{sm.stack.pop_element_unchecked()};
-        auto const num1{sm.stack.pop_element_unchecked()};
+        details::push(stack_curr,
+                      stack_t{
+                          .i32{static_cast<::std::int_least32_t>(static_cast<::std::uint_least32_t>(num1.i32) / static_cast<::std::uint_least32_t>(num2.i32))},
+                      });
 
-        if(num1.vt != ::uwvm::wasm::value_type::i32 || num2.vt != ::uwvm::wasm::value_type::i32) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data type is not i32."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
-
-            ::fast_io::fast_terminate();
-        }
-
-        sm.stack.push_unchecked(
-            stack_t{.i32{static_cast<::std::int_least32_t>(static_cast<::std::uint_least32_t>(num1.i32) / static_cast<::std::uint_least32_t>(num2.i32))},
-                    .vt{::uwvm::wasm::value_type::i32}});
-
-                auto next_op{curr_opt + 1}; next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
+        auto next_op{curr_opt + 1};
+        next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
     }
 
 #if __has_cpp_attribute(__gnu__::__hot__)
@@ -7343,72 +2724,16 @@ namespace uwvm::vm::unchecked_interpreter::func
         i32_rem_s(::std::byte const* curr,
                   ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                   ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                 ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                  ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
     {
-        if(sm.stack.size() < 2) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data stack is empty."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
 
-            ::fast_io::fast_terminate();
-        }
+        auto const num2{details::pop_get_val(stack_curr)};
+        auto const num1{details::pop_get_val(stack_curr)};
 
-        auto const num2{sm.stack.pop_element_unchecked()};
-        auto const num1{sm.stack.pop_element_unchecked()};
+        details::push(stack_curr, stack_t{.i32{static_cast<::std::int_least32_t>(num1.i32 % num2.i32)}});
 
-        if(num1.vt != ::uwvm::wasm::value_type::i32 || num2.vt != ::uwvm::wasm::value_type::i32) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data type is not i32."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
-
-            ::fast_io::fast_terminate();
-        }
-
-        sm.stack.push_unchecked(stack_t{.i32{static_cast<::std::int_least32_t>(num1.i32 % num2.i32)}, .vt{::uwvm::wasm::value_type::i32}});
-
-                auto next_op{curr_opt + 1}; next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
+        auto next_op{curr_opt + 1};
+        next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
     }
 
 #if __has_cpp_attribute(__gnu__::__hot__)
@@ -7418,74 +2743,19 @@ namespace uwvm::vm::unchecked_interpreter::func
         i32_rem_u(::std::byte const* curr,
                   ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                   ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                 ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                  ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
     {
-        if(sm.stack.size() < 2) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data stack is empty."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
 
-            ::fast_io::fast_terminate();
-        }
+        auto const num2{details::pop_get_val(stack_curr)};
+        auto const num1{details::pop_get_val(stack_curr)};
 
-        auto const num2{sm.stack.pop_element_unchecked()};
-        auto const num1{sm.stack.pop_element_unchecked()};
+        details::push(stack_curr,
+                      stack_t{
+                          .i32{static_cast<::std::int_least32_t>(static_cast<::std::uint_least32_t>(num1.i32) % static_cast<::std::uint_least32_t>(num2.i32))},
+                      });
 
-        if(num1.vt != ::uwvm::wasm::value_type::i32 || num2.vt != ::uwvm::wasm::value_type::i32) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data type is not i32."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
-
-            ::fast_io::fast_terminate();
-        }
-
-        sm.stack.push_unchecked(
-            stack_t{.i32{static_cast<::std::int_least32_t>(static_cast<::std::uint_least32_t>(num1.i32) % static_cast<::std::uint_least32_t>(num2.i32))},
-                    .vt{::uwvm::wasm::value_type::i32}});
-
-                auto next_op{curr_opt + 1}; next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
+        auto next_op{curr_opt + 1};
+        next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
     }
 
 #if __has_cpp_attribute(__gnu__::__hot__)
@@ -7495,72 +2765,15 @@ namespace uwvm::vm::unchecked_interpreter::func
         i32_and(::std::byte const* curr,
                 ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                 ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-               ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
     {
-        if(sm.stack.size() < 2) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data stack is empty."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
+        auto const num2{details::pop_get_val(stack_curr)};
+        auto const num1{details::pop_get_val(stack_curr)};
 
-            ::fast_io::fast_terminate();
-        }
+        details::push(stack_curr, stack_t{.i32{static_cast<::std::int_least32_t>(num1.i32 & num2.i32)}});
 
-        auto const num2{sm.stack.pop_element_unchecked()};
-        auto const num1{sm.stack.pop_element_unchecked()};
-
-        if(num1.vt != ::uwvm::wasm::value_type::i32 || num2.vt != ::uwvm::wasm::value_type::i32) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data type is not i32."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
-
-            ::fast_io::fast_terminate();
-        }
-
-        sm.stack.push_unchecked(stack_t{.i32{static_cast<::std::int_least32_t>(num1.i32 & num2.i32)}, .vt{::uwvm::wasm::value_type::i32}});
-
-                auto next_op{curr_opt + 1}; next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
+        auto next_op{curr_opt + 1};
+        next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
     }
 
 #if __has_cpp_attribute(__gnu__::__hot__)
@@ -7570,72 +2783,16 @@ namespace uwvm::vm::unchecked_interpreter::func
         i32_or(::std::byte const* curr,
                ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-              ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+               ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
     {
-        if(sm.stack.size() < 2) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data stack is empty."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
 
-            ::fast_io::fast_terminate();
-        }
+        auto const num2{details::pop_get_val(stack_curr)};
+        auto const num1{details::pop_get_val(stack_curr)};
 
-        auto const num2{sm.stack.pop_element_unchecked()};
-        auto const num1{sm.stack.pop_element_unchecked()};
+        details::push(stack_curr, stack_t{.i32{static_cast<::std::int_least32_t>(num1.i32 | num2.i32)}});
 
-        if(num1.vt != ::uwvm::wasm::value_type::i32 || num2.vt != ::uwvm::wasm::value_type::i32) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data type is not i32."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
-
-            ::fast_io::fast_terminate();
-        }
-
-        sm.stack.push_unchecked(stack_t{.i32{static_cast<::std::int_least32_t>(num1.i32 | num2.i32)}, .vt{::uwvm::wasm::value_type::i32}});
-
-                auto next_op{curr_opt + 1}; next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
+        auto next_op{curr_opt + 1};
+        next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
     }
 
 #if __has_cpp_attribute(__gnu__::__hot__)
@@ -7645,72 +2802,16 @@ namespace uwvm::vm::unchecked_interpreter::func
         i32_xor(::std::byte const* curr,
                 ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                 ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-               ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
     {
-        if(sm.stack.size() < 2) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data stack is empty."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
 
-            ::fast_io::fast_terminate();
-        }
+        auto const num2{details::pop_get_val(stack_curr)};
+        auto const num1{details::pop_get_val(stack_curr)};
 
-        auto const num2{sm.stack.pop_element_unchecked()};
-        auto const num1{sm.stack.pop_element_unchecked()};
+        details::push(stack_curr, stack_t{.i32{static_cast<::std::int_least32_t>(num1.i32 ^ num2.i32)}});
 
-        if(num1.vt != ::uwvm::wasm::value_type::i32 || num2.vt != ::uwvm::wasm::value_type::i32) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data type is not i32."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
-
-            ::fast_io::fast_terminate();
-        }
-
-        sm.stack.push_unchecked(stack_t{.i32{static_cast<::std::int_least32_t>(num1.i32 ^ num2.i32)}, .vt{::uwvm::wasm::value_type::i32}});
-
-                auto next_op{curr_opt + 1}; next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
+        auto next_op{curr_opt + 1};
+        next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
     }
 
 #if __has_cpp_attribute(__gnu__::__hot__)
@@ -7720,72 +2821,16 @@ namespace uwvm::vm::unchecked_interpreter::func
         i32_shl(::std::byte const* curr,
                 ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                 ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-               ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
     {
-        if(sm.stack.size() < 2) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data stack is empty."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
 
-            ::fast_io::fast_terminate();
-        }
+        auto const num2{details::pop_get_val(stack_curr)};
+        auto const num1{details::pop_get_val(stack_curr)};
 
-        auto const num2{sm.stack.pop_element_unchecked()};
-        auto const num1{sm.stack.pop_element_unchecked()};
+        details::push(stack_curr, stack_t{.i32{static_cast<::std::int_least32_t>(num1.i32 << num2.i32)}});
 
-        if(num1.vt != ::uwvm::wasm::value_type::i32 || num2.vt != ::uwvm::wasm::value_type::i32) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data type is not i32."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
-
-            ::fast_io::fast_terminate();
-        }
-
-        sm.stack.push_unchecked(stack_t{.i32{static_cast<::std::int_least32_t>(num1.i32 << num2.i32)}, .vt{::uwvm::wasm::value_type::i32}});
-
-                auto next_op{curr_opt + 1}; next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
+        auto next_op{curr_opt + 1};
+        next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
     }
 
 #if __has_cpp_attribute(__gnu__::__hot__)
@@ -7795,72 +2840,16 @@ namespace uwvm::vm::unchecked_interpreter::func
         i32_shr_s(::std::byte const* curr,
                   ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                   ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                 ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                  ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
     {
-        if(sm.stack.size() < 2) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data stack is empty."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
 
-            ::fast_io::fast_terminate();
-        }
+        auto const num2{details::pop_get_val(stack_curr)};
+        auto const num1{details::pop_get_val(stack_curr)};
 
-        auto const num2{sm.stack.pop_element_unchecked()};
-        auto const num1{sm.stack.pop_element_unchecked()};
+        details::push(stack_curr, stack_t{.i32{static_cast<::std::int_least32_t>(num1.i32 >> num2.i32)}});
 
-        if(num1.vt != ::uwvm::wasm::value_type::i32 || num2.vt != ::uwvm::wasm::value_type::i32) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data type is not i32."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
-
-            ::fast_io::fast_terminate();
-        }
-
-        sm.stack.push_unchecked(stack_t{.i32{static_cast<::std::int_least32_t>(num1.i32 >> num2.i32)}, .vt{::uwvm::wasm::value_type::i32}});
-
-                auto next_op{curr_opt + 1}; next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
+        auto next_op{curr_opt + 1};
+        next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
     }
 
 #if __has_cpp_attribute(__gnu__::__hot__)
@@ -7870,74 +2859,19 @@ namespace uwvm::vm::unchecked_interpreter::func
         i32_shr_u(::std::byte const* curr,
                   ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                   ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                 ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                  ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
     {
-        if(sm.stack.size() < 2) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data stack is empty."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
 
-            ::fast_io::fast_terminate();
-        }
+        auto const num2{details::pop_get_val(stack_curr)};
+        auto const num1{details::pop_get_val(stack_curr)};
 
-        auto const num2{sm.stack.pop_element_unchecked()};
-        auto const num1{sm.stack.pop_element_unchecked()};
+        details::push(stack_curr,
+                      stack_t{
+                          .i32{static_cast<::std::int_least32_t>(static_cast<::std::uint_least32_t>(num1.i32) >> static_cast<::std::uint_least32_t>(num2.i32))},
+                      });
 
-        if(num1.vt != ::uwvm::wasm::value_type::i32 || num2.vt != ::uwvm::wasm::value_type::i32) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data type is not i32."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
-
-            ::fast_io::fast_terminate();
-        }
-
-        sm.stack.push_unchecked(
-            stack_t{.i32{static_cast<::std::int_least32_t>(static_cast<::std::uint_least32_t>(num1.i32) >> static_cast<::std::uint_least32_t>(num2.i32))},
-                    .vt{::uwvm::wasm::value_type::i32}});
-
-                auto next_op{curr_opt + 1}; next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
+        auto next_op{curr_opt + 1};
+        next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
     }
 
 #if __has_cpp_attribute(__gnu__::__hot__)
@@ -7947,74 +2881,18 @@ namespace uwvm::vm::unchecked_interpreter::func
         i32_rotl(::std::byte const* curr,
                  ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                  ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                 ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
     {
-        if(sm.stack.size() < 2) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data stack is empty."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
+        auto const num2{details::pop_get_val(stack_curr)};
+        auto const num1{details::pop_get_val(stack_curr)};
 
-            ::fast_io::fast_terminate();
-        }
+        details::push(stack_curr,
+                      stack_t{
+                          .i32{static_cast<::std::int_least32_t>(::std::rotl(static_cast<::std::uint_least32_t>(num1.i32), static_cast<int>(num2.i32)))},
+                      });
 
-        auto const num2{sm.stack.pop_element_unchecked()};
-        auto const num1{sm.stack.pop_element_unchecked()};
-
-        if(num1.vt != ::uwvm::wasm::value_type::i32 || num2.vt != ::uwvm::wasm::value_type::i32) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data type is not i32."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
-
-            ::fast_io::fast_terminate();
-        }
-
-        sm.stack.push_unchecked(
-            stack_t{.i32{static_cast<::std::int_least32_t>(::std::rotl(static_cast<::std::uint_least32_t>(num1.i32), static_cast<int>(num2.i32)))},
-                    .vt{::uwvm::wasm::value_type::i32}});
-
-                auto next_op{curr_opt + 1}; next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
+        auto next_op{curr_opt + 1};
+        next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
     }
 
 #if __has_cpp_attribute(__gnu__::__hot__)
@@ -8024,74 +2902,18 @@ namespace uwvm::vm::unchecked_interpreter::func
         i32_rotr(::std::byte const* curr,
                  ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                  ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                 ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
     {
-        if(sm.stack.size() < 2) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data stack is empty."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
+        auto const num2{details::pop_get_val(stack_curr)};
+        auto const num1{details::pop_get_val(stack_curr)};
 
-            ::fast_io::fast_terminate();
-        }
+        details::push(stack_curr,
+                      stack_t{
+                          .i32{static_cast<::std::int_least32_t>(::std::rotr(static_cast<::std::uint_least32_t>(num1.i32), static_cast<int>(num2.i32)))},
+                      });
 
-        auto const num2{sm.stack.pop_element_unchecked()};
-        auto const num1{sm.stack.pop_element_unchecked()};
-
-        if(num1.vt != ::uwvm::wasm::value_type::i32 || num2.vt != ::uwvm::wasm::value_type::i32) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data type is not i32."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
-
-            ::fast_io::fast_terminate();
-        }
-
-        sm.stack.push_unchecked(
-            stack_t{.i32{static_cast<::std::int_least32_t>(::std::rotr(static_cast<::std::uint_least32_t>(num1.i32), static_cast<int>(num2.i32)))},
-                    .vt{::uwvm::wasm::value_type::i32}});
-
-                auto next_op{curr_opt + 1}; next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
+        auto next_op{curr_opt + 1};
+        next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
     }
 
 #if __has_cpp_attribute(__gnu__::__hot__)
@@ -8101,72 +2923,18 @@ namespace uwvm::vm::unchecked_interpreter::func
         i64_clz(::std::byte const* curr,
                 ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                 ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-               ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
     {
-        if(sm.stack.empty()) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data stack is empty."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
 
-            ::fast_io::fast_terminate();
-        }
+        auto const num{details::pop_get_val(stack_curr)};
 
-        auto const num{sm.stack.pop_element_unchecked()};
+        details::push(stack_curr,
+                      stack_t{
+                          .i64{static_cast<::std::int_least64_t>(::std::countl_zero(static_cast<::std::uint_least64_t>(num.i64)))},
+                      });
 
-        if(num.vt != ::uwvm::wasm::value_type::i64) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data type is not i64."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
-
-            ::fast_io::fast_terminate();
-        }
-
-        sm.stack.push_unchecked(stack_t{.i64{static_cast<::std::int_least64_t>(::std::countl_zero(static_cast<::std::uint_least64_t>(num.i64)))},
-                                        .vt{::uwvm::wasm::value_type::i64}});
-
-                auto next_op{curr_opt + 1}; next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
+        auto next_op{curr_opt + 1};
+        next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
     }
 
 #if __has_cpp_attribute(__gnu__::__hot__)
@@ -8176,72 +2944,17 @@ namespace uwvm::vm::unchecked_interpreter::func
         i64_ctz(::std::byte const* curr,
                 ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                 ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-               ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
     {
-        if(sm.stack.empty()) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data stack is empty."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
+        auto const num{details::pop_get_val(stack_curr)};
 
-            ::fast_io::fast_terminate();
-        }
+        details::push(stack_curr,
+                      stack_t{
+                          .i64{static_cast<::std::int_least64_t>(::std::countr_zero(static_cast<::std::uint_least64_t>(num.i64)))},
+                      });
 
-        auto const num{sm.stack.pop_element_unchecked()};
-
-        if(num.vt != ::uwvm::wasm::value_type::i64) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data type is not i64."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
-
-            ::fast_io::fast_terminate();
-        }
-
-        sm.stack.push_unchecked(stack_t{.i64{static_cast<::std::int_least64_t>(::std::countr_zero(static_cast<::std::uint_least64_t>(num.i64)))},
-                                        .vt{::uwvm::wasm::value_type::i64}});
-
-                auto next_op{curr_opt + 1}; next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
+        auto next_op{curr_opt + 1};
+        next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
     }
 
 #if __has_cpp_attribute(__gnu__::__hot__)
@@ -8251,72 +2964,14 @@ namespace uwvm::vm::unchecked_interpreter::func
         i64_popcnt(::std::byte const* curr,
                    ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                    ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                  ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                   ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
     {
-        if(sm.stack.empty()) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data stack is empty."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
+        auto const num{details::pop_get_val(stack_curr)};
 
-            ::fast_io::fast_terminate();
-        }
+        details::push(stack_curr, stack_t{.i64{static_cast<::std::int_least64_t>(::std::popcount(static_cast<::std::uint_least64_t>(num.i64)))}});
 
-        auto const num{sm.stack.pop_element_unchecked()};
-
-        if(num.vt != ::uwvm::wasm::value_type::i64) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data type is not i64."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
-
-            ::fast_io::fast_terminate();
-        }
-
-        sm.stack.push_unchecked(
-            stack_t{.i64{static_cast<::std::int_least64_t>(::std::popcount(static_cast<::std::uint_least64_t>(num.i64)))}, .vt{::uwvm::wasm::value_type::i64}});
-
-                auto next_op{curr_opt + 1}; next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
+        auto next_op{curr_opt + 1};
+        next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
     }
 
 #if __has_cpp_attribute(__gnu__::__hot__)
@@ -8326,72 +2981,16 @@ namespace uwvm::vm::unchecked_interpreter::func
         i64_add(::std::byte const* curr,
                 ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                 ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-               ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
     {
-        if(sm.stack.size() < 2) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data stack is empty."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
 
-            ::fast_io::fast_terminate();
-        }
+        auto const num2{details::pop_get_val(stack_curr)};
+        auto const num1{details::pop_get_val(stack_curr)};
 
-        auto const num2{sm.stack.pop_element_unchecked()};
-        auto const num1{sm.stack.pop_element_unchecked()};
+        details::push(stack_curr, stack_t{.i64{static_cast<::std::int_least64_t>(num1.i64 + num2.i64)}});
 
-        if(num1.vt != ::uwvm::wasm::value_type::i64 || num2.vt != ::uwvm::wasm::value_type::i64) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data type is not i64."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
-
-            ::fast_io::fast_terminate();
-        }
-
-        sm.stack.push_unchecked(stack_t{.i64{static_cast<::std::int_least64_t>(num1.i64 + num2.i64)}, .vt{::uwvm::wasm::value_type::i64}});
-
-                auto next_op{curr_opt + 1}; next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
+        auto next_op{curr_opt + 1};
+        next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
     }
 
 #if __has_cpp_attribute(__gnu__::__hot__)
@@ -8401,72 +3000,15 @@ namespace uwvm::vm::unchecked_interpreter::func
         i64_sub(::std::byte const* curr,
                 ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                 ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-               ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
     {
-        if(sm.stack.size() < 2) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data stack is empty."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
+        auto const num2{details::pop_get_val(stack_curr)};
+        auto const num1{details::pop_get_val(stack_curr)};
 
-            ::fast_io::fast_terminate();
-        }
+        details::push(stack_curr, stack_t{.i64{static_cast<::std::int_least64_t>(num1.i64 - num2.i64)}});
 
-        auto const num2{sm.stack.pop_element_unchecked()};
-        auto const num1{sm.stack.pop_element_unchecked()};
-
-        if(num1.vt != ::uwvm::wasm::value_type::i64 || num2.vt != ::uwvm::wasm::value_type::i64) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data type is not i64."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
-
-            ::fast_io::fast_terminate();
-        }
-
-        sm.stack.push_unchecked(stack_t{.i64{static_cast<::std::int_least64_t>(num1.i64 - num2.i64)}, .vt{::uwvm::wasm::value_type::i64}});
-
-                auto next_op{curr_opt + 1}; next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
+        auto next_op{curr_opt + 1};
+        next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
     }
 
 #if __has_cpp_attribute(__gnu__::__hot__)
@@ -8476,72 +3018,16 @@ namespace uwvm::vm::unchecked_interpreter::func
         i64_mul(::std::byte const* curr,
                 ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                 ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-               ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
     {
-        if(sm.stack.size() < 2) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data stack is empty."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
 
-            ::fast_io::fast_terminate();
-        }
+        auto const num2{details::pop_get_val(stack_curr)};
+        auto const num1{details::pop_get_val(stack_curr)};
 
-        auto const num2{sm.stack.pop_element_unchecked()};
-        auto const num1{sm.stack.pop_element_unchecked()};
+        details::push(stack_curr, stack_t{.i64{static_cast<::std::int_least64_t>(num1.i64 * num2.i64)}});
 
-        if(num1.vt != ::uwvm::wasm::value_type::i64 || num2.vt != ::uwvm::wasm::value_type::i64) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data type is not i64."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
-
-            ::fast_io::fast_terminate();
-        }
-
-        sm.stack.push_unchecked(stack_t{.i64{static_cast<::std::int_least64_t>(num1.i64 * num2.i64)}, .vt{::uwvm::wasm::value_type::i64}});
-
-                auto next_op{curr_opt + 1}; next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
+        auto next_op{curr_opt + 1};
+        next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
     }
 
 #if __has_cpp_attribute(__gnu__::__hot__)
@@ -8551,72 +3037,15 @@ namespace uwvm::vm::unchecked_interpreter::func
         i64_div_s(::std::byte const* curr,
                   ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                   ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                 ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                  ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
     {
-        if(sm.stack.size() < 2) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data stack is empty."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
+        auto const num2{details::pop_get_val(stack_curr)};
+        auto const num1{details::pop_get_val(stack_curr)};
 
-            ::fast_io::fast_terminate();
-        }
+        details::push(stack_curr, stack_t{.i64{static_cast<::std::int_least64_t>(num1.i64 / num2.i64)}});
 
-        auto const num2{sm.stack.pop_element_unchecked()};
-        auto const num1{sm.stack.pop_element_unchecked()};
-
-        if(num1.vt != ::uwvm::wasm::value_type::i64 || num2.vt != ::uwvm::wasm::value_type::i64) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data type is not i64."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
-
-            ::fast_io::fast_terminate();
-        }
-
-        sm.stack.push_unchecked(stack_t{.i64{static_cast<::std::int_least64_t>(num1.i64 / num2.i64)}, .vt{::uwvm::wasm::value_type::i64}});
-
-                auto next_op{curr_opt + 1}; next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
+        auto next_op{curr_opt + 1};
+        next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
     }
 
 #if __has_cpp_attribute(__gnu__::__hot__)
@@ -8626,74 +3055,18 @@ namespace uwvm::vm::unchecked_interpreter::func
         i64_div_u(::std::byte const* curr,
                   ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                   ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                 ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                  ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
     {
-        if(sm.stack.size() < 2) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data stack is empty."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
+        auto const num2{details::pop_get_val(stack_curr)};
+        auto const num1{details::pop_get_val(stack_curr)};
 
-            ::fast_io::fast_terminate();
-        }
+        details::push(stack_curr,
+                      stack_t{
+                          .i64{static_cast<::std::int_least64_t>(static_cast<::std::uint_least64_t>(num1.i64) / static_cast<::std::uint_least64_t>(num2.i64))},
+                      });
 
-        auto const num2{sm.stack.pop_element_unchecked()};
-        auto const num1{sm.stack.pop_element_unchecked()};
-
-        if(num1.vt != ::uwvm::wasm::value_type::i64 || num2.vt != ::uwvm::wasm::value_type::i64) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data type is not i64."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
-
-            ::fast_io::fast_terminate();
-        }
-
-        sm.stack.push_unchecked(
-            stack_t{.i64{static_cast<::std::int_least64_t>(static_cast<::std::uint_least64_t>(num1.i64) / static_cast<::std::uint_least64_t>(num2.i64))},
-                    .vt{::uwvm::wasm::value_type::i64}});
-
-                auto next_op{curr_opt + 1}; next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
+        auto next_op{curr_opt + 1};
+        next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
     }
 
 #if __has_cpp_attribute(__gnu__::__hot__)
@@ -8703,72 +3076,15 @@ namespace uwvm::vm::unchecked_interpreter::func
         i64_rem_s(::std::byte const* curr,
                   ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                   ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                 ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                  ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
     {
-        if(sm.stack.size() < 2) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data stack is empty."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
+        auto const num2{details::pop_get_val(stack_curr)};
+        auto const num1{details::pop_get_val(stack_curr)};
 
-            ::fast_io::fast_terminate();
-        }
+        details::push(stack_curr, stack_t{.i64{static_cast<::std::int_least64_t>(num1.i64 % num2.i64)}});
 
-        auto const num2{sm.stack.pop_element_unchecked()};
-        auto const num1{sm.stack.pop_element_unchecked()};
-
-        if(num1.vt != ::uwvm::wasm::value_type::i64 || num2.vt != ::uwvm::wasm::value_type::i64) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data type is not i64."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
-
-            ::fast_io::fast_terminate();
-        }
-
-        sm.stack.push_unchecked(stack_t{.i64{static_cast<::std::int_least64_t>(num1.i64 % num2.i64)}, .vt{::uwvm::wasm::value_type::i64}});
-
-                auto next_op{curr_opt + 1}; next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
+        auto next_op{curr_opt + 1};
+        next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
     }
 
 #if __has_cpp_attribute(__gnu__::__hot__)
@@ -8778,74 +3094,18 @@ namespace uwvm::vm::unchecked_interpreter::func
         i64_rem_u(::std::byte const* curr,
                   ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                   ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                 ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                  ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
     {
-        if(sm.stack.size() < 2) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data stack is empty."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
+        auto const num2{details::pop_get_val(stack_curr)};
+        auto const num1{details::pop_get_val(stack_curr)};
 
-            ::fast_io::fast_terminate();
-        }
+        details::push(stack_curr,
+                      stack_t{
+                          .i64{static_cast<::std::int_least64_t>(static_cast<::std::uint_least64_t>(num1.i64) % static_cast<::std::uint_least64_t>(num2.i64))},
+                      });
 
-        auto const num2{sm.stack.pop_element_unchecked()};
-        auto const num1{sm.stack.pop_element_unchecked()};
-
-        if(num1.vt != ::uwvm::wasm::value_type::i64 || num2.vt != ::uwvm::wasm::value_type::i64) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data type is not i64."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
-
-            ::fast_io::fast_terminate();
-        }
-
-        sm.stack.push_unchecked(
-            stack_t{.i64{static_cast<::std::int_least64_t>(static_cast<::std::uint_least64_t>(num1.i64) % static_cast<::std::uint_least64_t>(num2.i64))},
-                    .vt{::uwvm::wasm::value_type::i64}});
-
-                auto next_op{curr_opt + 1}; next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
+        auto next_op{curr_opt + 1};
+        next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
     }
 
 #if __has_cpp_attribute(__gnu__::__hot__)
@@ -8855,72 +3115,16 @@ namespace uwvm::vm::unchecked_interpreter::func
         i64_and(::std::byte const* curr,
                 ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                 ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-               ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
     {
-        if(sm.stack.size() < 2) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data stack is empty."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
 
-            ::fast_io::fast_terminate();
-        }
+        auto const num2{details::pop_get_val(stack_curr)};
+        auto const num1{details::pop_get_val(stack_curr)};
 
-        auto const num2{sm.stack.pop_element_unchecked()};
-        auto const num1{sm.stack.pop_element_unchecked()};
+        details::push(stack_curr, stack_t{.i64{static_cast<::std::int_least64_t>(num1.i64 & num2.i64)}});
 
-        if(num1.vt != ::uwvm::wasm::value_type::i64 || num2.vt != ::uwvm::wasm::value_type::i64) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data type is not i64."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
-
-            ::fast_io::fast_terminate();
-        }
-
-        sm.stack.push_unchecked(stack_t{.i64{static_cast<::std::int_least64_t>(num1.i64 & num2.i64)}, .vt{::uwvm::wasm::value_type::i64}});
-
-                auto next_op{curr_opt + 1}; next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
+        auto next_op{curr_opt + 1};
+        next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
     }
 
 #if __has_cpp_attribute(__gnu__::__hot__)
@@ -8930,72 +3134,16 @@ namespace uwvm::vm::unchecked_interpreter::func
         i64_or(::std::byte const* curr,
                ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-              ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+               ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
     {
-        if(sm.stack.size() < 2) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data stack is empty."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
 
-            ::fast_io::fast_terminate();
-        }
+        auto const num2{details::pop_get_val(stack_curr)};
+        auto const num1{details::pop_get_val(stack_curr)};
 
-        auto const num2{sm.stack.pop_element_unchecked()};
-        auto const num1{sm.stack.pop_element_unchecked()};
+        details::push(stack_curr, stack_t{.i64{static_cast<::std::int_least64_t>(num1.i64 | num2.i64)}});
 
-        if(num1.vt != ::uwvm::wasm::value_type::i64 || num2.vt != ::uwvm::wasm::value_type::i64) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data type is not i64."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
-
-            ::fast_io::fast_terminate();
-        }
-
-        sm.stack.push_unchecked(stack_t{.i64{static_cast<::std::int_least64_t>(num1.i64 | num2.i64)}, .vt{::uwvm::wasm::value_type::i64}});
-
-                auto next_op{curr_opt + 1}; next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
+        auto next_op{curr_opt + 1};
+        next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
     }
 
 #if __has_cpp_attribute(__gnu__::__hot__)
@@ -9005,72 +3153,15 @@ namespace uwvm::vm::unchecked_interpreter::func
         i64_xor(::std::byte const* curr,
                 ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                 ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-               ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
     {
-        if(sm.stack.size() < 2) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data stack is empty."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
+        auto const num2{details::pop_get_val(stack_curr)};
+        auto const num1{details::pop_get_val(stack_curr)};
 
-            ::fast_io::fast_terminate();
-        }
+        details::push(stack_curr, stack_t{.i64{static_cast<::std::int_least64_t>(num1.i64 ^ num2.i64)}});
 
-        auto const num2{sm.stack.pop_element_unchecked()};
-        auto const num1{sm.stack.pop_element_unchecked()};
-
-        if(num1.vt != ::uwvm::wasm::value_type::i64 || num2.vt != ::uwvm::wasm::value_type::i64) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data type is not i64."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
-
-            ::fast_io::fast_terminate();
-        }
-
-        sm.stack.push_unchecked(stack_t{.i64{static_cast<::std::int_least64_t>(num1.i64 ^ num2.i64)}, .vt{::uwvm::wasm::value_type::i64}});
-
-                auto next_op{curr_opt + 1}; next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
+        auto next_op{curr_opt + 1};
+        next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
     }
 
 #if __has_cpp_attribute(__gnu__::__hot__)
@@ -9080,72 +3171,15 @@ namespace uwvm::vm::unchecked_interpreter::func
         i64_shl(::std::byte const* curr,
                 ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                 ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-               ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
     {
-        if(sm.stack.size() < 2) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data stack is empty."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
+        auto const num2{details::pop_get_val(stack_curr)};
+        auto const num1{details::pop_get_val(stack_curr)};
 
-            ::fast_io::fast_terminate();
-        }
+        details::push(stack_curr, stack_t{.i64{static_cast<::std::int_least64_t>(num1.i64 << num2.i64)}});
 
-        auto const num2{sm.stack.pop_element_unchecked()};
-        auto const num1{sm.stack.pop_element_unchecked()};
-
-        if(num1.vt != ::uwvm::wasm::value_type::i64 || num2.vt != ::uwvm::wasm::value_type::i64) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data type is not i64."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
-
-            ::fast_io::fast_terminate();
-        }
-
-        sm.stack.push_unchecked(stack_t{.i64{static_cast<::std::int_least64_t>(num1.i64 << num2.i64)}, .vt{::uwvm::wasm::value_type::i64}});
-
-                auto next_op{curr_opt + 1}; next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
+        auto next_op{curr_opt + 1};
+        next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
     }
 
 #if __has_cpp_attribute(__gnu__::__hot__)
@@ -9155,72 +3189,15 @@ namespace uwvm::vm::unchecked_interpreter::func
         i64_shr_s(::std::byte const* curr,
                   ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                   ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                 ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                  ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
     {
-        if(sm.stack.size() < 2) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data stack is empty."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
+        auto const num2{details::pop_get_val(stack_curr)};
+        auto const num1{details::pop_get_val(stack_curr)};
 
-            ::fast_io::fast_terminate();
-        }
+        details::push(stack_curr, stack_t{.i64{static_cast<::std::int_least64_t>(num1.i64 >> num2.i64)}});
 
-        auto const num2{sm.stack.pop_element_unchecked()};
-        auto const num1{sm.stack.pop_element_unchecked()};
-
-        if(num1.vt != ::uwvm::wasm::value_type::i64 || num2.vt != ::uwvm::wasm::value_type::i64) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data type is not i64."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
-
-            ::fast_io::fast_terminate();
-        }
-
-        sm.stack.push_unchecked(stack_t{.i64{static_cast<::std::int_least64_t>(num1.i64 >> num2.i64)}, .vt{::uwvm::wasm::value_type::i64}});
-
-                auto next_op{curr_opt + 1}; next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
+        auto next_op{curr_opt + 1};
+        next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
     }
 
 #if __has_cpp_attribute(__gnu__::__hot__)
@@ -9230,74 +3207,19 @@ namespace uwvm::vm::unchecked_interpreter::func
         i64_shr_u(::std::byte const* curr,
                   ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                   ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                 ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                  ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
     {
-        if(sm.stack.size() < 2) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data stack is empty."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
 
-            ::fast_io::fast_terminate();
-        }
+        auto const num2{details::pop_get_val(stack_curr)};
+        auto const num1{details::pop_get_val(stack_curr)};
 
-        auto const num2{sm.stack.pop_element_unchecked()};
-        auto const num1{sm.stack.pop_element_unchecked()};
+        details::push(stack_curr,
+                      stack_t{
+                          .i64{static_cast<::std::int_least64_t>(static_cast<::std::uint_least64_t>(num1.i64) >> static_cast<::std::uint_least64_t>(num2.i64))},
+                      });
 
-        if(num1.vt != ::uwvm::wasm::value_type::i64 || num2.vt != ::uwvm::wasm::value_type::i64) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data type is not i64."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
-
-            ::fast_io::fast_terminate();
-        }
-
-        sm.stack.push_unchecked(
-            stack_t{.i64{static_cast<::std::int_least64_t>(static_cast<::std::uint_least64_t>(num1.i64) >> static_cast<::std::uint_least64_t>(num2.i64))},
-                    .vt{::uwvm::wasm::value_type::i64}});
-
-                auto next_op{curr_opt + 1}; next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
+        auto next_op{curr_opt + 1};
+        next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
     }
 
 #if __has_cpp_attribute(__gnu__::__hot__)
@@ -9307,74 +3229,18 @@ namespace uwvm::vm::unchecked_interpreter::func
         i64_rotl(::std::byte const* curr,
                  ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                  ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                 ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
     {
-        if(sm.stack.size() < 2) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data stack is empty."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
+        auto const num2{details::pop_get_val(stack_curr)};
+        auto const num1{details::pop_get_val(stack_curr)};
 
-            ::fast_io::fast_terminate();
-        }
+        details::push(stack_curr,
+                      stack_t{
+                          .i64{static_cast<::std::int_least64_t>(::std::rotl(static_cast<::std::uint_least64_t>(num1.i64), static_cast<int>(num2.i64)))},
+                      });
 
-        auto const num2{sm.stack.pop_element_unchecked()};
-        auto const num1{sm.stack.pop_element_unchecked()};
-
-        if(num1.vt != ::uwvm::wasm::value_type::i64 || num2.vt != ::uwvm::wasm::value_type::i64) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data type is not i64."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
-
-            ::fast_io::fast_terminate();
-        }
-
-        sm.stack.push_unchecked(
-            stack_t{.i64{static_cast<::std::int_least64_t>(::std::rotl(static_cast<::std::uint_least64_t>(num1.i64), static_cast<int>(num2.i64)))},
-                    .vt{::uwvm::wasm::value_type::i64}});
-
-                auto next_op{curr_opt + 1}; next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
+        auto next_op{curr_opt + 1};
+        next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
     }
 
 #if __has_cpp_attribute(__gnu__::__hot__)
@@ -9384,74 +3250,18 @@ namespace uwvm::vm::unchecked_interpreter::func
         i64_rotr(::std::byte const* curr,
                  ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                  ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                 ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
     {
-        if(sm.stack.size() < 2) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data stack is empty."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
+        auto const num2{details::pop_get_val(stack_curr)};
+        auto const num1{details::pop_get_val(stack_curr)};
 
-            ::fast_io::fast_terminate();
-        }
+        details::push(stack_curr,
+                      stack_t{
+                          .i64{static_cast<::std::int_least64_t>(::std::rotr(static_cast<::std::uint_least64_t>(num1.i64), static_cast<int>(num2.i64)))},
+                      });
 
-        auto const num2{sm.stack.pop_element_unchecked()};
-        auto const num1{sm.stack.pop_element_unchecked()};
-
-        if(num1.vt != ::uwvm::wasm::value_type::i64 || num2.vt != ::uwvm::wasm::value_type::i64) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data type is not i64."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
-
-            ::fast_io::fast_terminate();
-        }
-
-        sm.stack.push_unchecked(
-            stack_t{.i64{static_cast<::std::int_least64_t>(::std::rotr(static_cast<::std::uint_least64_t>(num1.i64), static_cast<int>(num2.i64)))},
-                    .vt{::uwvm::wasm::value_type::i64}});
-
-                auto next_op{curr_opt + 1}; next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
+        auto next_op{curr_opt + 1};
+        next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
     }
 
 #if __has_cpp_attribute(__gnu__::__hot__)
@@ -9461,71 +3271,14 @@ namespace uwvm::vm::unchecked_interpreter::func
         f32_abs(::std::byte const* curr,
                 ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                 ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-               ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
     {
-        if(sm.stack.empty()) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data stack is empty."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
+        auto const num{details::pop_get_val(stack_curr)};
 
-            ::fast_io::fast_terminate();
-        }
+        details::push(stack_curr, stack_t{.f32{::std::abs(num.f32)}});
 
-        auto const num{sm.stack.pop_element_unchecked()};
-
-        if(num.vt != ::uwvm::wasm::value_type::f32) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data type is not f32."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
-
-            ::fast_io::fast_terminate();
-        }
-
-        sm.stack.push_unchecked(stack_t{.f32{::std::abs(num.f32)}, .vt{::uwvm::wasm::value_type::f32}});
-
-                auto next_op{curr_opt + 1}; next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
+        auto next_op{curr_opt + 1};
+        next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
     }
 
 #if __has_cpp_attribute(__gnu__::__hot__)
@@ -9535,71 +3288,14 @@ namespace uwvm::vm::unchecked_interpreter::func
         f32_neg(::std::byte const* curr,
                 ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                 ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-               ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
     {
-        if(sm.stack.empty()) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data stack is empty."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
+        auto const num{details::pop_get_val(stack_curr)};
 
-            ::fast_io::fast_terminate();
-        }
+        details::push(stack_curr, stack_t{.f32{-num.f32}});
 
-        auto const num{sm.stack.pop_element_unchecked()};
-
-        if(num.vt != ::uwvm::wasm::value_type::f32) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data type is not f32."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
-
-            ::fast_io::fast_terminate();
-        }
-
-        sm.stack.push_unchecked(stack_t{.f32{-num.f32}, .vt{::uwvm::wasm::value_type::f32}});
-
-                auto next_op{curr_opt + 1}; next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
+        auto next_op{curr_opt + 1};
+        next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
     }
 
 #if __has_cpp_attribute(__gnu__::__hot__)
@@ -9609,71 +3305,14 @@ namespace uwvm::vm::unchecked_interpreter::func
         f32_ceil(::std::byte const* curr,
                  ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                  ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                 ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
     {
-        if(sm.stack.empty()) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data stack is empty."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
+        auto const num{details::pop_get_val(stack_curr)};
 
-            ::fast_io::fast_terminate();
-        }
+        details::push(stack_curr, stack_t{.f32{::std::ceil(num.f32)}});
 
-        auto const num{sm.stack.pop_element_unchecked()};
-
-        if(num.vt != ::uwvm::wasm::value_type::f32) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data type is not f32."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
-
-            ::fast_io::fast_terminate();
-        }
-
-        sm.stack.push_unchecked(stack_t{.f32{::std::ceil(num.f32)}, .vt{::uwvm::wasm::value_type::f32}});
-
-                auto next_op{curr_opt + 1}; next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
+        auto next_op{curr_opt + 1};
+        next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
     }
 
 #if __has_cpp_attribute(__gnu__::__hot__)
@@ -9683,71 +3322,15 @@ namespace uwvm::vm::unchecked_interpreter::func
         f32_floor(::std::byte const* curr,
                   ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                   ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                 ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                  ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
     {
-        if(sm.stack.empty()) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data stack is empty."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
 
-            ::fast_io::fast_terminate();
-        }
+        auto const num{details::pop_get_val(stack_curr)};
 
-        auto const num{sm.stack.pop_element_unchecked()};
+        details::push(stack_curr, stack_t{.f32{::std::floor(num.f32)}});
 
-        if(num.vt != ::uwvm::wasm::value_type::f32) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data type is not f32."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
-
-            ::fast_io::fast_terminate();
-        }
-
-        sm.stack.push_unchecked(stack_t{.f32{::std::floor(num.f32)}, .vt{::uwvm::wasm::value_type::f32}});
-
-                auto next_op{curr_opt + 1}; next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
+        auto next_op{curr_opt + 1};
+        next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
     }
 
 #if __has_cpp_attribute(__gnu__::__hot__)
@@ -9757,71 +3340,14 @@ namespace uwvm::vm::unchecked_interpreter::func
         f32_trunc(::std::byte const* curr,
                   ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                   ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                 ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                  ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
     {
-        if(sm.stack.empty()) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data stack is empty."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
+        auto const num{details::pop_get_val(stack_curr)};
 
-            ::fast_io::fast_terminate();
-        }
+        details::push(stack_curr, stack_t{.f32{::truncf(num.f32)}});
 
-        auto const num{sm.stack.pop_element_unchecked()};
-
-        if(num.vt != ::uwvm::wasm::value_type::f32) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data type is not f32."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
-
-            ::fast_io::fast_terminate();
-        }
-
-        sm.stack.push_unchecked(stack_t{.f32{::truncf(num.f32)}, .vt{::uwvm::wasm::value_type::f32}});
-
-                auto next_op{curr_opt + 1}; next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
+        auto next_op{curr_opt + 1};
+        next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
     }
 
 #if __has_cpp_attribute(__gnu__::__hot__)
@@ -9831,71 +3357,14 @@ namespace uwvm::vm::unchecked_interpreter::func
         f32_nearest(::std::byte const* curr,
                     ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                     ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                   ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                    ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
     {
-        if(sm.stack.empty()) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data stack is empty."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
+        auto const num{details::pop_get_val(stack_curr)};
 
-            ::fast_io::fast_terminate();
-        }
+        details::push(stack_curr, stack_t{.f32{::roundf(num.f32)}});
 
-        auto const num{sm.stack.pop_element_unchecked()};
-
-        if(num.vt != ::uwvm::wasm::value_type::f32) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data type is not f32."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
-
-            ::fast_io::fast_terminate();
-        }
-
-        sm.stack.push_unchecked(stack_t{.f32{::roundf(num.f32)}, .vt{::uwvm::wasm::value_type::f32}});
-
-                auto next_op{curr_opt + 1}; next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
+        auto next_op{curr_opt + 1};
+        next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
     }
 
 #if __has_cpp_attribute(__gnu__::__hot__)
@@ -9905,71 +3374,14 @@ namespace uwvm::vm::unchecked_interpreter::func
         f32_sqrt(::std::byte const* curr,
                  ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                  ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                 ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
     {
-        if(sm.stack.empty()) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data stack is empty."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
+        auto const num{details::pop_get_val(stack_curr)};
 
-            ::fast_io::fast_terminate();
-        }
+        details::push(stack_curr, stack_t{.f32{::std::sqrt(num.f32)}});
 
-        auto const num{sm.stack.pop_element_unchecked()};
-
-        if(num.vt != ::uwvm::wasm::value_type::f32) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data type is not f32."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
-
-            ::fast_io::fast_terminate();
-        }
-
-        sm.stack.push_unchecked(stack_t{.f32{::std::sqrt(num.f32)}, .vt{::uwvm::wasm::value_type::f32}});
-
-                auto next_op{curr_opt + 1}; next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
+        auto next_op{curr_opt + 1};
+        next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
     }
 
 #if __has_cpp_attribute(__gnu__::__hot__)
@@ -9979,72 +3391,15 @@ namespace uwvm::vm::unchecked_interpreter::func
         f32_add(::std::byte const* curr,
                 ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                 ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-               ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
     {
-        if(sm.stack.size() < 2) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data stack is empty."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
+        auto const num2{details::pop_get_val(stack_curr)};
+        auto const num1{details::pop_get_val(stack_curr)};
 
-            ::fast_io::fast_terminate();
-        }
+        details::push(stack_curr, stack_t{.f32{num1.f32 + num2.f32}});
 
-        auto const num2{sm.stack.pop_element_unchecked()};
-        auto const num1{sm.stack.pop_element_unchecked()};
-
-        if(num1.vt != ::uwvm::wasm::value_type::f32 || num2.vt != ::uwvm::wasm::value_type::f32) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data type is not f32."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
-
-            ::fast_io::fast_terminate();
-        }
-
-        sm.stack.push_unchecked(stack_t{.f32{num1.f32 + num2.f32}, .vt{::uwvm::wasm::value_type::f32}});
-
-                auto next_op{curr_opt + 1}; next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
+        auto next_op{curr_opt + 1};
+        next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
     }
 
 #if __has_cpp_attribute(__gnu__::__hot__)
@@ -10054,72 +3409,16 @@ namespace uwvm::vm::unchecked_interpreter::func
         f32_sub(::std::byte const* curr,
                 ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                 ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-               ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
     {
-        if(sm.stack.size() < 2) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data stack is empty."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
 
-            ::fast_io::fast_terminate();
-        }
+        auto const num2{details::pop_get_val(stack_curr)};
+        auto const num1{details::pop_get_val(stack_curr)};
 
-        auto const num2{sm.stack.pop_element_unchecked()};
-        auto const num1{sm.stack.pop_element_unchecked()};
+        details::push(stack_curr, stack_t{.f32{num1.f32 - num2.f32}});
 
-        if(num1.vt != ::uwvm::wasm::value_type::f32 || num2.vt != ::uwvm::wasm::value_type::f32) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data type is not f32."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
-
-            ::fast_io::fast_terminate();
-        }
-
-        sm.stack.push_unchecked(stack_t{.f32{num1.f32 - num2.f32}, .vt{::uwvm::wasm::value_type::f32}});
-
-                auto next_op{curr_opt + 1}; next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
+        auto next_op{curr_opt + 1};
+        next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
     }
 
 #if __has_cpp_attribute(__gnu__::__hot__)
@@ -10129,72 +3428,16 @@ namespace uwvm::vm::unchecked_interpreter::func
         f32_mul(::std::byte const* curr,
                 ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                 ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-               ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
     {
-        if(sm.stack.size() < 2) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data stack is empty."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
 
-            ::fast_io::fast_terminate();
-        }
+        auto const num2{details::pop_get_val(stack_curr)};
+        auto const num1{details::pop_get_val(stack_curr)};
 
-        auto const num2{sm.stack.pop_element_unchecked()};
-        auto const num1{sm.stack.pop_element_unchecked()};
+        details::push(stack_curr, stack_t{.f32{num1.f32 * num2.f32}});
 
-        if(num1.vt != ::uwvm::wasm::value_type::f32 || num2.vt != ::uwvm::wasm::value_type::f32) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data type is not f32."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
-
-            ::fast_io::fast_terminate();
-        }
-
-        sm.stack.push_unchecked(stack_t{.f32{num1.f32 * num2.f32}, .vt{::uwvm::wasm::value_type::f32}});
-
-                auto next_op{curr_opt + 1}; next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
+        auto next_op{curr_opt + 1};
+        next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
     }
 
 #if __has_cpp_attribute(__gnu__::__hot__)
@@ -10204,72 +3447,16 @@ namespace uwvm::vm::unchecked_interpreter::func
         f32_div(::std::byte const* curr,
                 ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                 ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-               ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
     {
-        if(sm.stack.size() < 2) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data stack is empty."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
 
-            ::fast_io::fast_terminate();
-        }
+        auto const num2{details::pop_get_val(stack_curr)};
+        auto const num1{details::pop_get_val(stack_curr)};
 
-        auto const num2{sm.stack.pop_element_unchecked()};
-        auto const num1{sm.stack.pop_element_unchecked()};
+        details::push(stack_curr, stack_t{.f32{num1.f32 / num2.f32}});
 
-        if(num1.vt != ::uwvm::wasm::value_type::f32 || num2.vt != ::uwvm::wasm::value_type::f32) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data type is not f32."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
-
-            ::fast_io::fast_terminate();
-        }
-
-        sm.stack.push_unchecked(stack_t{.f32{num1.f32 / num2.f32}, .vt{::uwvm::wasm::value_type::f32}});
-
-                auto next_op{curr_opt + 1}; next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
+        auto next_op{curr_opt + 1};
+        next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
     }
 
 #if __has_cpp_attribute(__gnu__::__hot__)
@@ -10279,72 +3466,15 @@ namespace uwvm::vm::unchecked_interpreter::func
         f32_min(::std::byte const* curr,
                 ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                 ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-               ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
     {
-        if(sm.stack.size() < 2) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data stack is empty."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
+        auto const num2{details::pop_get_val(stack_curr)};
+        auto const num1{details::pop_get_val(stack_curr)};
 
-            ::fast_io::fast_terminate();
-        }
+        details::push(stack_curr, stack_t{.f32{::std::min(num1.f32, num2.f32)}});
 
-        auto const num2{sm.stack.pop_element_unchecked()};
-        auto const num1{sm.stack.pop_element_unchecked()};
-
-        if(num1.vt != ::uwvm::wasm::value_type::f32 || num2.vt != ::uwvm::wasm::value_type::f32) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data type is not f32."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
-
-            ::fast_io::fast_terminate();
-        }
-
-        sm.stack.push_unchecked(stack_t{.f32{::std::min(num1.f32, num2.f32)}, .vt{::uwvm::wasm::value_type::f32}});
-
-                auto next_op{curr_opt + 1}; next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
+        auto next_op{curr_opt + 1};
+        next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
     }
 
 #if __has_cpp_attribute(__gnu__::__hot__)
@@ -10354,72 +3484,15 @@ namespace uwvm::vm::unchecked_interpreter::func
         f32_max(::std::byte const* curr,
                 ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                 ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-               ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
     {
-        if(sm.stack.size() < 2) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data stack is empty."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
+        auto const num2{details::pop_get_val(stack_curr)};
+        auto const num1{details::pop_get_val(stack_curr)};
 
-            ::fast_io::fast_terminate();
-        }
+        details::push(stack_curr, stack_t{.f32{::std::max(num1.f32, num2.f32)}});
 
-        auto const num2{sm.stack.pop_element_unchecked()};
-        auto const num1{sm.stack.pop_element_unchecked()};
-
-        if(num1.vt != ::uwvm::wasm::value_type::f32 || num2.vt != ::uwvm::wasm::value_type::f32) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data type is not f32."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
-
-            ::fast_io::fast_terminate();
-        }
-
-        sm.stack.push_unchecked(stack_t{.f32{::std::max(num1.f32, num2.f32)}, .vt{::uwvm::wasm::value_type::f32}});
-
-                auto next_op{curr_opt + 1}; next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
+        auto next_op{curr_opt + 1};
+        next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
     }
 
 #if __has_cpp_attribute(__gnu__::__hot__)
@@ -10429,72 +3502,15 @@ namespace uwvm::vm::unchecked_interpreter::func
         f32_copysign(::std::byte const* curr,
                      ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                      ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                    ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                     ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
     {
-        if(sm.stack.size() < 2) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data stack is empty."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
+        auto const num2{details::pop_get_val(stack_curr)};
+        auto const num1{details::pop_get_val(stack_curr)};
 
-            ::fast_io::fast_terminate();
-        }
+        details::push(stack_curr, stack_t{.f32{::copysignf(num1.f32, num2.f32)}});
 
-        auto const num2{sm.stack.pop_element_unchecked()};
-        auto const num1{sm.stack.pop_element_unchecked()};
-
-        if(num1.vt != ::uwvm::wasm::value_type::f32 || num2.vt != ::uwvm::wasm::value_type::f32) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data type is not f32."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
-
-            ::fast_io::fast_terminate();
-        }
-
-        sm.stack.push_unchecked(stack_t{.f32{::copysignf(num1.f32, num2.f32)}, .vt{::uwvm::wasm::value_type::f32}});
-
-                auto next_op{curr_opt + 1}; next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
+        auto next_op{curr_opt + 1};
+        next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
     }
 
 #if __has_cpp_attribute(__gnu__::__hot__)
@@ -10504,71 +3520,14 @@ namespace uwvm::vm::unchecked_interpreter::func
         f64_abs(::std::byte const* curr,
                 ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                 ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-               ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
     {
-        if(sm.stack.empty()) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data stack is empty."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
+        auto const num{details::pop_get_val(stack_curr)};
 
-            ::fast_io::fast_terminate();
-        }
+        details::push(stack_curr, stack_t{.f64{::std::abs(num.f64)}});
 
-        auto const num{sm.stack.pop_element_unchecked()};
-
-        if(num.vt != ::uwvm::wasm::value_type::f64) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data type is not f64."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
-
-            ::fast_io::fast_terminate();
-        }
-
-        sm.stack.push_unchecked(stack_t{.f64{::std::abs(num.f64)}, .vt{::uwvm::wasm::value_type::f64}});
-
-                auto next_op{curr_opt + 1}; next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
+        auto next_op{curr_opt + 1};
+        next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
     }
 
 #if __has_cpp_attribute(__gnu__::__hot__)
@@ -10578,71 +3537,14 @@ namespace uwvm::vm::unchecked_interpreter::func
         f64_neg(::std::byte const* curr,
                 ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                 ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-               ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
     {
-        if(sm.stack.empty()) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data stack is empty."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
+        auto const num{details::pop_get_val(stack_curr)};
 
-            ::fast_io::fast_terminate();
-        }
+        details::push(stack_curr, stack_t{.f64{-num.f64}});
 
-        auto const num{sm.stack.pop_element_unchecked()};
-
-        if(num.vt != ::uwvm::wasm::value_type::f64) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data type is not f64."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
-
-            ::fast_io::fast_terminate();
-        }
-
-        sm.stack.push_unchecked(stack_t{.f64{-num.f64}, .vt{::uwvm::wasm::value_type::f64}});
-
-                auto next_op{curr_opt + 1}; next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
+        auto next_op{curr_opt + 1};
+        next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
     }
 
 #if __has_cpp_attribute(__gnu__::__hot__)
@@ -10652,71 +3554,14 @@ namespace uwvm::vm::unchecked_interpreter::func
         f64_ceil(::std::byte const* curr,
                  ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                  ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                 ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
     {
-        if(sm.stack.empty()) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data stack is empty."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
+        auto const num{details::pop_get_val(stack_curr)};
 
-            ::fast_io::fast_terminate();
-        }
+        details::push(stack_curr, stack_t{.f64{::std::ceil(num.f64)}});
 
-        auto const num{sm.stack.pop_element_unchecked()};
-
-        if(num.vt != ::uwvm::wasm::value_type::f64) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data type is not f64."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
-
-            ::fast_io::fast_terminate();
-        }
-
-        sm.stack.push_unchecked(stack_t{.f64{::std::ceil(num.f64)}, .vt{::uwvm::wasm::value_type::f64}});
-
-                auto next_op{curr_opt + 1}; next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
+        auto next_op{curr_opt + 1};
+        next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
     }
 
 #if __has_cpp_attribute(__gnu__::__hot__)
@@ -10726,71 +3571,14 @@ namespace uwvm::vm::unchecked_interpreter::func
         f64_floor(::std::byte const* curr,
                   ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                   ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                 ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                  ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
     {
-        if(sm.stack.empty()) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data stack is empty."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
+        auto const num{details::pop_get_val(stack_curr)};
 
-            ::fast_io::fast_terminate();
-        }
+        details::push(stack_curr, stack_t{.f64{::std::floor(num.f64)}});
 
-        auto const num{sm.stack.pop_element_unchecked()};
-
-        if(num.vt != ::uwvm::wasm::value_type::f64) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data type is not f64."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
-
-            ::fast_io::fast_terminate();
-        }
-
-        sm.stack.push_unchecked(stack_t{.f64{::std::floor(num.f64)}, .vt{::uwvm::wasm::value_type::f64}});
-
-                auto next_op{curr_opt + 1}; next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
+        auto next_op{curr_opt + 1};
+        next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
     }
 
 #if __has_cpp_attribute(__gnu__::__hot__)
@@ -10800,71 +3588,14 @@ namespace uwvm::vm::unchecked_interpreter::func
         f64_trunc(::std::byte const* curr,
                   ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                   ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                 ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                  ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
     {
-        if(sm.stack.empty()) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data stack is empty."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
+        auto const num{details::pop_get_val(stack_curr)};
 
-            ::fast_io::fast_terminate();
-        }
+        details::push(stack_curr, stack_t{.f64{::trunc(num.f64)}});
 
-        auto const num{sm.stack.pop_element_unchecked()};
-
-        if(num.vt != ::uwvm::wasm::value_type::f64) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data type is not f64."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
-
-            ::fast_io::fast_terminate();
-        }
-
-        sm.stack.push_unchecked(stack_t{.f64{::trunc(num.f64)}, .vt{::uwvm::wasm::value_type::f64}});
-
-                auto next_op{curr_opt + 1}; next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
+        auto next_op{curr_opt + 1};
+        next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
     }
 
 #if __has_cpp_attribute(__gnu__::__hot__)
@@ -10874,71 +3605,14 @@ namespace uwvm::vm::unchecked_interpreter::func
         f64_nearest(::std::byte const* curr,
                     ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                     ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                   ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                    ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
     {
-        if(sm.stack.empty()) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data stack is empty."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
+        auto const num{details::pop_get_val(stack_curr)};
 
-            ::fast_io::fast_terminate();
-        }
+        details::push(stack_curr, stack_t{.f64{::round(num.f64)}});
 
-        auto const num{sm.stack.pop_element_unchecked()};
-
-        if(num.vt != ::uwvm::wasm::value_type::f64) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data type is not f64."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
-
-            ::fast_io::fast_terminate();
-        }
-
-        sm.stack.push_unchecked(stack_t{.f64{::round(num.f64)}, .vt{::uwvm::wasm::value_type::f64}});
-
-                auto next_op{curr_opt + 1}; next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
+        auto next_op{curr_opt + 1};
+        next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
     }
 
 #if __has_cpp_attribute(__gnu__::__hot__)
@@ -10948,71 +3622,14 @@ namespace uwvm::vm::unchecked_interpreter::func
         f64_sqrt(::std::byte const* curr,
                  ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                  ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                 ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
     {
-        if(sm.stack.empty()) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data stack is empty."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
+        auto const num{details::pop_get_val(stack_curr)};
 
-            ::fast_io::fast_terminate();
-        }
+        details::push(stack_curr, stack_t{.f64{::std::sqrt(num.f64)}});
 
-        auto const num{sm.stack.pop_element_unchecked()};
-
-        if(num.vt != ::uwvm::wasm::value_type::f64) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data type is not f64."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
-
-            ::fast_io::fast_terminate();
-        }
-
-        sm.stack.push_unchecked(stack_t{.f64{::std::sqrt(num.f64)}, .vt{::uwvm::wasm::value_type::f64}});
-
-                auto next_op{curr_opt + 1}; next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
+        auto next_op{curr_opt + 1};
+        next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
     }
 
 #if __has_cpp_attribute(__gnu__::__hot__)
@@ -11022,72 +3639,16 @@ namespace uwvm::vm::unchecked_interpreter::func
         f64_add(::std::byte const* curr,
                 ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                 ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-               ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
     {
-        if(sm.stack.size() < 2) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data stack is empty."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
 
-            ::fast_io::fast_terminate();
-        }
+        auto const num2{details::pop_get_val(stack_curr)};
+        auto const num1{details::pop_get_val(stack_curr)};
 
-        auto const num2{sm.stack.pop_element_unchecked()};
-        auto const num1{sm.stack.pop_element_unchecked()};
+        details::push(stack_curr, stack_t{.f64{num1.f64 + num2.f64}});
 
-        if(num1.vt != ::uwvm::wasm::value_type::f64 || num2.vt != ::uwvm::wasm::value_type::f64) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data type is not f64."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
-
-            ::fast_io::fast_terminate();
-        }
-
-        sm.stack.push_unchecked(stack_t{.f64{num1.f64 + num2.f64}, .vt{::uwvm::wasm::value_type::f64}});
-
-                auto next_op{curr_opt + 1}; next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
+        auto next_op{curr_opt + 1};
+        next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
     }
 
 #if __has_cpp_attribute(__gnu__::__hot__)
@@ -11097,72 +3658,15 @@ namespace uwvm::vm::unchecked_interpreter::func
         f64_sub(::std::byte const* curr,
                 ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                 ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-               ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
     {
-        if(sm.stack.size() < 2) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data stack is empty."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
+        auto const num2{details::pop_get_val(stack_curr)};
+        auto const num1{details::pop_get_val(stack_curr)};
 
-            ::fast_io::fast_terminate();
-        }
+        details::push(stack_curr, stack_t{.f64{num1.f64 - num2.f64}});
 
-        auto const num2{sm.stack.pop_element_unchecked()};
-        auto const num1{sm.stack.pop_element_unchecked()};
-
-        if(num1.vt != ::uwvm::wasm::value_type::f64 || num2.vt != ::uwvm::wasm::value_type::f64) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data type is not f64."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
-
-            ::fast_io::fast_terminate();
-        }
-
-        sm.stack.push_unchecked(stack_t{.f64{num1.f64 - num2.f64}, .vt{::uwvm::wasm::value_type::f64}});
-
-                auto next_op{curr_opt + 1}; next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
+        auto next_op{curr_opt + 1};
+        next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
     }
 
 #if __has_cpp_attribute(__gnu__::__hot__)
@@ -11172,72 +3676,15 @@ namespace uwvm::vm::unchecked_interpreter::func
         f64_mul(::std::byte const* curr,
                 ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                 ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-               ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
     {
-        if(sm.stack.size() < 2) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data stack is empty."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
+        auto const num2{details::pop_get_val(stack_curr)};
+        auto const num1{details::pop_get_val(stack_curr)};
 
-            ::fast_io::fast_terminate();
-        }
+        details::push(stack_curr, stack_t{.f64{num1.f64 * num2.f64}});
 
-        auto const num2{sm.stack.pop_element_unchecked()};
-        auto const num1{sm.stack.pop_element_unchecked()};
-
-        if(num1.vt != ::uwvm::wasm::value_type::f64 || num2.vt != ::uwvm::wasm::value_type::f64) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data type is not f64."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
-
-            ::fast_io::fast_terminate();
-        }
-
-        sm.stack.push_unchecked(stack_t{.f64{num1.f64 * num2.f64}, .vt{::uwvm::wasm::value_type::f64}});
-
-                auto next_op{curr_opt + 1}; next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
+        auto next_op{curr_opt + 1};
+        next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
     }
 
 #if __has_cpp_attribute(__gnu__::__hot__)
@@ -11247,72 +3694,15 @@ namespace uwvm::vm::unchecked_interpreter::func
         f64_div(::std::byte const* curr,
                 ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                 ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-               ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
     {
-        if(sm.stack.size() < 2) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data stack is empty."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
+        auto const num2{details::pop_get_val(stack_curr)};
+        auto const num1{details::pop_get_val(stack_curr)};
 
-            ::fast_io::fast_terminate();
-        }
+        details::push(stack_curr, stack_t{.f64{num1.f64 / num2.f64}});
 
-        auto const num2{sm.stack.pop_element_unchecked()};
-        auto const num1{sm.stack.pop_element_unchecked()};
-
-        if(num1.vt != ::uwvm::wasm::value_type::f64 || num2.vt != ::uwvm::wasm::value_type::f64) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data type is not f64."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
-
-            ::fast_io::fast_terminate();
-        }
-
-        sm.stack.push_unchecked(stack_t{.f64{num1.f64 / num2.f64}, .vt{::uwvm::wasm::value_type::f64}});
-
-                auto next_op{curr_opt + 1}; next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
+        auto next_op{curr_opt + 1};
+        next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
     }
 
 #if __has_cpp_attribute(__gnu__::__hot__)
@@ -11322,72 +3712,15 @@ namespace uwvm::vm::unchecked_interpreter::func
         f64_min(::std::byte const* curr,
                 ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                 ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-               ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
     {
-        if(sm.stack.size() < 2) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data stack is empty."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
+        auto const num2{details::pop_get_val(stack_curr)};
+        auto const num1{details::pop_get_val(stack_curr)};
 
-            ::fast_io::fast_terminate();
-        }
+        details::push(stack_curr, stack_t{.f64{::std::min(num1.f64, num2.f64)}});
 
-        auto const num2{sm.stack.pop_element_unchecked()};
-        auto const num1{sm.stack.pop_element_unchecked()};
-
-        if(num1.vt != ::uwvm::wasm::value_type::f64 || num2.vt != ::uwvm::wasm::value_type::f64) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data type is not f64."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
-
-            ::fast_io::fast_terminate();
-        }
-
-        sm.stack.push_unchecked(stack_t{.f64{::std::min(num1.f64, num2.f64)}, .vt{::uwvm::wasm::value_type::f64}});
-
-                auto next_op{curr_opt + 1}; next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
+        auto next_op{curr_opt + 1};
+        next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
     }
 
 #if __has_cpp_attribute(__gnu__::__hot__)
@@ -11397,72 +3730,15 @@ namespace uwvm::vm::unchecked_interpreter::func
         f64_max(::std::byte const* curr,
                 ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                 ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-               ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
     {
-        if(sm.stack.size() < 2) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data stack is empty."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
+        auto const num2{details::pop_get_val(stack_curr)};
+        auto const num1{details::pop_get_val(stack_curr)};
 
-            ::fast_io::fast_terminate();
-        }
+        details::push(stack_curr, stack_t{.f64{::std::max(num1.f64, num2.f64)}});
 
-        auto const num2{sm.stack.pop_element_unchecked()};
-        auto const num1{sm.stack.pop_element_unchecked()};
-
-        if(num1.vt != ::uwvm::wasm::value_type::f64 || num2.vt != ::uwvm::wasm::value_type::f64) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data type is not f64."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
-
-            ::fast_io::fast_terminate();
-        }
-
-        sm.stack.push_unchecked(stack_t{.f64{::std::max(num1.f64, num2.f64)}, .vt{::uwvm::wasm::value_type::f64}});
-
-                auto next_op{curr_opt + 1}; next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
+        auto next_op{curr_opt + 1};
+        next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
     }
 
 #if __has_cpp_attribute(__gnu__::__hot__)
@@ -11472,72 +3748,15 @@ namespace uwvm::vm::unchecked_interpreter::func
         f64_copysign(::std::byte const* curr,
                      ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                      ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                    ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                     ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
     {
-        if(sm.stack.size() < 2) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data stack is empty."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
+        auto const num2{details::pop_get_val(stack_curr)};
+        auto const num1{details::pop_get_val(stack_curr)};
 
-            ::fast_io::fast_terminate();
-        }
+        details::push(stack_curr, stack_t{.f64{::copysign(num1.f64, num2.f64)}});
 
-        auto const num2{sm.stack.pop_element_unchecked()};
-        auto const num1{sm.stack.pop_element_unchecked()};
-
-        if(num1.vt != ::uwvm::wasm::value_type::f64 || num2.vt != ::uwvm::wasm::value_type::f64) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data type is not f64."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
-
-            ::fast_io::fast_terminate();
-        }
-
-        sm.stack.push_unchecked(stack_t{.f64{::copysign(num1.f64, num2.f64)}, .vt{::uwvm::wasm::value_type::f64}});
-
-                auto next_op{curr_opt + 1}; next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
+        auto next_op{curr_opt + 1};
+        next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
     }
 
 #if __has_cpp_attribute(__gnu__::__hot__)
@@ -11547,71 +3766,14 @@ namespace uwvm::vm::unchecked_interpreter::func
         i32_wrap_i64(::std::byte const* curr,
                      ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                      ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                    ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                     ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
     {
-        if(sm.stack.empty()) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data stack is empty."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
+        auto const num{details::pop_get_val(stack_curr)};
 
-            ::fast_io::fast_terminate();
-        }
+        details::push(stack_curr, stack_t{.i32{static_cast<::std::int_least32_t>(num.i64)}});
 
-        auto const num{sm.stack.pop_element_unchecked()};
-
-        if(num.vt != ::uwvm::wasm::value_type::i64) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data type is not i64."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
-
-            ::fast_io::fast_terminate();
-        }
-
-        sm.stack.push_unchecked(stack_t{.i32{static_cast<::std::int_least32_t>(num.i64)}, .vt{::uwvm::wasm::value_type::i32}});
-
-                auto next_op{curr_opt + 1}; next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
+        auto next_op{curr_opt + 1};
+        next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
     }
 
 #if __has_cpp_attribute(__gnu__::__hot__)
@@ -11621,71 +3783,15 @@ namespace uwvm::vm::unchecked_interpreter::func
         i32_trunc_f32_s(::std::byte const* curr,
                         ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                         ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                       ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                        ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
     {
-        if(sm.stack.empty()) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data stack is empty."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
 
-            ::fast_io::fast_terminate();
-        }
+        auto const num{details::pop_get_val(stack_curr)};
 
-        auto const num{sm.stack.pop_element_unchecked()};
+        details::push(stack_curr, stack_t{.i32{static_cast<::std::int_least32_t>(num.f32)}});
 
-        if(num.vt != ::uwvm::wasm::value_type::f32) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data type is not f32."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
-
-            ::fast_io::fast_terminate();
-        }
-
-        sm.stack.push_unchecked(stack_t{.i32{static_cast<::std::int_least32_t>(num.f32)}, .vt{::uwvm::wasm::value_type::i32}});
-
-                auto next_op{curr_opt + 1}; next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
+        auto next_op{curr_opt + 1};
+        next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
     }
 
 #if __has_cpp_attribute(__gnu__::__hot__)
@@ -11695,72 +3801,15 @@ namespace uwvm::vm::unchecked_interpreter::func
         i32_trunc_f32_u(::std::byte const* curr,
                         ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                         ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                       ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                        ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
     {
-        if(sm.stack.empty()) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data stack is empty."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
 
-            ::fast_io::fast_terminate();
-        }
+        auto const num{details::pop_get_val(stack_curr)};
 
-        auto const num{sm.stack.pop_element_unchecked()};
+        details::push(stack_curr, stack_t{.i32{static_cast<::std::int_least32_t>(static_cast<::std::uint_least32_t>(num.f32))}});
 
-        if(num.vt != ::uwvm::wasm::value_type::f32) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data type is not f32."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
-
-            ::fast_io::fast_terminate();
-        }
-
-        sm.stack.push_unchecked(
-            stack_t{.i32{static_cast<::std::int_least32_t>(static_cast<::std::uint_least32_t>(num.f32))}, .vt{::uwvm::wasm::value_type::i32}});
-
-                auto next_op{curr_opt + 1}; next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
+        auto next_op{curr_opt + 1};
+        next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
     }
 
 #if __has_cpp_attribute(__gnu__::__hot__)
@@ -11770,71 +3819,14 @@ namespace uwvm::vm::unchecked_interpreter::func
         i32_trunc_f64_s(::std::byte const* curr,
                         ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                         ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                       ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                        ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
     {
-        if(sm.stack.empty()) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data stack is empty."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
+        auto const num{details::pop_get_val(stack_curr)};
 
-            ::fast_io::fast_terminate();
-        }
+        details::push(stack_curr, stack_t{.i32{static_cast<::std::int_least32_t>(num.f64)}});
 
-        auto const num{sm.stack.pop_element_unchecked()};
-
-        if(num.vt != ::uwvm::wasm::value_type::f64) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data type is not f64."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
-
-            ::fast_io::fast_terminate();
-        }
-
-        sm.stack.push_unchecked(stack_t{.i32{static_cast<::std::int_least32_t>(num.f64)}, .vt{::uwvm::wasm::value_type::i32}});
-
-                auto next_op{curr_opt + 1}; next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
+        auto next_op{curr_opt + 1};
+        next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
     }
 
 #if __has_cpp_attribute(__gnu__::__hot__)
@@ -11844,72 +3836,14 @@ namespace uwvm::vm::unchecked_interpreter::func
         i32_trunc_f64_u(::std::byte const* curr,
                         ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                         ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                       ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                        ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
     {
-        if(sm.stack.empty()) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data stack is empty."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
+        auto const num{details::pop_get_val(stack_curr)};
 
-            ::fast_io::fast_terminate();
-        }
+        details::push(stack_curr, stack_t{.i32{static_cast<::std::int_least32_t>(static_cast<::std::uint_least32_t>(num.f64))}});
 
-        auto const num{sm.stack.pop_element_unchecked()};
-
-        if(num.vt != ::uwvm::wasm::value_type::f64) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data type is not f64."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
-
-            ::fast_io::fast_terminate();
-        }
-
-        sm.stack.push_unchecked(
-            stack_t{.i32{static_cast<::std::int_least32_t>(static_cast<::std::uint_least32_t>(num.f64))}, .vt{::uwvm::wasm::value_type::i32}});
-
-                auto next_op{curr_opt + 1}; next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
+        auto next_op{curr_opt + 1};
+        next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
     }
 
 #if __has_cpp_attribute(__gnu__::__hot__)
@@ -11919,71 +3853,14 @@ namespace uwvm::vm::unchecked_interpreter::func
         i64_extend_i32_s(::std::byte const* curr,
                          ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                          ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                        ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                         ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
     {
-        if(sm.stack.empty()) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data stack is empty."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
+        auto const num{details::pop_get_val(stack_curr)};
 
-            ::fast_io::fast_terminate();
-        }
+        details::push(stack_curr, stack_t{.i64{static_cast<::std::int_least64_t>(num.i32)}});
 
-        auto const num{sm.stack.pop_element_unchecked()};
-
-        if(num.vt != ::uwvm::wasm::value_type::i32) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data type is not i32."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
-
-            ::fast_io::fast_terminate();
-        }
-
-        sm.stack.push_unchecked(stack_t{.i64{static_cast<::std::int_least64_t>(num.i32)}, .vt{::uwvm::wasm::value_type::i64}});
-
-                auto next_op{curr_opt + 1}; next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
+        auto next_op{curr_opt + 1};
+        next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
     }
 
 #if __has_cpp_attribute(__gnu__::__hot__)
@@ -11993,72 +3870,15 @@ namespace uwvm::vm::unchecked_interpreter::func
         i64_extend_i32_u(::std::byte const* curr,
                          ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                          ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                        ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                         ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
     {
-        if(sm.stack.empty()) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data stack is empty."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
 
-            ::fast_io::fast_terminate();
-        }
+        auto const num{details::pop_get_val(stack_curr)};
 
-        auto const num{sm.stack.pop_element_unchecked()};
+        details::push(stack_curr, stack_t{.i64{static_cast<::std::int_least64_t>(static_cast<::std::uint_least32_t>(num.i32))}});
 
-        if(num.vt != ::uwvm::wasm::value_type::i32) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data type is not i32."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
-
-            ::fast_io::fast_terminate();
-        }
-
-        sm.stack.push_unchecked(
-            stack_t{.i64{static_cast<::std::int_least64_t>(static_cast<::std::uint_least32_t>(num.i32))}, .vt{::uwvm::wasm::value_type::i64}});
-
-                auto next_op{curr_opt + 1}; next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
+        auto next_op{curr_opt + 1};
+        next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
     }
 
 #if __has_cpp_attribute(__gnu__::__hot__)
@@ -12068,71 +3888,14 @@ namespace uwvm::vm::unchecked_interpreter::func
         i64_trunc_f32_s(::std::byte const* curr,
                         ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                         ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                       ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                        ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
     {
-        if(sm.stack.empty()) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data stack is empty."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
+        auto const num{details::pop_get_val(stack_curr)};
 
-            ::fast_io::fast_terminate();
-        }
+        details::push(stack_curr, stack_t{.i64{static_cast<::std::int_least64_t>(num.f32)}});
 
-        auto const num{sm.stack.pop_element_unchecked()};
-
-        if(num.vt != ::uwvm::wasm::value_type::f32) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data type is not f32."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
-
-            ::fast_io::fast_terminate();
-        }
-
-        sm.stack.push_unchecked(stack_t{.i64{static_cast<::std::int_least64_t>(num.f32)}, .vt{::uwvm::wasm::value_type::i64}});
-
-                auto next_op{curr_opt + 1}; next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
+        auto next_op{curr_opt + 1};
+        next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
     }
 
 #if __has_cpp_attribute(__gnu__::__hot__)
@@ -12142,72 +3905,15 @@ namespace uwvm::vm::unchecked_interpreter::func
         i64_trunc_f32_u(::std::byte const* curr,
                         ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                         ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                       ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                        ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
     {
-        if(sm.stack.empty()) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data stack is empty."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
 
-            ::fast_io::fast_terminate();
-        }
+        auto const num{details::pop_get_val(stack_curr)};
 
-        auto const num{sm.stack.pop_element_unchecked()};
+        details::push(stack_curr, stack_t{.i64{static_cast<::std::int_least64_t>(static_cast<::std::uint_least64_t>(num.f32))}});
 
-        if(num.vt != ::uwvm::wasm::value_type::f32) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data type is not f32."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
-
-            ::fast_io::fast_terminate();
-        }
-
-        sm.stack.push_unchecked(
-            stack_t{.i64{static_cast<::std::int_least64_t>(static_cast<::std::uint_least64_t>(num.f32))}, .vt{::uwvm::wasm::value_type::i64}});
-
-                auto next_op{curr_opt + 1}; next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
+        auto next_op{curr_opt + 1};
+        next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
     }
 
 #if __has_cpp_attribute(__gnu__::__hot__)
@@ -12217,71 +3923,14 @@ namespace uwvm::vm::unchecked_interpreter::func
         i64_trunc_f64_s(::std::byte const* curr,
                         ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                         ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                       ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                        ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
     {
-        if(sm.stack.empty()) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data stack is empty."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
+        auto const num{details::pop_get_val(stack_curr)};
 
-            ::fast_io::fast_terminate();
-        }
+        details::push(stack_curr, stack_t{.i64{static_cast<::std::int_least64_t>(num.f64)}});
 
-        auto const num{sm.stack.pop_element_unchecked()};
-
-        if(num.vt != ::uwvm::wasm::value_type::f64) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data type is not f64."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
-
-            ::fast_io::fast_terminate();
-        }
-
-        sm.stack.push_unchecked(stack_t{.i64{static_cast<::std::int_least64_t>(num.f64)}, .vt{::uwvm::wasm::value_type::i64}});
-
-                auto next_op{curr_opt + 1}; next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
+        auto next_op{curr_opt + 1};
+        next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
     }
 
 #if __has_cpp_attribute(__gnu__::__hot__)
@@ -12291,72 +3940,15 @@ namespace uwvm::vm::unchecked_interpreter::func
         i64_trunc_f64_u(::std::byte const* curr,
                         ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                         ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                       ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                        ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
     {
-        if(sm.stack.empty()) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data stack is empty."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
 
-            ::fast_io::fast_terminate();
-        }
+        auto const num{details::pop_get_val(stack_curr)};
 
-        auto const num{sm.stack.pop_element_unchecked()};
+        details::push(stack_curr, stack_t{.i64{static_cast<::std::int_least64_t>(static_cast<::std::uint_least64_t>(num.f64))}});
 
-        if(num.vt != ::uwvm::wasm::value_type::f64) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data type is not f64."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
-
-            ::fast_io::fast_terminate();
-        }
-
-        sm.stack.push_unchecked(
-            stack_t{.i64{static_cast<::std::int_least64_t>(static_cast<::std::uint_least64_t>(num.f64))}, .vt{::uwvm::wasm::value_type::i64}});
-
-                auto next_op{curr_opt + 1}; next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
+        auto next_op{curr_opt + 1};
+        next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
     }
 
 #if __has_cpp_attribute(__gnu__::__hot__)
@@ -12366,71 +3958,15 @@ namespace uwvm::vm::unchecked_interpreter::func
         f32_convert_i32_s(::std::byte const* curr,
                           ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                           ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                         ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                          ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
     {
-        if(sm.stack.empty()) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data stack is empty."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
 
-            ::fast_io::fast_terminate();
-        }
+        auto const num{details::pop_get_val(stack_curr)};
 
-        auto const num{sm.stack.pop_element_unchecked()};
+        details::push(stack_curr, stack_t{.f32{static_cast<::uwvm::wasm::wasm_f32>(num.i32)}});
 
-        if(num.vt != ::uwvm::wasm::value_type::i32) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data type is not i32."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
-
-            ::fast_io::fast_terminate();
-        }
-
-        sm.stack.push_unchecked(stack_t{.f32{static_cast<::uwvm::wasm::wasm_f32>(num.i32)}, .vt{::uwvm::wasm::value_type::f32}});
-
-                auto next_op{curr_opt + 1}; next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
+        auto next_op{curr_opt + 1};
+        next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
     }
 
 #if __has_cpp_attribute(__gnu__::__hot__)
@@ -12440,72 +3976,15 @@ namespace uwvm::vm::unchecked_interpreter::func
         f32_convert_i32_u(::std::byte const* curr,
                           ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                           ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                         ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                          ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
     {
-        if(sm.stack.empty()) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data stack is empty."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
 
-            ::fast_io::fast_terminate();
-        }
+        auto const num{details::pop_get_val(stack_curr)};
 
-        auto const num{sm.stack.pop_element_unchecked()};
+        details::push(stack_curr, stack_t{.f32{static_cast<::uwvm::wasm::wasm_f32>(static_cast<::std::uint_least32_t>(num.i32))}});
 
-        if(num.vt != ::uwvm::wasm::value_type::i32) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data type is not i32."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
-
-            ::fast_io::fast_terminate();
-        }
-
-        sm.stack.push_unchecked(
-            stack_t{.f32{static_cast<::uwvm::wasm::wasm_f32>(static_cast<::std::uint_least32_t>(num.i32))}, .vt{::uwvm::wasm::value_type::f32}});
-
-                auto next_op{curr_opt + 1}; next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
+        auto next_op{curr_opt + 1};
+        next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
     }
 
 #if __has_cpp_attribute(__gnu__::__hot__)
@@ -12515,71 +3994,15 @@ namespace uwvm::vm::unchecked_interpreter::func
         f32_convert_i64_s(::std::byte const* curr,
                           ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                           ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                         ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                          ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
     {
-        if(sm.stack.empty()) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data stack is empty."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
 
-            ::fast_io::fast_terminate();
-        }
+        auto const num{details::pop_get_val(stack_curr)};
 
-        auto const num{sm.stack.pop_element_unchecked()};
+        details::push(stack_curr, stack_t{.f32{static_cast<::uwvm::wasm::wasm_f32>(num.i64)}});
 
-        if(num.vt != ::uwvm::wasm::value_type::i64) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data type is not i64."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
-
-            ::fast_io::fast_terminate();
-        }
-
-        sm.stack.push_unchecked(stack_t{.f32{static_cast<::uwvm::wasm::wasm_f32>(num.i64)}, .vt{::uwvm::wasm::value_type::f32}});
-
-                auto next_op{curr_opt + 1}; next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
+        auto next_op{curr_opt + 1};
+        next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
     }
 
 #if __has_cpp_attribute(__gnu__::__hot__)
@@ -12589,72 +4012,15 @@ namespace uwvm::vm::unchecked_interpreter::func
         f32_convert_i64_u(::std::byte const* curr,
                           ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                           ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                         ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                          ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
     {
-        if(sm.stack.empty()) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data stack is empty."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
 
-            ::fast_io::fast_terminate();
-        }
+        auto const num{details::pop_get_val(stack_curr)};
 
-        auto const num{sm.stack.pop_element_unchecked()};
+        details::push(stack_curr, stack_t{.f32{static_cast<::uwvm::wasm::wasm_f32>(static_cast<::std::uint_least64_t>(num.i64))}});
 
-        if(num.vt != ::uwvm::wasm::value_type::i64) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data type is not i64."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
-
-            ::fast_io::fast_terminate();
-        }
-
-        sm.stack.push_unchecked(
-            stack_t{.f32{static_cast<::uwvm::wasm::wasm_f32>(static_cast<::std::uint_least64_t>(num.i64))}, .vt{::uwvm::wasm::value_type::f32}});
-
-                auto next_op{curr_opt + 1}; next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
+        auto next_op{curr_opt + 1};
+        next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
     }
 
 #if __has_cpp_attribute(__gnu__::__hot__)
@@ -12664,71 +4030,15 @@ namespace uwvm::vm::unchecked_interpreter::func
         f32_demote_f64(::std::byte const* curr,
                        ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                        ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                      ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                       ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
     {
-        if(sm.stack.empty()) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data stack is empty."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
 
-            ::fast_io::fast_terminate();
-        }
+        auto const num{details::pop_get_val(stack_curr)};
 
-        auto const num{sm.stack.pop_element_unchecked()};
+        details::push(stack_curr, stack_t{.f32{static_cast<::uwvm::wasm::wasm_f32>(num.f64)}});
 
-        if(num.vt != ::uwvm::wasm::value_type::f64) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data type is not f64."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
-
-            ::fast_io::fast_terminate();
-        }
-
-        sm.stack.push_unchecked(stack_t{.f32{static_cast<::uwvm::wasm::wasm_f32>(num.f64)}, .vt{::uwvm::wasm::value_type::f32}});
-
-                auto next_op{curr_opt + 1}; next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
+        auto next_op{curr_opt + 1};
+        next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
     }
 
 #if __has_cpp_attribute(__gnu__::__hot__)
@@ -12738,71 +4048,15 @@ namespace uwvm::vm::unchecked_interpreter::func
         f64_convert_i32_s(::std::byte const* curr,
                           ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                           ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                         ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                          ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
     {
-        if(sm.stack.empty()) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data stack is empty."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
 
-            ::fast_io::fast_terminate();
-        }
+        auto const num{details::pop_get_val(stack_curr)};
 
-        auto const num{sm.stack.pop_element_unchecked()};
+        details::push(stack_curr, stack_t{.f64{static_cast<::uwvm::wasm::wasm_f64>(num.i32)}});
 
-        if(num.vt != ::uwvm::wasm::value_type::i32) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data type is not i32."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
-
-            ::fast_io::fast_terminate();
-        }
-
-        sm.stack.push_unchecked(stack_t{.f64{static_cast<::uwvm::wasm::wasm_f64>(num.i32)}, .vt{::uwvm::wasm::value_type::f64}});
-
-                auto next_op{curr_opt + 1}; next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
+        auto next_op{curr_opt + 1};
+        next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
     }
 
 #if __has_cpp_attribute(__gnu__::__hot__)
@@ -12812,72 +4066,14 @@ namespace uwvm::vm::unchecked_interpreter::func
         f64_convert_i32_u(::std::byte const* curr,
                           ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                           ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                         ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                          ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
     {
-        if(sm.stack.empty()) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data stack is empty."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
+        auto const num{details::pop_get_val(stack_curr)};
 
-            ::fast_io::fast_terminate();
-        }
+        details::push(stack_curr, stack_t{.f64{static_cast<::uwvm::wasm::wasm_f64>(static_cast<::std::uint_least32_t>(num.i32))}});
 
-        auto const num{sm.stack.pop_element_unchecked()};
-
-        if(num.vt != ::uwvm::wasm::value_type::i32) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data type is not i32."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
-
-            ::fast_io::fast_terminate();
-        }
-
-        sm.stack.push_unchecked(
-            stack_t{.f64{static_cast<::uwvm::wasm::wasm_f64>(static_cast<::std::uint_least32_t>(num.i32))}, .vt{::uwvm::wasm::value_type::f64}});
-
-                auto next_op{curr_opt + 1}; next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
+        auto next_op{curr_opt + 1};
+        next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
     }
 
 #if __has_cpp_attribute(__gnu__::__hot__)
@@ -12887,71 +4083,15 @@ namespace uwvm::vm::unchecked_interpreter::func
         f64_convert_i64_s(::std::byte const* curr,
                           ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                           ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                         ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                          ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
     {
-        if(sm.stack.empty()) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data stack is empty."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
 
-            ::fast_io::fast_terminate();
-        }
+        auto const num{details::pop_get_val(stack_curr)};
 
-        auto const num{sm.stack.pop_element_unchecked()};
+        details::push(stack_curr, stack_t{.f64{static_cast<::uwvm::wasm::wasm_f64>(num.i64)}});
 
-        if(num.vt != ::uwvm::wasm::value_type::i64) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data type is not i64."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
-
-            ::fast_io::fast_terminate();
-        }
-
-        sm.stack.push_unchecked(stack_t{.f64{static_cast<::uwvm::wasm::wasm_f64>(num.i64)}, .vt{::uwvm::wasm::value_type::f64}});
-
-                auto next_op{curr_opt + 1}; next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
+        auto next_op{curr_opt + 1};
+        next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
     }
 
 #if __has_cpp_attribute(__gnu__::__hot__)
@@ -12961,72 +4101,14 @@ namespace uwvm::vm::unchecked_interpreter::func
         f64_convert_i64_u(::std::byte const* curr,
                           ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                           ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                         ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                          ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
     {
-        if(sm.stack.empty()) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data stack is empty."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
+        auto const num{details::pop_get_val(stack_curr)};
 
-            ::fast_io::fast_terminate();
-        }
+        details::push(stack_curr, stack_t{.f64{static_cast<::uwvm::wasm::wasm_f64>(static_cast<::std::uint_least64_t>(num.i64))}});
 
-        auto const num{sm.stack.pop_element_unchecked()};
-
-        if(num.vt != ::uwvm::wasm::value_type::i64) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data type is not i64."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
-
-            ::fast_io::fast_terminate();
-        }
-
-        sm.stack.push_unchecked(
-            stack_t{.f64{static_cast<::uwvm::wasm::wasm_f64>(static_cast<::std::uint_least64_t>(num.i64))}, .vt{::uwvm::wasm::value_type::f64}});
-
-                auto next_op{curr_opt + 1}; next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
+        auto next_op{curr_opt + 1};
+        next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
     }
 
 #if __has_cpp_attribute(__gnu__::__hot__)
@@ -13036,71 +4118,14 @@ namespace uwvm::vm::unchecked_interpreter::func
         f64_promote_f32(::std::byte const* curr,
                         ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                         ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                       ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                        ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
     {
-        if(sm.stack.empty()) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data stack is empty."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
+        auto const num{details::pop_get_val(stack_curr)};
 
-            ::fast_io::fast_terminate();
-        }
+        details::push(stack_curr, stack_t{.f64{static_cast<::uwvm::wasm::wasm_f64>(num.f32)}});
 
-        auto const num{sm.stack.pop_element_unchecked()};
-
-        if(num.vt != ::uwvm::wasm::value_type::f32) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data type is not f32."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
-
-            ::fast_io::fast_terminate();
-        }
-
-        sm.stack.push_unchecked(stack_t{.f64{static_cast<::uwvm::wasm::wasm_f64>(num.f32)}, .vt{::uwvm::wasm::value_type::f64}});
-
-                auto next_op{curr_opt + 1}; next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
+        auto next_op{curr_opt + 1};
+        next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
     }
 
 #if __has_cpp_attribute(__gnu__::__hot__)
@@ -13110,71 +4135,15 @@ namespace uwvm::vm::unchecked_interpreter::func
         i32_reinterpret_f32(::std::byte const* curr,
                             ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                             ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                           ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                            ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
     {
-        if(sm.stack.empty()) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data stack is empty."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
 
-            ::fast_io::fast_terminate();
-        }
+        auto const num{details::pop_get_val(stack_curr)};
 
-        auto const num{sm.stack.pop_element_unchecked()};
+        details::push(stack_curr, stack_t{.i32{::std::bit_cast<::std::int_least32_t>(num.f32)}});
 
-        if(num.vt != ::uwvm::wasm::value_type::f32) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data type is not f32."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
-
-            ::fast_io::fast_terminate();
-        }
-
-        sm.stack.push_unchecked(stack_t{.i32{::std::bit_cast<::std::int_least32_t>(num.f32)}, .vt{::uwvm::wasm::value_type::i32}});
-
-                auto next_op{curr_opt + 1}; next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
+        auto next_op{curr_opt + 1};
+        next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
     }
 
 #if __has_cpp_attribute(__gnu__::__hot__)
@@ -13184,71 +4153,15 @@ namespace uwvm::vm::unchecked_interpreter::func
         i64_reinterpret_f64(::std::byte const* curr,
                             ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                             ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                           ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                            ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
     {
-        if(sm.stack.empty()) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data stack is empty."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
 
-            ::fast_io::fast_terminate();
-        }
+        auto const num{details::pop_get_val(stack_curr)};
 
-        auto const num{sm.stack.pop_element_unchecked()};
+        details::push(stack_curr, stack_t{.i64{::std::bit_cast<::std::int_least64_t>(num.f64)}});
 
-        if(num.vt != ::uwvm::wasm::value_type::f64) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data type is not f64."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
-
-            ::fast_io::fast_terminate();
-        }
-
-        sm.stack.push_unchecked(stack_t{.i64{::std::bit_cast<::std::int_least64_t>(num.f64)}, .vt{::uwvm::wasm::value_type::i64}});
-
-                auto next_op{curr_opt + 1}; next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
+        auto next_op{curr_opt + 1};
+        next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
     }
 
 #if __has_cpp_attribute(__gnu__::__hot__)
@@ -13258,71 +4171,14 @@ namespace uwvm::vm::unchecked_interpreter::func
         f32_reinterpret_i32(::std::byte const* curr,
                             ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                             ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                           ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                            ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
     {
-        if(sm.stack.empty()) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data stack is empty."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
+        auto const num{details::pop_get_val(stack_curr)};
 
-            ::fast_io::fast_terminate();
-        }
+        details::push(stack_curr, stack_t{.f32{::std::bit_cast<::uwvm::wasm::wasm_f32>(num.i32)}});
 
-        auto const num{sm.stack.pop_element_unchecked()};
-
-        if(num.vt != ::uwvm::wasm::value_type::i32) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data type is not i32."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
-
-            ::fast_io::fast_terminate();
-        }
-
-        sm.stack.push_unchecked(stack_t{.f32{::std::bit_cast<::uwvm::wasm::wasm_f32>(num.i32)}, .vt{::uwvm::wasm::value_type::f32}});
-
-                auto next_op{curr_opt + 1}; next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
+        auto next_op{curr_opt + 1};
+        next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
     }
 
 #if __has_cpp_attribute(__gnu__::__hot__)
@@ -13332,71 +4188,15 @@ namespace uwvm::vm::unchecked_interpreter::func
         f64_reinterpret_i64(::std::byte const* curr,
                             ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                             ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                           ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                            ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
     {
-        if(sm.stack.empty()) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data stack is empty."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
 
-            ::fast_io::fast_terminate();
-        }
+        auto const num{details::pop_get_val(stack_curr)};
 
-        auto const num{sm.stack.pop_element_unchecked()};
+        details::push(stack_curr, stack_t{.f64{::std::bit_cast<::uwvm::wasm::wasm_f64>(num.i64)}});
 
-        if(num.vt != ::uwvm::wasm::value_type::i64) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data type is not i64."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
-
-            ::fast_io::fast_terminate();
-        }
-
-        sm.stack.push_unchecked(stack_t{.f64{::std::bit_cast<::uwvm::wasm::wasm_f64>(num.i64)}, .vt{::uwvm::wasm::value_type::f64}});
-
-                auto next_op{curr_opt + 1}; next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
+        auto next_op{curr_opt + 1};
+        next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
     }
 
 #if __has_cpp_attribute(__gnu__::__hot__)
@@ -13406,72 +4206,14 @@ namespace uwvm::vm::unchecked_interpreter::func
         i32_extend8_s(::std::byte const* curr,
                       ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                       ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                     ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                      ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
     {
-        if(sm.stack.empty()) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data stack is empty."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
+        auto const num{details::pop_get_val(stack_curr)};
 
-            ::fast_io::fast_terminate();
-        }
+        details::push(stack_curr, stack_t{.i32{static_cast<::std::int_least32_t>(static_cast<::std::int_least8_t>(num.i32))}});
 
-        auto const num{sm.stack.pop_element_unchecked()};
-
-        if(num.vt != ::uwvm::wasm::value_type::i32) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data type is not i32."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
-
-            ::fast_io::fast_terminate();
-        }
-
-        sm.stack.push_unchecked(
-            stack_t{.i32{static_cast<::std::int_least32_t>(static_cast<::std::int_least8_t>(num.i32))}, .vt{::uwvm::wasm::value_type::i32}});
-
-                auto next_op{curr_opt + 1}; next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
+        auto next_op{curr_opt + 1};
+        next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
     }
 
 #if __has_cpp_attribute(__gnu__::__hot__)
@@ -13481,72 +4223,15 @@ namespace uwvm::vm::unchecked_interpreter::func
         i32_extend16_s(::std::byte const* curr,
                        ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                        ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                      ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                       ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
     {
-        if(sm.stack.empty()) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data stack is empty."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
 
-            ::fast_io::fast_terminate();
-        }
+        auto const num{details::pop_get_val(stack_curr)};
 
-        auto const num{sm.stack.pop_element_unchecked()};
+        details::push(stack_curr, stack_t{.i32{static_cast<::std::int_least32_t>(static_cast<::std::int_least16_t>(num.i32))}});
 
-        if(num.vt != ::uwvm::wasm::value_type::i32) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data type is not i32."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
-
-            ::fast_io::fast_terminate();
-        }
-
-        sm.stack.push_unchecked(
-            stack_t{.i32{static_cast<::std::int_least32_t>(static_cast<::std::int_least16_t>(num.i32))}, .vt{::uwvm::wasm::value_type::i32}});
-
-                auto next_op{curr_opt + 1}; next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
+        auto next_op{curr_opt + 1};
+        next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
     }
 
 #if __has_cpp_attribute(__gnu__::__hot__)
@@ -13556,72 +4241,15 @@ namespace uwvm::vm::unchecked_interpreter::func
         i64_extend8_s(::std::byte const* curr,
                       ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                       ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                     ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                      ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
     {
-        if(sm.stack.empty()) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data stack is empty."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
 
-            ::fast_io::fast_terminate();
-        }
+        auto const num{details::pop_get_val(stack_curr)};
 
-        auto const num{sm.stack.pop_element_unchecked()};
+        details::push(stack_curr, stack_t{.i64{static_cast<::std::int_least64_t>(static_cast<::std::int_least8_t>(num.i64))}});
 
-        if(num.vt != ::uwvm::wasm::value_type::i64) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data type is not i64."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
-
-            ::fast_io::fast_terminate();
-        }
-
-        sm.stack.push_unchecked(
-            stack_t{.i64{static_cast<::std::int_least64_t>(static_cast<::std::int_least8_t>(num.i64))}, .vt{::uwvm::wasm::value_type::i64}});
-
-                auto next_op{curr_opt + 1}; next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
+        auto next_op{curr_opt + 1};
+        next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
     }
 
 #if __has_cpp_attribute(__gnu__::__hot__)
@@ -13631,72 +4259,15 @@ namespace uwvm::vm::unchecked_interpreter::func
         i64_extend16_s(::std::byte const* curr,
                        ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                        ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                      ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                       ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
     {
-        if(sm.stack.empty()) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data stack is empty."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
 
-            ::fast_io::fast_terminate();
-        }
+        auto const num{details::pop_get_val(stack_curr)};
 
-        auto const num{sm.stack.pop_element_unchecked()};
+        details::push(stack_curr, stack_t{.i64{static_cast<::std::int_least64_t>(static_cast<::std::int_least16_t>(num.i64))}});
 
-        if(num.vt != ::uwvm::wasm::value_type::i64) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data type is not i64."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
-
-            ::fast_io::fast_terminate();
-        }
-
-        sm.stack.push_unchecked(
-            stack_t{.i64{static_cast<::std::int_least64_t>(static_cast<::std::int_least16_t>(num.i64))}, .vt{::uwvm::wasm::value_type::i64}});
-
-                auto next_op{curr_opt + 1}; next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
+        auto next_op{curr_opt + 1};
+        next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
     }
 
 #if __has_cpp_attribute(__gnu__::__hot__)
@@ -13706,72 +4277,15 @@ namespace uwvm::vm::unchecked_interpreter::func
         i64_extend32_s(::std::byte const* curr,
                        ::uwvm::vm::unchecked_interpreter::operator_t const* curr_opt,
                        ::uwvm::vm::unchecked_interpreter::stack_t* local_begin,
-                      ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
+                       ::uwvm::vm::unchecked_interpreter::stack_t* stack_curr) noexcept
     {
-        if(sm.stack.empty()) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data stack is empty."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
 
-            ::fast_io::fast_terminate();
-        }
+        auto const num{details::pop_get_val(stack_curr)};
 
-        auto const num{sm.stack.pop_element_unchecked()};
+        details::push(stack_curr, stack_t{.i64{static_cast<::std::int_least64_t>(static_cast<::std::int_least32_t>(num.i64))}});
 
-        if(num.vt != ::uwvm::wasm::value_type::i64) [[unlikely]]
-        {
-            ::fast_io::io::perr(::uwvm::u8err,
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"uwvm: "
-                                u8"\033[31m"
-                                u8"[fatal] "
-                                u8"\033[0m"
-#ifdef __MSDOS__
-                                u8"\033[37m"
-#else
-                                u8"\033[97m"
-#endif
-                                u8"(offset=",
-                                ::fast_io::mnp::addrvw(curr - global_wasm_module.module_begin),
-                                u8") "
-                                u8"The data type is not i64."
-                                u8"\n"
-                                u8"\033[0m"
-                                u8"Terminate.\n\n");
-
-            ::fast_io::fast_terminate();
-        }
-
-        sm.stack.push_unchecked(
-            stack_t{.i64{static_cast<::std::int_least64_t>(static_cast<::std::int_least32_t>(num.i64))}, .vt{::uwvm::wasm::value_type::i64}});
-
-                auto next_op{curr_opt + 1}; next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
+        auto next_op{curr_opt + 1};
+        next_op->int_func(next_op->code_begin, next_op, local_begin, stack_curr);
     }
 
-}  // namespace::uwvm::vm::unchecked_interpreter::func
+}  // namespace uwvm::vm::unchecked_interpreter::func

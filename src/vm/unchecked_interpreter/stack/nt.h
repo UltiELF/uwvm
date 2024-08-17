@@ -11,7 +11,7 @@ namespace uwvm::vm::unchecked_interpreter::stack
     {
         inline static ::std::size_t default_stack_size{static_cast<::std::size_t>(1024)};
 
-        ::uwvm::vm::interpreter::stack_t* storage{};
+        ::uwvm::vm::unchecked_interpreter::stack_t* storage{};
         ::std::byte* memory_begin{};
 
         nt_family_stack_t(nt_family_stack_t const&) = delete;
@@ -21,7 +21,7 @@ namespace uwvm::vm::unchecked_interpreter::stack
 
         void init() noexcept
         {
-            auto const stack_size{default_stack_size * sizeof(::uwvm::vm::interpreter::stack_t)};
+            auto const stack_size{default_stack_size * sizeof(::uwvm::vm::unchecked_interpreter::stack_t)};
             ::std::size_t total_pages_bytes{stack_size + static_cast<::std::size_t>(2 * 4096)};
 
             auto status{::fast_io::win32::nt::nt_allocate_virtual_memory<zw>(reinterpret_cast<void*>(-1),
@@ -39,7 +39,7 @@ namespace uwvm::vm::unchecked_interpreter::stack
 #if __has_cpp_attribute(__gnu__::__may_alias__)
                 [[__gnu__::__may_alias__]]
 #endif
-                = ::uwvm::vm::interpreter::stack_t*;
+                = ::uwvm::vm::unchecked_interpreter::stack_t*;
 
             storage = reinterpret_cast<stack_t_may_alias_ptr>(stroage_begin);
 
@@ -72,22 +72,21 @@ namespace uwvm::vm::unchecked_interpreter::stack
         }
 
         ~nt_family_stack_t() { clear(); }
-
     };
 
     using stack_t = nt_family_stack_t<::fast_io::nt_family::nt>;
-}  // namespace uwvm::vm::interpreter::stack
+}  // namespace uwvm::vm::unchecked_interpreter::stack
 
 namespace fast_io::freestanding
 {
     template <::fast_io::nt_family family>
-    struct is_trivially_relocatable<::uwvm::vm::interpreter::stack::nt_family_stack_t<family>>
+    struct is_trivially_relocatable<::uwvm::vm::unchecked_interpreter::stack::nt_family_stack_t<family>>
     {
         inline static constexpr bool value = true;
     };
 
     template <::fast_io::nt_family family>
-    struct is_zero_default_constructible<::uwvm::vm::interpreter::stack::nt_family_stack_t<family>>
+    struct is_zero_default_constructible<::uwvm::vm::unchecked_interpreter::stack::nt_family_stack_t<family>>
     {
         inline static constexpr bool value = true;
     };

@@ -10,7 +10,7 @@ namespace uwvm::vm::unchecked_interpreter::stack
     {
         inline static ::std::size_t default_stack_size{static_cast<::std::size_t>(1024)};
 
-        ::uwvm::vm::interpreter::stack_t* storage{};
+        ::uwvm::vm::unchecked_interpreter::stack_t* storage{};
         ::std::byte* memory_begin{};
 
         stack_t(stack_t const&) = delete;
@@ -20,7 +20,7 @@ namespace uwvm::vm::unchecked_interpreter::stack
 
         void init() noexcept
         {
-            auto const stack_size{default_stack_size * sizeof(::uwvm::vm::interpreter::stack_t)};
+            auto const stack_size{default_stack_size * sizeof(::uwvm::vm::unchecked_interpreter::stack_t)};
             ::std::size_t total_pages_bytes{stack_size + static_cast<::std::size_t>(2 * 4096)};
 
             memory_begin =
@@ -33,7 +33,7 @@ namespace uwvm::vm::unchecked_interpreter::stack
 #if __has_cpp_attribute(__gnu__::__may_alias__)
                 [[__gnu__::__may_alias__]]
 #endif
-                = ::uwvm::vm::interpreter::stack_t*;
+                = ::uwvm::vm::unchecked_interpreter::stack_t*;
 
             storage = reinterpret_cast<stack_t_may_alias_ptr>(stroage_begin);
 
@@ -53,19 +53,18 @@ namespace uwvm::vm::unchecked_interpreter::stack
         }
 
         ~stack_t() { clear(); }
-
     };
 
-}  // namespace uwvm::vm::interpreter::stack
+}  // namespace uwvm::vm::unchecked_interpreter::stack
 
 namespace fast_io::freestanding
 {
-    struct is_trivially_relocatable<::uwvm::vm::interpreter::stack::stack_t>
+    struct is_trivially_relocatable<::uwvm::vm::unchecked_interpreter::stack::stack_t>
     {
         inline static constexpr bool value = true;
     };
 
-    struct is_zero_default_constructible<::uwvm::vm::interpreter::stack::stack_t>
+    struct is_zero_default_constructible<::uwvm::vm::unchecked_interpreter::stack::stack_t>
     {
         inline static constexpr bool value = true;
     };

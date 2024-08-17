@@ -3,11 +3,17 @@
 #ifdef UWVM_TIMER
     #include <fast_io_driver/timer.h>
 #endif
+
+#include "ast.h"
+#include "astgen.h"
+#include "aststorge.h"
+#include "astrun.h"
+#include "stack/stack.h"
+
 namespace uwvm::vm::unchecked_interpreter
 {
     inline void unchecked_interpret() noexcept
     {
-
 #ifdef UWVM_TIMER
         ::fast_io::timer int_timer{u8"uwvm: [timer] unchecked_interpret"};
 #endif
@@ -85,9 +91,9 @@ namespace uwvm::vm::unchecked_interpreter
         }
 
         // init global
-        ::uwvm::vm::interpreter::globals.init(global_count);
+        ::uwvm::vm::globals.init(global_count);
 
-        auto curr_global{::uwvm::vm::interpreter::globals.globals};
+        auto curr_global{::uwvm::vm::globals.globals};
 
         for(auto const i: wasmmod.importsec.global_types)
         {
@@ -115,7 +121,7 @@ namespace uwvm::vm::unchecked_interpreter
             {
                 case ::uwvm::wasm::op_basic::global_get:
                 {
-                    curr_global->value = ::uwvm::vm::interpreter::globals.globals[i.initializer.ref].value;
+                    curr_global->value = ::uwvm::vm::globals.globals[i.initializer.ref].value;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::i32_const:
@@ -196,13 +202,13 @@ namespace uwvm::vm::unchecked_interpreter
         }
 
         // init table
-        ::uwvm::vm::interpreter::table::table_enum = ::fast_io::vector<::fast_io::vector<::std::size_t>>(table_count);
+        ::uwvm::vm::table::table_enum = ::fast_io::vector<::fast_io::vector<::std::size_t>>(table_count);
 
         // enum to table
 
         if(local_table_count != 0) [[likely]]
         {
-            auto& table{::uwvm::vm::interpreter::table::table_enum.front_unchecked()};
+            auto& table{::uwvm::vm::table::table_enum.front_unchecked()};
             auto const& local_table{wasmmod.tablesec.types.front_unchecked()};
             ::std::size_t all_sz{};
             for(auto const& i: wasmmod.elemsec.elem_segments) { all_sz += i.elem_count; }
@@ -248,14 +254,16 @@ namespace uwvm::vm::unchecked_interpreter
         }
 
         // init ast
-        ::uwvm::vm::interpreter::stroage.asts = ::fast_io::vector<::uwvm::vm::interpreter::ast>(local_func_count);
+        ::uwvm::vm::unchecked_interpreter::stroage.asts = ::fast_io::vector<::uwvm::vm::unchecked_interpreter::ast>(local_func_count);
 
         if(::uwvm::vm::start_func >= import_function_count)
         {
             auto const index{::uwvm::vm::start_func - import_function_count};
-            auto& start_func{::uwvm::vm::interpreter::stroage.asts.index_unchecked(index)};
-            start_func = ::uwvm::vm::interpreter::generate_ast(wasmmod.functionsec.types.begin() + index, wasmmod.codesec.bodies.index_unchecked(index));
-            ::uwvm::vm::interpreter::run_ast(start_func);
+            auto& start_func{::uwvm::vm::unchecked_interpreter::stroage.asts.index_unchecked(index)};
+            start_func =
+                ::uwvm::vm::unchecked_interpreter::generate_ast(wasmmod.functionsec.types.begin() + index, wasmmod.codesec.bodies.index_unchecked(index));
+            ::uwvm::vm::unchecked_interpreter::stack::stack_t s{};
+            ::uwvm::vm::unchecked_interpreter::run_ast(start_func, s.storage);
         }
         else [[unlikely]]
         {
