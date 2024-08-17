@@ -4,7 +4,7 @@
 #include <unfinished.h>
 #include "ast.h"
 #include "aststorge.h"
-#include "global.h"
+#include "../global.h"
 #include "func/func.h"
 
 #include "../../run/features.h"
@@ -1591,7 +1591,7 @@ namespace uwvm::vm::interpreter
 #endif
                         = operator_t const*;
 
-                    op.ext.branch = reinterpret_cast<operator_t_const_may_alias_ptr>(::uwvm::vm::interpreter::globals.globals + index);
+                    op.ext.branch = reinterpret_cast<operator_t_const_may_alias_ptr>(::uwvm::vm::globals.globals + index);
                     temp.operators.emplace_back_unchecked(op);
 
                     curr = reinterpret_cast<::std::byte const*>(next);
@@ -1675,7 +1675,7 @@ namespace uwvm::vm::interpreter
 #endif
                         = operator_t const*;
 
-                    op.ext.branch = reinterpret_cast<operator_t_const_may_alias_ptr>(::uwvm::vm::interpreter::globals.globals + index);
+                    op.ext.branch = reinterpret_cast<operator_t_const_may_alias_ptr>(::uwvm::vm::globals.globals + index);
                     temp.operators.emplace_back_unchecked(op);
 
                     curr = reinterpret_cast<::std::byte const*>(next);
@@ -4526,7 +4526,7 @@ namespace uwvm::vm::interpreter
                             }
                     }
 
-                    if(index >= ::uwvm::vm::interpreter::memories.size()) [[unlikely]]
+                    if(index >= ::uwvm::vm::memories.size()) [[unlikely]]
                     {
                         ::fast_io::io::perr(::uwvm::u8err,
                                     u8"\033[0m"
@@ -4560,7 +4560,7 @@ namespace uwvm::vm::interpreter
 #endif
                         = operator_t const*;
 
-                    op.ext.branch = reinterpret_cast<operator_t_const_may_alias_ptr>(::uwvm::vm::interpreter::memories.cbegin() + index);
+                    op.ext.branch = reinterpret_cast<operator_t_const_may_alias_ptr>(::uwvm::vm::memories.cbegin() + index);
                     temp.operators.emplace_back_unchecked(op);
 
                     curr = reinterpret_cast<::std::byte const*>(next);
@@ -4609,7 +4609,7 @@ namespace uwvm::vm::interpreter
                             }
                     }
 
-                    if(index >= ::uwvm::vm::interpreter::memories.size()) [[unlikely]]
+                    if(index >= ::uwvm::vm::memories.size()) [[unlikely]]
                     {
                         ::fast_io::io::perr(::uwvm::u8err,
                                     u8"\033[0m"
@@ -4643,7 +4643,7 @@ namespace uwvm::vm::interpreter
 #endif
                         = operator_t const*;
 
-                    op.ext.branch = reinterpret_cast<operator_t_const_may_alias_ptr>(::uwvm::vm::interpreter::memories.cbegin() + index);
+                    op.ext.branch = reinterpret_cast<operator_t_const_may_alias_ptr>(::uwvm::vm::memories.cbegin() + index);
 
                     if(auto const imtsize{wasmmod.importsec.memory_types.size()}; index < imtsize)
                     {

@@ -1,9 +1,8 @@
 ﻿#pragma once
 #include <fast_io.h>
-#include "ast.h"
-#include "../../wasm/types/global.h"
+#include "../wasm/types/global.h"
 
-namespace uwvm::vm::interpreter
+namespace uwvm::vm
 {
     struct int_global_type
     {
@@ -95,13 +94,13 @@ namespace uwvm::vm::interpreter
 namespace fast_io::freestanding
 {
     template <>
-    struct is_trivially_relocatable<::uwvm::vm::interpreter::global_storage>
+    struct is_trivially_relocatable<::uwvm::vm::global_storage>
     {
         inline static constexpr bool value = true;
     };
 
     template <>
-    struct is_zero_default_constructible<::uwvm::vm::interpreter::global_storage>
+    struct is_zero_default_constructible<::uwvm::vm::global_storage>
     {
         inline static constexpr bool value = true;
     };

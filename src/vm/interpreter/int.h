@@ -13,7 +13,7 @@
 #include "ast.h"
 #include "aststorge.h"
 
-#include "global.h"
+#include "../global.h"
 #include "../abi.h"
 
 #include "astgen.h"
@@ -101,9 +101,9 @@ namespace uwvm::vm::interpreter
         }
 
         // init global
-        ::uwvm::vm::interpreter::globals.init(global_count);
+        ::uwvm::vm::globals.init(global_count);
 
-        auto curr_global{::uwvm::vm::interpreter::globals.globals};
+        auto curr_global{::uwvm::vm::globals.globals};
 
         for(auto const i: wasmmod.importsec.global_types)
         {
@@ -131,7 +131,7 @@ namespace uwvm::vm::interpreter
             {
                 case ::uwvm::wasm::op_basic::global_get:
                 {
-                    curr_global->value = ::uwvm::vm::interpreter::globals.globals[i.initializer.ref].value;
+                    curr_global->value = ::uwvm::vm::globals.globals[i.initializer.ref].value;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::i32_const:
@@ -175,14 +175,14 @@ namespace uwvm::vm::interpreter
         }
 
         // init memory
-        ::uwvm::vm::interpreter::memories.reserve(wasmmod.memorysec.memory_count);
-        for(auto const& i: wasmmod.memorysec.types) { ::uwvm::vm::interpreter::memories.emplace_back_unchecked(i); }
+        ::uwvm::vm::memories.reserve(wasmmod.memorysec.memory_count);
+        for(auto const& i: wasmmod.memorysec.types) { ::uwvm::vm::memories.emplace_back_unchecked(i); }
 
         // init data
         for(auto const& i: wasmmod.datasec.entries)
         {
             auto const size{i.size};
-            auto const& mem{::uwvm::vm::interpreter::memories.index_unchecked(i.index)};
+            auto const& mem{::uwvm::vm::memories.index_unchecked(i.index)};
             auto const begin{mem.memory_begin + static_cast<::std::size_t>(i.offset.i32)};
             if(begin + size >= mem.memory_begin + mem.memory_length) [[unlikely]]
             {
@@ -297,7 +297,7 @@ namespace uwvm::vm::interpreter
             ::fast_io::fast_terminate();
         }
 
-        ::uwvm::vm::interpreter::wasm_exit();
+        ::uwvm::vm::wasm_exit();
     }
 
 }  // namespace uwvm::vm::interpreter

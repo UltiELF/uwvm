@@ -7,8 +7,8 @@
 #include <unfinished.h>
 
 #include "../ast.h"
-#include "../global.h"
-#include "../memory/memory.h"
+#include "../../global.h"
+#include "../../memory/memory.h"
 #include "../../../run/wasm_file.h"
 
 namespace uwvm::vm::interpreter::func
@@ -84,7 +84,7 @@ namespace uwvm::vm::interpreter::func
                 ::fast_io::fast_terminate();
             }
 
-            auto const& memory{::uwvm::vm::interpreter::memories.front_unchecked()};
+            auto const& memory{::uwvm::vm::memories.front_unchecked()};
             auto const begin{memory.memory_begin};
             auto const len{memory.memory_length};
 
@@ -194,7 +194,7 @@ namespace uwvm::vm::interpreter::func
                 ::fast_io::fast_terminate();
             }
 
-            auto const& memory{::uwvm::vm::interpreter::memories.front_unchecked()};
+            auto const& memory{::uwvm::vm::memories.front_unchecked()};
             auto const begin{memory.memory_begin};
             auto const len{memory.memory_length};
 

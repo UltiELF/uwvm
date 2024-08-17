@@ -6,7 +6,7 @@
 
 #include "../int_bt.h"
 #include "../ast.h"
-#include "../global.h"
+#include "../../global.h"
 #include "../../memory/memory.h"
 #include "../../../run/wasm_file.h"
 
@@ -537,13 +537,13 @@ namespace uwvm::vm::interpreter::func
 #if __has_cpp_attribute(__gnu__::__may_alias__)
             [[__gnu__::__may_alias__]]
 #endif
-            = ::uwvm::vm::interpreter::int_global_type const*;
+            = ::uwvm::vm::int_global_type const*;
 
         auto const& igt{*reinterpret_cast<int_global_type_const_may_alias_ptr>(sm.curr_op->ext.branch)};
 
         struct temp_t
         {
-            ::uwvm::vm::interpreter::int_global_type::value_t value{};
+            ::uwvm::vm::int_global_type::value_t value{};
             ::uwvm::wasm::value_type vt{};
         };
 
@@ -564,9 +564,9 @@ namespace uwvm::vm::interpreter::func
 #if __has_cpp_attribute(__gnu__::__may_alias__)
             [[__gnu__::__may_alias__]]
 #endif
-            = ::uwvm::vm::interpreter::int_global_type const*;
+            = ::uwvm::vm::int_global_type const*;
 
-        auto& igt{*const_cast<::uwvm::vm::interpreter::int_global_type*>(reinterpret_cast<int_global_type_const_may_alias_ptr>(sm.curr_op->ext.branch))};
+        auto& igt{*const_cast<::uwvm::vm::int_global_type*>(reinterpret_cast<int_global_type_const_may_alias_ptr>(sm.curr_op->ext.branch))};
 
         if(!igt.gt.is_mutable) [[unlikely]]
         {
@@ -659,7 +659,7 @@ namespace uwvm::vm::interpreter::func
 
         struct temp_t
         {
-            ::uwvm::vm::interpreter::int_global_type::value_t value{};
+            ::uwvm::vm::int_global_type::value_t value{};
             ::uwvm::wasm::value_type vt{};
         };
 
@@ -922,7 +922,7 @@ namespace uwvm::vm::interpreter::func
 
         auto const st{sm.stack.pop_element_unchecked()};
 
-        auto& global_memory{::uwvm::vm::interpreter::memories.front_unchecked()};
+        auto& global_memory{::uwvm::vm::memories.front_unchecked()};
         auto mem{reinterpret_cast<::std::size_t>(global_memory.memory_begin)};
         auto const mem_end{mem + global_memory.memory_length};
 
@@ -1052,7 +1052,7 @@ namespace uwvm::vm::interpreter::func
 
         auto const st{sm.stack.pop_element_unchecked()};
 
-        auto& global_memory{::uwvm::vm::interpreter::memories.front_unchecked()};
+        auto& global_memory{::uwvm::vm::memories.front_unchecked()};
         auto mem{reinterpret_cast<::std::size_t>(global_memory.memory_begin)};
         auto const mem_end{mem + global_memory.memory_length};
 
@@ -1181,7 +1181,7 @@ namespace uwvm::vm::interpreter::func
 
         auto const st{sm.stack.pop_element_unchecked()};
 
-        auto& global_memory{::uwvm::vm::interpreter::memories.front_unchecked()};
+        auto& global_memory{::uwvm::vm::memories.front_unchecked()};
         auto mem{reinterpret_cast<::std::size_t>(global_memory.memory_begin)};
         auto const mem_end{mem + global_memory.memory_length};
 
@@ -1310,7 +1310,7 @@ namespace uwvm::vm::interpreter::func
 
         auto const st{sm.stack.pop_element_unchecked()};
 
-        auto& global_memory{::uwvm::vm::interpreter::memories.front_unchecked()};
+        auto& global_memory{::uwvm::vm::memories.front_unchecked()};
         auto mem{reinterpret_cast<::std::size_t>(global_memory.memory_begin)};
         auto const mem_end{mem + global_memory.memory_length};
 
@@ -1440,7 +1440,7 @@ namespace uwvm::vm::interpreter::func
 
         auto const st{sm.stack.pop_element_unchecked()};
 
-        auto& global_memory{::uwvm::vm::interpreter::memories.front_unchecked()};
+        auto& global_memory{::uwvm::vm::memories.front_unchecked()};
         auto mem{reinterpret_cast<::std::size_t>(global_memory.memory_begin)};
         auto const mem_end{mem + global_memory.memory_length};
 
@@ -1569,7 +1569,7 @@ namespace uwvm::vm::interpreter::func
 
         auto const st{sm.stack.pop_element_unchecked()};
 
-        auto& global_memory{::uwvm::vm::interpreter::memories.front_unchecked()};
+        auto& global_memory{::uwvm::vm::memories.front_unchecked()};
         auto mem{reinterpret_cast<::std::size_t>(global_memory.memory_begin)};
         auto const mem_end{mem + global_memory.memory_length};
 
@@ -1697,7 +1697,7 @@ namespace uwvm::vm::interpreter::func
 
         auto const st{sm.stack.pop_element_unchecked()};
 
-        auto& global_memory{::uwvm::vm::interpreter::memories.front_unchecked()};
+        auto& global_memory{::uwvm::vm::memories.front_unchecked()};
         auto mem{reinterpret_cast<::std::size_t>(global_memory.memory_begin)};
         auto const mem_end{mem + global_memory.memory_length};
 
@@ -1825,7 +1825,7 @@ namespace uwvm::vm::interpreter::func
 
         auto const st{sm.stack.pop_element_unchecked()};
 
-        auto& global_memory{::uwvm::vm::interpreter::memories.front_unchecked()};
+        auto& global_memory{::uwvm::vm::memories.front_unchecked()};
         auto mem{reinterpret_cast<::std::size_t>(global_memory.memory_begin)};
         auto const mem_end{mem + global_memory.memory_length};
 
@@ -1953,7 +1953,7 @@ namespace uwvm::vm::interpreter::func
 
         auto const st{sm.stack.pop_element_unchecked()};
 
-        auto& global_memory{::uwvm::vm::interpreter::memories.front_unchecked()};
+        auto& global_memory{::uwvm::vm::memories.front_unchecked()};
         auto mem{reinterpret_cast<::std::size_t>(global_memory.memory_begin)};
         auto const mem_end{mem + global_memory.memory_length};
 
@@ -2081,7 +2081,7 @@ namespace uwvm::vm::interpreter::func
 
         auto const st{sm.stack.pop_element_unchecked()};
 
-        auto& global_memory{::uwvm::vm::interpreter::memories.front_unchecked()};
+        auto& global_memory{::uwvm::vm::memories.front_unchecked()};
         auto mem{reinterpret_cast<::std::size_t>(global_memory.memory_begin)};
         auto const mem_end{mem + global_memory.memory_length};
 
@@ -2208,7 +2208,7 @@ namespace uwvm::vm::interpreter::func
 
         auto const st{sm.stack.pop_element_unchecked()};
 
-        auto& global_memory{::uwvm::vm::interpreter::memories.front_unchecked()};
+        auto& global_memory{::uwvm::vm::memories.front_unchecked()};
         auto mem{reinterpret_cast<::std::size_t>(global_memory.memory_begin)};
         auto const mem_end{mem + global_memory.memory_length};
 
@@ -2336,7 +2336,7 @@ namespace uwvm::vm::interpreter::func
 
         auto const st{sm.stack.pop_element_unchecked()};
 
-        auto& global_memory{::uwvm::vm::interpreter::memories.front_unchecked()};
+        auto& global_memory{::uwvm::vm::memories.front_unchecked()};
         auto mem{reinterpret_cast<::std::size_t>(global_memory.memory_begin)};
         auto const mem_end{mem + global_memory.memory_length};
 
@@ -2464,7 +2464,7 @@ namespace uwvm::vm::interpreter::func
 
         auto const st{sm.stack.pop_element_unchecked()};
 
-        auto& global_memory{::uwvm::vm::interpreter::memories.front_unchecked()};
+        auto& global_memory{::uwvm::vm::memories.front_unchecked()};
         auto mem{reinterpret_cast<::std::size_t>(global_memory.memory_begin)};
         auto const mem_end{mem + global_memory.memory_length};
 
@@ -2592,7 +2592,7 @@ namespace uwvm::vm::interpreter::func
 
         auto const st{sm.stack.pop_element_unchecked()};
 
-        auto& global_memory{::uwvm::vm::interpreter::memories.front_unchecked()};
+        auto& global_memory{::uwvm::vm::memories.front_unchecked()};
         auto mem{reinterpret_cast<::std::size_t>(global_memory.memory_begin)};
         auto const mem_end{mem + global_memory.memory_length};
 
@@ -2751,7 +2751,7 @@ namespace uwvm::vm::interpreter::func
 
         auto const st{sm.stack.pop_element_unchecked()};
 
-        auto& global_memory{::uwvm::vm::interpreter::memories.front_unchecked()};
+        auto& global_memory{::uwvm::vm::memories.front_unchecked()};
         auto mem{reinterpret_cast<::std::size_t>(global_memory.memory_begin)};
         auto const mem_end{mem + global_memory.memory_length};
 
@@ -2908,7 +2908,7 @@ namespace uwvm::vm::interpreter::func
 
         auto const st{sm.stack.pop_element_unchecked()};
 
-        auto& global_memory{::uwvm::vm::interpreter::memories.front_unchecked()};
+        auto& global_memory{::uwvm::vm::memories.front_unchecked()};
         auto mem{reinterpret_cast<::std::size_t>(global_memory.memory_begin)};
         auto const mem_end{mem + global_memory.memory_length};
 
@@ -3066,7 +3066,7 @@ namespace uwvm::vm::interpreter::func
 
         auto const st{sm.stack.pop_element_unchecked()};
 
-        auto& global_memory{::uwvm::vm::interpreter::memories.front_unchecked()};
+        auto& global_memory{::uwvm::vm::memories.front_unchecked()};
         auto mem{reinterpret_cast<::std::size_t>(global_memory.memory_begin)};
         auto const mem_end{mem + global_memory.memory_length};
 
@@ -3224,7 +3224,7 @@ namespace uwvm::vm::interpreter::func
 
         auto const st{sm.stack.pop_element_unchecked()};
 
-        auto& global_memory{::uwvm::vm::interpreter::memories.front_unchecked()};
+        auto& global_memory{::uwvm::vm::memories.front_unchecked()};
         auto mem{reinterpret_cast<::std::size_t>(global_memory.memory_begin)};
         auto const mem_end{mem + global_memory.memory_length};
 
@@ -3382,7 +3382,7 @@ namespace uwvm::vm::interpreter::func
 
         auto const st{sm.stack.pop_element_unchecked()};
 
-        auto& global_memory{::uwvm::vm::interpreter::memories.front_unchecked()};
+        auto& global_memory{::uwvm::vm::memories.front_unchecked()};
         auto mem{reinterpret_cast<::std::size_t>(global_memory.memory_begin)};
         auto const mem_end{mem + global_memory.memory_length};
 
@@ -3539,7 +3539,7 @@ namespace uwvm::vm::interpreter::func
 
         auto const st{sm.stack.pop_element_unchecked()};
 
-        auto& global_memory{::uwvm::vm::interpreter::memories.front_unchecked()};
+        auto& global_memory{::uwvm::vm::memories.front_unchecked()};
         auto mem{reinterpret_cast<::std::size_t>(global_memory.memory_begin)};
         auto const mem_end{mem + global_memory.memory_length};
 
@@ -3696,7 +3696,7 @@ namespace uwvm::vm::interpreter::func
 
         auto const st{sm.stack.pop_element_unchecked()};
 
-        auto& global_memory{::uwvm::vm::interpreter::memories.front_unchecked()};
+        auto& global_memory{::uwvm::vm::memories.front_unchecked()};
         auto mem{reinterpret_cast<::std::size_t>(global_memory.memory_begin)};
         auto const mem_end{mem + global_memory.memory_length};
 
@@ -3853,7 +3853,7 @@ namespace uwvm::vm::interpreter::func
 
         auto const st{sm.stack.pop_element_unchecked()};
 
-        auto& global_memory{::uwvm::vm::interpreter::memories.front_unchecked()};
+        auto& global_memory{::uwvm::vm::memories.front_unchecked()};
         auto mem{reinterpret_cast<::std::size_t>(global_memory.memory_begin)};
         auto const mem_end{mem + global_memory.memory_length};
 
@@ -4010,7 +4010,7 @@ namespace uwvm::vm::interpreter::func
 
         auto const st{sm.stack.pop_element_unchecked()};
 
-        auto& global_memory{::uwvm::vm::interpreter::memories.front_unchecked()};
+        auto& global_memory{::uwvm::vm::memories.front_unchecked()};
         auto mem{reinterpret_cast<::std::size_t>(global_memory.memory_begin)};
         auto const mem_end{mem + global_memory.memory_length};
 

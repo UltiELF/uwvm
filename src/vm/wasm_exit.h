@@ -1,6 +1,6 @@
 #pragma once
 
-namespace uwvm::vm::interpreter
+namespace uwvm::vm
 {
     inline void wasm_exit() 
     {

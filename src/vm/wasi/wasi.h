@@ -73,7 +73,7 @@ namespace uwvm::vm::wasi
                                 u8"\n"
                                 u8"\033[0m");
 #endif
-        auto& memory{::uwvm::vm::interpreter::memories.front()};
+        auto& memory{::uwvm::vm::memories.front()};
         auto const memory_begin{memory.memory_begin};
         auto const memory_length{memory.memory_length};
         auto const memory_end{memory_begin + memory_length};
@@ -155,7 +155,7 @@ namespace uwvm::vm::wasi
                                 u8"\n"
                                 u8"\033[0m");
 #endif
-        auto& memory{::uwvm::vm::interpreter::memories.front()};
+        auto& memory{::uwvm::vm::memories.front()};
         auto const memory_begin{memory.memory_begin};
         auto const memory_length{memory.memory_length};
         auto const memory_end{memory_begin + memory_length};
@@ -231,7 +231,7 @@ namespace uwvm::vm::wasi
                                 u8"\n"
                                 u8"\033[0m");
 #endif
-        auto& memory{::uwvm::vm::interpreter::memories.front()};
+        auto& memory{::uwvm::vm::memories.front()};
         auto const memory_begin{memory.memory_begin};
         auto const memory_length{memory.memory_length};
         auto const memory_end{memory_begin + memory_length};
@@ -456,7 +456,7 @@ namespace uwvm::vm::wasi
                                 u8"\n"
                                 u8"\033[0m");
 #endif
-        auto& memory{::uwvm::vm::interpreter::memories.front()};
+        auto& memory{::uwvm::vm::memories.front()};
         auto const memory_begin{memory.memory_begin};
         auto const memory_length{memory.memory_length};
         auto const memory_end{memory_begin + memory_length};
@@ -659,7 +659,7 @@ namespace uwvm::vm::wasi
             }
         }
 
-        auto& memory{::uwvm::vm::interpreter::memories.front()};
+        auto& memory{::uwvm::vm::memories.front()};
         auto const memory_begin{memory.memory_begin};
         auto const memory_length{memory.memory_length};
         auto const memory_end{memory_begin + memory_length};
@@ -751,7 +751,7 @@ namespace uwvm::vm::wasi
             }
         }
 
-        auto& memory{::uwvm::vm::interpreter::memories.front()};
+        auto& memory{::uwvm::vm::memories.front()};
         auto const memory_begin{memory.memory_begin};
         auto const memory_length{memory.memory_length};
         auto const memory_end{memory_begin + memory_length};
@@ -1183,7 +1183,7 @@ namespace uwvm::vm::wasi
 
         if(fd == -1) [[unlikely]] { return static_cast<::std::int_least32_t>(::uwvm::vm::wasi::errno_t::einval); }
 
-        auto& memory{::uwvm::vm::interpreter::memories.front()};
+        auto& memory{::uwvm::vm::memories.front()};
         auto const memory_begin{memory.memory_begin};
         auto const memory_length{memory.memory_length};
         auto const memory_end{memory_begin + memory_length};
@@ -1526,7 +1526,7 @@ namespace uwvm::vm::wasi
 
         if(fd == -1) [[unlikely]] { return static_cast<::std::int_least32_t>(::uwvm::vm::wasi::errno_t::einval); }
 
-        auto& memory{::uwvm::vm::interpreter::memories.front()};
+        auto& memory{::uwvm::vm::memories.front()};
         auto const memory_begin{memory.memory_begin};
         auto const memory_length{memory.memory_length};
         auto const memory_end{memory_begin + memory_length};
@@ -1902,7 +1902,7 @@ namespace uwvm::vm::wasi
                                 u8"\n"
                                 u8"\033[0m");
 #endif
-        auto& memory{::uwvm::vm::interpreter::memories.front()};
+        auto& memory{::uwvm::vm::memories.front()};
         auto const memory_begin{memory.memory_begin};
         auto const memory_length{memory.memory_length};
         auto const memory_end{memory_begin + memory_length};
@@ -1984,7 +1984,7 @@ namespace uwvm::vm::wasi
         auto& gfd{*ofd};
         ::fast_io::io_lock_guard fd_look{*gfd.fd_mutex};
 
-        auto& memory{::uwvm::vm::interpreter::memories.front()};
+        auto& memory{::uwvm::vm::memories.front()};
         auto const memory_begin{memory.memory_begin};
         auto const memory_length{memory.memory_length};
         auto const memory_end{memory_begin + memory_length};
@@ -2058,7 +2058,7 @@ namespace uwvm::vm::wasi
 
         if(pfd == -1) [[unlikely]] { return static_cast<::std::int_least32_t>(::uwvm::vm::wasi::errno_t::einval); }
 
-        auto& memory{::uwvm::vm::interpreter::memories.front()};
+        auto& memory{::uwvm::vm::memories.front()};
         auto const memory_begin{memory.memory_begin};
         auto const memory_length{memory.memory_length};
         auto const memory_end{memory_begin + memory_length};
@@ -2195,7 +2195,7 @@ namespace uwvm::vm::wasi
 
         if(pfd == -1) [[unlikely]] { return static_cast<::std::int_least32_t>(::uwvm::vm::wasi::errno_t::einval); }
 
-        auto& memory{::uwvm::vm::interpreter::memories.front()};
+        auto& memory{::uwvm::vm::memories.front()};
         auto const memory_begin{memory.memory_begin};
         auto const memory_length{memory.memory_length};
         auto const memory_end{memory_begin + memory_length};
@@ -2326,7 +2326,7 @@ namespace uwvm::vm::wasi
 
         if(pfd == -1) [[unlikely]] { return static_cast<::std::int_least32_t>(::uwvm::vm::wasi::errno_t::einval); }
 
-        auto& memory{::uwvm::vm::interpreter::memories.front()};
+        auto& memory{::uwvm::vm::memories.front()};
         auto const memory_begin{memory.memory_begin};
         auto const memory_length{memory.memory_length};
         auto const memory_end{memory_begin + memory_length};
@@ -2480,7 +2480,7 @@ namespace uwvm::vm::wasi
 
         if(pfd == -1) [[unlikely]] { return static_cast<::std::int_least32_t>(::uwvm::vm::wasi::errno_t::einval); }
 
-        auto& memory{::uwvm::vm::interpreter::memories.front()};
+        auto& memory{::uwvm::vm::memories.front()};
         auto const memory_begin{memory.memory_begin};
         auto const memory_length{memory.memory_length};
         auto const memory_end{memory_begin + memory_length};
@@ -2740,7 +2740,7 @@ namespace uwvm::vm::wasi
 
         auto const pfd{gfd.fd};
 
-        auto& memory{::uwvm::vm::interpreter::memories.front()};
+        auto& memory{::uwvm::vm::memories.front()};
         auto const memory_begin{memory.memory_begin};
         auto const memory_length{memory.memory_length};
         auto const memory_end{memory_begin + memory_length};
@@ -2828,7 +2828,7 @@ namespace uwvm::vm::wasi
 
         auto const pfd{gfd.fd};
 
-        auto& memory{::uwvm::vm::interpreter::memories.front()};
+        auto& memory{::uwvm::vm::memories.front()};
         auto const memory_begin{memory.memory_begin};
         auto const memory_length{memory.memory_length};
         auto const memory_end{memory_begin + memory_length};
@@ -2894,7 +2894,7 @@ namespace uwvm::vm::wasi
 
         if(pfd == -1) [[unlikely]] { return static_cast<::std::int_least32_t>(::uwvm::vm::wasi::errno_t::einval); }
 
-        auto& memory{::uwvm::vm::interpreter::memories.front()};
+        auto& memory{::uwvm::vm::memories.front()};
         auto const memory_begin{memory.memory_begin};
         auto const memory_length{memory.memory_length};
         auto const memory_end{memory_begin + memory_length};
@@ -3069,7 +3069,7 @@ namespace uwvm::vm::wasi
 
         auto const dir_flags{static_cast<::uwvm::vm::wasi::lookupflags_t>(arg1)};
 
-        auto& memory{::uwvm::vm::interpreter::memories.front()};
+        auto& memory{::uwvm::vm::memories.front()};
         auto const memory_begin{memory.memory_begin};
         auto const memory_length{memory.memory_length};
         auto const memory_end{memory_begin + memory_length};
@@ -3295,7 +3295,7 @@ namespace uwvm::vm::wasi
 
     void proc_exit(::std::int_least32_t arg0) noexcept
     {
-        ::uwvm::vm::interpreter::wasm_exit();
+        ::uwvm::vm::wasm_exit();
 
 #if defined(__linux__) && defined(__NR_exit)
         ::fast_io::fast_exit(arg0);
