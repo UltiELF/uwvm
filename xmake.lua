@@ -121,8 +121,11 @@ function defopt()
 	--timer
 	add_options("timer")
 
-	--timer
-	add_options("timer")
+	--uwvm-test
+	add_options("uwvm-test")
+
+	--uwvm-default-mvp
+	add_options("uwvm-default-mvp")
 
 	--ucint
 	add_options("uwvm-enable-ucint")
