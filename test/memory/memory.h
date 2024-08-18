@@ -1,7 +1,7 @@
 #pragma once
 #include <fast_io.h>
 #include <io_device.h>
-#include "../../src/vm/interpreter/memory/memory.h"
+#include "../../src/vm/memory/memory.h"
 
 namespace uwvm::test
 {
@@ -11,7 +11,7 @@ namespace uwvm::test
         ::uwvm::wasm::memory_type mt{
             .limits{.min{10}, .max{1000}, .present_max{true}}
         };
-        ::uwvm::vm::interpreter::memory::memory_t m{};
+        ::uwvm::vm::memory::memory_t m{};
 
         ::fast_io::perr(::uwvm::u8out, u8"init\n");
         m.init_by_memory_type(mt);
@@ -24,10 +24,10 @@ namespace uwvm::test
         m.grow_by_memory_type(mt, 10);
 
         ::fast_io::perr(::uwvm::u8out, u8"copy\n");
-        ::uwvm::vm::interpreter::memory::memory_t m2{m};  // copy
+        ::uwvm::vm::memory::memory_t m2{m};  // copy
 
         ::fast_io::perr(::uwvm::u8out, u8"move\n");
-        ::uwvm::vm::interpreter::memory::memory_t m3{::std::move(m2)};  // move    
+        ::uwvm::vm::memory::memory_t m3{::std::move(m2)};  // move    
 
         ::fast_io::perrln(::uwvm::u8out, u8"\033[32mSuccessfully\033[0m\n");
 

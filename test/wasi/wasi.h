@@ -1,6 +1,6 @@
 #pragma once
-#include "../../src/vm/interpreter/memory/memory.h"
-#include "../../src/vm/interpreter/wasi/wasi.h"
+#include "../../src/vm/memory/memory.h"
+#include "../../src/vm/wasi/wasi.h"
 
 namespace uwvm::test
 {
@@ -9,14 +9,14 @@ namespace uwvm::test
         ::fast_io::perr(::uwvm::u8out, u8"Test: WASI\n");
 
         ::fast_io::perr(::uwvm::u8out, u8"Initialize memory for WASI\n");
-        auto& mem{::uwvm::vm::interpreter::memories.emplace_back()};
+        auto& mem{::uwvm::vm::memories.emplace_back()};
         mem.init_by_memory_type(::uwvm::wasm::memory_type{
             .limits{.min{10}, .max{1000}, .present_max{true}}
         });
 
         {
             ::fast_io::perr(::uwvm::u8out, u8"args_get(", 0, u8",", 1024, u8")\n");
-            auto const res{uwvm::vm::interpreter::wasi::args_get(0, 1024)};
+            auto const res{uwvm::vm::wasi::args_get(0, 1024)};
             ::fast_io::perrln(::uwvm::u8out, u8"return=", res);
 
             if(res != 0) [[unlikely]]
@@ -27,7 +27,7 @@ namespace uwvm::test
             else
             {
 
-                auto const memory_begin{::uwvm::vm::interpreter::memories.front_unchecked().memory_begin};
+                auto const memory_begin{::uwvm::vm::memories.front_unchecked().memory_begin};
 
                 ::std::uint_least32_t* args_begin{reinterpret_cast<::std::uint_least32_t*>(memory_begin + 0)};
                 ::std::size_t counter{};
@@ -44,7 +44,7 @@ namespace uwvm::test
 
         {
             ::fast_io::perr(::uwvm::u8out, u8"args_sizes_get(", 0, u8",", 1024, u8")\n");
-            auto const res{uwvm::vm::interpreter::wasi::args_sizes_get(0, 1024)};
+            auto const res{uwvm::vm::wasi::args_sizes_get(0, 1024)};
             ::fast_io::perrln(::uwvm::u8out, u8"return=", res);
 
             if(res != 0) [[unlikely]]
@@ -55,7 +55,7 @@ namespace uwvm::test
             else
             {
 
-                auto const memory_begin{::uwvm::vm::interpreter::memories.front_unchecked().memory_begin};
+                auto const memory_begin{::uwvm::vm::memories.front_unchecked().memory_begin};
 
                 ::std::uint_least32_t args_sz{};
                 ::fast_io::freestanding::my_memcpy(__builtin_addressof(args_sz), memory_begin, sizeof(::std::uint_least32_t));
@@ -73,7 +73,7 @@ namespace uwvm::test
 
         {
             ::fast_io::perr(::uwvm::u8out, u8"environ_get(", 0, u8",", 1024, u8")\n");
-            auto const res{uwvm::vm::interpreter::wasi::environ_get(0, 1024)};
+            auto const res{uwvm::vm::wasi::environ_get(0, 1024)};
             ::fast_io::perrln(::uwvm::u8out, u8"return=", res);
 
             if(res != 0) [[unlikely]]
@@ -83,7 +83,7 @@ namespace uwvm::test
             }
             else
             {
-                auto const memory_begin{::uwvm::vm::interpreter::memories.front_unchecked().memory_begin};
+                auto const memory_begin{::uwvm::vm::memories.front_unchecked().memory_begin};
 
                 ::std::uint_least32_t* args_begin{reinterpret_cast<::std::uint_least32_t*>(memory_begin + 0)};
                 ::std::size_t counter{};
@@ -100,7 +100,7 @@ namespace uwvm::test
 
         {
             ::fast_io::perr(::uwvm::u8out, u8"environ_sizes_get(", 0, u8",", 1024, u8")\n");
-            auto const res{uwvm::vm::interpreter::wasi::environ_sizes_get(0, 1024)};
+            auto const res{uwvm::vm::wasi::environ_sizes_get(0, 1024)};
             ::fast_io::perrln(::uwvm::u8out, u8"return=", res);
 
             if(res != 0) [[unlikely]]
@@ -110,7 +110,7 @@ namespace uwvm::test
             }
             else
             {
-                auto const memory_begin{::uwvm::vm::interpreter::memories.front_unchecked().memory_begin};
+                auto const memory_begin{::uwvm::vm::memories.front_unchecked().memory_begin};
 
                 ::std::uint_least32_t args_sz{};
                 ::fast_io::freestanding::my_memcpy(__builtin_addressof(args_sz), memory_begin, sizeof(::std::uint_least32_t));
@@ -128,7 +128,7 @@ namespace uwvm::test
 
         {
             ::fast_io::perr(::uwvm::u8out, u8"clock_res_get(", 0, u8",", 1024, u8")\n");
-            auto const res{uwvm::vm::interpreter::wasi::clock_res_get(0, 1024)};
+            auto const res{uwvm::vm::wasi::clock_res_get(0, 1024)};
             ::fast_io::perrln(::uwvm::u8out, u8"clock_res_get=", res);
 
             if(res != 0) [[unlikely]]
@@ -138,7 +138,7 @@ namespace uwvm::test
             }
             else
             {
-                auto const memory_begin{::uwvm::vm::interpreter::memories.front_unchecked().memory_begin};
+                auto const memory_begin{::uwvm::vm::memories.front_unchecked().memory_begin};
 
                 ::std::uint_least64_t ts{};
                 ::fast_io::freestanding::my_memcpy(__builtin_addressof(ts), memory_begin + 1024, sizeof(::std::uint_least64_t));
@@ -152,7 +152,7 @@ namespace uwvm::test
 
         {
             ::fast_io::perr(::uwvm::u8out, u8"clock_time_get(", 0, u8",", 512, u8",", 1024, u8")\n");
-            auto const res{uwvm::vm::interpreter::wasi::clock_time_get(0, 512, 1024)};
+            auto const res{uwvm::vm::wasi::clock_time_get(0, 512, 1024)};
             ::fast_io::perrln(::uwvm::u8out, u8"clock_res_get=", res);
 
             if(res != 0) [[unlikely]]
@@ -162,7 +162,7 @@ namespace uwvm::test
             }
             else
             {
-                auto const memory_begin{::uwvm::vm::interpreter::memories.front_unchecked().memory_begin};
+                auto const memory_begin{::uwvm::vm::memories.front_unchecked().memory_begin};
 
                 ::std::uint_least64_t pre{};
                 ::fast_io::freestanding::my_memcpy(__builtin_addressof(pre), memory_begin + 512, sizeof(::std::uint_least64_t));
