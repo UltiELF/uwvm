@@ -61,11 +61,13 @@ namespace uwvm::vm::unchecked_interpreter::stack
 
 namespace fast_io::freestanding
 {
+    template <>
     struct is_trivially_relocatable<::uwvm::vm::unchecked_interpreter::stack::stack_t>
     {
         inline static constexpr bool value = true;
     };
 
+    template <>
     struct is_zero_default_constructible<::uwvm::vm::unchecked_interpreter::stack::stack_t>
     {
         inline static constexpr bool value = true;

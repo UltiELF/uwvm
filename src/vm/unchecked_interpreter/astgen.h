@@ -232,7 +232,7 @@ namespace uwvm::vm::unchecked_interpreter
                             }
                     }
 
-                    auto& op_ebr{temp.operators.emplace_back_unchecked(op)};
+                    auto& op_ebr{temp.operators.emplace_back(op)};
 
                     ga_flow_r.push({op.code_begin, __builtin_addressof(op_ebr), ::uwvm::vm::unchecked_interpreter::flow_control_t::block});
 
@@ -349,7 +349,7 @@ namespace uwvm::vm::unchecked_interpreter
                             }
                     }
 
-                    auto& op_ebr{temp.operators.emplace_back_unchecked(op)};
+                    auto& op_ebr{temp.operators.emplace_back(op)};
                     ga_flow_r.push({op.code_begin, __builtin_addressof(op_ebr), ::uwvm::vm::unchecked_interpreter::flow_control_t::loop});
 
                     ++curr;
@@ -465,7 +465,7 @@ namespace uwvm::vm::unchecked_interpreter
                             }
                     }
 
-                    auto& op_ebr{temp.operators.emplace_back_unchecked(op)};
+                    auto& op_ebr{temp.operators.emplace_back(op)};
                     ga_flow_r.push({op.code_begin, __builtin_addressof(op_ebr), ::uwvm::vm::unchecked_interpreter::flow_control_t::if_});
 
                     ++curr;
@@ -534,7 +534,7 @@ namespace uwvm::vm::unchecked_interpreter
 
                     f.flow_e = ::uwvm::vm::unchecked_interpreter::flow_control_t::else_;
 
-                    auto& op_ebr{temp.operators.emplace_back_unchecked(op)};
+                    auto& op_ebr{temp.operators.emplace_back(op)};
 
                     // set "if" branch
                     f.op->ext.branch = __builtin_addressof(op_ebr);
@@ -575,7 +575,7 @@ namespace uwvm::vm::unchecked_interpreter
                         ::fast_io::fast_terminate();
                     }
 
-                    auto& op_ebr{temp.operators.emplace_back_unchecked(op)};
+                    auto& op_ebr{temp.operators.emplace_back(op)};
 
                     auto f{ga_flow_r.pop_element_unchecked()};
                     switch(f.flow_e)
@@ -701,7 +701,7 @@ namespace uwvm::vm::unchecked_interpreter
                 case ::uwvm::wasm::op_basic::unreachable:
                 {
                     op.int_func = __builtin_addressof(::uwvm::vm::unchecked_interpreter::func::unreachable);
-                    temp.operators.emplace_back_unchecked(op);
+                    temp.operators.emplace_back(op);
                     ++curr;
                     break;
                 }
@@ -782,7 +782,7 @@ namespace uwvm::vm::unchecked_interpreter
                         ::fast_io::fast_terminate();
                     }
 
-                    auto& brop{temp.operators.emplace_back_unchecked(op)};
+                    auto& brop{temp.operators.emplace_back(op)};
 
                     ga_flow_r.get_container().index_unchecked(gfsz - index).brs.push_back(__builtin_addressof(brop));
 
@@ -865,7 +865,7 @@ namespace uwvm::vm::unchecked_interpreter
                         ::fast_io::fast_terminate();
                     }
 
-                    auto& brop{temp.operators.emplace_back_unchecked(op)};
+                    auto& brop{temp.operators.emplace_back(op)};
 
                     ga_flow_r.get_container().index_unchecked(gfsz - index).brs.push_back(__builtin_addressof(brop));
 
@@ -1005,14 +1005,14 @@ namespace uwvm::vm::unchecked_interpreter
                         curr = reinterpret_cast<::std::byte const*>(next);
                     }
 
-                    temp.operators.emplace_back_unchecked(op);
+                    temp.operators.emplace_back(op);
 
                     break;
                 }
                 case ::uwvm::wasm::op_basic::return_:
                 {
                     op.int_func = __builtin_addressof(::uwvm::vm::unchecked_interpreter::func::return_);
-                    temp.operators.emplace_back_unchecked(op);
+                    temp.operators.emplace_back(op);
                     ++curr;
                     break;
                 }
@@ -1059,7 +1059,7 @@ namespace uwvm::vm::unchecked_interpreter
                     }
                     op.ext.sz2 = index;
 
-                    temp.operators.emplace_back_unchecked(op);
+                    temp.operators.emplace_back(op);
                     curr = reinterpret_cast<::std::byte const*>(next);
 
                     break;
@@ -1250,7 +1250,7 @@ namespace uwvm::vm::unchecked_interpreter
 
                     curr = reinterpret_cast<::std::byte const*>(next_reserved);
 
-                    temp.operators.emplace_back_unchecked(op);
+                    temp.operators.emplace_back(op);
 
                     break;
                 }
@@ -1277,7 +1277,7 @@ namespace uwvm::vm::unchecked_interpreter
                 case ::uwvm::wasm::op_basic::drop:
                 {
                     op.int_func = __builtin_addressof(::uwvm::vm::unchecked_interpreter::func::drop);
-                    temp.operators.emplace_back_unchecked(op);
+                    temp.operators.emplace_back(op);
                     ++curr;
                     break;
                 }
@@ -1353,7 +1353,7 @@ namespace uwvm::vm::unchecked_interpreter
                     }
 
                     op.ext.sz2 = index;
-                    temp.operators.emplace_back_unchecked(op);
+                    temp.operators.emplace_back(op);
 
                     curr = reinterpret_cast<::std::byte const*>(next);
 
@@ -1431,7 +1431,7 @@ namespace uwvm::vm::unchecked_interpreter
                     }
 
                     op.ext.sz2 = index;
-                    temp.operators.emplace_back_unchecked(op);
+                    temp.operators.emplace_back(op);
 
                     curr = reinterpret_cast<::std::byte const*>(next);
 
@@ -1509,7 +1509,7 @@ namespace uwvm::vm::unchecked_interpreter
                     }
 
                     op.ext.sz2 = index;
-                    temp.operators.emplace_back_unchecked(op);
+                    temp.operators.emplace_back(op);
 
                     curr = reinterpret_cast<::std::byte const*>(next);
 
@@ -1593,7 +1593,7 @@ namespace uwvm::vm::unchecked_interpreter
                         = operator_t const*;
 
                     op.ext.branch = reinterpret_cast<operator_t_const_may_alias_ptr>(::uwvm::vm::globals.globals + index);
-                    temp.operators.emplace_back_unchecked(op);
+                    temp.operators.emplace_back(op);
 
                     curr = reinterpret_cast<::std::byte const*>(next);
 
@@ -1677,7 +1677,7 @@ namespace uwvm::vm::unchecked_interpreter
                         = operator_t const*;
 
                     op.ext.branch = reinterpret_cast<operator_t_const_may_alias_ptr>(::uwvm::vm::globals.globals + index);
-                    temp.operators.emplace_back_unchecked(op);
+                    temp.operators.emplace_back(op);
 
                     curr = reinterpret_cast<::std::byte const*>(next);
 
@@ -1736,14 +1736,14 @@ namespace uwvm::vm::unchecked_interpreter
                 case ::uwvm::wasm::op_basic::select:
                 {
                     op.int_func = __builtin_addressof(::uwvm::vm::unchecked_interpreter::func::select);
-                    temp.operators.emplace_back_unchecked(op);
+                    temp.operators.emplace_back(op);
                     ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::select_t:
                 {
                     op.int_func = __builtin_addressof(::uwvm::vm::unchecked_interpreter::func::select_t);
-                    temp.operators.emplace_back_unchecked(op);
+                    temp.operators.emplace_back(op);
                     ++curr;
                     break;
                 }
@@ -1862,7 +1862,7 @@ namespace uwvm::vm::unchecked_interpreter
                     op.ext.sz1 = alignment;
                     op.ext.sz2 = offset;
 
-                    temp.operators.emplace_back_unchecked(op);
+                    temp.operators.emplace_back(op);
 
                     break;
                 }
@@ -1981,7 +1981,7 @@ namespace uwvm::vm::unchecked_interpreter
                     op.ext.sz1 = alignment;
                     op.ext.sz2 = offset;
 
-                    temp.operators.emplace_back_unchecked(op);
+                    temp.operators.emplace_back(op);
 
                     break;
                 }
@@ -2100,7 +2100,7 @@ namespace uwvm::vm::unchecked_interpreter
                     op.ext.sz1 = alignment;
                     op.ext.sz2 = offset;
 
-                    temp.operators.emplace_back_unchecked(op);
+                    temp.operators.emplace_back(op);
 
                     break;
                 }
@@ -2219,7 +2219,7 @@ namespace uwvm::vm::unchecked_interpreter
                     op.ext.sz1 = alignment;
                     op.ext.sz2 = offset;
 
-                    temp.operators.emplace_back_unchecked(op);
+                    temp.operators.emplace_back(op);
 
                     break;
                 }
@@ -2338,7 +2338,7 @@ namespace uwvm::vm::unchecked_interpreter
                     op.ext.sz1 = alignment;
                     op.ext.sz2 = offset;
 
-                    temp.operators.emplace_back_unchecked(op);
+                    temp.operators.emplace_back(op);
 
                     break;
                 }
@@ -2457,7 +2457,7 @@ namespace uwvm::vm::unchecked_interpreter
                     op.ext.sz1 = alignment;
                     op.ext.sz2 = offset;
 
-                    temp.operators.emplace_back_unchecked(op);
+                    temp.operators.emplace_back(op);
 
                     break;
                 }
@@ -2576,7 +2576,7 @@ namespace uwvm::vm::unchecked_interpreter
                     op.ext.sz1 = alignment;
                     op.ext.sz2 = offset;
 
-                    temp.operators.emplace_back_unchecked(op);
+                    temp.operators.emplace_back(op);
 
                     break;
                 }
@@ -2695,7 +2695,7 @@ namespace uwvm::vm::unchecked_interpreter
                     op.ext.sz1 = alignment;
                     op.ext.sz2 = offset;
 
-                    temp.operators.emplace_back_unchecked(op);
+                    temp.operators.emplace_back(op);
 
                     break;
                 }
@@ -2814,7 +2814,7 @@ namespace uwvm::vm::unchecked_interpreter
                     op.ext.sz1 = alignment;
                     op.ext.sz2 = offset;
 
-                    temp.operators.emplace_back_unchecked(op);
+                    temp.operators.emplace_back(op);
 
                     break;
                 }
@@ -2933,7 +2933,7 @@ namespace uwvm::vm::unchecked_interpreter
                     op.ext.sz1 = alignment;
                     op.ext.sz2 = offset;
 
-                    temp.operators.emplace_back_unchecked(op);
+                    temp.operators.emplace_back(op);
 
                     break;
                 }
@@ -3052,7 +3052,7 @@ namespace uwvm::vm::unchecked_interpreter
                     op.ext.sz1 = alignment;
                     op.ext.sz2 = offset;
 
-                    temp.operators.emplace_back_unchecked(op);
+                    temp.operators.emplace_back(op);
 
                     break;
                 }
@@ -3171,7 +3171,7 @@ namespace uwvm::vm::unchecked_interpreter
                     op.ext.sz1 = alignment;
                     op.ext.sz2 = offset;
 
-                    temp.operators.emplace_back_unchecked(op);
+                    temp.operators.emplace_back(op);
 
                     break;
                 }
@@ -3290,7 +3290,7 @@ namespace uwvm::vm::unchecked_interpreter
                     op.ext.sz1 = alignment;
                     op.ext.sz2 = offset;
 
-                    temp.operators.emplace_back_unchecked(op);
+                    temp.operators.emplace_back(op);
 
                     break;
                 }
@@ -3409,7 +3409,7 @@ namespace uwvm::vm::unchecked_interpreter
                     op.ext.sz1 = alignment;
                     op.ext.sz2 = offset;
 
-                    temp.operators.emplace_back_unchecked(op);
+                    temp.operators.emplace_back(op);
 
                     break;
                 }
@@ -3528,7 +3528,7 @@ namespace uwvm::vm::unchecked_interpreter
                     op.ext.sz1 = alignment;
                     op.ext.sz2 = offset;
 
-                    temp.operators.emplace_back_unchecked(op);
+                    temp.operators.emplace_back(op);
 
                     break;
                 }
@@ -3647,7 +3647,7 @@ namespace uwvm::vm::unchecked_interpreter
                     op.ext.sz1 = alignment;
                     op.ext.sz2 = offset;
 
-                    temp.operators.emplace_back_unchecked(op);
+                    temp.operators.emplace_back(op);
 
                     break;
                 }
@@ -3766,7 +3766,7 @@ namespace uwvm::vm::unchecked_interpreter
                     op.ext.sz1 = alignment;
                     op.ext.sz2 = offset;
 
-                    temp.operators.emplace_back_unchecked(op);
+                    temp.operators.emplace_back(op);
 
                     break;
                 }
@@ -3885,7 +3885,7 @@ namespace uwvm::vm::unchecked_interpreter
                     op.ext.sz1 = alignment;
                     op.ext.sz2 = offset;
 
-                    temp.operators.emplace_back_unchecked(op);
+                    temp.operators.emplace_back(op);
 
                     break;
                 }
@@ -4004,7 +4004,7 @@ namespace uwvm::vm::unchecked_interpreter
                     op.ext.sz1 = alignment;
                     op.ext.sz2 = offset;
 
-                    temp.operators.emplace_back_unchecked(op);
+                    temp.operators.emplace_back(op);
 
                     break;
                 }
@@ -4123,7 +4123,7 @@ namespace uwvm::vm::unchecked_interpreter
                     op.ext.sz1 = alignment;
                     op.ext.sz2 = offset;
 
-                    temp.operators.emplace_back_unchecked(op);
+                    temp.operators.emplace_back(op);
 
                     break;
                 }
@@ -4242,7 +4242,7 @@ namespace uwvm::vm::unchecked_interpreter
                     op.ext.sz1 = alignment;
                     op.ext.sz2 = offset;
 
-                    temp.operators.emplace_back_unchecked(op);
+                    temp.operators.emplace_back(op);
 
                     break;
                 }
@@ -4361,7 +4361,7 @@ namespace uwvm::vm::unchecked_interpreter
                     op.ext.sz1 = alignment;
                     op.ext.sz2 = offset;
 
-                    temp.operators.emplace_back_unchecked(op);
+                    temp.operators.emplace_back(op);
 
                     break;
                 }
@@ -4480,7 +4480,7 @@ namespace uwvm::vm::unchecked_interpreter
                     op.ext.sz1 = alignment;
                     op.ext.sz2 = offset;
 
-                    temp.operators.emplace_back_unchecked(op);
+                    temp.operators.emplace_back(op);
 
                     break;
                 }
@@ -4562,7 +4562,7 @@ namespace uwvm::vm::unchecked_interpreter
                         = operator_t const*;
 
                     op.ext.branch = reinterpret_cast<operator_t_const_may_alias_ptr>(::uwvm::vm::memories.cbegin() + index);
-                    temp.operators.emplace_back_unchecked(op);
+                    temp.operators.emplace_back(op);
 
                     curr = reinterpret_cast<::std::byte const*>(next);
                     break;
@@ -4653,7 +4653,7 @@ namespace uwvm::vm::unchecked_interpreter
                     }
                     else { op.ext.end = reinterpret_cast<operator_t_const_may_alias_ptr>(wasmmod.memorysec.types.cbegin() + (index - imtsize)); }
 
-                    temp.operators.emplace_back_unchecked(op);
+                    temp.operators.emplace_back(op);
 
                     curr = reinterpret_cast<::std::byte const*>(next);
                     break;
@@ -4710,7 +4710,7 @@ namespace uwvm::vm::unchecked_interpreter
 
                     op.ext.i32 = ci32;
 
-                    temp.operators.emplace_back_unchecked(op);
+                    temp.operators.emplace_back(op);
 
                     curr = reinterpret_cast<::std::byte const*>(next);
                     break;
@@ -4760,7 +4760,7 @@ namespace uwvm::vm::unchecked_interpreter
 
                     op.ext.i64 = ci64;
 
-                    temp.operators.emplace_back_unchecked(op);
+                    temp.operators.emplace_back(op);
 
                     curr = reinterpret_cast<::std::byte const*>(next);
                     break;
@@ -4777,7 +4777,7 @@ namespace uwvm::vm::unchecked_interpreter
 
                     op.ext.f32 = ::std::bit_cast<::uwvm::wasm::wasm_f32>(b4);
 
-                    temp.operators.emplace_back_unchecked(op);
+                    temp.operators.emplace_back(op);
 
                     curr += sizeof(b4);
 
@@ -4795,7 +4795,7 @@ namespace uwvm::vm::unchecked_interpreter
 
                     op.ext.f64 = ::std::bit_cast<::uwvm::wasm::wasm_f64>(b8);
 
-                    temp.operators.emplace_back_unchecked(op);
+                    temp.operators.emplace_back(op);
 
                     curr += sizeof(b8);
 
@@ -4804,861 +4804,861 @@ namespace uwvm::vm::unchecked_interpreter
                 case ::uwvm::wasm::op_basic::i32_eqz:
                 {
                     op.int_func = __builtin_addressof(::uwvm::vm::unchecked_interpreter::func::i32_eqz);
-                    temp.operators.emplace_back_unchecked(op);
+                    temp.operators.emplace_back(op);
                     ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::i32_eq:
                 {
                     op.int_func = __builtin_addressof(::uwvm::vm::unchecked_interpreter::func::i32_eq);
-                    temp.operators.emplace_back_unchecked(op);
+                    temp.operators.emplace_back(op);
                     ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::i32_ne:
                 {
                     op.int_func = __builtin_addressof(::uwvm::vm::unchecked_interpreter::func::i32_ne);
-                    temp.operators.emplace_back_unchecked(op);
+                    temp.operators.emplace_back(op);
                     ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::i32_lt_s:
                 {
                     op.int_func = __builtin_addressof(::uwvm::vm::unchecked_interpreter::func::i32_lt_s);
-                    temp.operators.emplace_back_unchecked(op);
+                    temp.operators.emplace_back(op);
                     ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::i32_lt_u:
                 {
                     op.int_func = __builtin_addressof(::uwvm::vm::unchecked_interpreter::func::i32_lt_u);
-                    temp.operators.emplace_back_unchecked(op);
+                    temp.operators.emplace_back(op);
                     ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::i32_gt_s:
                 {
                     op.int_func = __builtin_addressof(::uwvm::vm::unchecked_interpreter::func::i32_gt_s);
-                    temp.operators.emplace_back_unchecked(op);
+                    temp.operators.emplace_back(op);
                     ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::i32_gt_u:
                 {
                     op.int_func = __builtin_addressof(::uwvm::vm::unchecked_interpreter::func::i32_gt_u);
-                    temp.operators.emplace_back_unchecked(op);
+                    temp.operators.emplace_back(op);
                     ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::i32_le_s:
                 {
                     op.int_func = __builtin_addressof(::uwvm::vm::unchecked_interpreter::func::i32_le_s);
-                    temp.operators.emplace_back_unchecked(op);
+                    temp.operators.emplace_back(op);
                     ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::i32_le_u:
                 {
                     op.int_func = __builtin_addressof(::uwvm::vm::unchecked_interpreter::func::i32_le_u);
-                    temp.operators.emplace_back_unchecked(op);
+                    temp.operators.emplace_back(op);
                     ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::i32_ge_s:
                 {
                     op.int_func = __builtin_addressof(::uwvm::vm::unchecked_interpreter::func::i32_ge_s);
-                    temp.operators.emplace_back_unchecked(op);
+                    temp.operators.emplace_back(op);
                     ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::i32_ge_u:
                 {
                     op.int_func = __builtin_addressof(::uwvm::vm::unchecked_interpreter::func::i32_ge_u);
-                    temp.operators.emplace_back_unchecked(op);
+                    temp.operators.emplace_back(op);
                     ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::i64_eqz:
                 {
                     op.int_func = __builtin_addressof(::uwvm::vm::unchecked_interpreter::func::i64_eqz);
-                    temp.operators.emplace_back_unchecked(op);
+                    temp.operators.emplace_back(op);
                     ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::i64_eq:
                 {
                     op.int_func = __builtin_addressof(::uwvm::vm::unchecked_interpreter::func::i64_eq);
-                    temp.operators.emplace_back_unchecked(op);
+                    temp.operators.emplace_back(op);
                     ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::i64_ne:
                 {
                     op.int_func = __builtin_addressof(::uwvm::vm::unchecked_interpreter::func::i64_ne);
-                    temp.operators.emplace_back_unchecked(op);
+                    temp.operators.emplace_back(op);
                     ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::i64_lt_s:
                 {
                     op.int_func = __builtin_addressof(::uwvm::vm::unchecked_interpreter::func::i64_lt_s);
-                    temp.operators.emplace_back_unchecked(op);
+                    temp.operators.emplace_back(op);
                     ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::i64_lt_u:
                 {
                     op.int_func = __builtin_addressof(::uwvm::vm::unchecked_interpreter::func::i64_lt_u);
-                    temp.operators.emplace_back_unchecked(op);
+                    temp.operators.emplace_back(op);
                     ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::i64_gt_s:
                 {
                     op.int_func = __builtin_addressof(::uwvm::vm::unchecked_interpreter::func::i64_gt_s);
-                    temp.operators.emplace_back_unchecked(op);
+                    temp.operators.emplace_back(op);
                     ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::i64_gt_u:
                 {
                     op.int_func = __builtin_addressof(::uwvm::vm::unchecked_interpreter::func::i64_gt_u);
-                    temp.operators.emplace_back_unchecked(op);
+                    temp.operators.emplace_back(op);
                     ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::i64_le_s:
                 {
                     op.int_func = __builtin_addressof(::uwvm::vm::unchecked_interpreter::func::i64_le_s);
-                    temp.operators.emplace_back_unchecked(op);
+                    temp.operators.emplace_back(op);
                     ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::i64_le_u:
                 {
                     op.int_func = __builtin_addressof(::uwvm::vm::unchecked_interpreter::func::i64_le_u);
-                    temp.operators.emplace_back_unchecked(op);
+                    temp.operators.emplace_back(op);
                     ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::i64_ge_s:
                 {
                     op.int_func = __builtin_addressof(::uwvm::vm::unchecked_interpreter::func::i64_ge_s);
-                    temp.operators.emplace_back_unchecked(op);
+                    temp.operators.emplace_back(op);
                     ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::i64_ge_u:
                 {
                     op.int_func = __builtin_addressof(::uwvm::vm::unchecked_interpreter::func::i64_ge_u);
-                    temp.operators.emplace_back_unchecked(op);
+                    temp.operators.emplace_back(op);
                     ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::f32_eq:
                 {
                     op.int_func = __builtin_addressof(::uwvm::vm::unchecked_interpreter::func::f32_eq);
-                    temp.operators.emplace_back_unchecked(op);
+                    temp.operators.emplace_back(op);
                     ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::f32_ne:
                 {
                     op.int_func = __builtin_addressof(::uwvm::vm::unchecked_interpreter::func::f32_ne);
-                    temp.operators.emplace_back_unchecked(op);
+                    temp.operators.emplace_back(op);
                     ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::f32_lt:
                 {
                     op.int_func = __builtin_addressof(::uwvm::vm::unchecked_interpreter::func::f32_lt);
-                    temp.operators.emplace_back_unchecked(op);
+                    temp.operators.emplace_back(op);
                     ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::f32_gt:
                 {
                     op.int_func = __builtin_addressof(::uwvm::vm::unchecked_interpreter::func::f32_gt);
-                    temp.operators.emplace_back_unchecked(op);
+                    temp.operators.emplace_back(op);
                     ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::f32_le:
                 {
                     op.int_func = __builtin_addressof(::uwvm::vm::unchecked_interpreter::func::f32_le);
-                    temp.operators.emplace_back_unchecked(op);
+                    temp.operators.emplace_back(op);
                     ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::f32_ge:
                 {
                     op.int_func = __builtin_addressof(::uwvm::vm::unchecked_interpreter::func::f32_ge);
-                    temp.operators.emplace_back_unchecked(op);
+                    temp.operators.emplace_back(op);
                     ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::f64_eq:
                 {
                     op.int_func = __builtin_addressof(::uwvm::vm::unchecked_interpreter::func::f64_eq);
-                    temp.operators.emplace_back_unchecked(op);
+                    temp.operators.emplace_back(op);
                     ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::f64_ne:
                 {
                     op.int_func = __builtin_addressof(::uwvm::vm::unchecked_interpreter::func::f64_ne);
-                    temp.operators.emplace_back_unchecked(op);
+                    temp.operators.emplace_back(op);
                     ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::f64_lt:
                 {
                     op.int_func = __builtin_addressof(::uwvm::vm::unchecked_interpreter::func::f64_lt);
-                    temp.operators.emplace_back_unchecked(op);
+                    temp.operators.emplace_back(op);
                     ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::f64_gt:
                 {
                     op.int_func = __builtin_addressof(::uwvm::vm::unchecked_interpreter::func::f64_gt);
-                    temp.operators.emplace_back_unchecked(op);
+                    temp.operators.emplace_back(op);
                     ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::f64_le:
                 {
                     op.int_func = __builtin_addressof(::uwvm::vm::unchecked_interpreter::func::f64_le);
-                    temp.operators.emplace_back_unchecked(op);
+                    temp.operators.emplace_back(op);
                     ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::f64_ge:
                 {
                     op.int_func = __builtin_addressof(::uwvm::vm::unchecked_interpreter::func::f64_ge);
-                    temp.operators.emplace_back_unchecked(op);
+                    temp.operators.emplace_back(op);
                     ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::i32_clz:
                 {
                     op.int_func = __builtin_addressof(::uwvm::vm::unchecked_interpreter::func::i32_clz);
-                    temp.operators.emplace_back_unchecked(op);
+                    temp.operators.emplace_back(op);
                     ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::i32_ctz:
                 {
                     op.int_func = __builtin_addressof(::uwvm::vm::unchecked_interpreter::func::i32_ctz);  // todo
-                    temp.operators.emplace_back_unchecked(op);
+                    temp.operators.emplace_back(op);
                     ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::i32_popcnt:
                 {
                     op.int_func = __builtin_addressof(::uwvm::vm::unchecked_interpreter::func::i32_popcnt);
-                    temp.operators.emplace_back_unchecked(op);
+                    temp.operators.emplace_back(op);
                     ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::i32_add:
                 {
                     op.int_func = __builtin_addressof(::uwvm::vm::unchecked_interpreter::func::i32_add);
-                    temp.operators.emplace_back_unchecked(op);
+                    temp.operators.emplace_back(op);
                     ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::i32_sub:
                 {
                     op.int_func = __builtin_addressof(::uwvm::vm::unchecked_interpreter::func::i32_sub);
-                    temp.operators.emplace_back_unchecked(op);
+                    temp.operators.emplace_back(op);
                     ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::i32_mul:
                 {
                     op.int_func = __builtin_addressof(::uwvm::vm::unchecked_interpreter::func::i32_mul);
-                    temp.operators.emplace_back_unchecked(op);
+                    temp.operators.emplace_back(op);
                     ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::i32_div_s:
                 {
                     op.int_func = __builtin_addressof(::uwvm::vm::unchecked_interpreter::func::i32_div_s);
-                    temp.operators.emplace_back_unchecked(op);
+                    temp.operators.emplace_back(op);
                     ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::i32_div_u:
                 {
                     op.int_func = __builtin_addressof(::uwvm::vm::unchecked_interpreter::func::i32_div_u);
-                    temp.operators.emplace_back_unchecked(op);
+                    temp.operators.emplace_back(op);
                     ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::i32_rem_s:
                 {
                     op.int_func = __builtin_addressof(::uwvm::vm::unchecked_interpreter::func::i32_rem_s);
-                    temp.operators.emplace_back_unchecked(op);
+                    temp.operators.emplace_back(op);
                     ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::i32_rem_u:
                 {
                     op.int_func = __builtin_addressof(::uwvm::vm::unchecked_interpreter::func::i32_rem_u);
-                    temp.operators.emplace_back_unchecked(op);
+                    temp.operators.emplace_back(op);
                     ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::i32_and:
                 {
                     op.int_func = __builtin_addressof(::uwvm::vm::unchecked_interpreter::func::i32_and);
-                    temp.operators.emplace_back_unchecked(op);
+                    temp.operators.emplace_back(op);
                     ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::i32_or:
                 {
                     op.int_func = __builtin_addressof(::uwvm::vm::unchecked_interpreter::func::i32_or);
-                    temp.operators.emplace_back_unchecked(op);
+                    temp.operators.emplace_back(op);
                     ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::i32_xor:
                 {
                     op.int_func = __builtin_addressof(::uwvm::vm::unchecked_interpreter::func::i32_xor);
-                    temp.operators.emplace_back_unchecked(op);
+                    temp.operators.emplace_back(op);
                     ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::i32_shl:
                 {
                     op.int_func = __builtin_addressof(::uwvm::vm::unchecked_interpreter::func::i32_shl);
-                    temp.operators.emplace_back_unchecked(op);
+                    temp.operators.emplace_back(op);
                     ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::i32_shr_s:
                 {
                     op.int_func = __builtin_addressof(::uwvm::vm::unchecked_interpreter::func::i32_shr_s);
-                    temp.operators.emplace_back_unchecked(op);
+                    temp.operators.emplace_back(op);
                     ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::i32_shr_u:
                 {
                     op.int_func = __builtin_addressof(::uwvm::vm::unchecked_interpreter::func::i32_shr_u);
-                    temp.operators.emplace_back_unchecked(op);
+                    temp.operators.emplace_back(op);
                     ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::i32_rotl:
                 {
                     op.int_func = __builtin_addressof(::uwvm::vm::unchecked_interpreter::func::i32_rotl);
-                    temp.operators.emplace_back_unchecked(op);
+                    temp.operators.emplace_back(op);
                     ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::i32_rotr:
                 {
                     op.int_func = __builtin_addressof(::uwvm::vm::unchecked_interpreter::func::i32_rotr);
-                    temp.operators.emplace_back_unchecked(op);
+                    temp.operators.emplace_back(op);
                     ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::i64_clz:
                 {
                     op.int_func = __builtin_addressof(::uwvm::vm::unchecked_interpreter::func::i64_clz);
-                    temp.operators.emplace_back_unchecked(op);
+                    temp.operators.emplace_back(op);
                     ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::i64_ctz:
                 {
                     op.int_func = __builtin_addressof(::uwvm::vm::unchecked_interpreter::func::i64_ctz);
-                    temp.operators.emplace_back_unchecked(op);
+                    temp.operators.emplace_back(op);
                     ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::i64_popcnt:
                 {
                     op.int_func = __builtin_addressof(::uwvm::vm::unchecked_interpreter::func::i64_popcnt);
-                    temp.operators.emplace_back_unchecked(op);
+                    temp.operators.emplace_back(op);
                     ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::i64_add:
                 {
                     op.int_func = __builtin_addressof(::uwvm::vm::unchecked_interpreter::func::i64_add);
-                    temp.operators.emplace_back_unchecked(op);
+                    temp.operators.emplace_back(op);
                     ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::i64_sub:
                 {
                     op.int_func = __builtin_addressof(::uwvm::vm::unchecked_interpreter::func::i64_sub);
-                    temp.operators.emplace_back_unchecked(op);
+                    temp.operators.emplace_back(op);
                     ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::i64_mul:
                 {
                     op.int_func = __builtin_addressof(::uwvm::vm::unchecked_interpreter::func::i64_mul);
-                    temp.operators.emplace_back_unchecked(op);
+                    temp.operators.emplace_back(op);
                     ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::i64_div_s:
                 {
                     op.int_func = __builtin_addressof(::uwvm::vm::unchecked_interpreter::func::i64_div_s);
-                    temp.operators.emplace_back_unchecked(op);
+                    temp.operators.emplace_back(op);
                     ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::i64_div_u:
                 {
                     op.int_func = __builtin_addressof(::uwvm::vm::unchecked_interpreter::func::i64_div_u);
-                    temp.operators.emplace_back_unchecked(op);
+                    temp.operators.emplace_back(op);
                     ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::i64_rem_s:
                 {
                     op.int_func = __builtin_addressof(::uwvm::vm::unchecked_interpreter::func::i64_rem_s);
-                    temp.operators.emplace_back_unchecked(op);
+                    temp.operators.emplace_back(op);
                     ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::i64_rem_u:
                 {
                     op.int_func = __builtin_addressof(::uwvm::vm::unchecked_interpreter::func::i64_rem_u);
-                    temp.operators.emplace_back_unchecked(op);
+                    temp.operators.emplace_back(op);
                     ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::i64_and:
                 {
                     op.int_func = __builtin_addressof(::uwvm::vm::unchecked_interpreter::func::i64_and);
-                    temp.operators.emplace_back_unchecked(op);
+                    temp.operators.emplace_back(op);
                     ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::i64_or:
                 {
                     op.int_func = __builtin_addressof(::uwvm::vm::unchecked_interpreter::func::i64_or);
-                    temp.operators.emplace_back_unchecked(op);
+                    temp.operators.emplace_back(op);
                     ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::i64_xor:
                 {
                     op.int_func = __builtin_addressof(::uwvm::vm::unchecked_interpreter::func::i64_xor);
-                    temp.operators.emplace_back_unchecked(op);
+                    temp.operators.emplace_back(op);
                     ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::i64_shl:
                 {
                     op.int_func = __builtin_addressof(::uwvm::vm::unchecked_interpreter::func::i64_shl);
-                    temp.operators.emplace_back_unchecked(op);
+                    temp.operators.emplace_back(op);
                     ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::i64_shr_s:
                 {
                     op.int_func = __builtin_addressof(::uwvm::vm::unchecked_interpreter::func::i64_shr_s);
-                    temp.operators.emplace_back_unchecked(op);
+                    temp.operators.emplace_back(op);
                     ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::i64_shr_u:
                 {
                     op.int_func = __builtin_addressof(::uwvm::vm::unchecked_interpreter::func::i64_shr_u);
-                    temp.operators.emplace_back_unchecked(op);
+                    temp.operators.emplace_back(op);
                     ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::i64_rotl:
                 {
                     op.int_func = __builtin_addressof(::uwvm::vm::unchecked_interpreter::func::i64_rotl);
-                    temp.operators.emplace_back_unchecked(op);
+                    temp.operators.emplace_back(op);
                     ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::i64_rotr:
                 {
                     op.int_func = __builtin_addressof(::uwvm::vm::unchecked_interpreter::func::i64_rotr);
-                    temp.operators.emplace_back_unchecked(op);
+                    temp.operators.emplace_back(op);
                     ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::f32_abs:
                 {
                     op.int_func = __builtin_addressof(::uwvm::vm::unchecked_interpreter::func::f32_abs);
-                    temp.operators.emplace_back_unchecked(op);
+                    temp.operators.emplace_back(op);
                     ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::f32_neg:
                 {
                     op.int_func = __builtin_addressof(::uwvm::vm::unchecked_interpreter::func::f32_neg);
-                    temp.operators.emplace_back_unchecked(op);
+                    temp.operators.emplace_back(op);
                     ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::f32_ceil:
                 {
                     op.int_func = __builtin_addressof(::uwvm::vm::unchecked_interpreter::func::f32_ceil);
-                    temp.operators.emplace_back_unchecked(op);
+                    temp.operators.emplace_back(op);
                     ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::f32_floor:
                 {
                     op.int_func = __builtin_addressof(::uwvm::vm::unchecked_interpreter::func::f32_floor);
-                    temp.operators.emplace_back_unchecked(op);
+                    temp.operators.emplace_back(op);
                     ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::f32_trunc:
                 {
                     op.int_func = __builtin_addressof(::uwvm::vm::unchecked_interpreter::func::f32_trunc);
-                    temp.operators.emplace_back_unchecked(op);
+                    temp.operators.emplace_back(op);
                     ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::f32_nearest:
                 {
                     op.int_func = __builtin_addressof(::uwvm::vm::unchecked_interpreter::func::f32_nearest);
-                    temp.operators.emplace_back_unchecked(op);
+                    temp.operators.emplace_back(op);
                     ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::f32_sqrt:
                 {
                     op.int_func = __builtin_addressof(::uwvm::vm::unchecked_interpreter::func::f32_sqrt);
-                    temp.operators.emplace_back_unchecked(op);
+                    temp.operators.emplace_back(op);
                     ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::f32_add:
                 {
                     op.int_func = __builtin_addressof(::uwvm::vm::unchecked_interpreter::func::f32_add);
-                    temp.operators.emplace_back_unchecked(op);
+                    temp.operators.emplace_back(op);
                     ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::f32_sub:
                 {
                     op.int_func = __builtin_addressof(::uwvm::vm::unchecked_interpreter::func::f32_sub);
-                    temp.operators.emplace_back_unchecked(op);
+                    temp.operators.emplace_back(op);
                     ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::f32_mul:
                 {
                     op.int_func = __builtin_addressof(::uwvm::vm::unchecked_interpreter::func::f32_mul);
-                    temp.operators.emplace_back_unchecked(op);
+                    temp.operators.emplace_back(op);
                     ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::f32_div:
                 {
                     op.int_func = __builtin_addressof(::uwvm::vm::unchecked_interpreter::func::f32_div);
-                    temp.operators.emplace_back_unchecked(op);
+                    temp.operators.emplace_back(op);
                     ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::f32_min:
                 {
                     op.int_func = __builtin_addressof(::uwvm::vm::unchecked_interpreter::func::f32_min);
-                    temp.operators.emplace_back_unchecked(op);
+                    temp.operators.emplace_back(op);
                     ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::f32_max:
                 {
                     op.int_func = __builtin_addressof(::uwvm::vm::unchecked_interpreter::func::f32_max);
-                    temp.operators.emplace_back_unchecked(op);
+                    temp.operators.emplace_back(op);
                     ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::f32_copysign:
                 {
                     op.int_func = __builtin_addressof(::uwvm::vm::unchecked_interpreter::func::f32_copysign);
-                    temp.operators.emplace_back_unchecked(op);
+                    temp.operators.emplace_back(op);
                     ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::f64_abs:
                 {
                     op.int_func = __builtin_addressof(::uwvm::vm::unchecked_interpreter::func::f64_abs);
-                    temp.operators.emplace_back_unchecked(op);
+                    temp.operators.emplace_back(op);
                     ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::f64_neg:
                 {
                     op.int_func = __builtin_addressof(::uwvm::vm::unchecked_interpreter::func::f64_neg);
-                    temp.operators.emplace_back_unchecked(op);
+                    temp.operators.emplace_back(op);
                     ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::f64_ceil:
                 {
                     op.int_func = __builtin_addressof(::uwvm::vm::unchecked_interpreter::func::f64_ceil);
-                    temp.operators.emplace_back_unchecked(op);
+                    temp.operators.emplace_back(op);
                     ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::f64_floor:
                 {
                     op.int_func = __builtin_addressof(::uwvm::vm::unchecked_interpreter::func::f64_floor);
-                    temp.operators.emplace_back_unchecked(op);
+                    temp.operators.emplace_back(op);
                     ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::f64_trunc:
                 {
                     op.int_func = __builtin_addressof(::uwvm::vm::unchecked_interpreter::func::f64_trunc);
-                    temp.operators.emplace_back_unchecked(op);
+                    temp.operators.emplace_back(op);
                     ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::f64_nearest:
                 {
                     op.int_func = __builtin_addressof(::uwvm::vm::unchecked_interpreter::func::f64_nearest);
-                    temp.operators.emplace_back_unchecked(op);
+                    temp.operators.emplace_back(op);
                     ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::f64_sqrt:
                 {
                     op.int_func = __builtin_addressof(::uwvm::vm::unchecked_interpreter::func::f64_sqrt);
-                    temp.operators.emplace_back_unchecked(op);
+                    temp.operators.emplace_back(op);
                     ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::f64_add:
                 {
                     op.int_func = __builtin_addressof(::uwvm::vm::unchecked_interpreter::func::f64_add);
-                    temp.operators.emplace_back_unchecked(op);
+                    temp.operators.emplace_back(op);
                     ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::f64_sub:
                 {
                     op.int_func = __builtin_addressof(::uwvm::vm::unchecked_interpreter::func::f64_sub);
-                    temp.operators.emplace_back_unchecked(op);
+                    temp.operators.emplace_back(op);
                     ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::f64_mul:
                 {
                     op.int_func = __builtin_addressof(::uwvm::vm::unchecked_interpreter::func::f64_mul);
-                    temp.operators.emplace_back_unchecked(op);
+                    temp.operators.emplace_back(op);
                     ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::f64_div:
                 {
                     op.int_func = __builtin_addressof(::uwvm::vm::unchecked_interpreter::func::f64_div);
-                    temp.operators.emplace_back_unchecked(op);
+                    temp.operators.emplace_back(op);
                     ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::f64_min:
                 {
                     op.int_func = __builtin_addressof(::uwvm::vm::unchecked_interpreter::func::f64_min);
-                    temp.operators.emplace_back_unchecked(op);
+                    temp.operators.emplace_back(op);
                     ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::f64_max:
                 {
                     op.int_func = __builtin_addressof(::uwvm::vm::unchecked_interpreter::func::f64_max);
-                    temp.operators.emplace_back_unchecked(op);
+                    temp.operators.emplace_back(op);
                     ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::f64_copysign:
                 {
                     op.int_func = __builtin_addressof(::uwvm::vm::unchecked_interpreter::func::f64_copysign);
-                    temp.operators.emplace_back_unchecked(op);
+                    temp.operators.emplace_back(op);
                     ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::i32_wrap_i64:
                 {
                     op.int_func = __builtin_addressof(::uwvm::vm::unchecked_interpreter::func::i32_wrap_i64);
-                    temp.operators.emplace_back_unchecked(op);
+                    temp.operators.emplace_back(op);
                     ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::i32_trunc_f32_s:
                 {
                     op.int_func = __builtin_addressof(::uwvm::vm::unchecked_interpreter::func::i32_trunc_f32_s);
-                    temp.operators.emplace_back_unchecked(op);
+                    temp.operators.emplace_back(op);
                     ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::i32_trunc_f32_u:
                 {
                     op.int_func = __builtin_addressof(::uwvm::vm::unchecked_interpreter::func::i32_trunc_f32_u);
-                    temp.operators.emplace_back_unchecked(op);
+                    temp.operators.emplace_back(op);
                     ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::i32_trunc_f64_s:
                 {
                     op.int_func = __builtin_addressof(::uwvm::vm::unchecked_interpreter::func::i32_trunc_f64_s);
-                    temp.operators.emplace_back_unchecked(op);
+                    temp.operators.emplace_back(op);
                     ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::i32_trunc_f64_u:
                 {
                     op.int_func = __builtin_addressof(::uwvm::vm::unchecked_interpreter::func::i32_trunc_f64_u);
-                    temp.operators.emplace_back_unchecked(op);
+                    temp.operators.emplace_back(op);
                     ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::i64_extend_i32_s:
                 {
                     op.int_func = __builtin_addressof(::uwvm::vm::unchecked_interpreter::func::i64_extend_i32_s);
-                    temp.operators.emplace_back_unchecked(op);
+                    temp.operators.emplace_back(op);
                     ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::i64_extend_i32_u:
                 {
                     op.int_func = __builtin_addressof(::uwvm::vm::unchecked_interpreter::func::i64_extend_i32_u);
-                    temp.operators.emplace_back_unchecked(op);
+                    temp.operators.emplace_back(op);
                     ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::i64_trunc_f32_s:
                 {
                     op.int_func = __builtin_addressof(::uwvm::vm::unchecked_interpreter::func::i64_trunc_f32_s);
-                    temp.operators.emplace_back_unchecked(op);
+                    temp.operators.emplace_back(op);
                     ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::i64_trunc_f32_u:
                 {
                     op.int_func = __builtin_addressof(::uwvm::vm::unchecked_interpreter::func::i64_trunc_f32_u);
-                    temp.operators.emplace_back_unchecked(op);
+                    temp.operators.emplace_back(op);
                     ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::i64_trunc_f64_s:
                 {
                     op.int_func = __builtin_addressof(::uwvm::vm::unchecked_interpreter::func::i64_trunc_f64_s);
-                    temp.operators.emplace_back_unchecked(op);
+                    temp.operators.emplace_back(op);
                     ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::i64_trunc_f64_u:
                 {
                     op.int_func = __builtin_addressof(::uwvm::vm::unchecked_interpreter::func::i64_trunc_f64_u);
-                    temp.operators.emplace_back_unchecked(op);
+                    temp.operators.emplace_back(op);
                     ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::f32_convert_i32_s:
                 {
                     op.int_func = __builtin_addressof(::uwvm::vm::unchecked_interpreter::func::f32_convert_i32_s);
-                    temp.operators.emplace_back_unchecked(op);
+                    temp.operators.emplace_back(op);
                     ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::f32_convert_i32_u:
                 {
                     op.int_func = __builtin_addressof(::uwvm::vm::unchecked_interpreter::func::f32_convert_i32_u);
-                    temp.operators.emplace_back_unchecked(op);
+                    temp.operators.emplace_back(op);
                     ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::f32_convert_i64_s:
                 {
                     op.int_func = __builtin_addressof(::uwvm::vm::unchecked_interpreter::func::f32_convert_i64_s);
-                    temp.operators.emplace_back_unchecked(op);
+                    temp.operators.emplace_back(op);
                     ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::f32_convert_i64_u:
                 {
                     op.int_func = __builtin_addressof(::uwvm::vm::unchecked_interpreter::func::f32_convert_i64_u);
-                    temp.operators.emplace_back_unchecked(op);
+                    temp.operators.emplace_back(op);
                     ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::f32_demote_f64:
                 {
                     op.int_func = __builtin_addressof(::uwvm::vm::unchecked_interpreter::func::f32_demote_f64);
-                    temp.operators.emplace_back_unchecked(op);
+                    temp.operators.emplace_back(op);
                     ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::f64_convert_i32_s:
                 {
                     op.int_func = __builtin_addressof(::uwvm::vm::unchecked_interpreter::func::f64_convert_i32_s);
-                    temp.operators.emplace_back_unchecked(op);
+                    temp.operators.emplace_back(op);
                     ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::f64_convert_i32_u:
                 {
                     op.int_func = __builtin_addressof(::uwvm::vm::unchecked_interpreter::func::f64_convert_i32_u);
-                    temp.operators.emplace_back_unchecked(op);
+                    temp.operators.emplace_back(op);
                     ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::f64_convert_i64_s:
                 {
                     op.int_func = __builtin_addressof(::uwvm::vm::unchecked_interpreter::func::f64_convert_i64_s);
-                    temp.operators.emplace_back_unchecked(op);
+                    temp.operators.emplace_back(op);
                     ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::f64_convert_i64_u:
                 {
                     op.int_func = __builtin_addressof(::uwvm::vm::unchecked_interpreter::func::f64_convert_i64_u);
-                    temp.operators.emplace_back_unchecked(op);
+                    temp.operators.emplace_back(op);
                     ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::f64_promote_f32:
                 {
                     op.int_func = __builtin_addressof(::uwvm::vm::unchecked_interpreter::func::f64_promote_f32);
-                    temp.operators.emplace_back_unchecked(op);
+                    temp.operators.emplace_back(op);
                     ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::i32_reinterpret_f32:
                 {
                     op.int_func = __builtin_addressof(::uwvm::vm::unchecked_interpreter::func::i32_reinterpret_f32);
-                    temp.operators.emplace_back_unchecked(op);
+                    temp.operators.emplace_back(op);
                     ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::i64_reinterpret_f64:
                 {
                     op.int_func = __builtin_addressof(::uwvm::vm::unchecked_interpreter::func::i64_reinterpret_f64);
-                    temp.operators.emplace_back_unchecked(op);
+                    temp.operators.emplace_back(op);
                     ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::f32_reinterpret_i32:
                 {
                     op.int_func = __builtin_addressof(::uwvm::vm::unchecked_interpreter::func::f32_reinterpret_i32);
-                    temp.operators.emplace_back_unchecked(op);
+                    temp.operators.emplace_back(op);
                     ++curr;
                     break;
                 }
                 case ::uwvm::wasm::op_basic::f64_reinterpret_i64:
                 {
                     op.int_func = __builtin_addressof(::uwvm::vm::unchecked_interpreter::func::f64_reinterpret_i64);
-                    temp.operators.emplace_back_unchecked(op);
+                    temp.operators.emplace_back(op);
                     ++curr;
                     break;
                 }
@@ -5697,7 +5697,7 @@ namespace uwvm::vm::unchecked_interpreter
                         ::fast_io::fast_terminate();
                     }
                     op.int_func = __builtin_addressof(::uwvm::vm::unchecked_interpreter::func::i32_extend8_s);
-                    temp.operators.emplace_back_unchecked(op);
+                    temp.operators.emplace_back(op);
                     ++curr;
                     break;
                 }
@@ -5731,7 +5731,7 @@ namespace uwvm::vm::unchecked_interpreter
                         ::fast_io::fast_terminate();
                     }
                     op.int_func = __builtin_addressof(::uwvm::vm::unchecked_interpreter::func::i32_extend16_s);
-                    temp.operators.emplace_back_unchecked(op);
+                    temp.operators.emplace_back(op);
                     ++curr;
                     break;
                 }
@@ -5765,7 +5765,7 @@ namespace uwvm::vm::unchecked_interpreter
                         ::fast_io::fast_terminate();
                     }
                     op.int_func = __builtin_addressof(::uwvm::vm::unchecked_interpreter::func::i64_extend8_s);
-                    temp.operators.emplace_back_unchecked(op);
+                    temp.operators.emplace_back(op);
                     ++curr;
                     break;
                 }
@@ -5799,7 +5799,7 @@ namespace uwvm::vm::unchecked_interpreter
                         ::fast_io::fast_terminate();
                     }
                     op.int_func = __builtin_addressof(::uwvm::vm::unchecked_interpreter::func::i64_extend16_s);
-                    temp.operators.emplace_back_unchecked(op);
+                    temp.operators.emplace_back(op);
                     ++curr;
                     break;
                 }
@@ -5833,7 +5833,7 @@ namespace uwvm::vm::unchecked_interpreter
                         ::fast_io::fast_terminate();
                     }
                     op.int_func = __builtin_addressof(::uwvm::vm::unchecked_interpreter::func::i64_extend32_s);
-                    temp.operators.emplace_back_unchecked(op);
+                    temp.operators.emplace_back(op);
                     ++curr;
                     break;
                 }
@@ -5980,7 +5980,7 @@ namespace uwvm::vm::unchecked_interpreter
                             ++curr;
 
                             op.int_func = __builtin_addressof(::uwvm::vm::unchecked_interpreter::func::fcext::memory_copy);
-                            temp.operators.emplace_back_unchecked(op);
+                            temp.operators.emplace_back(op);
 
                             break;
                         }
@@ -6048,7 +6048,7 @@ namespace uwvm::vm::unchecked_interpreter
                             ++curr;
 
                             op.int_func = __builtin_addressof(::uwvm::vm::unchecked_interpreter::func::fcext::memory_fill);
-                            temp.operators.emplace_back_unchecked(op);
+                            temp.operators.emplace_back(op);
 
                             break;
                         }
@@ -6178,7 +6178,8 @@ namespace uwvm::vm::unchecked_interpreter
                     }
             }
         }
-        temp.operators.emplace_back_unchecked(
+
+        temp.operators.emplace_back(
             ::uwvm::vm::unchecked_interpreter::operator_t{.code_begin{curr}, .int_func{__builtin_addressof(::uwvm::vm::unchecked_interpreter::func::return_)}}
 
         );

@@ -141,6 +141,10 @@ function defopt()
 		set_exceptions("no-cxx")
 	end
 
+	if enable_ucint then
+		add_cxflags("-foptimize-sibling-calls")  -- tail call
+	end
+
 	-- use llvm
 	local use_llvm_toolchain = get_config("use-llvm")
 
@@ -188,6 +192,7 @@ function defopt()
 		if is_kind("binary") then
 			set_policy("build.optimization.lto", true)
 		end
+
 	elseif is_mode("debug") then	
 		set_optimize("none")
 		set_symbols("debug")
