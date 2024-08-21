@@ -238,9 +238,9 @@ inline constexpr void scatter_read_all_bytes_cold_impl(instmtype insm, io_scatte
 			[[__gnu__::__may_alias__]]
 #endif
 			= basic_io_scatter_t<char_type> *;
-		scatter_pread_all_cold_impl(insm, reinterpret_cast<scattermayalias_ptr>(pscatters), n, 0);
+		scatter_pread_all_cold_impl(insm, reinterpret_cast<scattermayalias_ptr>(const_cast<::fast_io::io_scatter_t *>(pscatters)), n, 0);
 		::fast_io::operations::decay::input_stream_seek_decay(
-			insm, ::fast_io::fposoffadd_scatters(0, const_cast<::fast_io::io_scatter_t *>(pscatters), {n, 0}), ::fast_io::seekdir::cur);
+			insm, ::fast_io::fposoffadd_scatters(0, pscatters, {n, 0}), ::fast_io::seekdir::cur);
 	}
 }
 

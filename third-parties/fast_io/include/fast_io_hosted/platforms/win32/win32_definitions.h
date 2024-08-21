@@ -329,7 +329,7 @@ struct system_info
 {
 	union
 	{
-		::std::uint_least32_t dwOemId;  // Obsolete field...do not use
+		::std::uint_least32_t dwOemId; // Obsolete field...do not use
 
 		struct
 		{
@@ -339,8 +339,8 @@ struct system_info
 	} DUMMYUNIONNAME;
 
 	::std::uint_least32_t dwPageSize;
-	void* lpMinimumApplicationAddress;
-	void* lpMaximumApplicationAddress;
+	void *lpMinimumApplicationAddress;
+	void *lpMaximumApplicationAddress;
 	::std::size_t dwActiveProcessorMask;
 	::std::uint_least32_t dwNumberOfProcessors;
 	::std::uint_least32_t dwProcessorType;

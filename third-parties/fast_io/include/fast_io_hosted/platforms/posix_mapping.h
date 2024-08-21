@@ -53,21 +53,23 @@ inline ::std::byte *sys_mmap(void *addr, ::std::size_t len, int prot, int flags,
 #endif
 }
 
-inline int sys_mprotect(void* start, ::std::size_t len, int prot)
+inline int sys_mprotect(void *start, ::std::size_t len, int prot)
 {
-    auto const result{
+	auto const result{
 #if defined(__linux__) && defined(__NR_mprotect)
-        system_call<__NR_mprotect, int>(start, len, prot)
+		system_call<__NR_mprotect, int>(start, len, prot)
 #else
-        ::mprotect(start, len, prot)
+		::mprotect(start, len, prot)
 #endif
-    };
-    if(result) [[unlikely]] { throw_posix_error(); }
-    return result;
+	};
+	if (result) [[unlikely]]
+	{
+		throw_posix_error();
+	}
+	return result;
 }
 
-
-inline int sys_munmap(void* addr, ::std::size_t len)
+inline int sys_munmap(void *addr, ::std::size_t len)
 {
 	return
 #if defined(__linux__) && defined(__NR_munmap)

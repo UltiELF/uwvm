@@ -1,6 +1,7 @@
 ﻿#pragma once
 
 #include "common.h"
+#include "asan_util.h"
 #if (defined(_WIN32) || defined(__CYGWIN__)) && !defined(__WINE__)
 #include "win32_heapalloc.h"
 #include "nt_rtlheapalloc.h"
@@ -21,7 +22,7 @@
 #include "linux_kernel.h"
 #endif
 
-#if (defined(FAST_IO_ENABLE_MIMALLOC) || defined(FAST_IO_USE_MIMALLOC)) && (!defined(__MSDOS__))
+#if (defined(FAST_IO_ENABLE_MIMALLOC) || defined(FAST_IO_USE_MIMALLOC)) && (!defined(_MSC_VER) || defined(__clang__))
 #include "mimalloc_driver.h"
 #endif
 
@@ -34,7 +35,7 @@ namespace fast_io
 using native_global_allocator = generic_allocator_adapter<
 #if defined(FAST_IO_USE_CUSTOM_GLOBAL_ALLOCATOR)
 	custom_global_allocator
-#elif defined(FAST_IO_USE_MIMALLOC)
+#elif defined(FAST_IO_USE_MIMALLOC) && (!defined(_MSC_VER) || defined(__clang__))
 	mimalloc_allocator
 #elif (defined(__linux__) && defined(__KERNEL__)) || defined(FAST_IO_USE_LINUX_KERNEL_ALLOCATOR)
 	linux_kmalloc_allocator
@@ -45,11 +46,7 @@ using native_global_allocator = generic_allocator_adapter<
 #if defined(_DEBUG) && defined(_MSC_VER)
 	wincrt_malloc_dbg_allocator
 #else
-#if defined(_WIN32_WINDOWS)
-    win32_heapalloc_allocator
-#else
-	nt_rtlallocateheap_allocator
-#endif
+	::std::conditional_t<::fast_io::asan::asan_status::current == ::fast_io::asan::asan_status::none, win32_heapalloc_allocator, c_malloc_allocator>
 #endif
 #else
 #if defined(_DEBUG) && defined(_MSC_VER)

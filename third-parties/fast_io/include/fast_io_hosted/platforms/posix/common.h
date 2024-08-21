@@ -52,8 +52,8 @@ inline ::std::byte const *posix_write_bytes_impl(int fd, ::std::byte const *firs
 
 #ifdef __MSDOS__
 
-extern unsigned my_dos_read(int, void*, unsigned, unsigned*) noexcept __asm__("__dos_read");
-extern unsigned my_dos_write(int, const void*, unsigned, unsigned*) noexcept __asm__("__dos_write");
+extern unsigned my_dos_read(int, void *, unsigned, unsigned *) noexcept __asm__("__dos_read");
+extern unsigned my_dos_write(int, void const *, unsigned, unsigned *) noexcept __asm__("__dos_write");
 
 inline ::std::byte *posix_dos_read_bytes_impl(int fd, ::std::byte *first, ::std::byte *last)
 {
@@ -65,7 +65,7 @@ inline ::std::byte *posix_dos_read_bytes_impl(int fd, ::std::byte *first, ::std:
 	return first + ret;
 }
 
-inline ::std::byte *posix_dos_write_bytes_impl(int fd, ::std::byte *first, ::std::byte *last)
+inline ::std::byte const *posix_dos_write_bytes_impl(int fd, ::std::byte const *first, ::std::byte const *last)
 {
 	unsigned ret;
 	if (::fast_io::details::my_dos_write(fd, first, ::fast_io::details::read_write_bytes_compute<unsigned>(first, last), __builtin_addressof(ret)))

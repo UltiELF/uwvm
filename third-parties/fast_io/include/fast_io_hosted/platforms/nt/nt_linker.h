@@ -2264,7 +2264,7 @@ extern ::std::uint_least32_t
 #if (!__has_cpp_attribute(__gnu__::__stdcall__) && !defined(__WINE__)) && defined(_MSC_VER)
 	__stdcall
 #endif
-    NtFreeVirtualMemory(void*, void**, ::std::size_t*, ::std::uint_least32_t) noexcept
+	NtFreeVirtualMemory(void *, void **, ::std::size_t *, ::std::uint_least32_t) noexcept
 #if defined(__clang__) || defined(__GNUC__)
 #if SIZE_MAX <= UINT_LEAST32_MAX && (defined(__x86__) || defined(_M_IX86) || defined(__i386__))
 #if !defined(__clang__)
@@ -2290,7 +2290,7 @@ extern ::std::uint_least32_t
 #if (!__has_cpp_attribute(__gnu__::__stdcall__) && !defined(__WINE__)) && defined(_MSC_VER)
 	__stdcall
 #endif
-    ZwFreeVirtualMemory(void*, void**, ::std::size_t*, ::std::uint_least32_t) noexcept
+	ZwFreeVirtualMemory(void *, void **, ::std::size_t *, ::std::uint_least32_t) noexcept
 #if defined(__clang__) || defined(__GNUC__)
 #if SIZE_MAX <= UINT_LEAST32_MAX && (defined(__x86__) || defined(_M_IX86) || defined(__i386__))
 #if !defined(__clang__)
@@ -2309,11 +2309,11 @@ template <bool zw, typename... Args>
 inline ::std::uint_least32_t nt_free_virtual_memory(Args... args) noexcept
 {
 	if constexpr (zw)
-	{ 
+	{
 		return ZwFreeVirtualMemory(args...);
 	}
 	else
-	{ 
+	{
 		return NtFreeVirtualMemory(args...);
 	}
 }
@@ -2382,7 +2382,7 @@ extern ::std::uint_least32_t
 #if (!__has_cpp_attribute(__gnu__::__stdcall__) && !defined(__WINE__)) && defined(_MSC_VER)
 	__stdcall
 #endif
-    NtQuerySystemInformation(system_information_class, void*, ::std::uint_least32_t, ::std::uint_least32_t*) noexcept
+	NtQuerySystemInformation(system_information_class, void *, ::std::uint_least32_t, ::std::uint_least32_t *) noexcept
 #if defined(__clang__) || defined(__GNUC__)
 #if SIZE_MAX <= UINT_LEAST32_MAX && (defined(__x86__) || defined(_M_IX86) || defined(__i386__))
 #if !defined(__clang__)
@@ -2408,7 +2408,7 @@ extern ::std::uint_least32_t
 #if (!__has_cpp_attribute(__gnu__::__stdcall__) && !defined(__WINE__)) && defined(_MSC_VER)
 	__stdcall
 #endif
-    ZwQuerySystemInformation(system_information_class, void*, ::std::uint_least32_t, ::std::uint_least32_t*) noexcept
+	ZwQuerySystemInformation(system_information_class, void *, ::std::uint_least32_t, ::std::uint_least32_t *) noexcept
 #if defined(__clang__) || defined(__GNUC__)
 #if SIZE_MAX <= UINT_LEAST32_MAX && (defined(__x86__) || defined(_M_IX86) || defined(__i386__))
 #if !defined(__clang__)
@@ -2423,11 +2423,17 @@ extern ::std::uint_least32_t
 		;
 
 template <bool zw, typename... Args>
-    requires (sizeof...(Args) == 4)
+	requires(sizeof...(Args) == 4)
 inline ::std::uint_least32_t nt_query_system_information(Args... args) noexcept
 {
-    if constexpr(zw) { return ZwQuerySystemInformation(args...); }
-    else { return NtQuerySystemInformation(args...); }
+	if constexpr (zw)
+	{
+		return ZwQuerySystemInformation(args...);
+	}
+	else
+	{
+		return NtQuerySystemInformation(args...);
+	}
 }
 
 #if defined(_MSC_VER) && !defined(__clang__)

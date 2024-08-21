@@ -2109,7 +2109,7 @@ extern int
 #if (!__has_cpp_attribute(__gnu__::__stdcall__) && !defined(__WINE__)) && defined(_MSC_VER)
 	__stdcall
 #endif
-	sendto(::std::size_t, const char *, int, int, const void *, int) noexcept
+	sendto(::std::size_t, char const *, int, int, void const *, int) noexcept
 #if defined(__clang__) || defined(__GNUC__)
 #if SIZE_MAX <= UINT_LEAST32_MAX && (defined(__x86__) || defined(_M_IX86) || defined(__i386__))
 #if !defined(__clang__)
@@ -2255,7 +2255,6 @@ extern int
 #endif
 #endif
 		;
-
 
 #if defined(_MSC_VER) && !defined(__clang__)
 __declspec(dllimport)
@@ -2952,7 +2951,7 @@ extern void
 #if (!__has_cpp_attribute(__gnu__::__stdcall__) && !defined(__WINE__)) && defined(_MSC_VER)
 	__stdcall
 #endif
-	GetSystemInfo(::fast_io::win32::system_info*) noexcept
+	GetSystemInfo(::fast_io::win32::system_info *) noexcept
 #if defined(__clang__) || defined(__GNUC__)
 #if SIZE_MAX <= UINT_LEAST32_MAX && (defined(__x86__) || defined(_M_IX86) || defined(__i386__))
 #if !defined(__clang__)
@@ -2978,17 +2977,17 @@ extern int
 #if (!__has_cpp_attribute(__gnu__::__stdcall__) && !defined(__WINE__)) && defined(_MSC_VER)
 	__stdcall
 #endif
-    SetFileInformationByHandle(void*, file_info_by_handle_class, void*, ::std::uint_least32_t) noexcept
+	SetFileInformationByHandle(void *, file_info_by_handle_class, void *, ::std::uint_least32_t) noexcept
 #if defined(__clang__) || defined(__GNUC__)
-	#if SIZE_MAX <= UINT_LEAST32_MAX && (defined(__x86__) || defined(_M_IX86) || defined(__i386__))
-		#if !defined(__clang__)
+#if SIZE_MAX <= UINT_LEAST32_MAX && (defined(__x86__) || defined(_M_IX86) || defined(__i386__))
+#if !defined(__clang__)
 	__asm__("SetFileInformationByHandle@16")
-		#else
+#else
 	__asm__("_SetFileInformationByHandle@16")
-		#endif
-	#else
+#endif
+#else
 	__asm__("SetFileInformationByHandle")
-	#endif
+#endif
 #endif
 		;
 
@@ -3002,21 +3001,21 @@ __declspec(dllimport)
 #endif
 extern int
 #if (!__has_cpp_attribute(__gnu__::__stdcall__) && !defined(__WINE__)) && defined(_MSC_VER)
-    __stdcall
+	__stdcall
 #endif
-    SetFileTime(void*, filetime const*, filetime const*, filetime const*) noexcept
+	SetFileTime(void *, filetime const *, filetime const *, filetime const *) noexcept
 #if defined(__clang__) || defined(__GNUC__)
-    #if SIZE_MAX <= UINT_LEAST32_MAX && (defined(__x86__) || defined(_M_IX86) || defined(__i386__))
-        #if !defined(__clang__)
-    __asm__("SetFileTime@16")
-        #else
-    __asm__("_SetFileTime@16")
-        #endif
-    #else
-    __asm__("SetFileTime")
-    #endif
+#if SIZE_MAX <= UINT_LEAST32_MAX && (defined(__x86__) || defined(_M_IX86) || defined(__i386__))
+#if !defined(__clang__)
+	__asm__("SetFileTime@16")
+#else
+	__asm__("_SetFileTime@16")
 #endif
-        ;
+#else
+	__asm__("SetFileTime")
+#endif
+#endif
+		;
 
 #if defined(_MSC_VER) && !defined(__clang__)
 __declspec(dllimport)

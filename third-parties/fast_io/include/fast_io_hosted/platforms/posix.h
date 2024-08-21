@@ -57,8 +57,6 @@
 
 #if defined(__MSDOS__)
 #include <libc/fd_props.h>
-#include "../../fast_io_dsal/string.h"
-#include "../../fast_io_dsal/string_view.h"
 #endif
 
 namespace fast_io
@@ -514,30 +512,28 @@ io_bytes_stream_ref_define(basic_posix_family_io_observer<family, ch_type> other
 	return {other.handle};
 }
 
-#if !(defined(_WIN32) && !defined(__WINE__) && !defined(__BIONIC__))
+#if !(defined(_WIN32) && !defined(__WINE__) && !defined(__BIONIC__)) && defined(AT_FDCWD)
 
 inline constexpr posix_at_entry posix_at_fdcwd() noexcept
 {
-	return posix_at_entry(
-#ifdef AT_FDCWD
-		AT_FDCWD
-#else
-		-100
-#endif
-	);
+	return posix_at_entry(AT_FDCWD);
 }
 
 inline constexpr posix_at_entry at_fdcwd() noexcept
 {
-	return posix_at_entry(
-#ifdef AT_FDCWD
-		AT_FDCWD
-#else
-		-100
-#endif
-		);
+	return posix_at_entry(AT_FDCWD);
+}
+#elif defined(__MSDOS__) || defined(__DJGPP__)
+
+inline constexpr posix_at_entry posix_at_fdcwd() noexcept
+{
+	return posix_at_entry(-100);
 }
 
+inline constexpr posix_at_entry at_fdcwd() noexcept
+{
+	return posix_at_entry(-100);
+}
 #endif
 
 namespace details
@@ -720,7 +716,7 @@ inline posix_file_status fstat_impl(int fd)
 {
 #if (defined(_WIN32) && !defined(__WINE__) && !defined(__BIONIC__)) && !defined(__CYGWIN__)
 	struct __stat64 st;
-#elif defined(__linux__) && !defined(__MLIBC_O_CLOEXEC)
+#elif defined(__linux__) && defined(__USE_LARGEFILE64)
 	struct stat64 st;
 #else
 	struct stat st;
@@ -728,16 +724,17 @@ inline posix_file_status fstat_impl(int fd)
 	if (::fast_io::noexcept_call(
 #if (defined(_WIN32) && !defined(__WINE__) && !defined(__BIONIC__)) && !defined(__CYGWIN__)
 #if (!defined(__MINGW32__) || __has_include(<_mingw_stat64.h>))
-		_fstat64
+			_fstat64
 #else
-		_fstati64
+			_fstati64
 #endif
-#elif defined(__linux__) && !defined(__MLIBC_O_CLOEXEC)
-		fstat64
+#elif defined(__linux__) && defined(__USE_LARGEFILE64)
+			fstat64
 #else
-		fstat
+			fstat
 #endif
-		, fd, __builtin_addressof(st)) < 0)
+			,
+			fd, __builtin_addressof(st)) < 0)
 		throw_posix_error();
 	return struct_stat_to_posix_file_status(st);
 }
@@ -832,7 +829,7 @@ inline int my_posix_openat(int dirfd, char const *pathname, int flags, mode_t mo
 		return -1;
 	}
 
-	if(dirfd == -100)
+	if (dirfd == -100)
 	{
 		int fd(::open(pathname, flags, mode));
 		system_call_throw_error<always_terminate>(fd);
@@ -841,7 +838,7 @@ inline int my_posix_openat(int dirfd, char const *pathname, int flags, mode_t mo
 	else
 	{
 		auto pathname_cstr{::fast_io::noexcept_call(::__get_fd_name, dirfd)};
-		if(pathname_cstr == nullptr) [[unlikely]]
+		if (pathname_cstr == nullptr) [[unlikely]]
 		{
 			system_call_throw_error<always_terminate>(-1);
 			return -1;
@@ -849,20 +846,20 @@ inline int my_posix_openat(int dirfd, char const *pathname, int flags, mode_t mo
 
 		// check vaildity
 		::fast_io::cstring_view para_pathname{::fast_io::mnp::os_c_str(pathname)};
-		if(auto const sz{para_pathname.size()}; sz == 0 || sz > 255) [[unlikely]] 
+		if (auto const sz{para_pathname.size()}; sz == 0 || sz > 255) [[unlikely]]
 		{
 			return -1;
 		}
 
-		if(auto const fc{para_pathname.front_unchecked()}; fc == '+' || fc == '-' || fc == '.') [[unlikely]] 
+		if (auto const fc{para_pathname.front_unchecked()}; fc == '+' || fc == '-' || fc == '.') [[unlikely]]
 		{
 			return -1;
 		}
 
-		for(auto const fc: para_pathname)
+		for (auto const fc : para_pathname)
 		{
-			if(fc == '/' || fc == '\\' || fc == '\t' || fc == '\b' || fc == '@' || fc == '#' || fc == '$' || fc == '%' || fc == '^' || fc == '&' ||
-			   fc == '*' || fc == '(' || fc == ')' || fc == '[' || fc == ']') [[unlikely]] 
+			if (fc == '/' || fc == '\\' || fc == '\t' || fc == '\b' || fc == '@' || fc == '#' || fc == '$' || fc == '%' || fc == '^' || fc == '&' ||
+				fc == '*' || fc == '(' || fc == ')' || fc == '[' || fc == ']') [[unlikely]]
 			{
 				return -1;
 			}
@@ -892,7 +889,7 @@ inline int my_posix_openat(int, char const *, int, mode_t)
 }
 #else
 
-extern int my_posix_openat_noexcept(int fd, const char* path, int aflag, ... /*mode_t mode*/) noexcept __asm__("openat");
+extern int my_posix_openat_noexcept(int fd, const char *path, int aflag, ... /*mode_t mode*/) noexcept __asm__("openat");
 
 template <bool always_terminate = false>
 inline int my_posix_openat(int dirfd, char const *pathname, int flags, mode_t mode)

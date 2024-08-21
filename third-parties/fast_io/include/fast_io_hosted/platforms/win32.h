@@ -946,7 +946,7 @@ struct
 	using native_handle_type = void *;
 	void *handle{};
 	explicit constexpr win32_file_factory(void *hd) noexcept
-		: handle(hd){};
+		: handle(hd) {};
 	win32_file_factory(win32_file_factory const &) = delete;
 	win32_file_factory &operator=(win32_file_factory const &) = delete;
 	~win32_file_factory()
@@ -1465,7 +1465,7 @@ inline basic_win32_io_observer<char_type> win32_stderr() noexcept
 	return {::fast_io::win32::GetStdHandle(win32_stderr_number)};
 }
 
-#if !defined(__CYGWIN__) && !defined(__WINE__) && !defined(__BIONIC__) && defined(_WIN32_WINDOWS)
+#if !defined(__CYGWIN__) && !defined(__WINE__)
 template <::std::integral char_type = char>
 inline basic_win32_io_observer<char_type> native_stdin() noexcept
 {

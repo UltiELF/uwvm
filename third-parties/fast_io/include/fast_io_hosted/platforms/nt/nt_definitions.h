@@ -219,7 +219,6 @@ struct file_id_both_dir_information
 	char16_t FileName[1];
 };
 
-
 union dir_information
 {
 	void *DirInfo;
@@ -497,7 +496,7 @@ struct ps_create_info
 		// PsCreateInitialState
 		struct
 		{
-			union
+			union u1union
 			{
 				::std::uint_least32_t InitFlags;
 				struct
@@ -535,7 +534,7 @@ struct ps_create_info
 		// PsCreateSuccess
 		struct
 		{
-			union
+			union u2union
 			{
 				::std::uint_least32_t OutputFlags;
 				struct
@@ -560,7 +559,7 @@ struct ps_create_info
 			::std::uint_least64_t ManifestAddress;
 			::std::uint_least32_t ManifestSize;
 		} SuccessState;
-	};
+	} stateunion;
 };
 
 struct ps_attribute
@@ -767,7 +766,7 @@ struct system_basic_information
 
 struct rtl_srwlock
 {
-    void* Ptr;
+	void *Ptr;
 };
 
 } // namespace fast_io::win32::nt

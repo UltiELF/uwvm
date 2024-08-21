@@ -663,53 +663,6 @@ constexpr auto operator<=>(char_type const (&buffer)[n], ::fast_io::containers::
 	return ::std::lexicographical_compare_three_way(buffer, buffer + nm1, a.ptr, a.ptr + a.n, ::std::compare_three_way{});
 }
 
-#elif __cpp_impl_three_way_comparison >= 201907L
-template <::std::integral char_type>
-constexpr auto operator<=> (::fast_io::containers::basic_string_view<char_type> a, ::fast_io::containers::basic_string_view<char_type> b) noexcept
-{
-    auto const a_last{a.ptr + a.n};
-    auto const b_last{b.ptr + b.n};
-    for(; (a.ptr != a_last) && (b.ptr != b_last);)
-    {
-        if(auto i{*a.ptr <=> *b.ptr}; i != ::std::strong_ordering::equal) { return i; }
-        ++a.ptr;
-        ++b.ptr;
-    }
-    return a.n <=> b.n;
-}
-
-template <::std::integral char_type, ::std::size_t n>
-constexpr auto operator<=> (::fast_io::containers::basic_string_view<char_type> a, char_type const (&buffer)[n]) noexcept
-{
-    constexpr ::std::size_t nm1{n - 1u};
-    auto b_ptr{buffer};
-    auto const a_last{a.ptr + a.n};
-    auto const b_last{b_ptr + nm1};
-    for(; (a.ptr != a_last) && (b_ptr != b_last);)
-    {
-        if(auto i{*a.ptr <=> *b_ptr}; i != ::std::strong_ordering::equal) { return i; }
-        ++a.ptr;
-        ++b_ptr;
-    }
-    return a.n <=> nm1;
-}
-
-template <::std::integral char_type, ::std::size_t n>
-constexpr auto operator<=> (char_type const (&buffer)[n], ::fast_io::containers::basic_string_view<char_type> b) noexcept
-{
-    constexpr ::std::size_t nm1{n - 1u};
-    auto a_ptr{buffer};
-    auto const a_last{a_ptr + nm1};
-    auto const b_last{b.ptr + b.n};
-    for(; (a_ptr != a_last) && (b.ptr != b_last);)
-    {
-        if(auto i{*a_ptr <=> *b.ptr}; i != ::std::strong_ordering::equal) { return i; }
-        ++a_ptr;
-        ++b.ptr;
-    }
-    return nm1 <=> b.n;
-}
-
 #endif
 
 } // namespace fast_io::containers
