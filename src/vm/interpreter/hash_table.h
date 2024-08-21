@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include <fast_io.h>
 #include <fast_io_crypto.h>
 #include <fast_io_dsal/string_view.h>

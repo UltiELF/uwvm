@@ -1,4 +1,4 @@
-#include "start-func.h"
+﻿#include "start-func.h"
 #include "../../vm/wasm.h"
 
 ::uwvm::cmdline::parameter_return_type(::uwvm::parameter::details::start_func_callback)(

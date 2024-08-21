@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 struct custom_section_type
 {

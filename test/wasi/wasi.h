@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include "../../src/vm/memory/memory.h"
 #include "../../src/vm/wasi/wasi.h"
 

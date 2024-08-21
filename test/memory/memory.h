@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include <fast_io.h>
 #include <io_device.h>
 #include "../../src/vm/memory/memory.h"

@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #if defined(__DragonFly__) || defined(__FreeBSD__) || defined(__FreeBSD_kernel__) || defined(__NetBSD__) || defined(BSD) || defined(_SYSTYPE_BSD) ||           \
     defined(__OpenBSD__)

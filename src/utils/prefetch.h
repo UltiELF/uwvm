@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #if !__has_builtin(__builtin_prefetch)
     #include <intrin.h>
 #endif

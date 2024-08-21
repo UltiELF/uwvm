@@ -1,4 +1,4 @@
-#include "wasi-mount-root.h"
+﻿#include "wasi-mount-root.h"
 #include "../../vm/wasi/root.h"
 
 ::uwvm::cmdline::parameter_return_type(::uwvm::parameter::details::wasi_mount_root_callback)(

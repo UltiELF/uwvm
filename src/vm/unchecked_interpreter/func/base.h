@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include "../stack_t.h"
 

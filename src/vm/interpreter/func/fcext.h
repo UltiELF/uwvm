@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #pragma once
 #include <cmath>
 #include <fast_io.h>

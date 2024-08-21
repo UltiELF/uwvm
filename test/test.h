@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include "failed.h"
 #include "memory/memory.h"
 #include "wasi/wasi.h"
