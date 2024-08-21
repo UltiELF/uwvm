@@ -114,9 +114,8 @@ namespace uwvm::vm::interpreter
     {
         ::fast_io::tlc::stack<stack_t, ::fast_io::tlc::vector<stack_t>> stack{};
         ::fast_io::tlc::stack<stack_t, ::fast_io::tlc::vector<stack_t>> local_storages{};
-#if 0
-        ::fast_io::tlc::stack<flow_t, ::fast_io::tlc::vector<flow_t>> flow{};
-#endif
+        ::fast_io::tlc::stack<::uwvm::wasm::local_function_type const*, ::fast_io::tlc::vector<::uwvm::wasm::local_function_type const*>> int_call_stack{};
+
         operator_t const* begin_op{};
         operator_t const* curr_op{};
         operator_t const* end_op{};

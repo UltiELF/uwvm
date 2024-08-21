@@ -7,20 +7,11 @@
 
 namespace uwvm::vm::interpreter
 {
-#if !(defined(__wasi__) && !defined(UWVM_ENABLE_WASI_THREADS))
-    inline thread_local ::uwvm::vm::interpreter::stack_machine uwvm_sm{};
-    inline thread_local ::fast_io::tlc::stack<::uwvm::wasm::local_function_type const*, ::fast_io::tlc::vector<::uwvm::wasm::local_function_type const*>>
-        int_call_stack{};
-#else
-    inline ::uwvm::vm::interpreter::stack_machine uwvm_sm{};
-    inline ::fast_io::tlc::stack<::uwvm::wasm::local_function_type const*, ::fast_io::tlc::vector<::uwvm::wasm::local_function_type const*>> int_call_stack{};
 
-#endif
-
-    inline void run_ast(ast const& a) noexcept
+    inline void run_ast(ast const& a, ::uwvm::vm::interpreter::stack_machine& sm) noexcept
     {
-        auto& uwvm_sm_r{uwvm_sm};
-        auto& int_call_stack_r{int_call_stack};
+        auto& uwvm_sm_r{sm};
+        auto& int_call_stack_r{uwvm_sm_r.int_call_stack};
         if(uwvm_sm_r.stack.empty()) [[unlikely]]
         {
             // Just checking the stack is enough
@@ -77,7 +68,7 @@ namespace uwvm::vm::interpreter
                                 u8"\n"
                                 u8"\033[0m"
                                 u8"Terminate.\n\n");
-                ::uwvm::vm::interpreter::int_bt();
+                ::uwvm::vm::interpreter::int_bt(sm);
                 ::fast_io::fast_terminate();
             }
 
@@ -111,7 +102,7 @@ namespace uwvm::vm::interpreter
                                 u8"\n"
                                 u8"\033[0m"
                                 u8"Terminate.\n\n");
-                    ::uwvm::vm::interpreter::int_bt();
+                    ::uwvm::vm::interpreter::int_bt(sm);
                     ::fast_io::fast_terminate();
                 }
                 --curr_st;
@@ -210,7 +201,7 @@ namespace uwvm::vm::interpreter
                                 u8"\n"
                                 u8"\033[0m"
                                 u8"Terminate.\n\n");
-                            ::uwvm::vm::interpreter::int_bt();
+                            ::uwvm::vm::interpreter::int_bt(sm);
                             ::fast_io::fast_terminate();
                         }
                     }
@@ -272,7 +263,7 @@ namespace uwvm::vm::interpreter
                                 u8"\n"
                                 u8"\033[0m"
                                 u8"Terminate.\n\n");
-                ::uwvm::vm::interpreter::int_bt();
+                ::uwvm::vm::interpreter::int_bt(sm);
                 ::fast_io::fast_terminate();
             }
 
@@ -306,7 +297,7 @@ namespace uwvm::vm::interpreter
                                 u8"\n"
                                 u8"\033[0m"
                                 u8"Terminate.\n\n");
-                    ::uwvm::vm::interpreter::int_bt();
+                    ::uwvm::vm::interpreter::int_bt(sm);
                     ::fast_io::fast_terminate();
                 }
                 --curr_st;

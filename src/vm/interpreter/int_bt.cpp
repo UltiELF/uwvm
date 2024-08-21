@@ -3,7 +3,7 @@
 #include "int_bt.h"
 #include "astrun.h"
 
-void uwvm::vm::interpreter::int_bt() noexcept
+void uwvm::vm::interpreter::int_bt(::uwvm::vm::interpreter::stack_machine& sm) noexcept
 {
     {
         ::fast_io::io::perr(::uwvm::u8err,
@@ -26,7 +26,7 @@ void uwvm::vm::interpreter::int_bt() noexcept
         auto const lfbegin{::uwvm::global_wasm_module.functionsec.types.cbegin()};
 
         ::std::size_t c{};
-        for(auto const i: ::uwvm::vm::interpreter::int_call_stack.get_container())
+        for(auto const i: sm.int_call_stack.get_container())
         {
             ::fast_io::io::perr(::uwvm::u8err,
                                 u8"\n"

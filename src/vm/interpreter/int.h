@@ -271,7 +271,8 @@ namespace uwvm::vm::interpreter
             auto const index{::uwvm::vm::start_func - import_function_count};
             auto& start_func{::uwvm::vm::interpreter::stroage.asts.index_unchecked(index)};
             start_func = ::uwvm::vm::interpreter::generate_ast(wasmmod.functionsec.types.begin() + index, wasmmod.codesec.bodies.index_unchecked(index));
-            ::uwvm::vm::interpreter::run_ast(start_func);
+            ::uwvm::vm::interpreter::stack_machine sm{};
+            ::uwvm::vm::interpreter::run_ast(start_func, sm);
         }
         else [[unlikely]]
         {

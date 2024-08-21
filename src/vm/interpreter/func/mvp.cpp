@@ -28,7 +28,7 @@ void ::uwvm::vm::interpreter::func::call(::std::byte const* curr, ::uwvm::vm::in
         {
             ast_temp = ::uwvm::vm::interpreter::generate_ast(wasmmod.functionsec.types.begin() + index, wasmmod.codesec.bodies.index_unchecked(index));
         }
-        ::uwvm::vm::interpreter::run_ast(ast_temp);
+        ::uwvm::vm::interpreter::run_ast(ast_temp, sm);
     }
     else { ::uwvm::vm::interpreter::call_import_func(all_func_index, sm); }
     ++sm.curr_op;
@@ -70,7 +70,7 @@ void ::uwvm::vm::interpreter::func::call_indirect(::std::byte const* curr, ::uwv
                                 u8"\n"
                                 u8"\033[0m"
                                 u8"Terminate.\n\n");
-        ::uwvm::vm::interpreter::int_bt();
+        ::uwvm::vm::interpreter::int_bt(sm);
         ::fast_io::fast_terminate();
     }
 
@@ -101,7 +101,7 @@ void ::uwvm::vm::interpreter::func::call_indirect(::std::byte const* curr, ::uwv
                                 u8"\n"
                                 u8"\033[0m"
                                 u8"Terminate.\n\n");
-        ::uwvm::vm::interpreter::int_bt();
+        ::uwvm::vm::interpreter::int_bt(sm);
         ::fast_io::fast_terminate();
     }
 
@@ -140,7 +140,7 @@ void ::uwvm::vm::interpreter::func::call_indirect(::std::byte const* curr, ::uwv
                                 u8"\n"
                                 u8"\033[0m"
                                 u8"Terminate.\n\n");
-        ::uwvm::vm::interpreter::int_bt();
+        ::uwvm::vm::interpreter::int_bt(sm);
         ::fast_io::fast_terminate();
     }
     auto const func_index{table.index_unchecked(st_sz)};
@@ -172,7 +172,7 @@ void ::uwvm::vm::interpreter::func::call_indirect(::std::byte const* curr, ::uwv
                                 u8"\n"
                                 u8"\033[0m"
                                 u8"Terminate.\n\n");
-            ::uwvm::vm::interpreter::int_bt();
+            ::uwvm::vm::interpreter::int_bt(sm);
             ::fast_io::fast_terminate();
         }
         ::uwvm::vm::interpreter::call_import_func(func_index, sm);
@@ -206,7 +206,7 @@ void ::uwvm::vm::interpreter::func::call_indirect(::std::byte const* curr, ::uwv
                                 u8"\n"
                                 u8"\033[0m"
                                 u8"Terminate.\n\n");
-            ::uwvm::vm::interpreter::int_bt();
+            ::uwvm::vm::interpreter::int_bt(sm);
             ::fast_io::fast_terminate();
         }
 
@@ -215,7 +215,7 @@ void ::uwvm::vm::interpreter::func::call_indirect(::std::byte const* curr, ::uwv
         {
             ast_temp = ::uwvm::vm::interpreter::generate_ast(local_func_type, wasmmod.codesec.bodies.index_unchecked(index));
         }
-        ::uwvm::vm::interpreter::run_ast(ast_temp);
+        ::uwvm::vm::interpreter::run_ast(ast_temp, sm);
     }
     else [[unlikely]]
     {
@@ -242,7 +242,7 @@ void ::uwvm::vm::interpreter::func::call_indirect(::std::byte const* curr, ::uwv
                                     u8"\n"
                                     u8"\033[0m"
                                     u8"Terminate.\n\n");
-        ::uwvm::vm::interpreter::int_bt();
+        ::uwvm::vm::interpreter::int_bt(sm);
         ::fast_io::fast_terminate();
     }
     ++sm.curr_op;
