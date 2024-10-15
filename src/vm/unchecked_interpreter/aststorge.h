@@ -1,6 +1,9 @@
 ﻿#pragma once
+#include <deque>
 #include <fast_io_dsal/vector.h>
+#if 0
 #include <fast_io_dsal/deque.h>
+#endif
 #include "ast.h"
 
 namespace uwvm::vm::unchecked_interpreter
@@ -9,7 +12,7 @@ namespace uwvm::vm::unchecked_interpreter
     {
         ::fast_io::vector<::uwvm::vm::unchecked_interpreter::ast> asts{};
         // Inserting elements at the beginning and end of the deque container will not render any iterators invalid
-        ::fast_io::deque<::fast_io::vector<operator_t>> ext{};
+        ::std::deque<::fast_io::vector<operator_t>> ext{};
     };
 
     inline ast_storage_t stroage{};
