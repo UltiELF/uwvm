@@ -95,6 +95,7 @@ $ uwvm <param1> <param2> ... --run <file> <argv1> <argv2> ...
 ### 多平台支持
 * (x86\_64, i386, aarch64, arm)-windows-(gnu, msvc) (支持UCRT和MSVCRT)
 * (x86\_64, i386, aarch64, arm, loongarch64, riscv64, mips64, powerpc64, etc.)-linux-(gnu, musl, llvm, mlibc, uclibc, avrlibc, etc.)
+* (x86\_64, i386, aarch64, arm)-linux-android
 * (x86\_64, i386, aarch64, arm, powerpc, powerpc64, powerpc64le, powerpcspe, riscv64)-freebsd
 * unknown-dragonflybsd
 * unknown-netbsd
