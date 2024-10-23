@@ -1,1 +1,0 @@
-﻿inline void a(){}
