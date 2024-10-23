@@ -2057,20 +2057,9 @@ namespace uwvm::vm::wasi
             return static_cast<::std::int_least32_t>(::uwvm::vm::wasi::errno_t::eaddrnotavail);
         }
 
-#if __has_builtin(__builtin_alloca)
-        auto tmp{static_cast<::fast_io::basic_io_scatter_t<char>*>(
-            __builtin_alloca(static_cast<::std::size_t>(static_cast<::std::uint_least32_t>(arg2)) * sizeof(::fast_io::basic_io_scatter_t<char>)))};
-#elif defined(_WIN32) && !defined(__WINE__) && !defined(__BIONIC__) && !defined(__CYGWIN__)
-        auto tmp{static_cast<::fast_io::basic_io_scatter_t<char>*>(
-            _alloca(static_cast<::std::size_t>(static_cast<::std::uint_least32_t>(arg2)) * sizeof(::fast_io::basic_io_scatter_t<char>)))};
-#else
-        auto tmp{static_cast<::fast_io::basic_io_scatter_t<char>*>(
-            alloca(static_cast<::std::size_t>(static_cast<::std::uint_least32_t>(arg2)) * sizeof(::fast_io::basic_io_scatter_t<char>)))};
-#endif
-
         ::std::size_t all_read_size{};
 
-        for(::std::size_t i{}; i < static_cast<::std::size_t>(static_cast<::std::uint_least32_t>(arg2)); ++i)
+        for(::std::size_t i{}; i < static_cast<::std::size_t>(arg2); ++i)
         {
             ::uwvm::vm::wasi::wasi_void_ptr_t wpt_buf{};
             ::uwvm::vm::wasi::wasi_size_t wsz_buf_len{};
@@ -2094,25 +2083,16 @@ namespace uwvm::vm::wasi
                 return static_cast<::std::int_least32_t>(::uwvm::vm::wasi::errno_t::eaddrnotavail);
             }
 
-            auto& tmpi{tmp[i]};
+            auto const cvt_buf_write_end{
+                ::fast_io::operations::pread_some_bytes(::fast_io::posix_io_observer{pfd},
+                                                        cvt_buf_begin,
+                                                        cvt_buf_begin + static_cast<::std::size_t>(static_cast<::std::uint_least32_t>(wsz_buf_len)),
+                                                        static_cast<::fast_io::intfpos_t>(arg3))};
 
-            using char_const_may_alias_ptr
-#if __has_cpp_attribute(__gnu__::__may_alias__)
-                [[__gnu__::__may_alias__]]
-#endif
-                = char const*;
+            auto const cvt_buf_write_sz{static_cast<::std::size_t>(cvt_buf_write_end - cvt_buf_begin)};
 
-            tmpi.base = reinterpret_cast<char_const_may_alias_ptr>(cvt_buf_begin);
-            tmpi.len = static_cast<::std::size_t>(le_wsz_buf_len);
-
-            all_read_size += static_cast<::std::size_t>(le_wsz_buf_len);
+            all_read_size += cvt_buf_write_sz;
         }
-
-        auto const [position,
-                    position_in_scatter]{::fast_io::operations::scatter_pread_some(::fast_io::posix_io_observer{pfd},
-                                                                                   tmp,
-                                                                                   static_cast<::std::size_t>(static_cast<::std::uint_least32_t>(arg2)),
-                                                                                   static_cast<::fast_io::intfpos_t>(arg3))};
 
         ::std::byte* number_begin{memory_begin + static_cast<::std::size_t>(static_cast<::std::uint_least32_t>(arg4))};
 
@@ -2123,11 +2103,6 @@ namespace uwvm::vm::wasi
 
         ::std::uint_least32_t le32{::fast_io::little_endian(static_cast<::std::uint_least32_t>(all_read_size))};
         ::fast_io::freestanding::my_memcpy(number_begin, __builtin_addressof(le32), sizeof(le32));
-
-        if(position != static_cast<::std::size_t>(static_cast<::std::uint_least32_t>(arg2)) || position_in_scatter != 0) [[unlikely]]
-        {
-            return static_cast<::std::int_least32_t>(::uwvm::vm::wasi::errno_t::eaddrnotavail);
-        }
 
         return static_cast<::std::int_least32_t>(::uwvm::vm::wasi::errno_t::esuccess);
     }
@@ -2324,20 +2299,9 @@ namespace uwvm::vm::wasi
             return static_cast<::std::int_least32_t>(::uwvm::vm::wasi::errno_t::eaddrnotavail);
         }
 
-#if __has_builtin(__builtin_alloca)
-        auto tmp{static_cast<::fast_io::basic_io_scatter_t<char>*>(
-            __builtin_alloca(static_cast<::std::size_t>(static_cast<::std::uint_least32_t>(arg2)) * sizeof(::fast_io::basic_io_scatter_t<char>)))};
-#elif defined(_WIN32) && !defined(__WINE__) && !defined(__BIONIC__) && !defined(__CYGWIN__)
-        auto tmp{static_cast<::fast_io::basic_io_scatter_t<char>*>(
-            _alloca(static_cast<::std::size_t>(static_cast<::std::uint_least32_t>(arg2)) * sizeof(::fast_io::basic_io_scatter_t<char>)))};
-#else
-        auto tmp{static_cast<::fast_io::basic_io_scatter_t<char>*>(
-            alloca(static_cast<::std::size_t>(static_cast<::std::uint_least32_t>(arg2)) * sizeof(::fast_io::basic_io_scatter_t<char>)))};
-#endif
+        ::std::size_t all_read_size{};
 
-        ::std::size_t all_size{};
-
-        for(::std::size_t i{}; i < static_cast<::std::size_t>(static_cast<::std::uint_least32_t>(arg2)); ++i)
+        for(::std::size_t i{}; i < static_cast<::std::size_t>(arg2); ++i)
         {
             ::uwvm::vm::wasi::wasi_void_ptr_t wpt_buf{};
             ::uwvm::vm::wasi::wasi_size_t wsz_buf_len{};
@@ -2361,24 +2325,15 @@ namespace uwvm::vm::wasi
                 return static_cast<::std::int_least32_t>(::uwvm::vm::wasi::errno_t::eaddrnotavail);
             }
 
-            auto& tmpi{tmp[i]};
+            auto const cvt_buf_write_end{
+                ::fast_io::operations::read_some_bytes(::fast_io::posix_io_observer{pfd},
+                                                       cvt_buf_begin,
+                                                       cvt_buf_begin + static_cast<::std::size_t>(static_cast<::std::uint_least32_t>(wsz_buf_len)))};
 
-            using char_const_may_alias_ptr
-#if __has_cpp_attribute(__gnu__::__may_alias__)
-                [[__gnu__::__may_alias__]]
-#endif
-                = char const*;
+            auto const cvt_buf_write_sz{static_cast<::std::size_t>(cvt_buf_write_end - cvt_buf_begin)};
 
-            tmpi.base = reinterpret_cast<char_const_may_alias_ptr>(cvt_buf_begin);
-            tmpi.len = static_cast<::std::size_t>(le_wsz_buf_len);
-
-            all_size += static_cast<::std::size_t>(le_wsz_buf_len);
+            all_read_size += cvt_buf_write_sz;
         }
-
-        auto const [position,
-                    position_in_scatter]{::fast_io::operations::scatter_read_some(::fast_io::posix_io_observer{pfd},
-                                                                                  tmp,
-                                                                                  static_cast<::std::size_t>(static_cast<::std::uint_least32_t>(arg2)))};
 
         ::std::byte* number_begin{memory_begin + static_cast<::std::size_t>(static_cast<::std::uint_least32_t>(arg3))};
 
@@ -2387,13 +2342,8 @@ namespace uwvm::vm::wasi
             return static_cast<::std::int_least32_t>(::uwvm::vm::wasi::errno_t::eaddrnotavail);
         }
 
-        ::std::uint_least32_t le32{::fast_io::little_endian(static_cast<::std::uint_least32_t>(all_size))};
+        ::std::uint_least32_t le32{::fast_io::little_endian(static_cast<::std::uint_least32_t>(all_read_size))};
         ::fast_io::freestanding::my_memcpy(number_begin, __builtin_addressof(le32), sizeof(le32));
-
-        if(position != static_cast<::std::size_t>(static_cast<::std::uint_least32_t>(arg2)) || position_in_scatter != 0) [[unlikely]]
-        {
-            return static_cast<::std::int_least32_t>(::uwvm::vm::wasi::errno_t::efault);
-        }
 
         return static_cast<::std::int_least32_t>(::uwvm::vm::wasi::errno_t::esuccess);
     }
@@ -2760,7 +2710,21 @@ namespace uwvm::vm::wasi
             default:
                 [[unlikely]] { return static_cast<::std::int_least32_t>(::uwvm::vm::wasi::errno_t::einval); }
         }
-        auto const ret_off{::fast_io::operations::io_stream_seek_bytes(::fast_io::posix_io_observer{pfd}, off, skd)};
+
+        ::fast_io::intfpos_t ret_off{};
+
+#ifdef __cpp_exceptions
+        try
+#endif
+        {
+            ret_off = ::fast_io::operations::io_stream_seek_bytes(::fast_io::posix_io_observer{pfd}, off, skd);
+        }
+#ifdef __cpp_exceptions
+        catch(::fast_io::error e)
+        {
+            return static_cast<::std::int_least32_t>(::uwvm::vm::wasi::errno_t::einval);
+        }
+#endif
 
         auto const new_off{static_cast<::std::uint_least64_t>(ret_off)};
 
@@ -2824,7 +2788,20 @@ namespace uwvm::vm::wasi
             return static_cast<::std::int_least32_t>(::uwvm::vm::wasi::errno_t::eaddrnotavail);
         }
 
-        auto const ret_off{::fast_io::operations::io_stream_seek_bytes(::fast_io::posix_io_observer{pfd}, 0, ::fast_io::seekdir::cur)};
+        ::fast_io::intfpos_t ret_off{};
+
+#ifdef __cpp_exceptions
+        try
+#endif
+        {
+            ret_off = ::fast_io::operations::io_stream_seek_bytes(::fast_io::posix_io_observer{pfd}, 0, ::fast_io::seekdir::cur);
+        }
+#ifdef __cpp_exceptions
+        catch(::fast_io::error e)
+        {
+            return static_cast<::std::int_least32_t>(::uwvm::vm::wasi::errno_t::einval);
+        }
+#endif
 
         auto const new_off{static_cast<::std::uint_least64_t>(ret_off)};
         auto const le_new_off{::fast_io::little_endian(new_off)};
