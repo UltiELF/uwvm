@@ -9,40 +9,23 @@
 #if !defined(__cpp_concepts)
 #error "fast_io requires at least C++20 standard compiler."
 #else
-#include "fast_io_concept.h"
-#if defined(_MSC_VER) && !defined(__clang__)
-#pragma warning(push)
-#pragma warning(disable : 4711)
-#endif
-#include <bit> //for ::std::endian, ::std::rotl and ::std::bit_cast etc
+#include <bit>
 #include <limits>
-#if defined(_MSC_VER) && !defined(__clang__)
-#pragma warning(pop)
-#endif
-
 #include <cstdint>
+
 #if __cpp_lib_three_way_comparison >= 201907L
 #include <compare>
 #endif
 
-#if defined(_MSC_VER) && !defined(__clang__)
-#pragma warning(push)
-#pragma warning(disable : 4365)
-#pragma warning(disable : 4514)
-#pragma warning(disable : 4623)
-#pragma warning(disable : 4626)
-#pragma warning(disable : 4668)
-#pragma warning(disable : 4710)
-#pragma warning(disable : 4711)
-#pragma warning(disable : 4820)
-#pragma warning(disable : 5027)
-#pragma warning(disable : 5045)
-#endif
+#include "fast_io_concept.h"
+
+#include "fast_io_dsal/impl/misc/push_warnings.h"
 
 #include "fast_io_core_impl/empty.h"
 #if defined(_MSC_VER) && !defined(__clang__)
 #include "fast_io_core_impl/intrinsics/msvc/impl.h"
 #endif
+#include "fast_io_core_impl/bitops/impl.h"
 #include "fast_io_core_impl/freestanding/impl.h"
 #include "fast_io_core_impl/terminate.h"
 #include "fast_io_dsal/impl/freestanding.h"
@@ -112,8 +95,6 @@
 #include "fast_io_core_impl/http_header.h"
 #include "fast_io_core_impl/io_lockable.h"
 
-#if defined(_MSC_VER) && !defined(__clang__)
-#pragma warning(pop)
-#endif
+#include "fast_io_dsal/impl/misc/pop_warnings.h"
 
 #endif

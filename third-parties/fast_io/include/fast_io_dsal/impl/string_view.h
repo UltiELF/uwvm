@@ -56,6 +56,9 @@ public:
 	constexpr basic_string_view(::fast_io::manipulators::basic_os_c_str_with_known_size<char_type> osstr) noexcept
 		: ptr(osstr.ptr), n(osstr.n)
 	{}
+	constexpr basic_string_view(::fast_io::manipulators::basic_os_str_known_size_without_null_terminated<char_type> osstr) noexcept
+		: ptr(osstr.ptr), n(osstr.n)
+	{}
 
 	constexpr basic_string_view(basic_string_view const &) noexcept = default;
 	constexpr basic_string_view &operator=(basic_string_view const &) noexcept = default;
@@ -312,7 +315,7 @@ public:
 #elif __has_cpp_attribute(msvc::forceinline)
 	[[msvc::forceinline]]
 #endif
-	inline constexpr basic_string_view substrvw_front(size_type count) const noexcept
+	inline constexpr basic_string_view subview_front(size_type count) const noexcept
 	{
 		if (this->n < count) [[unlikely]]
 		{
@@ -326,7 +329,7 @@ public:
 #elif __has_cpp_attribute(msvc::forceinline)
 	[[msvc::forceinline]]
 #endif
-	inline constexpr basic_string_view substrvw_front_unchecked(size_type count) const noexcept
+	inline constexpr basic_string_view subview_front_unchecked(size_type count) const noexcept
 	{
 		return basic_string_view(this->ptr, count);
 	}
@@ -336,7 +339,7 @@ public:
 #elif __has_cpp_attribute(msvc::forceinline)
 	[[msvc::forceinline]]
 #endif
-	inline constexpr basic_string_view substrvw_back(size_type count) const noexcept
+	inline constexpr basic_string_view subview_back(size_type count) const noexcept
 	{
 		if (this->n < count) [[unlikely]]
 		{
@@ -350,7 +353,7 @@ public:
 #elif __has_cpp_attribute(msvc::forceinline)
 	[[msvc::forceinline]]
 #endif
-	inline constexpr basic_string_view substrvw_back_unchecked(size_type count) const noexcept
+	inline constexpr basic_string_view subview_back_unchecked(size_type count) const noexcept
 	{
 		return basic_string_view(this->ptr + (this->n - count), count);
 	}
@@ -360,7 +363,7 @@ public:
 #elif __has_cpp_attribute(msvc::forceinline)
 	[[msvc::forceinline]]
 #endif
-	inline constexpr basic_string_view substrvw(size_type pos, size_type count = ::fast_io::containers::npos) const noexcept
+	inline constexpr basic_string_view subview(size_type pos, size_type count = ::fast_io::containers::npos) const noexcept
 	{
 		if (this->n < pos) [[unlikely]]
 		{
@@ -382,7 +385,7 @@ public:
 #elif __has_cpp_attribute(msvc::forceinline)
 	[[msvc::forceinline]]
 #endif
-	inline constexpr basic_string_view substrvw_unchecked(size_type pos, size_type count = ::fast_io::containers::npos) const noexcept
+	inline constexpr basic_string_view subview_unchecked(size_type pos, size_type count = ::fast_io::containers::npos) const noexcept
 	{
 		size_type const val{this->n - pos};
 		if (count == ::fast_io::containers::npos)
@@ -589,19 +592,19 @@ public:
 	}
 	inline constexpr auto compare_three_way(size_type pos1, size_type count1, const_pointer s, size_type count2) const noexcept
 	{
-		return this->substrvw(pos1, count1) <=> basic_string_view(s, count2);
+		return this->subview(pos1, count1) <=> basic_string_view(s, count2);
 	}
 	inline constexpr auto compare_three_way_unchecked(size_type pos1, size_type count1, const_pointer s, size_type count2) const noexcept
 	{
-		return this->substrvw_unchecked(pos1, count1) <=> basic_string_view(s, count2);
+		return this->subview_unchecked(pos1, count1) <=> basic_string_view(s, count2);
 	}
 	inline constexpr auto compare_three_way(size_type pos1, size_type count1, basic_string_view other, size_type pos2, size_type count2) const noexcept
 	{
-		return this->substrvw(pos1, count1) <=> other.substrvw(pos2, count2);
+		return this->subview(pos1, count1) <=> other.subview(pos2, count2);
 	}
 	inline constexpr auto compare_three_way_unchecked(size_type pos1, size_type count1, basic_string_view other, size_type pos2, size_type count2) const noexcept
 	{
-		return this->substrvw_unchecked(pos1, count1) <=> other.substrvw_unchecked(pos2, count2);
+		return this->subview_unchecked(pos1, count1) <=> other.subview_unchecked(pos2, count2);
 	}
 	inline constexpr void clear() noexcept
 	{
@@ -661,53 +664,6 @@ constexpr auto operator<=>(char_type const (&buffer)[n], ::fast_io::containers::
 {
 	constexpr ::std::size_t nm1{n - 1u};
 	return ::std::lexicographical_compare_three_way(buffer, buffer + nm1, a.ptr, a.ptr + a.n, ::std::compare_three_way{});
-}
-
-#elif __cpp_impl_three_way_comparison >= 201907L
-template <::std::integral char_type>
-constexpr auto operator<=> (::fast_io::containers::basic_string_view<char_type> a, ::fast_io::containers::basic_string_view<char_type> b) noexcept
-{
-    auto const a_last{a.ptr + a.n};
-    auto const b_last{b.ptr + b.n};
-    for(; (a.ptr != a_last) && (b.ptr != b_last);)
-    {
-        if(auto i{*a.ptr <=> *b.ptr}; i != ::std::strong_ordering::equal) { return i; }
-        ++a.ptr;
-        ++b.ptr;
-    }
-    return a.n <=> b.n;
-}
-
-template <::std::integral char_type, ::std::size_t n>
-constexpr auto operator<=> (::fast_io::containers::basic_string_view<char_type> a, char_type const (&buffer)[n]) noexcept
-{
-    constexpr ::std::size_t nm1{n - 1u};
-    auto b_ptr{buffer};
-    auto const a_last{a.ptr + a.n};
-    auto const b_last{b_ptr + nm1};
-    for(; (a.ptr != a_last) && (b_ptr != b_last);)
-    {
-        if(auto i{*a.ptr <=> *b_ptr}; i != ::std::strong_ordering::equal) { return i; }
-        ++a.ptr;
-        ++b_ptr;
-    }
-    return a.n <=> nm1;
-}
-
-template <::std::integral char_type, ::std::size_t n>
-constexpr auto operator<=> (char_type const (&buffer)[n], ::fast_io::containers::basic_string_view<char_type> b) noexcept
-{
-    constexpr ::std::size_t nm1{n - 1u};
-    auto a_ptr{buffer};
-    auto const a_last{a_ptr + nm1};
-    auto const b_last{b.ptr + b.n};
-    for(; (a_ptr != a_last) && (b.ptr != b_last);)
-    {
-        if(auto i{*a_ptr <=> *b.ptr}; i != ::std::strong_ordering::equal) { return i; }
-        ++a_ptr;
-        ++b.ptr;
-    }
-    return nm1 <=> b.n;
 }
 
 #endif

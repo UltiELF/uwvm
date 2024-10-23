@@ -51,6 +51,7 @@ using basic_native_file = basic_nt_file<ch_type>;
 template <::std::integral ch_type>
 using basic_native_pipe = basic_win32_pipe<ch_type>;
 using native_process_io = win32_process_io;
+
 #else
 
 using native_at_entry = posix_at_entry;
