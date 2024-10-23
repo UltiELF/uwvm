@@ -538,7 +538,10 @@ function defopt()
 		end
 
 		add_syslinks("c++abi")
-		add_syslinks("unwind")
+
+		if not disable_cpp_exceptions then
+			add_syslinks("unwind")
+		end
 
 	elseif is_plat("cross") then
 		add_cxxflags("-fno-rtti")
@@ -608,14 +611,6 @@ end
 target("uwvm")
 	set_kind("binary")
 	defopt()
-
-	-- libunwind
-	if disable_cpp_exceptions then
-		if not (is_plat("windows") or is_plat("msdosdjgpp") or is_plat("wasm-wasi", "wasm-wasip1", "wasm-wasip2")) then
-			add_deps("unwind")
-			add_includedirs("third-parties/libunwind/include/")
-		end
-	end
 
 	-- mimalloc
 	local use_mimalloc = get_config("use-mimalloc")
