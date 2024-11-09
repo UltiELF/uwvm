@@ -331,7 +331,7 @@ namespace uwvm::vm::wasi
             {
                 if(fd_need_check.close_pos < wasm_fd_storage.closes.size()) [[likely]]
                 {
-                    wasm_fd_storage.closes.erase_index_unchecked(fd_need_check.close_pos);
+                    wasm_fd_storage.closes.erase(wasm_fd_storage.closes.cbegin() + fd_need_check.close_pos);
                 }
                 fd_need_check.close_pos = SIZE_MAX;
                 fd_need_check.fd = fd;
@@ -390,7 +390,7 @@ namespace uwvm::vm::wasi
             {
                 if(fd_need_check.close_pos < wasm_fd_storage.closes.size()) [[likely]]
                 {
-                    wasm_fd_storage.closes.erase_index_unchecked(fd_need_check.close_pos);
+                    wasm_fd_storage.closes.erase(wasm_fd_storage.closes.cbegin() + fd_need_check.close_pos);
                 }
                 fd_need_check.close_pos = SIZE_MAX;
                 fd_need_check.fd = fd;
@@ -449,7 +449,7 @@ namespace uwvm::vm::wasi
             {
                 if(fd_need_check.close_pos < wasm_fd_storage.closes.size()) [[likely]]
                 {
-                    wasm_fd_storage.closes.erase_index_unchecked(fd_need_check.close_pos);
+                    wasm_fd_storage.closes.erase(wasm_fd_storage.closes.cbegin() + fd_need_check.close_pos);
                 }
                 fd_need_check.close_pos = SIZE_MAX;
                 fd_need_check.fd = fd;
@@ -511,7 +511,7 @@ namespace uwvm::vm::wasi
             {
                 if(fd_need_check.close_pos < wasm_fd_storage.closes.size()) [[likely]]
                 {
-                    wasm_fd_storage.closes.erase_index_unchecked(fd_need_check.close_pos);
+                    wasm_fd_storage.closes.erase(wasm_fd_storage.closes.cbegin() + fd_need_check.close_pos);
                 }
                 fd_need_check.close_pos = SIZE_MAX;
                 sys_fd = fd_need_check.fd;
@@ -581,7 +581,7 @@ namespace uwvm::vm::wasi
             {
                 if(fd_need_check.close_pos < wasm_fd_storage.closes.size()) [[likely]]
                 {
-                    wasm_fd_storage.closes.erase_index_unchecked(fd_need_check.close_pos);
+                    wasm_fd_storage.closes.erase(wasm_fd_storage.closes.cbegin() + fd_need_check.close_pos);
                 }
                 fd_need_check.close_pos = SIZE_MAX;
                 sys_fd = fd_need_check.fd;
@@ -651,7 +651,7 @@ namespace uwvm::vm::wasi
             {
                 if(fd_need_check.close_pos < wasm_fd_storage.closes.size()) [[likely]]
                 {
-                    wasm_fd_storage.closes.erase_index_unchecked(fd_need_check.close_pos);
+                    wasm_fd_storage.closes.erase(wasm_fd_storage.closes.cbegin() + fd_need_check.close_pos);
                 }
                 fd_need_check.close_pos = SIZE_MAX;
                 sys_fd = fd_need_check.fd;
