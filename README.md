@@ -31,7 +31,7 @@
 - [Discord](https://discord.gg/xkvGy79e)
 - [KOOK](https://kook.top/L7rWIo)
 - QQ: [909035408](http://qm.qq.com/cgi-bin/qm/qr?_wv=1027&k=ZC_7qjkJTPdDT1-mjefD-a8X5V30A_ql&authKey=CJ41sGDX5Oyut4IccWrKUdsqSfbgJztM7OiJ4etn7ruTJRpYbgi%2FIrfEEJxHOZew&noverify=0&group_code=909035408)
-- repositories: [Gitee](https://gitee.com/UltiELF/uwvm), [GitHub](https://github.com/UltiELF/uwvm)
+- repositories: [Gitee](https://gitee.com/UltiELF/uwvm), [GitCode](https://gitcode.com/MacroModel/uwvm), [GitHub](https://github.com/UltiELF/uwvm)
 
 ## Introduce
 Ultimate WebAssembly Virtual Machine
@@ -107,7 +107,13 @@ $ uwvm <param1> <param2> ... --run <file> <argv1> <argv2> ...
 
 ## How to build
 1. Install [[xmake]](https://github.com/xmake-io/xmake/)
-2. Install [[gcc14+]](https://github.com/trcrsired/gcc-releases/releases) or [[llvm18+]](https://github.com/trcrsired/llvm-releases/releases)
+```bash
+$ sudo apt install xmake
+```
+2. Install [[gcc13+]](https://github.com/gcc-mirror/gcc) or [[llvm17+]](https://github.com/llvm/llvm-project)
+```bash
+$ sudo apt install gcc g++
+```
 3. Build
 ```bash
 $ xmake 
