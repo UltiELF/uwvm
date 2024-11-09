@@ -118,7 +118,7 @@ inline nt_dirent *set_nt_dirent(nt_dirent *entry, bool start)
 	::std::byte buffer[ul32_buffer_size];
 	::fast_io::win32::nt::dir_information d_info{buffer};
 	auto status{nt_query_directory_file<(family == nt_family::zw)>(entry->d_handle, nullptr, nullptr, nullptr, __builtin_addressof(block), d_info.DirInfo, ul32_buffer_size,
-																   file_information_class::FileFullDirectoryInformation, true, nullptr, start)};
+																   file_information_class::FileIdFullDirectoryInformation, true, nullptr, start)};
 	if (status)
 	{
 		if (status == 2147483654) [[likely]]
@@ -129,7 +129,7 @@ inline nt_dirent *set_nt_dirent(nt_dirent *entry, bool start)
 	}
 	auto id_ful_dir_info{d_info.IdFullDirInfo};
 
-	entry->d_ino = static_cast<::std::uint_least64_t>(id_ful_dir_info->FileId.QuadPart);
+	entry->d_ino = static_cast<::std::uint_least64_t>(id_ful_dir_info->FileId);
 
 	entry->native_d_namlen = id_ful_dir_info->FileNameLength / sizeof(char16_t);
 

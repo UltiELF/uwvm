@@ -3,6 +3,21 @@
 namespace fast_io::win32::nt
 {
 
+union large_integer
+{
+	struct DUMMYSTRUCTNAMETYPE
+	{
+		::std::uint_least32_t LowPart;
+		::std::int_least32_t HighPart;
+	} DUMMYSTRUCTNAME;
+	struct uTYPE
+	{
+		::std::uint_least32_t LowPart;
+		::std::int_least32_t HighPart;
+	} u;
+	::std::int_least64_t QuadPart;
+};
+
 struct ansi_string
 {
 	::std::uint_least16_t Length;
@@ -178,7 +193,7 @@ struct file_id_full_dir_information
 	::std::uint_least32_t FileAttributes;
 	::std::uint_least32_t FileNameLength;
 	::std::uint_least32_t EaSize;
-	large_integer FileId;
+	::std::uint_least64_t FileId;
 	char16_t FileName[1];
 };
 
@@ -215,7 +230,7 @@ struct file_id_both_dir_information
 	::std::uint_least32_t EaSize;
 	char ShortNameLength;
 	char16_t ShortName[12];
-	large_integer FileId;
+	::std::uint_least64_t FileId;
 	char16_t FileName[1];
 };
 
@@ -235,6 +250,20 @@ struct file_standard_information
 	::std::uint_least32_t number_of_links;
 	int delete_pending;
 	int directory;
+};
+
+struct file_basic_information
+{
+	::std::uint_least64_t CreationTime;
+	::std::uint_least64_t LastAccessTime;
+	::std::uint_least64_t LastWriteTime;
+	::std::uint_least64_t ChangeTime;
+	::std::uint_least32_t FileAttributes;
+};
+
+struct file_internal_information
+{
+	::std::uint_least64_t IndexNumber;
 };
 
 enum class process_information_class
@@ -401,33 +430,42 @@ struct section_image_information
 	::std::size_t MaximumStackSize;
 	::std::size_t CommittedStackSize;
 	::std::uint_least32_t SubSystemType;
-	union U
+	union
 	{
-		struct S
+		struct
 		{
 			::std::uint_least16_t SubSystemMinorVersion;
 			::std::uint_least16_t SubSystemMajorVersion;
-		} s;
+		};
 		::std::uint_least32_t SubSystemVersion;
-	} u;
-	::std::uint_least32_t GpValue;
+	};
+	union
+	{
+		struct
+		{
+			::std::uint_least16_t MajorOperatingSystemVersion;
+			::std::uint_least16_t MinorOperatingSystemVersion;
+		};
+		::std::uint_least32_t OperatingSystemVersion;
+	};
 	::std::uint_least16_t ImageCharacteristics;
 	::std::uint_least16_t DllCharacteristics;
 	::std::uint_least16_t Machine;
-	int ImageContainsCode;
-	union U1
+	::std::uint_least8_t ImageContainsCode;
+	union
 	{
-		char unsigned ImageFlags;
-		struct S
+		::std::uint_least8_t ImageFlags;
+		struct
 		{
-			char unsigned ComPlusNativeReady : 1;
-			char unsigned ComPlusILOnly : 1;
-			char unsigned ImageDynamicallyRelocated : 1;
-			char unsigned ImageMappedFlat : 1;
-			char unsigned BaseBelow4gb : 1;
-			char unsigned Reserved : 3;
-		} s;
-	} u1;
+			::std::uint_least8_t ComPlusNativeReady : 1;
+			::std::uint_least8_t ComPlusILOnly : 1;
+			::std::uint_least8_t ImageDynamicallyRelocated : 1;
+			::std::uint_least8_t ImageMappedFlat : 1;
+			::std::uint_least8_t BaseBelow4gb : 1;
+			::std::uint_least8_t ComPlusPrefer32bit : 1;
+			::std::uint_least8_t Reserved : 2;
+		};
+	};
 	::std::uint_least32_t LoaderFlags;
 	::std::uint_least32_t ImageFileSize;
 	::std::uint_least32_t CheckSum;
@@ -581,8 +619,8 @@ struct
 #endif
 	ps_attribute_list
 {
-	::std::size_t TotalLength;  // sizeof(PS_ATTRIBUTE_LIST)
-	ps_attribute Attributes[2]; // Depends on how many attribute entries should be supplied to NtCreateUserProcess
+	::std::size_t TotalLength;   // sizeof(PS_ATTRIBUTE_LIST)
+	ps_attribute Attributes[32]; // Depends on how many attribute entries should be supplied to NtCreateUserProcess
 };
 
 template <::std::size_t n>
@@ -637,21 +675,6 @@ enum class object_information_class
 	ObjectTypeInformation = 2,
 	ObjectAllTypesInformation = 3,
 	ObjectHandleInformation = 4
-};
-
-union large_integer
-{
-	struct DUMMYSTRUCTNAMETYPE
-	{
-		::std::uint_least32_t LowPart;
-		::std::int_least32_t HighPart;
-	} DUMMYSTRUCTNAME;
-	struct uTYPE
-	{
-		::std::uint_least32_t LowPart;
-		::std::int_least32_t HighPart;
-	} u;
-	::std::int_least64_t QuadPart;
 };
 
 enum class section_inherit
@@ -769,4 +792,51 @@ struct rtl_srwlock
 	void *Ptr;
 };
 
+struct ps_std_handle_info
+{
+	union
+	{
+		::std::uint_least32_t Flags; // 0x121 = 100100001
+		struct
+		{
+			::std::uint_least32_t StdHandleState : 2;   // PS_STD_HANDLE_STATE
+			::std::uint_least32_t PseudoHandleMask : 3; // PS_STD_*
+		};
+	};
+	::std::uint_least32_t StdHandleSubsystemType;
+};
+
+enum class fs_information_class
+{
+	FileFsVolumeInformation = 1,
+	FileFsLabelInformation,
+	FileFsSizeInformation,
+	FileFsDeviceInformation,
+	FileFsAttributeInformation,
+	FileFsControlInformation,
+	FileFsFullSizeInformation,
+	FileFsObjectIdInformation,
+	FileFsDriverPathInformation,
+	FileFsVolumeFlagsInformation,
+	FileFsSectorSizeInformation,
+	FileFsDataCopyInformation,
+	FileFsMetadataSizeInformation,
+	FileFsFullSizeInformationEx,
+	FileFsMaximumInformation
+};
+
+struct file_fs_device_type
+{
+	::std::uint_least32_t DeviceType;
+	::std::uint_least32_t Characteristics;
+};
+
+struct file_fs_volume_information
+{
+	::std::uint_least64_t VolumeCreationTime;
+	::std::uint_least32_t VolumeSerialNumber;
+	::std::uint_least32_t VolumeLabelLength;
+	::std::uint_least8_t SupportsObjects;
+	char16_t VolumeLabel[1];
+};
 } // namespace fast_io::win32::nt
