@@ -5,12 +5,12 @@ namespace fast_io
 struct win9x_dirent
 {
 	void *file_struct{};
-	::fast_io::string find_path{};
+	::fast_io::u8string find_path{};
 
 	::fast_io::win9x_dir_handle d_handle{};
 	file_type d_type{};
 	::std::uint_least64_t d_ino{};
-	::fast_io::string filename{};
+	::fast_io::u8string filename{};
 
 	~win9x_dirent()
 	{
@@ -28,8 +28,8 @@ inline bool set_win9x_dirent(win9x_dirent &entry, bool start)
 	::fast_io::win32::win32_find_dataa wfda{};
 	if (start)
 	{
-		entry.find_path = ::fast_io::concat_fast_io(entry.d_handle.path, "\\*");
-		entry.file_struct = ::fast_io::win32::FindFirstFileA(entry.find_path.c_str(), __builtin_addressof(wfda));
+		entry.find_path = ::fast_io::u8concat_fast_io(::fast_io::mnp::code_cvt(entry.d_handle.path), u8"\\*");
+		entry.file_struct = ::fast_io::win32::FindFirstFileA(reinterpret_cast<char const *>(entry.find_path.c_str()), __builtin_addressof(wfda));
 	}
 	else
 	{
@@ -39,7 +39,7 @@ inline bool set_win9x_dirent(win9x_dirent &entry, bool start)
 		}
 	}
 
-	entry.filename = ::fast_io::string{::fast_io::mnp::os_c_str(wfda.cFileName)};
+	entry.filename = ::fast_io::u8string{::fast_io::u8concat_fast_io(::fast_io::mnp::code_cvt_os_c_str(wfda.cFileName))};
 
 	if (wfda.dwFileAttributes & 0x400)
 	{
@@ -79,19 +79,9 @@ inline bool win9x_dirent_next(win9x_dirent &entry)
 
 struct win9x_directory_entry
 {
-	using native_char_type = char;
+	using native_char_type = char8_t;
 	using char_type = char8_t;
-	win9x_dirent* entry{};
-	template <nt_family family, ::std::integral ch_type>
-	explicit constexpr operator basic_nt_family_io_observer<family, ch_type>() const noexcept
-	{
-		return {entry->d_handle.handle};
-	}
-	template <win32_family family, ::std::integral ch_type>
-	explicit constexpr operator basic_win32_family_io_observer<family, ch_type>() const noexcept
-	{
-		return {entry->d_handle.handle};
-	}
+	win9x_dirent *entry{};
 	explicit constexpr operator win9x_dir_io_observer() const noexcept
 	{
 		return {entry->d_handle};
@@ -103,7 +93,7 @@ inline constexpr win9x_at_entry at(win9x_directory_entry ndet) noexcept
 	return win9x_at_entry{ndet.entry->d_handle};
 }
 
-inline constexpr ::fast_io::manipulators::basic_os_c_str_with_known_size<char>
+inline constexpr ::fast_io::manipulators::basic_os_c_str_with_known_size<char8_t>
 native_filename(win9x_directory_entry pioe) noexcept
 {
 	auto &ent{*pioe.entry};
@@ -129,7 +119,7 @@ u8filename(win9x_directory_entry pioe) noexcept
 	return {reinterpret_cast<char8_may_alias_const_ptr>(ent.filename.c_str()), ent.filename.size()};
 }
 
-inline constexpr ::std::uint_least64_t inode_ul64(win9x_directory_entry ) noexcept
+inline constexpr ::std::uint_least64_t inode_ul64(win9x_directory_entry) noexcept
 {
 	return 0;
 }
@@ -142,9 +132,9 @@ inline constexpr file_type type(win9x_directory_entry pioe) noexcept
 inline bool is_dot(win9x_directory_entry ent) noexcept
 {
 	::std::size_t const native_d_namlen{ent.entry->filename.size()};
-	char const *native_d_name_ptr{ent.entry->filename.c_str()};
-	return ((native_d_namlen == 1 && *native_d_name_ptr == '.') ||
-			(native_d_namlen == 2 && *native_d_name_ptr == '.' && native_d_name_ptr[1] == '.'));
+	char8_t const *native_d_name_ptr{ent.entry->filename.c_str()};
+	return ((native_d_namlen == 1 && *native_d_name_ptr == u8'.') ||
+			(native_d_namlen == 2 && *native_d_name_ptr == u8'.' && native_d_name_ptr[1] == u8'.'));
 }
 
 struct win9x_family_directory_iterator
@@ -202,18 +192,15 @@ struct basic_win9x_directory_generator
 	basic_win9x_directory_generator(basic_win9x_directory_generator &&__restrict other) noexcept
 		: entry(::std::move(other.entry))
 	{
-		other.entry.d_handle.handle = nullptr;
 	}
 	basic_win9x_directory_generator &
 	operator=(basic_win9x_directory_generator &&__restrict other) noexcept
 	{
 		entry = ::std::move(other.entry);
-		other.entry.d_handle.handle = nullptr;
 		return *this;
 	}
 	~basic_win9x_directory_generator()
 	{
-		entry.d_handle.handle = nullptr;
 	}
 };
 
@@ -239,12 +226,12 @@ struct basic_win9x_recursive_directory_iterator
 	using stack_type = StackType;
 	::fast_io::win9x_dir_handle root_handle{};
 	void *root_file_struct{};
-	win9x_dirent* entry{};
+	win9x_dirent *entry{};
 	stack_type stack;
 	bool finish{};
 	constexpr basic_win9x_recursive_directory_iterator() = default;
 
-	explicit constexpr basic_win9x_recursive_directory_iterator(::fast_io::win9x_dir_handle rh, win9x_dirent* dp)
+	explicit constexpr basic_win9x_recursive_directory_iterator(::fast_io::win9x_dir_handle rh, win9x_dirent *dp)
 		: root_handle(::std::move(rh)), entry(dp)
 	{}
 
@@ -273,8 +260,6 @@ struct basic_win9x_recursive_directory_generator
 		basic_win9x_recursive_directory_generator &&__restrict other) noexcept
 		: root_handle(::std::move(other.root_handle)), entry(::std::move(other.entry))
 	{
-		other.root_handle.handle = nullptr;
-		entry.d_handle.handle = nullptr;
 	}
 	constexpr basic_win9x_recursive_directory_generator &
 	operator=(basic_win9x_recursive_directory_generator &&__restrict other) noexcept
@@ -348,16 +333,17 @@ inline basic_win9x_recursive_directory_iterator<StackType> &operator++(basic_win
 		if (prdit.entry->d_type == file_type::directory)
 		{
 			::std::size_t const native_d_namlen{prdit.entry->filename.size()};
-			char const *native_d_name_ptr{prdit.entry->filename.c_str()};
-			if ((native_d_namlen == 1 && *native_d_name_ptr == '.') ||
-				(native_d_namlen == 2 && *native_d_name_ptr == '.' && native_d_name_ptr[1] == u'.'))
+			char8_t const *native_d_name_ptr{prdit.entry->filename.c_str()};
+			if ((native_d_namlen == 1 && *native_d_name_ptr == u8'.') ||
+				(native_d_namlen == 2 && *native_d_name_ptr == u8'.' && native_d_name_ptr[1] == u8'.'))
 			{
 				continue;
 			}
 			prdit.stack.emplace_back(
 				win9x_dir{win9x_at_entry{prdit.stack.empty() ? prdit.root_handle : prdit.stack.back().fd.handle},
-				 ::fast_io::manipulators::basic_os_c_str_with_known_size<char>{native_d_name_ptr, native_d_namlen},
-				 open_mode::directory}, nullptr);
+						  ::fast_io::manipulators::basic_os_c_str_with_known_size<char8_t>{native_d_name_ptr, native_d_namlen},
+						  open_mode::directory},
+				nullptr);
 		}
 		return prdit;
 	}
@@ -391,10 +377,10 @@ begin(basic_win9x_recursive_directory_generator<StackType> &prg) noexcept
 	if (finish && prdit.entry->d_type == file_type::directory)
 	{
 		auto &ent{*prdit.entry};
-		char const *native_d_name_ptr{ent.filename.c_str()};
+		char8_t const *native_d_name_ptr{ent.filename.c_str()};
 		::std::size_t const native_d_namlen{ent.filename.size()};
-		if ((native_d_namlen == 1 && *native_d_name_ptr == '.') ||
-			(native_d_namlen == 2 && *native_d_name_ptr == '.' && native_d_name_ptr[1] == '.'))
+		if ((native_d_namlen == 1 && *native_d_name_ptr == u8'.') ||
+			(native_d_namlen == 2 && *native_d_name_ptr == u8'.' && native_d_name_ptr[1] == u8'.'))
 		{
 			++prdit;
 		}
@@ -402,8 +388,9 @@ begin(basic_win9x_recursive_directory_generator<StackType> &prg) noexcept
 		{
 			prdit.stack.emplace_back(
 				win9x_dir{win9x_at_entry{prdit.root_handle},
-				 ::fast_io::manipulators::basic_os_c_str_with_known_size<char>{native_d_name_ptr, native_d_namlen},
-				 open_mode::directory},nullptr);
+						  ::fast_io::manipulators::basic_os_c_str_with_known_size<char8_t>{native_d_name_ptr, native_d_namlen},
+						  open_mode::directory},
+				nullptr);
 		}
 	}
 	return prdit;
@@ -459,25 +446,25 @@ inline win9x_recursive_directory_generator recursive(win9x_at_entry nate)
 inline auto native_extension(win9x_directory_entry ent) noexcept
 {
 	auto &et{*ent.entry};
-	return ::fast_io::details::find_dot_and_sep<false, char, char>(et.filename.c_str(), et.filename.size());
+	return ::fast_io::details::find_dot_and_sep<false, char8_t, char8_t>(et.filename.c_str(), et.filename.size());
 }
 
 inline auto native_stem(win9x_directory_entry ent) noexcept
 {
 	auto &et{*ent.entry};
-	return ::fast_io::details::find_dot_and_sep<true, char, char>(et.filename.c_str(), et.filename.size());
+	return ::fast_io::details::find_dot_and_sep<true, char8_t, char8_t>(et.filename.c_str(), et.filename.size());
 }
 
 inline auto u8extension(win9x_directory_entry ent) noexcept
 {
 	auto &et{*ent.entry};
-	return ::fast_io::details::find_dot_and_sep<false, char8_t, char>(et.filename.c_str(), et.filename.size());
+	return ::fast_io::details::find_dot_and_sep<false, char8_t, char8_t>(et.filename.c_str(), et.filename.size());
 }
 
 inline auto u8stem(win9x_directory_entry ent) noexcept
 {
 	auto &et{*ent.entry};
-	return ::fast_io::details::find_dot_and_sep<true, char8_t, char>(et.filename.c_str(), et.filename.size());
+	return ::fast_io::details::find_dot_and_sep<true, char8_t, char8_t>(et.filename.c_str(), et.filename.size());
 }
 
 #ifndef __CYGWIN__

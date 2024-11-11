@@ -186,11 +186,20 @@ function defopt()
 	end
 
 	if is_mode("release", "releasedbg") then
-		set_optimize("aggressive")
+		local opt_name = get_config("min-win32-sys")
+
+		if is_plat("mingw") and (opt_name == "WINME" or opt_name == "WIN98" or opt_name == "WIN95") then
+			set_optimize("faster") -- win9x doesnt support O1, O3, Ofast
+		else
+			set_optimize("aggressive")
+		end
+
 		set_strip("all")
 
 		if is_kind("binary") then
-			set_policy("build.optimization.lto", true)
+			if not (is_plat("mingw") and (opt_name == "WINME" or opt_name == "WIN98" or opt_name == "WIN95")) then
+				set_policy("build.optimization.lto", true) -- win9x doesnt support flto
+			end
 		end
 
 	elseif is_mode("debug") then	

@@ -926,21 +926,19 @@ struct
 
 struct win9x_dir_handle
 {
-	void *handle;
-	::fast_io::string path;
+	::fast_io::u8string path;
 };
 
 namespace win32::details
 {
 inline void close_win9x_dir_handle(win9x_dir_handle &h) noexcept
 {
-	::fast_io::win32::CloseHandle(h.handle);
 	h.path.clear();
 }
 
 inline win9x_dir_handle win9x_dir_dup_impl(win9x_dir_handle const &h) noexcept
 {
-	return {::fast_io::win32::details::win32_dup_impl(h.handle), h.path};
+	return {h.path};
 }
 
 template <::std::integral char_type>
@@ -980,28 +978,27 @@ inline win9x_dir_handle win9x_create_dir_file_at_fs_dirent_impl(win9x_dir_handle
 		}
 	}
 
-	::fast_io::string str{::fast_io::concat_fast_io(directory_handle.path, "\\", ::fast_io::mnp::code_cvt(::fast_io::mnp::os_c_str_with_known_size(filename_c_str, filename_c_str_len)))};
-	auto handle{::fast_io::details::win32_create_file_impl<win32_family::ansi_9x>(str, ompm)};
-	return {handle, ::std::move(str)};
+	::fast_io::u8string str{::fast_io::u8concat_fast_io(::fast_io::mnp::code_cvt(directory_handle.path), u8"\\", ::fast_io::mnp::code_cvt(::fast_io::mnp::os_c_str_with_known_size(filename_c_str, filename_c_str_len)))};
+	return {::std::move(str)};
 }
 
 template <typename T>
 	requires(::fast_io::constructible_to_os_c_str<T>)
 inline win9x_dir_handle win9x_create_dir_file_impl(T const &t, open_mode_perms ompm)
 {
-	::fast_io::string path{::fast_io::concat_fast_io(::fast_io::mnp::code_cvt(t))};
+	::fast_io::u8string path{::fast_io::u8concat_fast_io(::fast_io::mnp::code_cvt(t))};
 	for (auto& c : path)
 	{
-		if (c == '/')
+		if (c == u8'/')
 		{
-			c = '\\';
+			c = u8'\\';
 		}
 	}
-	if (path.back() == '\\')
+	if (path.back() == u8'\\')
 	{
 		path.pop_back_unchecked();
 	}
-	return {::fast_io::details::win32_create_file_impl<win32_family::ansi_9x>(t, ompm), ::std::move(path)};
+	return {::std::move(path)};
 }
 
 template <typename T>
@@ -1146,9 +1143,8 @@ inline win9x_dir_handle win9x_create_dir_file_at_impl(win9x_dir_handle directory
 
 	}
 
-	::fast_io::string str{::fast_io::concat_fast_io(directory_handle.path, "\\", ::fast_io::mnp::code_cvt(t))};
-	auto handle{::fast_io::details::win32_create_file_impl<win32_family::ansi_9x>(str, ompm)};
-	return {handle, ::std::move(str)};
+	::fast_io::u8string str{::fast_io::u8concat_fast_io(::fast_io::mnp::code_cvt(directory_handle.path), u8"\\", ::fast_io::mnp::code_cvt(t))};
+	return {::std::move(str)};
 }
 
 } // namespace win32::details
@@ -1192,7 +1188,7 @@ inline void *win9x_create_file_at_fs_dirent_impl(win9x_dir_handle directory_hand
 		}
 	}
 
-	::fast_io::string str{::fast_io::concat_fast_io(directory_handle.path, "\\", ::fast_io::mnp::code_cvt(::fast_io::mnp::os_c_str_with_known_size(filename_c_str, filename_c_str_len)))};
+	::fast_io::u8string str{::fast_io::u8concat_fast_io(::fast_io::mnp::code_cvt(directory_handle.path), u8"\\", ::fast_io::mnp::code_cvt(::fast_io::mnp::os_c_str_with_known_size(filename_c_str, filename_c_str_len)))};
 	auto handle{::fast_io::details::win32_create_file_impl<win32_family::ansi_9x>(str, ompm)};
 	return handle;
 }
@@ -1337,7 +1333,7 @@ inline void *win9x_create_file_at_impl(win9x_dir_handle directory_handle, T cons
 		}
 	}
 
-	::fast_io::string str{::fast_io::concat_fast_io(directory_handle.path, "\\", ::fast_io::mnp::code_cvt(t))};
+	::fast_io::u8string str{::fast_io::u8concat_fast_io(::fast_io::mnp::code_cvt(directory_handle.path), u8"\\", ::fast_io::mnp::code_cvt(t))};
 	auto handle{::fast_io::details::win32_create_file_impl<win32_family::ansi_9x>(str, ompm)};
 	return handle;
 }
@@ -1347,7 +1343,7 @@ inline void *win9x_create_file_at_impl(win9x_dir_handle directory_handle, T cons
 struct win9x_fs_dirent
 {
 	win9x_dir_handle handle{};                                                // path
-	::fast_io::manipulators::basic_os_c_str_with_known_size<char> filename{}; // file
+	::fast_io::manipulators::basic_os_c_str_with_known_size<char8_t> filename{}; // file
 };
 
 struct win9x_at_entry
@@ -1359,6 +1355,28 @@ struct win9x_at_entry
 		: handle(::std::move(mhandle))
 	{}
 };
+
+#if __has_cpp_attribute(__gnu__::__always_inline__)
+[[__gnu__::__always_inline__]]
+#elif __has_cpp_attribute(msvc::forceinline)
+[[msvc::forceinline]]
+#endif
+inline win9x_at_entry win9x_at_fdcwd() noexcept
+{
+	return win9x_at_entry{{::fast_io::u8concat_fast_io(u8".")}};
+}
+
+#if !defined(__CYGWIN__) && !defined(__WINE__) && !defined(__BIONIC__) && defined(_WIN32_WINDOWS)
+#if __has_cpp_attribute(__gnu__::__always_inline__)
+[[__gnu__::__always_inline__]]
+#elif __has_cpp_attribute(msvc::forceinline)
+[[msvc::forceinline]]
+#endif
+inline win9x_at_entry at_fdcwd() noexcept
+{
+	return win9x_at_fdcwd();
+}
+#endif
 
 struct
 #if __has_cpp_attribute(clang::trivially_relocatable)
@@ -1374,10 +1392,9 @@ struct
 	win9x_dir_file_factory &operator=(win9x_dir_file_factory const &) = delete;
 	~win9x_dir_file_factory()
 	{
-		if (handle.handle) [[likely]]
+		if (!handle.path.empty()) [[likely]]
 		{
 			::fast_io::win32::details::close_win9x_dir_handle(handle);
-			handle.handle = nullptr;
 		}
 	}
 };
@@ -1386,7 +1403,7 @@ class win9x_dir_io_observer
 {
 public:
 	using native_handle_type = win9x_dir_handle;
-	using char_type = char;
+	using char_type = char8_t;
 	using input_char_type = char_type;
 	using output_char_type = char_type;
 	native_handle_type handle{};
@@ -1396,19 +1413,18 @@ public:
 	}
 	explicit operator bool() const noexcept
 	{
-		return handle.handle != nullptr && handle.handle != reinterpret_cast<void *>(static_cast<::std::ptrdiff_t>(-1));
+		return !handle.path.empty();
 	}
 	constexpr native_handle_type release() noexcept
 	{
 		auto temp{::std::move(handle)};
-		handle.handle = nullptr;
 		return temp;
 	}
 };
 inline constexpr bool operator==(win9x_dir_io_observer const &a,
 								 win9x_dir_io_observer const &b) noexcept
 {
-	return a.handle.handle == b.handle.handle;
+	return a.handle.path == b.handle.path;
 }
 
 #if __cpp_lib_three_way_comparison >= 201907L
@@ -1416,7 +1432,7 @@ inline constexpr bool operator==(win9x_dir_io_observer const &a,
 inline constexpr auto operator<=>(win9x_dir_io_observer const &a,
 								  win9x_dir_io_observer const &b) noexcept
 {
-	return a.handle.handle <=> b.handle.handle;
+	return a.handle.path <=> b.handle.path;
 }
 
 #endif
@@ -1470,7 +1486,6 @@ public:
 		if (*this) [[likely]]
 		{
 			::fast_io::win32::details::close_win9x_dir_handle(this->handle);
-			this->handle.handle = nullptr;
 		}
 	}
 
@@ -1489,7 +1504,6 @@ public:
 	explicit constexpr win9x_dir(win9x_dir_file_factory &&fact) noexcept
 		: win9x_dir_io_observer{::std::move(fact.handle)}
 	{
-		fact.handle.handle = nullptr;
 	}
 
 	explicit constexpr win9x_dir(decltype(nullptr)) noexcept = delete;
@@ -1521,7 +1535,6 @@ public:
 		if (*this) [[likely]]
 		{
 			::fast_io::win32::details::close_win9x_dir_handle(this->handle);
-			this->handle.handle = nullptr;
 		}
 	}
 };

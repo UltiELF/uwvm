@@ -1902,27 +1902,31 @@ namespace uwvm::vm::wasi
         if(arg0 < 3 || arg0 > 4) [[unlikely]] { return static_cast<::std::int_least32_t>(::uwvm::vm::wasi::errno_t::ebadf); }
 
         // copy
+#if defined(_WIN32) && defined(_WIN32_WINDOWS)
+        auto const [success, wasm_fd_p]{set_and_get_original_wasm_fd_p(::uwvm::vm::wasi::wasm_fd_storages, arg0, -10)};
+        wasm_fd_p->win9x_dir_file = ::uwvm::vm::wasi::root_path.native_handle();
+#else
         ::fast_io::posix_file pf{};
 
-#ifdef __cpp_exceptions
+    #ifdef __cpp_exceptions
         try
-#endif
+    #endif
         {
-#if (defined(_WIN32) && !defined(__WINE__) && !defined(__BIONIC__)) && !defined(__CYGWIN__)
+    #if (defined(_WIN32) && !defined(__WINE__) && !defined(__BIONIC__)) && !defined(__CYGWIN__)
             ::fast_io::native_file copy{::fast_io::io_dup, ::uwvm::vm::wasi::root_path};
             pf = ::fast_io::posix_file{::std::move(copy), ::fast_io::open_mode::directory};
-#else
+    #else
             pf = ::fast_io::posix_file{::fast_io::io_dup, ::uwvm::vm::wasi::root_path};
-#endif
+    #endif
         }
-#ifdef __cpp_exceptions
+    #ifdef __cpp_exceptions
         catch(::fast_io::error e)
         {
             return static_cast<::std::int_least32_t>(::uwvm::vm::wasi::errno_t::efault);
         }
-#endif
-
+    #endif
         auto const [success, wasm_fd_p]{set_and_get_original_wasm_fd_p(::uwvm::vm::wasi::wasm_fd_storages, arg0, pf.release())};
+#endif
         if(!success) [[unlikely]] { return static_cast<::std::int_least32_t>(::uwvm::vm::wasi::errno_t::efault); }
 
         ::fast_io::io_lock_guard fd_look{*wasm_fd_p->fd_mutex};
@@ -2399,7 +2403,6 @@ namespace uwvm::vm::wasi
                                 u8"\n"
                                 u8"\033[0m");
 #endif
-
         auto const ofd{get_original_wasm_fd_p(::uwvm::vm::wasi::wasm_fd_storages, arg0)};
         if(ofd == nullptr) [[unlikely]] { return static_cast<::std::int_least32_t>(::uwvm::vm::wasi::errno_t::einval); }
 
@@ -2440,8 +2443,14 @@ namespace uwvm::vm::wasi
 
         ::std::size_t cookie_counter{};
         ::std::byte* curr{const_cast<::std::byte*>(buf_begin)};
+#if defined(_WIN32) && defined(_WIN32_WINDOWS)
+        if(pfd == -10) [[unlikely]] { return static_cast<::std::int_least32_t>(::uwvm::vm::wasi::errno_t::enotdir); }
+        auto& path{gfd.win9x_dir_file};
 
+        for(auto const& ent: current(::fast_io::win9x_at_entry{path}))
+#else
         for(auto const& ent: current(at(::fast_io::posix_io_observer{pfd})))
+#endif
         {
             if(buf_end - curr < 24 || curr > buf_end) [[unlikely]]
             {
@@ -3068,19 +3077,15 @@ namespace uwvm::vm::wasi
         }
 
         // method
-        ::fast_io::native_io_observer pdir{};
-#if 0
-        if(pfd == -100) [[unlikely]] { pdir = ::uwvm::vm::wasi::root_path; }
-        else
-        {
-            auto const native_handle{static_cast<::fast_io::native_io_observer>(::fast_io::posix_io_observer{pfd})};
-            pdir = native_handle;
-        }
+#if defined(_WIN32) && defined(_WIN32_WINDOWS)
+        if(pfd == -10) [[unlikely]] { return static_cast<::std::int_least32_t>(::uwvm::vm::wasi::errno_t::enotdir); }
+        auto& pdir{gfd.win9x_dir_file};
 #else
+        ::fast_io::native_io_observer pdir{};
+
         auto const native_handle{static_cast<::fast_io::native_io_observer>(::fast_io::posix_io_observer{pfd})};
         pdir = native_handle;
 #endif
-
         // open
         ::fast_io::posix_file new_file{};
         ::fast_io::open_mode new_file_om{};
@@ -3108,20 +3113,51 @@ namespace uwvm::vm::wasi
         {
             new_file_om |= ::fast_io::open_mode::trunc;
         }
+#if defined(_WIN32) && defined(_WIN32_WINDOWS)
 
-#ifdef __cpp_exceptions
-        try
-#endif
+        if((new_file_om & ::fast_io::open_mode::directory) == ::fast_io::open_mode::directory)
         {
-            new_file = ::fast_io::posix_file{at(pdir), path_sv, new_file_om | (::fast_io::open_mode::in | ::fast_io::open_mode::out)};
+
+            auto const [wasm_fd, original_wasm_fd_p]{create_and_get_original_wasm_fd_p(::uwvm::vm::wasi::wasm_fd_storages, -10)};
+            if(wasm_fd == -1) [[unlikely]] { return static_cast<::std::int_least32_t>(::uwvm::vm::wasi::errno_t::efault); }
+
+            original_wasm_fd_p->rights_base = fs_rights_base;
+            original_wasm_fd_p->rights_inherit = fs_rights_inherit;
+
+            original_wasm_fd_p->win9x_dir_file = ::fast_io::win32::details::win9x_create_dir_file_at_impl(
+                pdir,
+                path_sv,
+                {new_file_om | (::fast_io::open_mode::in | ::fast_io::open_mode::out), static_cast<::fast_io::perms>(436)});
+
+            return static_cast<::std::int_least32_t>(::uwvm::vm::wasi::errno_t::esuccess);
         }
-#ifdef __cpp_exceptions
+
+    #ifdef __cpp_exceptions
+        try
+    #endif
+        {
+            new_file = ::fast_io::posix_file{::fast_io::win9x_at_entry{pdir}, path_sv, new_file_om | (::fast_io::open_mode::in | ::fast_io::open_mode::out)};
+        }
+    #ifdef __cpp_exceptions
         catch(::fast_io::error e)
         {
             return static_cast<::std::int_least32_t>(::uwvm::vm::wasi::errno_t::efault);
         }
+    #endif
+#else
+    #ifdef __cpp_exceptions
+        try
+    #endif
+        {
+            new_file = ::fast_io::posix_file{at(pdir), path_sv, new_file_om | (::fast_io::open_mode::in | ::fast_io::open_mode::out)};
+        }
+    #ifdef __cpp_exceptions
+        catch(::fast_io::error e)
+        {
+            return static_cast<::std::int_least32_t>(::uwvm::vm::wasi::errno_t::efault);
+        }
+    #endif
 #endif
-
         auto const sys_fd{new_file.release()};
 
         auto const [wasm_fd, original_wasm_fd_p]{create_and_get_original_wasm_fd_p(::uwvm::vm::wasi::wasm_fd_storages, sys_fd)};

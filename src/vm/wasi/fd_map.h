@@ -21,6 +21,10 @@ namespace uwvm::vm::wasi
 
         handle fd{-1};
 
+#if defined(_WIN32) && defined(_WIN32_WINDOWS)
+        ::fast_io::win9x_dir_handle win9x_dir_file{};
+#endif 
+
         // ====== for vm ======
         // wasm_fd is created in vector (before wasm fd is used) and destroyed with the vector at the end of the wasm program, and 'vector<wasm_fd> open' only
         // grows linearly, so reference counting is not required
@@ -45,6 +49,10 @@ namespace uwvm::vm::wasi
         wasm_fd(wasm_fd const& other) noexcept :
             fd_mutex{other.fd_mutex}, fd{other.fd}, close_pos{other.close_pos}, rights_base{other.rights_base}, rights_inherit{other.rights_inherit},
             copy_mutex{true}
+#if defined(_WIN32) && defined(_WIN32_WINDOWS)
+            ,
+            win9x_dir_file{other.win9x_dir_file}
+#endif 
         {
         }
 
@@ -56,12 +64,19 @@ namespace uwvm::vm::wasi
             rights_base = other.rights_base;
             rights_inherit = other.rights_inherit;
             copy_mutex = true;
+#if defined(_WIN32) && defined(_WIN32_WINDOWS)
+            win9x_dir_file = other.win9x_dir_file;
+#endif 
             return *this;
         }
 
         wasm_fd(wasm_fd&& other) noexcept :
             fd{other.fd}, fd_mutex{other.fd_mutex}, close_pos{other.close_pos}, rights_base{other.rights_base}, rights_inherit{other.rights_inherit},
             copy_mutex{other.copy_mutex}
+#if defined(_WIN32) && defined(_WIN32_WINDOWS)
+            ,
+            win9x_dir_file{::std::move(other.win9x_dir_file)}
+#endif 
         {
             other.fd = -1;
             other.fd_mutex = nullptr;
@@ -79,6 +94,9 @@ namespace uwvm::vm::wasi
             rights_base = other.rights_base;
             rights_inherit = other.rights_inherit;
             copy_mutex = other.copy_mutex;
+#if defined(_WIN32) && defined(_WIN32_WINDOWS)
+            win9x_dir_file = ::std::move(other.win9x_dir_file);
+#endif 
             other.fd = -1;
             other.fd_mutex = nullptr;
             other.close_pos = SIZE_MAX;
@@ -107,11 +125,11 @@ namespace uwvm::vm::wasi
                 fd_mutex = nullptr;
             }
             copy_mutex = false;
+#if defined(_WIN32) && defined(_WIN32_WINDOWS)
+            ::fast_io::win32::details::close_win9x_dir_handle(win9x_dir_file);
+#endif 
         }
 
-#if 0
-        operator int& () noexcept { return fd; }
-#endif
     };
 }  // namespace uwvm::vm::wasi
 
@@ -120,7 +138,11 @@ namespace fast_io::freestanding
     template <>
     struct is_trivially_relocatable<::uwvm::vm::wasi::wasm_fd>
     {
+#if defined(_WIN32) && defined(_WIN32_WINDOWS)
+        inline static constexpr bool value = false;
+#else
         inline static constexpr bool value = true;
+#endif 
     };
 }  // namespace fast_io::freestanding
 
