@@ -45,22 +45,23 @@ struct io_lock_guard
 {
 	using mutex_type = mutx_type;
 	mutex_type &device;
-	explicit constexpr io_lock_guard(mutex_type &m) noexcept
+	inline explicit constexpr io_lock_guard(mutex_type &m) noexcept
 		: device(m)
 	{
 		device.lock();
 	}
 
+	inline
 #if __cpp_constexpr >= 201907L
-	constexpr
+		constexpr
 #endif
 		~io_lock_guard() noexcept
 	{
 		device.unlock();
 	}
 
-	io_lock_guard(io_lock_guard const &) = delete;
-	io_lock_guard &operator=(io_lock_guard const &) = delete;
+	inline io_lock_guard(io_lock_guard const &) = delete;
+	inline io_lock_guard &operator=(io_lock_guard const &) = delete;
 };
 
 template <typename stream_type>
@@ -68,12 +69,13 @@ struct io_flush_guard
 {
 	using handle_type = stream_type;
 	handle_type &device;
-	explicit constexpr io_flush_guard(handle_type &m) noexcept
+	inline explicit constexpr io_flush_guard(handle_type &m) noexcept
 		: device(m)
 	{}
 
+	inline
 #if __cpp_constexpr >= 201907L
-	constexpr
+		constexpr
 #endif
 		~io_flush_guard() noexcept
 	{
@@ -93,8 +95,8 @@ struct io_flush_guard
 #endif
 #endif
 	}
-	io_flush_guard(io_flush_guard const &) = delete;
-	io_flush_guard &operator=(io_flush_guard const &) = delete;
+	inline io_flush_guard(io_flush_guard const &) = delete;
+	inline io_flush_guard &operator=(io_flush_guard const &) = delete;
 };
 
 namespace details
@@ -164,19 +166,19 @@ concept my_floating_point = ::std::floating_point<T>
 							|| ::std::same_as<::std::remove_cv_t<T>, __float128>
 #endif
 #ifdef __STDCPP_BFLOAT16_T__
-                            || ::std::same_as<::std::remove_cv_t<T>, decltype(0.0bf16)>
+							|| ::std::same_as<::std::remove_cv_t<T>, decltype(0.0bf16)>
 #endif
 #ifdef __STDCPP_FLOAT16_T__
-                            || ::std::same_as<::std::remove_cv_t<T>, _Float16>
+							|| ::std::same_as<::std::remove_cv_t<T>, _Float16>
 #endif
 #ifdef __STDCPP_FLOAT32_T__
-                            || ::std::same_as<::std::remove_cv_t<T>, _Float32>
+							|| ::std::same_as<::std::remove_cv_t<T>, _Float32>
 #endif
 #ifdef __STDCPP_FLOAT64_T__
-                            || ::std::same_as<::std::remove_cv_t<T>, _Float64>
+							|| ::std::same_as<::std::remove_cv_t<T>, _Float64>
 #endif
 #ifdef __STDCPP_FLOAT128_T__
-                            || ::std::same_as<::std::remove_cv_t<T>, _Float128>
+							|| ::std::same_as<::std::remove_cv_t<T>, _Float128>
 #endif
 	;
 
@@ -464,14 +466,19 @@ inline constexpr T compile_time_pow(T base, ::std::size_t pow) noexcept
 	return t;
 }
 
-template <my_integral T, ::std::size_t pow>
-inline constexpr T compile_pow10{::fast_io::details::compile_time_pow<::std::remove_cvref_t<T>>(10, pow)};
+template <my_integral T, ::std::size_t base, ::std::size_t pow>
+inline constexpr T compile_pow_n{::fast_io::details::compile_time_pow<::std::remove_cvref_t<T>>(static_cast<T>(base), pow)};
 
 template <my_integral T, ::std::size_t pow>
-inline constexpr T compile_pow5{::fast_io::details::compile_time_pow<::std::remove_cvref_t<T>>(5, pow)};
+inline constexpr T compile_pow10{::fast_io::details::compile_pow_n<T, 10, pow>};
 
 template <my_integral T, ::std::size_t pow>
-inline constexpr T compile_pow2{::fast_io::details::compile_time_pow<::std::remove_cvref_t<T>>(2, pow)};
+inline constexpr T compile_pow5{::fast_io::details::compile_pow_n<T, 5, pow>};
+
+template <my_integral T, ::std::size_t pow>
+inline constexpr T compile_pow2{::fast_io::details::compile_pow_n<T, 2, pow>};
+
+
 
 inline constexpr bool is_wasi_environment{
 #if __wasi__
@@ -490,7 +497,7 @@ inline constexpr bool need_seperate_print{(sizeof(T) > sizeof(optimal_print_unsi
 
 template <::std::uint_least32_t base, bool ryu_mode = false,
 		  ::std::size_t mx_size = ::std::numeric_limits<::std::size_t>::max(), my_unsigned_integral U>
-constexpr ::std::size_t chars_len(U value) noexcept
+inline constexpr ::std::size_t chars_len(U value) noexcept
 {
 	if constexpr (base == 10 && sizeof(U) <= 16)
 	{
@@ -900,6 +907,9 @@ inline constexpr ::std::size_t cal_max_int_size() noexcept
 	}
 	return i;
 }
+
+template <my_integral T, char8_t base>
+inline constexpr auto max_int_size_result{cal_max_int_size<T, base>()};
 
 // static_assert(cal_max_int_size<::std::uint_least64_t,10>()==20);
 // static_assert(cal_max_int_size<::std::uint_least32_t,10>()==10);

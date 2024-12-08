@@ -18,12 +18,14 @@ struct overlapped
 	} dummy_union_name;
 	void *hEvent;
 };
+
 struct security_attributes
 {
 	::std::uint_least32_t nLength;
 	void *lpSecurityDescriptor;
 	int bInheritHandle;
 };
+
 struct startupinfoa
 {
 	::std::uint_least32_t cb;
@@ -45,6 +47,7 @@ struct startupinfoa
 	void *hStdOutput;
 	void *hStdError;
 };
+
 struct startupinfow
 {
 	::std::uint_least32_t cb;
@@ -66,6 +69,7 @@ struct startupinfow
 	void *hStdOutput;
 	void *hStdError;
 };
+
 struct process_information
 {
 	void *hProcess;
@@ -73,9 +77,11 @@ struct process_information
 	::std::uint_least32_t dwProcessId;
 	::std::uint_least32_t dwThreadId;
 };
+
 /*
 https://docs.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-getfileinformationbyhandleex
 */
+
 struct file_standard_info
 {
 	::std::int_least64_t AllocationSize;
@@ -90,6 +96,7 @@ struct file_attribute_tag_info
 	::std::uint_least32_t FileAttributes;
 	::std::uint_least32_t ReparseTag;
 };
+
 enum class file_info_by_handle_class
 {
 	FileBasicInfo,
@@ -370,29 +377,12 @@ struct system_info
 	::std::uint_least16_t wProcessorRevision;
 };
 
-union large_integer
-{
-	struct
-	{
-		::std::uint_least32_t LowPart;
-		::std::int_least32_t HighPart;
-	};
-
-	struct
-	{
-		::std::uint_least32_t LowPart;
-		::std::int_least32_t HighPart;
-	} u;
-
-	::std::int_least64_t QuadPart;
-};
-
 struct file_basic_info
 {
-	large_integer CreationTime;
-	large_integer LastAccessTime;
-	large_integer LastWriteTime;
-	large_integer ChangeTime;
+	::std::int_least64_t CreationTime;
+	::std::int_least64_t LastAccessTime;
+	::std::int_least64_t LastWriteTime;
+	::std::int_least64_t ChangeTime;
 	::std::uint_least32_t FileAttributes;
 };
 

@@ -12,6 +12,7 @@ inline constexpr ::std::uint_least32_t win32_stderr_number(static_cast<::std::ui
 
 } // namespace fast_io
 #include "win32_code.h"
+#include "win32_io_redirection.h"
 #include "nt/impl.h"
 #include "win32_error.h"
 
@@ -36,8 +37,8 @@ namespace fast_io
 
 #if defined(_WIN32) && !defined(__CYGWIN__) && !defined(__WINE__) && !defined(__BIONIC__)
 #if defined(_WIN32_WINDOWS)
-using native_at_entry = win9x_at_entry;
-using native_fs_dirent = win9x_fs_dirent;
+using native_at_entry = win32_9xa_at_entry;
+using native_fs_dirent = win32_9xa_fs_dirent;
 #else
 using native_at_entry = nt_at_entry;
 using native_fs_dirent = nt_fs_dirent;

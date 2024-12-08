@@ -7,8 +7,6 @@ namespace fast_io
 namespace details
 {
 
-inline constexpr bool sto_use_table{true};
-
 template <char8_t base, ::std::integral char_type>
 	requires(2 <= base && base <= 36)
 inline constexpr bool char_digit_to_literal(my_make_unsigned_t<char_type> &ch) noexcept
@@ -34,32 +32,8 @@ inline constexpr bool char_digit_to_literal(my_make_unsigned_t<char_type> &ch) n
 	}
 	else
 	{
-		if constexpr (sto_use_table)
+		if constexpr (ebcdic)
 		{
-			constexpr char8_t mx{::std::numeric_limits<char8_t>::max()};
-			constexpr bool use_partial{mx < (::std::numeric_limits<unsigned_char_type>::max()) ||
-									   ::std::numeric_limits<char8_t>::digits != 8};
-			if constexpr (use_partial)
-			{
-				constexpr ::std::size_t n{sto_base_tb<ebcdic, use_partial, base>.size()};
-				static_assert(n <= mx);
-				constexpr char8_t v{static_cast<char8_t>(n)};
-				if (v < ch)
-				{
-					return true;
-				}
-			}
-			char8_t ret{sto_base_tb<ebcdic, use_partial, base>[static_cast<unsigned_char_type>(ch)]};
-			if (ret == mx)
-			{
-				return true;
-			}
-			ch = static_cast<unsigned_char_type>(ret);
-			return false;
-		}
-		else if constexpr (ebcdic)
-		{
-
 			if constexpr (base <= 19)
 			{
 				constexpr unsigned_char_type mns{base - 10};
@@ -213,29 +187,7 @@ inline constexpr bool char_is_digit(my_make_unsigned_t<char_type> ch) noexcept
 	}
 	else
 	{
-		if constexpr (sto_use_table)
-		{
-			constexpr char8_t mx{::std::numeric_limits<char8_t>::max()};
-			constexpr bool use_partial{mx < (::std::numeric_limits<unsigned_char_type>::max()) ||
-									   ::std::numeric_limits<char8_t>::digits != 8};
-			if constexpr (use_partial)
-			{
-				constexpr ::std::size_t n{sto_base_tb<ebcdic, use_partial, base>.size()};
-				static_assert(n <= mx);
-				constexpr char8_t v{static_cast<char8_t>(n)};
-				if (v < ch)
-				{
-					return false;
-				}
-			}
-			auto ret{sto_base_tb<ebcdic, use_partial, base>[static_cast<unsigned_char_type>(ch)]};
-			if (ret == mx)
-			{
-				return false;
-			}
-			return true;
-		}
-		else if constexpr (ebcdic)
+		if constexpr (ebcdic)
 		{
 			if constexpr (base <= 19)
 			{
@@ -306,7 +258,7 @@ inline constexpr char unsigned simd16_shift_table[32]{0xFF, 0xFF, 0xFF, 0xFF, 0x
 													  0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0, 1, 2, 3, 4, 5,
 													  6, 7, 8, 9, 10, 11, 12, 13, 14, 15};
 
-#if defined(__SSE4_1__) && defined(__x86_64__)
+#if defined(__SSE4_1__) && (defined(__x86_64__) || defined(_M_AMD64))
 
 template <bool char_execharset>
 inline ::std::uint_least32_t detect_length(char unsigned const *buffer) noexcept
@@ -506,11 +458,13 @@ inline constexpr char_type const *skip_digits(char_type const *first, char_type 
 }
 
 template <char8_t base, ::std::integral char_type, my_unsigned_integral T>
-#if defined(__SSE4_1__) && __has_cpp_attribute(__gnu__::__cold__) && defined(__x86_64__)
-[[__gnu__::__cold__]]
+#if __has_cpp_attribute(__gnu__::__always_inline__)
+[[__gnu__::__always_inline__]]
+#elif __has_cpp_attribute(msvc::forceinline)
+[[msvc::forceinline]]
 #endif
 inline constexpr parse_result<char_type const *>
-scan_int_contiguous_none_simd_space_part_define_impl(char_type const *first, char_type const *last, T &res) noexcept
+scan_int_contiguous_none_simd_space_part_check_overflow_impl(char_type const *first, char_type const *last, T &res) noexcept
 {
 	using unsigned_char_type = ::std::make_unsigned_t<char_type>;
 	using unsigned_type = my_make_unsigned_t<::std::remove_cvref_t<T>>;
@@ -519,24 +473,7 @@ scan_int_contiguous_none_simd_space_part_define_impl(char_type const *first, cha
 	constexpr unsigned_type risky_value{risky_uint_max / base};
 	constexpr unsigned_char_type risky_digit(risky_uint_max % base);
 	constexpr bool isspecialbase{base == 2 || base == 4 || base == 16};
-	constexpr ::std::size_t max_size{details::cal_max_int_size<unsigned_type, base>() - (!isspecialbase)};
-	::std::size_t const diff{static_cast<::std::size_t>(last - first)};
-	::std::size_t mn_val{max_size};
-	if (diff < mn_val)
-	{
-		mn_val = diff;
-	}
-	auto first_phase_last{first + mn_val};
-	for (; first != first_phase_last; ++first)
-	{
-		unsigned_char_type ch{static_cast<unsigned_char_type>(*first)};
-		if (char_digit_to_literal<base, char_type>(ch)) [[unlikely]]
-		{
-			break;
-		}
-		res *= base_char_type;
-		res += ch;
-	}
+
 	bool overflow{};
 	if (first != last) [[likely]]
 	{
@@ -571,6 +508,439 @@ scan_int_contiguous_none_simd_space_part_define_impl(char_type const *first, cha
 		}
 	}
 	return {first, (overflow ? (parse_code::overflow) : (parse_code::ok))};
+}
+
+template <char8_t base, my_unsigned_integral T, ::std::size_t n>
+inline constexpr ::fast_io::freestanding::array<T, n> generate_pow_table() noexcept
+{
+	::fast_io::freestanding::array<T, n> tmp;
+	T b{1};
+	for (auto &e : tmp)
+	{
+		e = b;
+		b *= base;
+	}
+	return tmp;
+}
+
+template <char8_t base, my_unsigned_integral T, ::std::size_t n>
+inline constexpr ::fast_io::freestanding::array<T, n> pow_table_n{::fast_io::details::generate_pow_table<base, T, n>()};
+
+template <char8_t base, ::std::integral char_type, my_unsigned_integral T>
+inline parse_result<char_type const *>
+runtime_scan_int_contiguous_none_simd_space_part_define_impl(char_type const *first, char_type const *last, T &res) noexcept
+{
+	using unsigned_char_type = ::std::make_unsigned_t<char_type>;
+	using unsigned_type = my_make_unsigned_t<::std::remove_cvref_t<T>>;
+	constexpr char8_t base_char_type{base};
+	constexpr bool isspecialbase{base == 2 || base == 4 || base == 16};
+	constexpr ::std::size_t max_size{::fast_io::details::max_int_size_result<unsigned_type, base> - (!isspecialbase)};
+	constexpr auto shifter{2 + ::std::bit_width(sizeof(char_type))};
+	::std::size_t const diff{static_cast<::std::size_t>(last - first)};
+	::std::size_t mn_val{max_size};
+
+	if (diff < mn_val)
+	{
+		mn_val = diff;
+	}
+
+	auto first_phase_last{first + mn_val};
+
+	constexpr bool isebcdic{::fast_io::details::is_ebcdic<char_type>};
+	if constexpr (!isebcdic && (::std::numeric_limits<::std::uint_least64_t>::digits == 64u))
+	{
+		if constexpr (sizeof(::std::uint_least32_t) < sizeof(::std::size_t))
+		{
+			if constexpr (base_char_type <= 10)
+			{
+				if constexpr (sizeof(char_type) == sizeof(char8_t))
+				{
+					if constexpr (max_size >= sizeof(::std::uint_least64_t))
+					{
+						constexpr ::std::uint_least64_t pow_base_sizeof_base_2{::fast_io::details::compile_pow_n<::std::uint_least64_t, base_char_type, 2>};
+						constexpr ::std::uint_least64_t pow_base_sizeof_base_4{::fast_io::details::compile_pow_n<::std::uint_least64_t, base_char_type, 4>};
+						constexpr ::std::uint_least64_t pow_base_sizeof_base_6{::fast_io::details::compile_pow_n<::std::uint_least64_t, base_char_type, 6>};
+						constexpr ::std::uint_least64_t pow_base_sizeof_u64{::fast_io::details::compile_pow_n<::std::uint_least64_t, base_char_type, sizeof(::std::uint_least64_t)>};
+
+
+						constexpr ::std::uint_least64_t baseval{0x0101010101010101};
+						constexpr ::std::uint_least64_t zero_lower_bound{isebcdic ? baseval * 0xF0 : baseval * 0x30};
+						constexpr ::std::uint_least64_t first_bound{0x4646464646464646 + baseval * (10 - base_char_type)};
+						constexpr ::std::uint_least64_t mul1{pow_base_sizeof_base_2 + (pow_base_sizeof_base_6 << 32)};
+						constexpr ::std::uint_least64_t mul2{1 + (pow_base_sizeof_base_4 << 32)};
+						constexpr ::std::uint_least64_t mask{0x000000FF000000FF};
+						constexpr ::std::uint_least64_t fullmask{baseval * 0x80};
+
+						while (static_cast<::std::size_t>(first_phase_last - first) >= sizeof(::std::uint_least64_t))
+						{
+							::std::uint_least64_t val;
+							::fast_io::freestanding::my_memcpy(__builtin_addressof(val), first, sizeof(::std::uint_least64_t));
+
+							if constexpr (::std::endian::little != ::std::endian::native)
+							{
+								val = ::fast_io::little_endian(val);
+							}
+
+							if (::std::uint_least64_t const cval{((val + first_bound) | (val - zero_lower_bound)) & fullmask}; cval)
+							{
+								auto ctrz_cval{::std::countr_zero(cval)};
+								auto const valid_bits{ctrz_cval & -8};
+
+								if (valid_bits) [[likely]]
+								{
+									val <<= 64 - valid_bits;
+
+									::std::uint_least64_t all_zero{zero_lower_bound};
+
+									all_zero >>= valid_bits;
+
+									val |= all_zero;
+									val -= zero_lower_bound;
+
+									val = (val * base_char_type) + (val >> 8);
+									val = (((val & mask) * mul1) + (((val >> 16) & mask) * mul2)) >> 32;
+									ctrz_cval >>= shifter;
+									res = static_cast<T>(res * ::fast_io::details::pow_table_n<base_char_type, ::std::uint_least64_t, 8>.index_unchecked(ctrz_cval) + val);
+
+									first += ctrz_cval;
+								}
+#if defined(_MSC_VER) && !defined(__clang__)
+								return scan_int_contiguous_none_simd_space_part_check_overflow_impl<base, char_type, T>(first, last, res);
+#else
+								goto nextlabel;
+#endif
+							}
+
+							val -= zero_lower_bound;
+							val = (val * base_char_type) + (val >> 8);
+							val = (((val & mask) * mul1) + (((val >> 16) & mask) * mul2)) >> 32;
+							res = static_cast<T>(res * pow_base_sizeof_u64 + val);
+							first += sizeof(::std::uint_least64_t);
+						}
+					}
+
+					if constexpr (max_size >= sizeof(::std::uint_least32_t))
+					{
+						constexpr ::std::uint_least32_t pow_base_sizeof_u32{::fast_io::details::compile_pow_n<::std::uint_least64_t, base_char_type, sizeof(::std::uint_least32_t)>};
+						constexpr ::std::uint_least32_t first_bound{0x46464646 + 0x01010101 * (10 - base_char_type)};
+						constexpr ::std::uint_least32_t pow_base_sizeof_base_2{::fast_io::details::compile_pow_n<::std::uint_least32_t, base_char_type, 2>};
+						constexpr ::std::uint_least32_t mask{0x000000FF};
+
+						if (static_cast<::std::size_t>(first_phase_last - first) >= sizeof(::std::uint_least32_t))
+						{
+							::std::uint_least32_t val;
+							::fast_io::freestanding::my_memcpy(__builtin_addressof(val), first, sizeof(::std::uint_least32_t));
+
+							if constexpr (::std::endian::little != ::std::endian::native)
+							{
+								val = ::fast_io::little_endian(val);
+							}
+
+							if (::std::uint_least32_t const cval{((val + first_bound) | (val - 0x30303030)) & 0x80808080}; cval)
+							{
+								auto ctrz_cval{::std::countr_zero(cval)};
+								auto const valid_bits{ctrz_cval & -8};
+
+								if (valid_bits) [[likely]]
+								{
+									val <<= 32 - valid_bits;
+
+									::std::uint_least32_t all_zero{0x30303030};
+
+									all_zero >>= valid_bits;
+
+									val |= all_zero;
+
+									val -= 0x30303030;
+									val = (val * base_char_type) + (val >> 8);
+									val = (((val & mask) * pow_base_sizeof_base_2) + ((val >> 16) & mask));
+
+									ctrz_cval >>= shifter;
+									res = static_cast<T>(res * ::fast_io::details::pow_table_n<base_char_type, ::std::uint_least32_t, 4>.index_unchecked(ctrz_cval) + val);
+
+									first += ctrz_cval;
+								}
+#if defined(_MSC_VER) && !defined(__clang__)
+								return scan_int_contiguous_none_simd_space_part_check_overflow_impl<base, char_type, T>(first, last, res);
+#else
+								goto nextlabel;
+#endif
+							}
+							else
+							{
+								val -= 0x30303030;
+								val = (val * base_char_type) + (val >> 8);
+								val = (((val & mask) * pow_base_sizeof_base_2) + ((val >> 16) & mask));
+								res = static_cast<T>(res * pow_base_sizeof_u32 + val);
+								first += sizeof(::std::uint_least32_t);
+							}
+						}
+					}
+				}
+				else if constexpr (sizeof(char_type) == sizeof(char16_t))
+				{
+					constexpr ::std::size_t u64_size_of_c16{sizeof(::std::uint_least64_t) / sizeof(char16_t)};
+					constexpr ::std::uint_least64_t pow_base_sizeof_u64{::fast_io::details::compile_pow_n<::std::uint_least64_t, base_char_type, u64_size_of_c16>};
+					constexpr ::std::uint_least64_t pow_base_sizeof_base_2{::fast_io::details::compile_pow_n<::std::uint_least64_t, base_char_type, 2>};
+					constexpr ::std::uint_least64_t mask{0x000000000000FFFF};
+					constexpr ::std::uint_least64_t first_bound{0x7fc67fc67fc67fc6 + 0x0001000100010001 * (10 - base)};
+					if constexpr (max_size >= u64_size_of_c16)
+					{
+						while (static_cast<::std::size_t>(first_phase_last - first) >= u64_size_of_c16)
+						{
+							::std::uint_least64_t val;
+							::fast_io::freestanding::my_memcpy(__builtin_addressof(val), first, sizeof(::std::uint_least64_t));
+
+							if constexpr (::std::endian::little != ::std::endian::native)
+							{
+								val = ::fast_io::little_endian(val);
+							}
+
+							if (::std::uint_least64_t const cval{((val + first_bound) | (val - 0x0030003000300030)) & 0x8000800080008000}; cval)
+							{
+								auto ctrz_cval{::std::countr_zero(cval)};
+								auto const valid_bits{ctrz_cval & -16};
+
+								if (valid_bits) [[likely]]
+								{
+									val <<= 64 - valid_bits;
+
+									::std::uint_least64_t all_zero{0x0030003000300030};
+
+									all_zero >>= valid_bits;
+
+									val |= all_zero;
+
+									val -= 0x0030003000300030;
+									val = (val * base_char_type) + (val >> 16);
+									val = (((val & mask) * pow_base_sizeof_base_2) + ((val >> 32) & mask));
+
+									ctrz_cval >>= shifter;
+									res = static_cast<T>(res * ::fast_io::details::pow_table_n<base_char_type, ::std::uint_least64_t, 4>.index_unchecked(ctrz_cval) + val);
+
+									first += ctrz_cval;
+								}
+#if defined(_MSC_VER) && !defined(__clang__)
+								return scan_int_contiguous_none_simd_space_part_check_overflow_impl<base, char_type, T>(first, last, res);
+#else
+								goto nextlabel;
+#endif
+							}
+							val -= 0x0030003000300030;
+							val = (val * base_char_type) + (val >> 16);
+							val = (((val & mask) * pow_base_sizeof_base_2) + ((val >> 32) & mask));
+							res = static_cast<T>(res * pow_base_sizeof_u64 + val);
+							first += u64_size_of_c16;
+						}
+					}
+				}
+			}
+			else if constexpr (base_char_type <= 16)
+			{
+				if constexpr (sizeof(char_type) == sizeof(char8_t))
+				{
+					if constexpr (max_size >= sizeof(::std::uint_least64_t))
+					{
+						constexpr ::std::uint_least64_t pow_base_sizeof_base_2{::fast_io::details::compile_pow_n<::std::uint_least64_t, base_char_type, 2>};
+						constexpr ::std::uint_least64_t pow_base_sizeof_base_4{::fast_io::details::compile_pow_n<::std::uint_least64_t, base_char_type, 4>};
+						constexpr ::std::uint_least64_t pow_base_sizeof_base_6{::fast_io::details::compile_pow_n<::std::uint_least64_t, base_char_type, 6>};
+						constexpr ::std::uint_least64_t pow_base_sizeof_u64{::fast_io::details::compile_pow_n<::std::uint_least64_t, base_char_type, sizeof(::std::uint_least64_t)>};
+						constexpr ::std::uint_least64_t first_bound1{0x3939393939393939 + 0x0101010101010101 * (16 - base_char_type)};
+						constexpr ::std::uint_least64_t first_bound2{0x1919191919191919 + 0x0101010101010101 * (16 - base_char_type)};
+
+						constexpr ::std::uint_least64_t mask{0x000000FF000000FF};
+						constexpr ::std::uint_least64_t mul1{pow_base_sizeof_base_2 + (pow_base_sizeof_base_6 << 32)};
+						constexpr ::std::uint_least64_t mul2{1 + (pow_base_sizeof_base_4 << 32)};
+						while (static_cast<::std::size_t>(first_phase_last - first) >= sizeof(::std::uint_least64_t))
+						{
+							::std::uint_least64_t val;
+							::fast_io::freestanding::my_memcpy(__builtin_addressof(val), first, sizeof(::std::uint_least64_t));
+
+							if constexpr (::std::endian::little != ::std::endian::native)
+							{
+								val = ::fast_io::little_endian(val);
+							}
+
+							if (::std::uint_least64_t const cval{((((val + 0x4646464646464646) | (val - 0x3030303030303030)) &
+																   ((val + first_bound1) | (val - 0x4040404040404040)) &
+																   ((val + first_bound2) | (val - 0x6060606060606060))) |
+																  ~(((val + 0x3f3f3f3f3f3f3f3f) | (val - 0x4040404040404040)) &
+																	((val + 0x1f1f1f1f1f1f1f1f) | (val - 0x6060606060606060)))) &
+																 0x8080808080808080};
+								cval)
+							{
+								auto ctrz_cval{::std::countr_zero(cval)};
+								auto const valid_bits{ctrz_cval & -8};
+
+								if (valid_bits) [[likely]]
+								{
+									val <<= 64 - valid_bits;
+
+									::std::uint_least64_t all_zero{0x3030303030303030};
+
+									all_zero >>= valid_bits;
+
+									val |= all_zero;
+
+									val -= 0x3030303030303030;
+									val = (val & 0x0f0f0f0f0f0f0f0f) + ((val & 0x1010101010101010) >> 4) * 9;
+									val = (val * base_char_type) + (val >> 8);
+									val = (((val & mask) * mul1) + (((val >> 16) & mask) * mul2)) >> 32;
+
+									ctrz_cval >>= shifter;
+
+									res = static_cast<T>(res * ::fast_io::details::pow_table_n<base_char_type, ::std::uint_least64_t, 8>.index_unchecked(ctrz_cval) + val);
+									first += ctrz_cval;
+								}
+
+#if defined(_MSC_VER) && !defined(__clang__)
+								return scan_int_contiguous_none_simd_space_part_check_overflow_impl<base, char_type, T>(first, last, res);
+#else
+								goto nextlabel;
+#endif
+							}
+
+							val -= 0x3030303030303030;
+							val = (val & 0x0f0f0f0f0f0f0f0f) + ((val & 0x1010101010101010) >> 4) * 9;
+							val = (val * base_char_type) + (val >> 8);
+							val = (((val & mask) * mul1) + (((val >> 16) & mask) * mul2)) >> 32;
+							res = static_cast<T>(res * pow_base_sizeof_u64 + val);
+							first += sizeof(::std::uint_least64_t);
+						}
+					}
+				}
+			}
+		}
+		else if constexpr (sizeof(::std::uint_least16_t) < sizeof(::std::size_t))
+		{
+			if constexpr (base_char_type <= 10)
+			{
+				if constexpr (sizeof(char_type) == sizeof(char8_t))
+				{
+					if constexpr (max_size >= sizeof(::std::uint_least32_t))
+					{
+						constexpr ::std::uint_least32_t pow_base_sizeof_u32{::fast_io::details::compile_pow_n<::std::uint_least32_t, base_char_type, sizeof(::std::uint_least32_t)>};
+						constexpr ::std::uint_least32_t first_bound{0x46464646 + 0x01010101 * (10 - base_char_type)};
+
+						constexpr ::std::uint_least32_t pow_base_sizeof_base_2{::fast_io::details::compile_pow_n<::std::uint_least32_t, base_char_type, 2>};
+						constexpr ::std::uint_least32_t mask{0x000000FF};
+						while (static_cast<::std::size_t>(first_phase_last - first) >= sizeof(::std::uint_least32_t))
+						{
+							::std::uint_least32_t val;
+							::fast_io::freestanding::my_memcpy(__builtin_addressof(val), first, sizeof(::std::uint_least32_t));
+
+							val = ::fast_io::little_endian(val);
+
+							if (::std::uint_least32_t const cval{((val + first_bound) | (val - 0x30303030)) & 0x80808080}; cval) [[unlikely]]
+							{
+								auto ctrz_cval{::std::countr_zero(cval)};
+								auto const valid_bits{ctrz_cval & -8};
+
+								if (valid_bits) [[likely]]
+								{
+									val <<= 32 - valid_bits;
+
+									::std::uint_least32_t all_zero{0x30303030};
+
+									all_zero >>= valid_bits;
+
+									val |= all_zero;
+
+									val -= 0x30303030;
+									val = (val * base_char_type) + (val >> 8);
+									val = (((val & mask) * pow_base_sizeof_base_2) + ((val >> 16) & mask));
+									ctrz_cval >>= shifter;
+
+									res = static_cast<T>(res * ::fast_io::details::pow_table_n<base_char_type, ::std::uint_least32_t, 4>.index_unchecked(ctrz_cval) + val);
+
+									first += ctrz_cval;
+								}
+#if defined(_MSC_VER) && !defined(__clang__)
+								return scan_int_contiguous_none_simd_space_part_check_overflow_impl<base, char_type, T>(first, last, res);
+#else
+								goto nextlabel;
+#endif
+							}
+
+							val -= 0x30303030;
+							val = (val * base_char_type) + (val >> 8);
+							val = (((val & mask) * pow_base_sizeof_base_2) + ((val >> 16) & mask));
+							res = static_cast<T>(res * pow_base_sizeof_u32 + val);
+							first += sizeof(::std::uint_least32_t);
+						}
+					}
+				}
+			}
+		}
+	}
+
+	for (; first != first_phase_last; ++first)
+	{
+		unsigned_char_type ch{static_cast<unsigned_char_type>(*first)};
+		if (char_digit_to_literal<base, char_type>(ch)) [[unlikely]]
+		{
+			break;
+		}
+		res *= base_char_type;
+		res += ch;
+	}
+
+#if !defined(_MSC_VER) || defined(__clang__)
+[[maybe_unused]] nextlabel:;
+#endif
+
+	return scan_int_contiguous_none_simd_space_part_check_overflow_impl<base, char_type, T>(first, last, res);
+}
+
+template <char8_t base, ::std::integral char_type, my_unsigned_integral T>
+inline constexpr parse_result<char_type const *>
+compile_time_scan_int_contiguous_none_simd_space_part_define_impl(char_type const *first, char_type const *last, T &res) noexcept
+{
+	using unsigned_char_type = ::std::make_unsigned_t<char_type>;
+	using unsigned_type = my_make_unsigned_t<::std::remove_cvref_t<T>>;
+	constexpr char8_t base_char_type{base};
+	constexpr bool isspecialbase{base == 2 || base == 4 || base == 16};
+	constexpr ::std::size_t max_size{::fast_io::details::max_int_size_result<unsigned_type, base> - (!isspecialbase)};
+	::std::size_t const diff{static_cast<::std::size_t>(last - first)};
+	::std::size_t mn_val{max_size};
+
+	if (diff < mn_val)
+	{
+		mn_val = diff;
+	}
+
+	auto first_phase_last{first + mn_val};
+
+	for (; first != first_phase_last; ++first)
+	{
+		unsigned_char_type ch{static_cast<unsigned_char_type>(*first)};
+		if (char_digit_to_literal<base, char_type>(ch)) [[unlikely]]
+		{
+			break;
+		}
+		res *= base_char_type;
+		res += ch;
+	}
+
+	return scan_int_contiguous_none_simd_space_part_check_overflow_impl<base, char_type, T>(first, last, res);
+}
+
+template <char8_t base, ::std::integral char_type, my_unsigned_integral T>
+inline constexpr parse_result<char_type const *>
+scan_int_contiguous_none_simd_space_part_define_impl(char_type const *first, char_type const *last, T &res) noexcept
+{
+#ifdef __cpp_if_consteval
+	if !consteval
+#else
+	if (!__builtin_is_constant_evaluated())
+#endif
+	{
+		return runtime_scan_int_contiguous_none_simd_space_part_define_impl<base, char_type, T>(first, last, res);
+	}
+	else
+	{
+		return compile_time_scan_int_contiguous_none_simd_space_part_define_impl<base, char_type, T>(first, last, res);
+	}
 }
 
 inline constexpr parse_code ongoing_parse_code{static_cast<parse_code>(::std::numeric_limits<char unsigned>::max())};
@@ -713,12 +1083,12 @@ scan_int_contiguous_none_space_part_define_impl(char_type const *first, char_typ
 	using unsigned_type = my_make_unsigned_t<::std::remove_cvref_t<T>>;
 	unsigned_type res{};
 	char_type const *it;
-#if defined(__SSE4_1__) && defined(__x86_64__)
+#if defined(__SSE4_1__) && (defined(__x86_64__) || defined(_M_AMD64))
 	if constexpr (base == 10 && sizeof(char_type) == 1 && sizeof(unsigned_type) <= sizeof(::std::uint_least64_t))
 	{
 		if (
 #if __cpp_lib_is_constant_evaluated >= 201811L
-			!::std::is_constant_evaluated() &&
+			!__builtin_is_constant_evaluated() &&
 #endif
 			last - first >= 32) [[likely]]
 		{

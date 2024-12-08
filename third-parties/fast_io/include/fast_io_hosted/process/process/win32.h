@@ -2,35 +2,10 @@
 
 namespace fast_io
 {
-
 struct win32_user_process_information
 {
 	void *hprocess{};
 	void *hthread{};
-};
-
-template <::fast_io::win32_family family>
-struct win32_process_args
-{
-	inline static constexpr bool is_nt{family == ::fast_io::win32_family::wide_nt};
-	using char_type = ::std::conditional_t<is_nt, char16_t, char>;
-	using replace_char_type = ::std::conditional_t<is_nt, char16_t, char8_t>;
-	using char_type_may_alias_ptr
-#if __has_cpp_attribute(__gnu__::__may_alias__)
-		[[__gnu__::__may_alias__]]
-#endif
-		= char_type *;
-	using char_type_may_alias_const_ptr
-#if __has_cpp_attribute(__gnu__::__may_alias__)
-		[[__gnu__::__may_alias__]]
-#endif
-		= char_type const *;
-
-	char_type const *args{};
-
-	constexpr win32_process_args() noexcept = default;
-	constexpr win32_process_args(char_type const *a) noexcept
-		: args{a} {};
 };
 
 namespace win32::details
@@ -131,14 +106,14 @@ inline win32_user_process_information win32_process_create_impl(void *__restrict
 
 		if (!
 #if !defined(_WIN32_WINNT) || _WIN32_WINNT >= 0x601
-			::fast_io::win32::K32GetMappedFileNameW(
+			::fast_io::win32::K32GetMappedFileNameW
 #else
-			::fast_io::win32::GetMappedFileNameW(
+			::fast_io::win32::GetMappedFileNameW
 #endif
-				reinterpret_cast<void *>(static_cast<::std::ptrdiff_t>(-1)),
-				pMem,
-				pszFilename,
-				260)) [[unlikely]]
+			(reinterpret_cast<void *>(static_cast<::std::ptrdiff_t>(-1)),
+			 pMem,
+			 pszFilename,
+			 260)) [[unlikely]]
 		{
 			throw_win32_error();
 		}
@@ -155,7 +130,9 @@ inline win32_user_process_information win32_process_create_impl(void *__restrict
 			char16_t NtPath[64];
 			char16_t *RetStr{};
 			::std::size_t NtPathLen{};
-			for (char16_t i{65}; i < static_cast<char16_t>(26 + 65); i++)
+			constexpr char16_t bg{65};
+			constexpr char16_t ed{bg+26};
+			for (char16_t i{bg}; i != ed; ++i)
 			{
 				DosDevice[0] = i;
 				if (::fast_io::win32::QueryDosDeviceW(DosDevice, NtPath, 64))
@@ -178,13 +155,86 @@ inline win32_user_process_information win32_process_create_impl(void *__restrict
 		// create process
 		::fast_io::win32::startupinfow si{sizeof(si)};
 
-		si.hStdInput = processio.in.win32_handle ? processio.in.win32_handle : ::fast_io::win32_stdin().handle;
-		si.hStdOutput = processio.out.win32_handle ? processio.out.win32_handle : ::fast_io::win32_stdout().handle;
-		si.hStdError = processio.err.win32_handle ? processio.err.win32_handle : ::fast_io::win32_stderr().handle;
+		if (!processio.in.is_dev_null)
+		{
+			if (processio.in.win32_pipe_in_handle)
+			{
+				si.hStdInput = processio.in.win32_pipe_in_handle;
+
+				if (!::fast_io::win32::SetHandleInformation(processio.in.win32_pipe_out_handle, 0x00000001 /*HANDLE_FLAG_INHERIT*/, 0)) [[unlikely]]
+				{
+					throw_win32_error();
+				}
+			}
+			else if (processio.in.win32_handle)
+			{
+				si.hStdInput = processio.in.win32_handle;
+			}
+			else
+			{
+				si.hStdInput = ::fast_io::win32_stdin().handle;
+			}
+		}
+		else
+		{
+			si.hStdInput = nullptr;
+		}
+
+		if (!processio.out.is_dev_null)
+		{
+			if (processio.out.win32_pipe_out_handle)
+			{
+				si.hStdOutput = processio.out.win32_pipe_out_handle;
+
+				if (!::fast_io::win32::SetHandleInformation(processio.out.win32_pipe_in_handle, 0x00000001 /*HANDLE_FLAG_INHERIT*/, 0)) [[unlikely]]
+				{
+					throw_win32_error();
+				}
+			}
+			else if (processio.out.win32_handle)
+			{
+				si.hStdOutput = processio.out.win32_handle;
+			}
+			else
+			{
+				si.hStdOutput = ::fast_io::win32_stdout().handle;
+			}
+		}
+		else
+		{
+			si.hStdOutput = nullptr;
+		}
+
+		if (!processio.err.is_dev_null)
+		{
+			if (processio.err.win32_pipe_out_handle)
+			{
+				si.hStdError = processio.err.win32_pipe_out_handle;
+
+				if (!::fast_io::win32::SetHandleInformation(processio.err.win32_pipe_in_handle, 0x00000001 /*HANDLE_FLAG_INHERIT*/, 0)) [[unlikely]]
+				{
+					throw_win32_error();
+				}
+			}
+			else if (processio.err.win32_handle)
+			{
+				si.hStdError = processio.err.win32_handle;
+			}
+			else
+			{
+				si.hStdError = ::fast_io::win32_stderr().handle;
+			}
+		}
+		else
+		{
+			si.hStdError = nullptr;
+		}
+
 		si.dwFlags = 0x00000100;
 
 		::fast_io::win32::process_information pi{};
-		if (!::fast_io::win32::CreateProcessW(address_begin, const_cast<char16_t *>(args), nullptr, nullptr, 1, 0, (void *)envs, nullptr, __builtin_addressof(si), __builtin_addressof(pi)))
+		if (!::fast_io::win32::CreateProcessW(address_begin, const_cast<char16_t *>(args), nullptr, nullptr, 1,
+											  0x00000400 /*CREATE_UNICODE_ENVIRONMENT*/, (void *)envs, nullptr, __builtin_addressof(si), __builtin_addressof(pi)))
 		{
 			throw_win32_error();
 		}
@@ -230,7 +280,7 @@ inline win32_user_process_information win32_process_create_impl(void *__restrict
 		auto address_begin{pszFilename};
 
 		// change nt path to dos path
-		auto k32_module{::fast_io::win32::GetModuleHandleA(reinterpret_cast<char const *>(u8"Kernel32.dll"))};
+		auto k32_module{::fast_io::win32::GetModuleHandleA(reinterpret_cast<char const *>(u8"kernel32.dll"))};
 		if (k32_module)
 		{
 			using QueryDosDeviceA_t = ::std::uint_least32_t (*)(char const *, char *, ::std::uint_least32_t) noexcept;
@@ -239,16 +289,19 @@ inline win32_user_process_information win32_process_create_impl(void *__restrict
 			auto QueryDosDeviceA_p{reinterpret_cast<QueryDosDeviceA_t>(::fast_io::win32::GetProcAddress(k32_module, reinterpret_cast<char const *>(u8"QueryDosDeviceA")))};
 			if (QueryDosDeviceA_p)
 			{
-				if (pszFilename[0] == '\\')
+				if (pszFilename[0] == u8'\\')
 				{
-					char DosDevice[4]{0, ':', 0, 0};
-					char NtPath[64];
+					char8_t DosDevice[4]{0, u8':', 0, 0};
+					constexpr ::std::size_t ntpathsize{64};
+					char NtPath[ntpathsize];
 					char *RetStr{};
 					::std::size_t NtPathLen{};
-					for (char i{65}; i < static_cast<char>(26 + 65); i++)
+					constexpr char8_t bg{static_cast<char8_t>(ntpathsize)};
+					constexpr char8_t ed{bg+26};
+					for (char8_t i{bg}; i != ed; ++i)
 					{
-						DosDevice[0] = i;
-						if (QueryDosDeviceA_p(DosDevice, NtPath, 64))
+						*DosDevice = i;
+						if (QueryDosDeviceA_p(reinterpret_cast<char const*>(DosDevice), NtPath, ntpathsize))
 						{
 							NtPathLen = ::fast_io::cstr_len(NtPath);
 
@@ -262,15 +315,88 @@ inline win32_user_process_information win32_process_create_impl(void *__restrict
 				next2:
 					address_begin += NtPathLen - 2;
 					address_begin[0] = DosDevice[0];
-					address_begin[1] = ':';
+					address_begin[1] = u8':';
 				}
 			}
 		}
 		// create process
 		::fast_io::win32::startupinfoa si{sizeof(si)};
-		si.hStdInput = processio.in.win32_handle ? processio.in.win32_handle : ::fast_io::win32_stdin().handle;
-		si.hStdOutput = processio.out.win32_handle ? processio.out.win32_handle : ::fast_io::win32_stdout().handle;
-		si.hStdError = processio.err.win32_handle ? processio.err.win32_handle : ::fast_io::win32_stderr().handle;
+
+		if (!processio.in.is_dev_null)
+		{
+			if (processio.in.win32_pipe_in_handle)
+			{
+				si.hStdInput = processio.in.win32_pipe_in_handle;
+
+				if (!::fast_io::win32::SetHandleInformation(processio.in.win32_pipe_out_handle, 0x00000001 /*HANDLE_FLAG_INHERIT*/, 0)) [[unlikely]]
+				{
+					throw_win32_error();
+				}
+			}
+			else if (processio.in.win32_handle)
+			{
+				si.hStdInput = processio.in.win32_handle;
+			}
+			else
+			{
+				si.hStdInput = ::fast_io::win32_stdin().handle;
+			}
+		}
+		else
+		{
+			si.hStdInput = nullptr;
+		}
+
+		if (!processio.out.is_dev_null)
+		{
+			if (processio.out.win32_pipe_out_handle)
+			{
+				si.hStdOutput = processio.out.win32_pipe_out_handle;
+
+				if (!::fast_io::win32::SetHandleInformation(processio.out.win32_pipe_in_handle, 0x00000001 /*HANDLE_FLAG_INHERIT*/, 0)) [[unlikely]]
+				{
+					throw_win32_error();
+				}
+			}
+			else if (processio.out.win32_handle)
+			{
+				si.hStdOutput = processio.out.win32_handle;
+			}
+			else
+			{
+				si.hStdOutput = ::fast_io::win32_stdout().handle;
+			}
+		}
+		else
+		{
+			si.hStdOutput = nullptr;
+		}
+
+		if (!processio.err.is_dev_null)
+		{
+			if (processio.err.win32_pipe_out_handle)
+			{
+				si.hStdError = processio.err.win32_pipe_out_handle;
+
+				if (!::fast_io::win32::SetHandleInformation(processio.err.win32_pipe_in_handle, 0x00000001 /*HANDLE_FLAG_INHERIT*/, 0)) [[unlikely]]
+				{
+					throw_win32_error();
+				}
+			}
+			else if (processio.err.win32_handle)
+			{
+				si.hStdError = processio.err.win32_handle;
+			}
+			else
+			{
+				si.hStdError = ::fast_io::win32_stderr().handle;
+			}
+		}
+		else
+		{
+			si.hStdError = nullptr;
+		}
+
 		si.dwFlags = 0x00000100;
 
 		::fast_io::win32::process_information pi{};
@@ -285,29 +411,29 @@ inline win32_user_process_information win32_process_create_impl(void *__restrict
 
 template <win32_family family, typename path_type>
 inline win32_user_process_information win32_create_process_overloads(nt_at_entry entry, path_type const &filename,
-																	 win32_process_args<family> const &args, win32_process_args<family> const &envs,
+																	 win32_process_args<family> const &args, win32_process_envs<family> const &envs,
 																	 win32_process_io const &processio)
 {
 	basic_win32_family_file<family, char> nf(entry, filename, open_mode::in | open_mode::excl);
-	return win32_process_create_impl<family>(nf.handle, args.args, envs.args, processio);
+	return win32_process_create_impl<family>(nf.handle, args.get(), envs.get(), processio);
 }
 
 template <win32_family family, typename path_type>
 inline win32_user_process_information win32_create_process_overloads(path_type const &filename, win32_process_args<family> const &args,
-																	 win32_process_args<family> const &envs,
+																	 win32_process_envs<family> const &envs,
 																	 win32_process_io const &processio)
 {
 	basic_win32_family_file<family, char> nf(filename, open_mode::in | open_mode::excl);
-	return win32_process_create_impl<family>(nf.handle, args.args, envs.args, processio);
+	return win32_process_create_impl<family>(nf.handle, args.get(), envs.get(), processio);
 }
 
 template <win32_family family, typename path_type>
 inline win32_user_process_information win32_create_process_overloads(::fast_io::nt_fs_dirent ent, win32_process_args<family> const &args,
-																	 win32_process_args<family> const &envs,
+																	 win32_process_envs<family> const &envs,
 																	 win32_process_io const &processio)
 {
 	basic_win32_family_file<family, char> nf(ent, open_mode::in | open_mode::excl);
-	return win32_process_create_impl<family>(nf.handle, args.args, envs.args, processio);
+	return win32_process_create_impl<family>(nf.handle, args.get(), envs.get(), processio);
 }
 
 } // namespace win32::details
@@ -318,15 +444,15 @@ class win32_family_process_observer
 public:
 	using native_handle_type = win32_user_process_information;
 	native_handle_type hnt_user_process_info{};
-	constexpr auto &native_handle() noexcept
+	inline constexpr auto &native_handle() noexcept
 	{
 		return hnt_user_process_info;
 	}
-	constexpr auto &native_handle() const noexcept
+	inline constexpr auto &native_handle() const noexcept
 	{
 		return hnt_user_process_info;
 	}
-	explicit constexpr operator bool() const noexcept
+	inline explicit constexpr operator bool() const noexcept
 	{
 		return reinterpret_cast<::std::size_t>(hnt_user_process_info.hprocess) |
 			   reinterpret_cast<::std::size_t>(hnt_user_process_info.hthread);
@@ -392,54 +518,63 @@ inline win32_wait_status wait(win32_family_process_observer<family> ppob) noexce
 }
 
 template <win32_family family>
+inline void kill(win32_family_process_observer<family> ppob, win32_wait_status exit_code)
+{
+	if (!::fast_io::win32::TerminateProcess(ppob.hnt_user_process_info.hprocess, exit_code.wait_loc)) [[unlikely]]
+	{
+		throw_win32_error();
+	}
+}
+
+template <win32_family family>
 class win32_family_process : public win32_family_process_observer<family>
 {
 public:
 	using native_handle_type = win32_user_process_information;
-	constexpr win32_family_process() noexcept = default;
+	inline constexpr win32_family_process() noexcept = default;
 	template <typename native_hd>
 		requires ::std::same_as<native_handle_type, ::std::remove_cvref_t<native_hd>>
-	explicit constexpr win32_family_process(native_hd hd) noexcept
+	inline explicit constexpr win32_family_process(native_hd hd) noexcept
 		: win32_family_process_observer<family>{hd}
 	{
 	}
 
 	template <::fast_io::constructible_to_os_c_str path_type>
-	explicit win32_family_process(nt_at_entry nate, path_type const &filename, win32_process_args<family> const &args,
-								  win32_process_args<family> const &envs, win32_process_io const &processio)
+	inline explicit win32_family_process(nt_at_entry nate, path_type const &filename, win32_process_args<family> const &args,
+										 win32_process_envs<family> const &envs, win32_process_io const &processio)
 		: win32_family_process_observer<family>{
 			  win32::details::win32_create_process_overloads<family>(nate, filename, args, envs, processio)}
 	{
 	}
 
 	template <::fast_io::constructible_to_os_c_str path_type>
-	explicit win32_family_process(path_type const &filename, win32_process_args<family> const &args, win32_process_args<family> const &envs,
-								  win32_process_io const &processio)
+	inline explicit win32_family_process(path_type const &filename, win32_process_args<family> const &args, win32_process_envs<family> const &envs,
+										 win32_process_io const &processio)
 		: win32_family_process_observer<family>{
 			  win32::details::win32_create_process_overloads<family>(filename, args, envs, processio)}
 	{
 	}
 
-	explicit win32_family_process(::fast_io::nt_fs_dirent ent, win32_process_args<family> const &args, win32_process_args<family> const &envs,
-								  win32_process_io const &processio)
+	inline explicit win32_family_process(::fast_io::nt_fs_dirent ent, win32_process_args<family> const &args, win32_process_envs<family> const &envs,
+										 win32_process_io const &processio)
 		: win32_family_process_observer<family>{
 			  win32::details::win32_create_process_overloads<family>(ent, args, envs, processio)}
 	{
 	}
 
-	win32_family_process(win32_family_process const &b) = delete;
-	win32_family_process &operator=(win32_family_process const &b) = delete;
-	constexpr win32_family_process(win32_family_process &&__restrict b) noexcept
+	inline win32_family_process(win32_family_process const &b) = delete;
+	inline win32_family_process &operator=(win32_family_process const &b) = delete;
+	inline constexpr win32_family_process(win32_family_process &&__restrict b) noexcept
 		: win32_family_process_observer<family>{b.release()}
 	{
 	}
-	win32_family_process &operator=(win32_family_process &&__restrict b) noexcept
+	inline win32_family_process &operator=(win32_family_process &&__restrict b) noexcept
 	{
 		win32::details::close_win32_user_process_information_and_wait(this->hnt_user_process_info);
 		this->hnt_user_process_info = b.release();
 		return *this;
 	}
-	~win32_family_process()
+	inline ~win32_family_process()
 	{
 		win32::details::close_win32_user_process_information_and_wait(this->hnt_user_process_info);
 		this->hnt_user_process_info = {};

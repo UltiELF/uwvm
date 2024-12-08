@@ -25,8 +25,13 @@
 namespace uwvm::posix
 {
     #if !defined(__MSDOS__)
+        #if defined(__DARWIN_C_LEVEL)
+    extern int fadvise(int fd, off_t offset, off_t len, int advice) noexcept __asm__("_posix_fadvise");
+    extern int fallocate(int fd, int mode, off_t offset, off_t len) noexcept __asm__("_fallocate");
+        #else
     extern int fadvise(int fd, off_t offset, off_t len, int advice) noexcept __asm__("posix_fadvise");
     extern int fallocate(int fd, int mode, off_t offset, off_t len) noexcept __asm__("fallocate");
+        #endif
     #endif
 
     extern int fcntl(int fd, int cmd, ... /* arg */) noexcept

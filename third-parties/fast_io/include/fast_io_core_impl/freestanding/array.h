@@ -4,7 +4,7 @@ namespace fast_io::freestanding
 {
 
 template <typename T, ::std::size_t N>
-	requires(sizeof(N) != 0)
+	requires(N != 0)
 struct array
 {
 	using value_type = T;
@@ -15,10 +15,20 @@ struct array
 	using size_type = ::std::size_t;
 	using difference_type = ::std::ptrdiff_t;
 	T element[N];
+#if __has_cpp_attribute(__gnu__::__always_inline__)
+	[[__gnu__::__always_inline__]]
+#elif __has_cpp_attribute(msvc::forceinline)
+	[[msvc::forceinline]]
+#endif
 	inline constexpr T *data() noexcept
 	{
 		return element;
 	}
+#if __has_cpp_attribute(__gnu__::__always_inline__)
+	[[__gnu__::__always_inline__]]
+#elif __has_cpp_attribute(msvc::forceinline)
+	[[msvc::forceinline]]
+#endif
 	inline constexpr T const *data() const noexcept
 	{
 		return element;
@@ -55,27 +65,115 @@ struct array
 	{
 		return element + N;
 	}
+#if __has_cpp_attribute(__gnu__::__always_inline__)
+	[[__gnu__::__always_inline__]]
+#elif __has_cpp_attribute(msvc::forceinline)
+	[[msvc::forceinline]]
+#endif
 	inline constexpr T const &front() const noexcept
 	{
 		return *element;
 	}
+#if __has_cpp_attribute(__gnu__::__always_inline__)
+	[[__gnu__::__always_inline__]]
+#elif __has_cpp_attribute(msvc::forceinline)
+	[[msvc::forceinline]]
+#endif
 	inline constexpr T &front() noexcept
 	{
 		return *element;
 	}
+#if __has_cpp_attribute(__gnu__::__always_inline__)
+	[[__gnu__::__always_inline__]]
+#elif __has_cpp_attribute(msvc::forceinline)
+	[[msvc::forceinline]]
+#endif
 	inline constexpr T const &back() const noexcept
 	{
-		return element[N - 1];
+		constexpr size_type nm1{N - 1};
+		return element[nm1];
 	}
+#if __has_cpp_attribute(__gnu__::__always_inline__)
+	[[__gnu__::__always_inline__]]
+#elif __has_cpp_attribute(msvc::forceinline)
+	[[msvc::forceinline]]
+#endif
 	inline constexpr T &back() noexcept
 	{
-		return element[N - 1];
+		constexpr size_type nm1{N - 1};
+		return element[nm1];
 	}
+#if __has_cpp_attribute(__gnu__::__always_inline__)
+	[[__gnu__::__always_inline__]]
+#elif __has_cpp_attribute(msvc::forceinline)
+	[[msvc::forceinline]]
+#endif
+	inline constexpr T const &front_unchecked() const noexcept
+	{
+		return *element;
+	}
+#if __has_cpp_attribute(__gnu__::__always_inline__)
+	[[__gnu__::__always_inline__]]
+#elif __has_cpp_attribute(msvc::forceinline)
+	[[msvc::forceinline]]
+#endif
+	inline constexpr T &front_unchecked() noexcept
+	{
+		return *element;
+	}
+#if __has_cpp_attribute(__gnu__::__always_inline__)
+	[[__gnu__::__always_inline__]]
+#elif __has_cpp_attribute(msvc::forceinline)
+	[[msvc::forceinline]]
+#endif
+	inline constexpr T const &back_unchecked() const noexcept
+	{
+		constexpr size_type nm1{N - 1};
+		return element[nm1];
+	}
+#if __has_cpp_attribute(__gnu__::__always_inline__)
+	[[__gnu__::__always_inline__]]
+#elif __has_cpp_attribute(msvc::forceinline)
+	[[msvc::forceinline]]
+#endif
+	inline constexpr T &back_unchecked() noexcept
+	{
+		constexpr size_type nm1{N - 1};
+		return element[nm1];
+	}
+#if __has_cpp_attribute(__gnu__::__always_inline__)
+	[[__gnu__::__always_inline__]]
+#elif __has_cpp_attribute(msvc::forceinline)
+	[[msvc::forceinline]]
+#endif
 	inline constexpr T const &operator[](::std::size_t i) const noexcept
 	{
 		return element[i];
 	}
+#if __has_cpp_attribute(__gnu__::__always_inline__)
+	[[__gnu__::__always_inline__]]
+#elif __has_cpp_attribute(msvc::forceinline)
+	[[msvc::forceinline]]
+#endif
 	inline constexpr T &operator[](::std::size_t i) noexcept
+	{
+		return element[i];
+	}
+#if __has_cpp_attribute(__gnu__::__always_inline__)
+	[[__gnu__::__always_inline__]]
+#elif __has_cpp_attribute(msvc::forceinline)
+	[[msvc::forceinline]]
+#endif
+	inline constexpr T const &index_unchecked(::std::size_t i) const noexcept
+	{
+		return element[i];
+	}
+#if __has_cpp_attribute(__gnu__::__always_inline__)
+	[[__gnu__::__always_inline__]]
+#elif __has_cpp_attribute(msvc::forceinline)
+	[[msvc::forceinline]]
+#endif
+	inline constexpr T &index_unchecked(::std::size_t i) noexcept
 	{
 		return element[i];
 	}

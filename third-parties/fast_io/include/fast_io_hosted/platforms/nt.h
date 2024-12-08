@@ -74,7 +74,7 @@ inline constexpr nt_open_mode calculate_nt_open_mode(open_mode_perms ompm) noexc
 	nt_open_mode mode;
 
 	constexpr auto default_write_attribute{0x00020000L /*READ_CONTROL*/ | 0x0002 /*FILE_WRITE_DATA*/ | 0x0004 /*FILE_APPEND_DATA*/};
-	constexpr auto default_read_attribute{0x00020000L/*READ_CONTROL*/ | 0x0001 /*FILE_READ_DATA*/};
+	constexpr auto default_read_attribute{0x00020000L /*READ_CONTROL*/ | 0x0001 /*FILE_READ_DATA*/};
 
 	mode.DesiredAccess |= 0x00100000L /*SYNCHRONIZE*/ | 0x0080 /*FILE_READ_ATTRIBUTES*/;
 
@@ -97,12 +97,12 @@ inline constexpr nt_open_mode calculate_nt_open_mode(open_mode_perms ompm) noexc
 	}
 	else if ((value & open_mode::out) != open_mode::none)
 	{
-		mode.DesiredAccess |= default_write_attribute; 
+		mode.DesiredAccess |= default_write_attribute;
 		generic_write = true;
 	}
 	if (((value & open_mode::in) != open_mode::none) || ((value & open_mode::app) != open_mode::none))
 	{
-		mode.DesiredAccess |= default_read_attribute; 
+		mode.DesiredAccess |= default_read_attribute;
 		if ((value & open_mode::out) != open_mode::none &&
 			((value & open_mode::app) != open_mode::none && (value & open_mode::trunc) != open_mode::none))
 		{
@@ -257,7 +257,7 @@ inline constexpr nt_open_mode calculate_nt_open_mode(open_mode_perms ompm) noexc
 		if (mode.CreateDisposition == 0)
 		{
 			mode.DesiredAccess |= default_read_attribute; // FILE_GENERIC_READ
-			mode.CreateDisposition = 0x00000001; // OPEN_EXISTING
+			mode.CreateDisposition = 0x00000001;          // OPEN_EXISTING
 		}
 		mode.CreateOptions |= 0x00004000; // FILE_OPEN_FOR_BACKUP_INTENT
 		mode.CreateOptions |= 0x00000001; // FILE_DIRECTORY_FILE
@@ -352,7 +352,7 @@ struct nt_create_callback
 #elif __has_cpp_attribute(msvc::forceinline)
 	[[msvc::forceinline]]
 #endif
-	void *operator()(void *directory_handle, ::fast_io::win32::nt::unicode_string *relative_path) const
+	inline void *operator()(void *directory_handle, ::fast_io::win32::nt::unicode_string *relative_path) const
 	{
 		return nt_create_file_common<zw>(directory_handle, relative_path, mode); // get rid of this pointer
 	}
@@ -362,7 +362,8 @@ template <bool zw>
 inline void *nt_family_create_file_impl(char16_t const *filename_cstr, open_mode_perms ompm)
 {
 	return ::fast_io::win32::nt::details::nt_call_invoke_without_directory_handle_impl(
-		filename_cstr, nt_create_callback<zw>{::fast_io::win32::nt::details::calculate_nt_open_mode(ompm)});
+		filename_cstr, static_cast<bool>(ompm.om & ::fast_io::open_mode::nt_path),
+		nt_create_callback<zw>{::fast_io::win32::nt::details::calculate_nt_open_mode(ompm)});
 }
 
 template <bool zw>
@@ -400,7 +401,7 @@ inline void *nt_family_create_file_at_impl(void *directory_handle, char16_t cons
 	else
 	{
 		return ::fast_io::win32::nt::details::nt_call_callback(
-			directory_handle, filename_c_str, filename_c_str_len,
+			directory_handle, filename_c_str, filename_c_str_len, static_cast<bool>(md.om & ::fast_io::open_mode::nt_path),
 			nt_create_callback<zw>{::fast_io::win32::nt::details::calculate_nt_open_mode(md)});
 	}
 }
@@ -512,7 +513,7 @@ inline ::std::byte *nt_read_pread_some_bytes_common_impl(void *__restrict handle
 																							 ::fast_io::details::read_write_bytes_compute<::std::uint_least32_t>(first, last), pbyteoffset, nullptr)};
 	if (status) [[unlikely]]
 	{
-		if (status == 0xC0000011) [[likely]]
+		if (status == 0xC0000011 /*file*/ || status == 0xC000014B /*pipe*/) [[likely]]
 		{
 			return first;
 		}
@@ -580,12 +581,12 @@ struct nt_at_entry
 {
 	using native_handle_type = void *;
 	void *handle{};
-	explicit constexpr nt_at_entry() noexcept = default;
-	explicit constexpr nt_at_entry(void *mhandle) noexcept
+	inline explicit constexpr nt_at_entry() noexcept = default;
+	inline explicit constexpr nt_at_entry(void *mhandle) noexcept
 		: handle(mhandle)
 	{}
 #if !defined(__WINE__)
-	nt_at_entry(posix_at_entry pate) noexcept
+	inline nt_at_entry(posix_at_entry pate) noexcept
 		: handle(details::my_get_osfile_handle(pate.fd))
 	{}
 #endif
@@ -618,8 +619,8 @@ template <nt_family family>
 struct nt_family_at_entry : nt_at_entry
 {
 	using nt_at_entry::native_handle_type;
-	explicit constexpr nt_family_at_entry() noexcept = default;
-	explicit constexpr nt_family_at_entry(void *mhandle) noexcept
+	inline explicit constexpr nt_family_at_entry() noexcept = default;
+	inline explicit constexpr nt_family_at_entry(void *mhandle) noexcept
 		: nt_at_entry{mhandle}
 	{}
 };
@@ -645,25 +646,25 @@ public:
 	using input_char_type = ch_type;
 	using output_char_type = ch_type;
 	native_handle_type handle{};
-	constexpr native_handle_type native_handle() const noexcept
+	inline constexpr native_handle_type native_handle() const noexcept
 	{
 		return handle;
 	}
-	explicit constexpr operator bool() const noexcept
+	inline explicit constexpr operator bool() const noexcept
 	{
 		return handle != nullptr;
 	}
 	template <win32_family family2>
-	explicit operator basic_win32_family_io_observer<family2, char_type>() const noexcept
+	inline explicit operator basic_win32_family_io_observer<family2, char_type>() const noexcept
 	{
 		return basic_win32_family_io_observer<family2, char_type>{reinterpret_cast<void *>(handle)};
 	}
 	template <nt_family family2>
-	constexpr operator basic_nt_family_io_observer<family2, char_type>() const noexcept
+	inline constexpr operator basic_nt_family_io_observer<family2, char_type>() const noexcept
 	{
 		return basic_nt_family_io_observer<family2, char_type>{handle};
 	}
-	constexpr native_handle_type release() noexcept
+	inline constexpr native_handle_type release() noexcept
 	{
 		auto temp{handle};
 		handle = nullptr;
@@ -1066,7 +1067,7 @@ inline constexpr unix_timestamp to_unix_timestamp(::std::uint_least64_t date_tim
 			static_cast<::std::uint_least64_t>(unix_time % 10000000ULL) * mul_factor};
 }
 
-inline file_type file_type_impl(::std::uint_least32_t DeviceType)
+inline constexpr file_type file_type_impl(::std::uint_least32_t DeviceType) noexcept
 {
 	if (DeviceType > 0x2B)
 	{
@@ -1287,11 +1288,11 @@ struct
 {
 	using native_handle_type = void *;
 	void *handle{};
-	explicit constexpr nt_family_file_factory(void *hd) noexcept
+	inline explicit constexpr nt_family_file_factory(void *hd) noexcept
 		: handle(hd) {};
-	nt_family_file_factory(nt_family_file_factory const &) = delete;
-	nt_family_file_factory &operator=(nt_family_file_factory const &) = delete;
-	~nt_family_file_factory()
+	inline nt_family_file_factory(nt_family_file_factory const &) = delete;
+	inline nt_family_file_factory &operator=(nt_family_file_factory const &) = delete;
+	inline ~nt_family_file_factory()
 	{
 		if (handle) [[likely]]
 		{
@@ -1312,53 +1313,53 @@ public:
 	using typename basic_nt_family_io_observer<family, ch_type>::output_char_type;
 	using typename basic_nt_family_io_observer<family, ch_type>::native_handle_type;
 	using file_factory_type = nt_family_file_factory<family>;
-	constexpr basic_nt_family_file() noexcept = default;
-	constexpr basic_nt_family_file(basic_nt_family_io_observer<family, ch_type>) noexcept = delete;
-	constexpr basic_nt_family_file &operator=(basic_nt_family_io_observer<family, ch_type>) noexcept = delete;
+	inline constexpr basic_nt_family_file() noexcept = default;
+	inline constexpr basic_nt_family_file(basic_nt_family_io_observer<family, ch_type>) noexcept = delete;
+	inline constexpr basic_nt_family_file &operator=(basic_nt_family_io_observer<family, ch_type>) noexcept = delete;
 
 	template <typename native_hd>
 		requires ::std::same_as<native_handle_type, ::std::remove_cvref_t<native_hd>>
-	explicit constexpr basic_nt_family_file(native_hd hd) noexcept
+	inline explicit constexpr basic_nt_family_file(native_hd hd) noexcept
 		: basic_nt_family_io_observer<family, ch_type>{hd}
 	{
 	}
-	constexpr basic_nt_family_file(decltype(nullptr)) noexcept = delete;
-	explicit constexpr basic_nt_family_file(nt_family_file_factory<family> &&hd) noexcept
+	inline constexpr basic_nt_family_file(decltype(nullptr)) noexcept = delete;
+	inline explicit constexpr basic_nt_family_file(nt_family_file_factory<family> &&hd) noexcept
 		: basic_nt_family_io_observer<family, ch_type>{hd}
 	{
 		hd.handle = nullptr;
 	}
-	explicit basic_nt_family_file(io_dup_t, basic_nt_family_io_observer<family, ch_type> wiob)
+	inline explicit basic_nt_family_file(io_dup_t, basic_nt_family_io_observer<family, ch_type> wiob)
 		: basic_nt_family_io_observer<family, ch_type>{
 			  ::fast_io::win32::nt::details::nt_dup_impl<family == nt_family::zw>(wiob.handle)}
 	{
 	}
-	explicit basic_nt_family_file(nt_fs_dirent fsdirent, open_mode om, perms pm = static_cast<perms>(436))
+	inline explicit basic_nt_family_file(nt_fs_dirent fsdirent, open_mode om, perms pm = static_cast<perms>(436))
 		: basic_nt_family_io_observer<family, char_type>{
 			  ::fast_io::win32::nt::details::nt_family_create_file_fs_dirent_impl<family == nt_family::zw>(fsdirent.handle, fsdirent.filename.c_str(), fsdirent.filename.size(), {om, pm})}
 	{
 	}
 	template <::fast_io::constructible_to_os_c_str T>
-	explicit basic_nt_family_file(T const &t, open_mode om, perms pm = static_cast<perms>(436))
+	inline explicit basic_nt_family_file(T const &t, open_mode om, perms pm = static_cast<perms>(436))
 		: basic_nt_family_io_observer<family, ch_type>{
 			  ::fast_io::win32::nt::details::nt_create_file_impl<family == nt_family::zw>(t, {om, pm})}
 	{
 	}
 	template <::fast_io::constructible_to_os_c_str T>
-	explicit basic_nt_family_file(nt_at_entry ent, T const &t, open_mode om, perms pm = static_cast<perms>(436))
+	inline explicit basic_nt_family_file(nt_at_entry ent, T const &t, open_mode om, perms pm = static_cast<perms>(436))
 		: basic_nt_family_io_observer<family, ch_type>{
 			  ::fast_io::win32::nt::details::nt_create_file_at_impl<family == nt_family::zw>(ent.handle, t, {om, pm})}
 	{
 	}
 
 	template <::fast_io::constructible_to_os_c_str T>
-	explicit basic_nt_family_file(io_kernel_t, T const &t, open_mode om, perms pm = static_cast<perms>(436))
+	inline explicit basic_nt_family_file(io_kernel_t, T const &t, open_mode om, perms pm = static_cast<perms>(436))
 		: basic_nt_family_io_observer<family, ch_type>{
 			  ::fast_io::win32::nt::details::nt_create_file_kernel_impl<family == nt_family::zw>(t, {om, pm})}
 	{
 	}
 	template <::fast_io::constructible_to_os_c_str T>
-	explicit basic_nt_family_file(io_kernel_t, nt_at_entry ent, T const &t, open_mode om,
+	inline explicit basic_nt_family_file(io_kernel_t, nt_at_entry ent, T const &t, open_mode om,
 								  perms pm = static_cast<perms>(436))
 		: basic_nt_family_io_observer<family, ch_type>{
 			  ::fast_io::win32::nt::details::nt_create_file_at_impl<family == nt_family::zw, true>(ent.handle, t,
@@ -1366,7 +1367,7 @@ public:
 	{
 	}
 
-	void close()
+	inline void close()
 	{
 		if (this->handle) [[likely]]
 		{
@@ -1378,7 +1379,7 @@ public:
 			}
 		}
 	}
-	void reset(native_handle_type newhandle = nullptr) noexcept
+	inline void reset(native_handle_type newhandle = nullptr) noexcept
 	{
 		if (this->handle) [[likely]]
 		{
@@ -1386,22 +1387,22 @@ public:
 		}
 		this->handle = newhandle;
 	}
-	basic_nt_family_file(basic_nt_family_file const &other)
+	inline basic_nt_family_file(basic_nt_family_file const &other)
 		: basic_nt_family_io_observer<family, ch_type>(
 			  ::fast_io::win32::nt::details::nt_dup_impl<family == nt_family::zw>(other.handle))
 	{
 	}
-	basic_nt_family_file &operator=(basic_nt_family_file const &other)
+	inline basic_nt_family_file &operator=(basic_nt_family_file const &other)
 	{
 		this->handle = ::fast_io::win32::nt::details::nt_dup2_impl<family == nt_family::zw>(other.handle, this->handle);
 		return *this;
 	}
-	constexpr basic_nt_family_file(basic_nt_family_file &&__restrict other) noexcept
+	inline constexpr basic_nt_family_file(basic_nt_family_file &&__restrict other) noexcept
 		: basic_nt_family_io_observer<family, ch_type>{other.handle}
 	{
 		other.handle = nullptr;
 	}
-	basic_nt_family_file &operator=(basic_nt_family_file &&__restrict other) noexcept
+	inline basic_nt_family_file &operator=(basic_nt_family_file &&__restrict other) noexcept
 	{
 		if (this->handle) [[likely]]
 		{
@@ -1411,7 +1412,7 @@ public:
 		other.handle = nullptr;
 		return *this;
 	}
-	~basic_nt_family_file()
+	inline ~basic_nt_family_file()
 	{
 		if (this->handle) [[likely]]
 		{
@@ -1420,26 +1421,168 @@ public:
 	}
 };
 
+namespace win32::nt::details
+{
+
+template <bool zw>
+inline void nt_create_pipe(void **hReadPipe, void **hWritePipe)
+{
+	::fast_io::win32::nt::io_status_block isb;
+	constexpr decltype(auto) namedpipe_part{u"\\Device\\NamedPipe\\"};
+	::fast_io::win32::nt::unicode_string us{
+		.Length = static_cast<::std::uint_least16_t>(sizeof(namedpipe_part) - sizeof(char16_t)),
+		.MaximumLength = static_cast<::std::uint_least16_t>(sizeof(namedpipe_part)),
+		.Buffer = const_cast<char16_t *>(namedpipe_part)};
+
+	::fast_io::win32::nt::object_attributes obj{.Length = sizeof(::fast_io::win32::nt::object_attributes),
+												.RootDirectory = nullptr,
+												.ObjectName = __builtin_addressof(us),
+												.Attributes = 0,
+												.SecurityDescriptor = nullptr,
+												.SecurityQualityOfService = nullptr};
+
+	void *namedpipedir;
+	auto status = ::fast_io::win32::nt::nt_create_file<zw>(
+		__builtin_addressof(namedpipedir), 0x80100000, __builtin_addressof(obj),
+		__builtin_addressof(isb), nullptr, 0, 3, 0x00000001, 0x00000020, nullptr, 0u);
+
+	if (status)
+	{
+		throw_nt_error(status);
+	}
+
+	::fast_io::basic_nt_family_file<zw ? nt_family::zw : nt_family::nt, char> file{namedpipedir};
+
+	::std::int_least64_t DefaultTimeout{-1200000000};
+
+	void *ReadPipeHandle;
+	::fast_io::win32::nt::unicode_string us2{};
+	::fast_io::win32::nt::object_attributes obj2{.Length = sizeof(::fast_io::win32::nt::object_attributes),
+												 .RootDirectory = file.native_handle(),
+												 .ObjectName = __builtin_addressof(us2),
+												 .Attributes = 0x42 /* InheritHandle */,
+												 .SecurityDescriptor = nullptr,
+												 .SecurityQualityOfService = nullptr};
+
+	status = ::fast_io::win32::nt::nt_create_named_pipe_file<zw>(__builtin_addressof(ReadPipeHandle),
+																 0x80000000L | 0x0100 | 0x00100000L /*GENERIC_READ | FILE_WRITE_ATTRIBUTES | SYNCHRONIZE*/,
+																 __builtin_addressof(obj2),
+																 __builtin_addressof(isb),
+																 0x01 | 0x02 /*FILE_SHARE_READ | FILE_SHARE_DELETE*/,
+																 0x00000002 /*FILE_CREATE*/,
+																 0x00000020 /*FILE_SYNCHRONOUS_IO_NONALERT*/,
+																 0x00000000 /*FILE_PIPE_BYTE_STREAM_TYPE*/,
+																 0x00000000 /*FILE_PIPE_BYTE_STREAM_MODE*/,
+																 0x00000000 /*FILE_PIPE_QUEUE_OPERATION*/,
+																 1,
+																 0x1000 /*buffer size*/,
+																 0x1000 /*buffer size*/,
+																 __builtin_addressof(DefaultTimeout));
+
+	if (status)
+	{
+		::fast_io::throw_nt_error(status);
+	}
+
+	obj2.RootDirectory = ReadPipeHandle;
+
+	void *WritePipeHandle;
+	status = ::fast_io::win32::nt::nt_create_file<zw>(
+		__builtin_addressof(WritePipeHandle), 0x40100080, __builtin_addressof(obj2), __builtin_addressof(isb), nullptr,
+		0, 3, 0x00000001, 0x00000020 | 0x00000040, nullptr, 0u);
+
+	if (status)
+	{
+		::fast_io::throw_nt_error(status);
+	}
+
+	*hReadPipe = ReadPipeHandle;
+	*hWritePipe = WritePipeHandle;
+}
+} // namespace win32::nt::details
+
+template <nt_family family, ::std::integral ch_type>
+class basic_nt_family_pipe
+{
+public:
+	using char_type = ch_type;
+	basic_nt_family_file<family, ch_type> pipes[2];
+	inline basic_nt_family_pipe()
+	{
+		win32::nt::details::nt_create_pipe<family == nt_family::zw>(__builtin_addressof(pipes[0].handle), __builtin_addressof(pipes[1].handle));
+	}
+	inline constexpr auto &in() noexcept
+	{
+		return *pipes;
+	}
+	inline constexpr auto &out() noexcept
+	{
+		return pipes[1];
+	}
+};
+
+template <nt_family family, ::std::integral ch_type>
+inline constexpr win32_io_redirection redirect(basic_nt_family_pipe<family, ch_type> &hd)
+{
+	return {.win32_pipe_in_handle = hd.in().handle, .win32_pipe_out_handle = hd.out().handle};
+}
+
+template <nt_family family, ::std::integral ch_type>
+inline constexpr basic_nt_family_io_observer<family, ch_type>
+input_stream_ref_define(basic_nt_family_pipe<family, ch_type> &pp) noexcept
+{
+	return {pp.in().handle};
+}
+
+template <nt_family family, ::std::integral ch_type>
+inline constexpr basic_nt_family_io_observer<family, char>
+input_bytes_stream_ref_define(basic_nt_family_pipe<family, ch_type> &pp) noexcept
+{
+	return {pp.in().handle};
+}
+
+template <nt_family family, ::std::integral ch_type>
+inline constexpr basic_nt_family_io_observer<family, ch_type>
+output_stream_ref_define(basic_nt_family_pipe<family, ch_type> &pp) noexcept
+{
+	return {pp.out().handle};
+}
+
+template <nt_family family, ::std::integral ch_type>
+inline constexpr basic_nt_family_io_observer<family, char>
+output_bytes_stream_ref_define(basic_nt_family_pipe<family, ch_type> &pp) noexcept
+{
+	return {pp.out().handle};
+}
+
 template <::std::integral char_type>
 using basic_nt_io_observer = basic_nt_family_io_observer<nt_family::nt, char_type>;
 
 template <::std::integral char_type>
 using basic_nt_file = basic_nt_family_file<nt_family::nt, char_type>;
 
+template <::std::integral char_type>
+using basic_nt_pipe = basic_nt_family_pipe<nt_family::nt, char_type>;
+
 using nt_io_observer = basic_nt_io_observer<char>;
 using nt_file = basic_nt_file<char>;
+using nt_pipe = basic_nt_pipe<char>;
 
 using wnt_io_observer = basic_nt_io_observer<wchar_t>;
 using wnt_file = basic_nt_file<wchar_t>;
+using wnt_pipe = basic_nt_pipe<wchar_t>;
 
 using u8nt_io_observer = basic_nt_io_observer<char8_t>;
 using u8nt_file = basic_nt_file<char8_t>;
+using u8nt_pipe = basic_nt_pipe<char8_t>;
 
 using u16nt_io_observer = basic_nt_io_observer<char16_t>;
 using u16nt_file = basic_nt_file<char16_t>;
+using u16nt_pipe = basic_nt_pipe<char16_t>;
 
 using u32nt_io_observer = basic_nt_io_observer<char32_t>;
 using u32nt_file = basic_nt_file<char32_t>;
+using u32nt_pipe = basic_nt_pipe<char32_t>;
 
 namespace details
 {
@@ -1494,20 +1637,28 @@ using basic_zw_io_observer = basic_nt_family_io_observer<nt_family::zw, char_typ
 template <::std::integral char_type>
 using basic_zw_file = basic_nt_family_file<nt_family::zw, char_type>;
 
+template <::std::integral char_type>
+using basic_zw_pipe = basic_nt_family_pipe<nt_family::zw, char_type>;
+
 using zw_io_observer = basic_zw_io_observer<char>;
 using zw_file = basic_zw_file<char>;
+using zw_pipe = basic_zw_pipe<char>;
 
 using wzw_io_observer = basic_zw_io_observer<wchar_t>;
 using wzw_file = basic_zw_file<wchar_t>;
+using wzw_pipe = basic_zw_pipe<wchar_t>;
 
 using u8zw_io_observer = basic_zw_io_observer<char8_t>;
 using u8zw_file = basic_zw_file<char8_t>;
+using u8zw_pipe = basic_zw_pipe<char8_t>;
 
 using u16zw_io_observer = basic_zw_io_observer<char16_t>;
 using u16zw_file = basic_zw_file<char16_t>;
+using u16zw_pipe = basic_zw_pipe<char16_t>;
 
 using u32zw_io_observer = basic_zw_io_observer<char32_t>;
 using u32zw_file = basic_zw_file<char32_t>;
+using u32zw_pipe = basic_zw_pipe<char32_t>;
 
 template <::std::integral char_type = char>
 inline basic_zw_io_observer<char_type> zw_stdin() noexcept

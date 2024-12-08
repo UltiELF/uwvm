@@ -25,7 +25,7 @@ public:
 #elif __has_cpp_attribute(msvc::no_unique_address)
 	[[msvc::no_unique_address]]
 #endif
-	value_type content[N];
+	value_type element[N];
 
 	static inline constexpr bool is_empty() noexcept
 	{
@@ -55,52 +55,52 @@ public:
 	}
 	inline constexpr iterator begin() noexcept
 	{
-		return content;
+		return element;
 	}
 	inline constexpr const_iterator begin() const noexcept
 	{
-		return content;
+		return element;
 	}
 	inline constexpr const_iterator cbegin() const noexcept
 	{
-		return content;
+		return element;
 	}
 	inline constexpr iterator end() noexcept
 	{
-		return content + N;
+		return element + N;
 	}
 	inline constexpr const_iterator end() const noexcept
 	{
-		return content + N;
+		return element + N;
 	}
 	inline constexpr const_iterator cend() const noexcept
 	{
-		return content + N;
+		return element + N;
 	}
 
 	inline constexpr reverse_iterator rbegin() noexcept
 	{
-		return reverse_iterator(content + N);
+		return reverse_iterator(element + N);
 	}
 	inline constexpr const_reverse_iterator rbegin() const noexcept
 	{
-		return const_reverse_iterator(content + N);
+		return const_reverse_iterator(element + N);
 	}
 	inline constexpr const_reverse_iterator crbegin() const noexcept
 	{
-		return const_reverse_iterator(content + N);
+		return const_reverse_iterator(element + N);
 	}
 	inline constexpr reverse_iterator rend() noexcept
 	{
-		return reverse_iterator(content);
+		return reverse_iterator(element);
 	}
 	inline constexpr const_reverse_iterator rend() const noexcept
 	{
-		return const_reverse_iterator(content);
+		return const_reverse_iterator(element);
 	}
 	inline constexpr const_reverse_iterator crend() const noexcept
 	{
-		return const_reverse_iterator(content);
+		return const_reverse_iterator(element);
 	}
 
 #if __has_cpp_attribute(__gnu__::__always_inline__)
@@ -110,7 +110,7 @@ public:
 #endif
 	inline constexpr const_pointer data() const noexcept
 	{
-		return content;
+		return element;
 	}
 
 #if __has_cpp_attribute(__gnu__::__always_inline__)
@@ -120,17 +120,17 @@ public:
 #endif
 	inline constexpr pointer data() noexcept
 	{
-		return content;
+		return element;
 	}
 
-	constexpr void fill(const_reference u) noexcept
+	inline constexpr void fill(const_reference u) noexcept
 	{
-		::std::fill_n(content, N, u);
+		::std::fill_n(element, N, u);
 	}
 
-	constexpr void swap(array &other) noexcept(::std::is_nothrow_swappable_v<value_type>)
+	inline constexpr void swap(array &other) noexcept(::std::is_nothrow_swappable_v<value_type>)
 	{
-		::std::swap_ranges(content, content + N, other.content);
+		::std::swap_ranges(element, element + N, other.element);
 	}
 
 #if __has_cpp_attribute(__gnu__::__always_inline__)
@@ -144,7 +144,7 @@ public:
 		{
 			::fast_io::fast_terminate();
 		}
-		return content[idx];
+		return element[idx];
 	}
 #if __has_cpp_attribute(__gnu__::__always_inline__)
 	[[__gnu__::__always_inline__]]
@@ -157,7 +157,7 @@ public:
 		{
 			::fast_io::fast_terminate();
 		}
-		return content[idx];
+		return element[idx];
 	}
 #if __has_cpp_attribute(__gnu__::__always_inline__)
 	[[__gnu__::__always_inline__]]
@@ -166,7 +166,7 @@ public:
 #endif
 	inline constexpr reference index_unchecked(size_type idx) noexcept
 	{
-		return content[idx];
+		return element[idx];
 	}
 #if __has_cpp_attribute(__gnu__::__always_inline__)
 	[[__gnu__::__always_inline__]]
@@ -175,7 +175,7 @@ public:
 #endif
 	inline constexpr const_reference index_unchecked(size_type idx) const noexcept
 	{
-		return content[idx];
+		return element[idx];
 	}
 
 #if __has_cpp_attribute(__gnu__::__always_inline__)
@@ -186,7 +186,7 @@ public:
 	inline constexpr reference back() noexcept
 	{
 		constexpr size_type nm1{N - 1};
-		return content[nm1];
+		return element[nm1];
 	}
 #if __has_cpp_attribute(__gnu__::__always_inline__)
 	[[__gnu__::__always_inline__]]
@@ -196,7 +196,7 @@ public:
 	inline constexpr const_reference back() const noexcept
 	{
 		constexpr size_type nm1{N - 1};
-		return content[nm1];
+		return element[nm1];
 	}
 #if __has_cpp_attribute(__gnu__::__always_inline__)
 	[[__gnu__::__always_inline__]]
@@ -206,7 +206,7 @@ public:
 	inline constexpr reference back_unchecked() noexcept
 	{
 		constexpr size_type nm1{N - 1};
-		return content[nm1];
+		return element[nm1];
 	}
 #if __has_cpp_attribute(__gnu__::__always_inline__)
 	[[__gnu__::__always_inline__]]
@@ -216,7 +216,7 @@ public:
 	inline constexpr const_reference back_unchecked() const noexcept
 	{
 		constexpr size_type nm1{N - 1};
-		return content[nm1];
+		return element[nm1];
 	}
 
 #if __has_cpp_attribute(__gnu__::__always_inline__)
@@ -226,7 +226,7 @@ public:
 #endif
 	inline constexpr reference front() noexcept
 	{
-		return *content;
+		return *element;
 	}
 #if __has_cpp_attribute(__gnu__::__always_inline__)
 	[[__gnu__::__always_inline__]]
@@ -235,7 +235,7 @@ public:
 #endif
 	inline constexpr const_reference front() const noexcept
 	{
-		return *content;
+		return *element;
 	}
 #if __has_cpp_attribute(__gnu__::__always_inline__)
 	[[__gnu__::__always_inline__]]
@@ -244,7 +244,7 @@ public:
 #endif
 	inline constexpr reference front_unchecked() noexcept
 	{
-		return *content;
+		return *element;
 	}
 #if __has_cpp_attribute(__gnu__::__always_inline__)
 	[[__gnu__::__always_inline__]]
@@ -253,7 +253,7 @@ public:
 #endif
 	inline constexpr const_reference front_unchecked() const noexcept
 	{
-		return *content;
+		return *element;
 	}
 };
 
@@ -359,11 +359,11 @@ public:
 		return nullptr;
 	}
 
-	constexpr void fill(const_reference) noexcept
+	inline constexpr void fill(const_reference) noexcept
 	{
 	}
 
-	constexpr void swap(array &) noexcept
+	inline constexpr void swap(array &) noexcept
 	{
 	}
 
@@ -480,14 +480,14 @@ public:
 };
 
 template <typename T, ::std::size_t N>
-constexpr void swap(::fast_io::containers::array<T, N> &a, ::fast_io::containers::array<T, N> &b) noexcept(noexcept(a.swap(b)))
+inline constexpr void swap(::fast_io::containers::array<T, N> &a, ::fast_io::containers::array<T, N> &b) noexcept(noexcept(a.swap(b)))
 {
 	a.swap(b);
 }
 
 template <typename T, ::std::size_t N1, ::std::size_t N2>
 	requires ::std::equality_comparable<T>
-constexpr bool operator==(::fast_io::containers::array<T, N1> const &a, ::fast_io::containers::array<T, N2> const &b)
+inline constexpr bool operator==(::fast_io::containers::array<T, N1> const &a, ::fast_io::containers::array<T, N2> const &b)
 {
 	if constexpr (N1 == N2)
 	{
@@ -510,7 +510,7 @@ constexpr bool operator==(::fast_io::containers::array<T, N1> const &a, ::fast_i
 
 template <typename T, ::std::size_t N1, ::std::size_t N2>
 	requires ::std::three_way_comparable<T>
-constexpr auto operator<=>(::fast_io::containers::array<T, N1> const &a, ::fast_io::containers::array<T, N2> const &b)
+inline constexpr auto operator<=>(::fast_io::containers::array<T, N1> const &a, ::fast_io::containers::array<T, N2> const &b)
 {
 	return ::std::lexicographical_compare_three_way(a.data(), a.data() + N1, b.data(), b.data() + N2, ::std::compare_three_way{});
 }
@@ -521,14 +521,14 @@ namespace details
 {
 
 template <typename T, std::size_t N, std::size_t... I>
-constexpr ::fast_io::containers::array<std::remove_cv_t<T>, N>
+inline constexpr ::fast_io::containers::array<std::remove_cv_t<T>, N>
 to_array_lvalueref_impl(T (&a)[N], ::std::index_sequence<I...>)
 {
 	return {{a[I]...}};
 }
 
 template <typename T, std::size_t N, std::size_t... I>
-constexpr ::fast_io::containers::array<std::remove_cv_t<T>, N>
+inline constexpr ::fast_io::containers::array<std::remove_cv_t<T>, N>
 to_array_rvalueref_impl(T (&&a)[N], ::std::index_sequence<I...>)
 {
 	return {{::std::move(a[I])...}};
@@ -541,14 +541,14 @@ array(T, U...) -> array<T, 1 + sizeof...(U)>;
 
 template <typename T, ::std::size_t N>
 	requires(!::std::is_array_v<T>)
-constexpr ::fast_io::containers::array<::std::remove_cv_t<T>, N> to_array(T (&a)[N]) noexcept(::std::is_nothrow_copy_constructible_v<T>)
+inline constexpr ::fast_io::containers::array<::std::remove_cv_t<T>, N> to_array(T (&a)[N]) noexcept(::std::is_nothrow_copy_constructible_v<T>)
 {
 	return ::fast_io::containers::details::to_array_lvalueref_impl(a, ::std::make_index_sequence<N>{});
 }
 
 template <typename T, ::std::size_t N>
 	requires(!::std::is_array_v<T>)
-constexpr ::fast_io::containers::array<::std::remove_cv_t<T>, N> to_array(T (&&a)[N]) noexcept(::std::is_nothrow_move_constructible_v<T>)
+inline constexpr ::fast_io::containers::array<::std::remove_cv_t<T>, N> to_array(T (&&a)[N]) noexcept(::std::is_nothrow_move_constructible_v<T>)
 {
 	return ::fast_io::containers::details::to_array_rvalueref_impl(::std::move(a), ::std::make_index_sequence<N>{});
 }

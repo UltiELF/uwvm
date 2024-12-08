@@ -9,16 +9,13 @@
 #endif
 
 #if (defined(_WIN32) || defined(__CYGWIN__))
-#if defined(_WIN32_WINDOWS)
-#include "win9x.h"
-#include "win9x_at.h"
-#else
+#include "win32_9xa.h"
+#include "win32_9xa_at.h"
 #include "nt.h"
 #include "nt_at.h"
 #endif
-#endif
 
-#if defined(__MSDOS__)
+#if defined(__MSDOS__) || defined(__DJGPP__)
 #include "dos.h"
 #include "dos_at.h"
 #endif

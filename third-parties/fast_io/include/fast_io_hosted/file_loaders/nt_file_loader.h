@@ -23,29 +23,6 @@ inline void nt_unload_address(void *address) noexcept
 	}
 }
 
-template <bool zw>
-inline ::std::size_t nt_file_size_impl(void *handle)
-{
-	::fast_io::win32::nt::file_standard_information fsi;
-	::fast_io::win32::nt::io_status_block block;
-	auto status{::fast_io::win32::nt::nt_query_information_file<zw>(
-		handle, __builtin_addressof(block), __builtin_addressof(fsi),
-		static_cast<::std::uint_least32_t>(sizeof(::fast_io::win32::nt::file_standard_information)),
-		::fast_io::win32::nt::file_information_class::FileStandardInformation)};
-	if (status)
-	{
-		throw_nt_error(status);
-	}
-	if constexpr (sizeof(::std::size_t) < sizeof(::std::uint_least64_t))
-	{
-		if (SIZE_MAX < fsi.end_of_file)
-		{
-			throw_nt_error(0xC0000040 /*STATUS_SECTION_TOO_BIG*/);
-		}
-	}
-	return static_cast<::std::size_t>(fsi.end_of_file);
-}
-
 template <::fast_io::nt_family family>
 inline nt_file_loader_return_value_t nt_load_address_options_impl(::fast_io::nt_mmap_options const &options,
 																  void *handle)
@@ -55,6 +32,13 @@ inline nt_file_loader_return_value_t nt_load_address_options_impl(::fast_io::nt_
 		[[__gnu__::__may_alias__]]
 #endif
 		= ::fast_io::win32::nt::object_attributes *;
+
+	::std::size_t const fsz{::fast_io::win32::nt::details::nt_load_file_get_file_size<(family == ::fast_io::nt_family::zw)>(handle)};
+
+	if (fsz == 0)
+	{
+		return {nullptr, nullptr};
+	}
 
 	void *h_section{};
 	::fast_io::win32::nt::object_attributes objAttr;
@@ -73,7 +57,6 @@ inline nt_file_loader_return_value_t nt_load_address_options_impl(::fast_io::nt_
 	}
 	::fast_io::basic_nt_family_file<family, char> map_hd{h_section};
 	void *p_map_address{};
-	::std::size_t fsz{::fast_io::win32::nt::details::nt_file_size_impl<(family == ::fast_io::nt_family::zw)>(handle)};
 	::std::size_t view_size{fsz};
 	void *current_process_handle{reinterpret_cast<void *>(static_cast<::std::ptrdiff_t>(-1))};
 	status = ::fast_io::win32::nt::nt_map_view_of_section<(family == ::fast_io::nt_family::zw)>(h_section, current_process_handle, __builtin_addressof(p_map_address), 0u, 0u, nullptr, __builtin_addressof(view_size), static_cast<::fast_io::win32::nt::section_inherit>(options.viewShare), 0u, options.flProtect);
@@ -239,14 +222,14 @@ public:
 		address_begin = ret.address_begin;
 		address_end = ret.address_end;
 	}
-	nt_family_file_loader(nt_family_file_loader const &) = delete;
-	nt_family_file_loader &operator=(nt_family_file_loader const &) = delete;
-	constexpr nt_family_file_loader(nt_family_file_loader &&__restrict other) noexcept
+	inline nt_family_file_loader(nt_family_file_loader const &) = delete;
+	inline nt_family_file_loader &operator=(nt_family_file_loader const &) = delete;
+	inline constexpr nt_family_file_loader(nt_family_file_loader &&__restrict other) noexcept
 		: address_begin(other.address_begin), address_end(other.address_end)
 	{
 		other.address_end = other.address_begin = nullptr;
 	}
-	nt_family_file_loader &operator=(nt_family_file_loader &&__restrict other) noexcept
+	inline nt_family_file_loader &operator=(nt_family_file_loader &&__restrict other) noexcept
 	{
 		::fast_io::win32::nt::details::nt_unload_address<family>(address_begin);
 		address_begin = other.address_begin;
@@ -254,71 +237,71 @@ public:
 		other.address_end = other.address_begin = nullptr;
 		return *this;
 	}
-	constexpr pointer data() const noexcept
+	inline constexpr pointer data() const noexcept
 	{
 		return address_begin;
 	}
-	constexpr bool empty() const noexcept
+	inline constexpr bool empty() const noexcept
 	{
 		return address_begin == address_end;
 	}
-	constexpr bool is_empty() const noexcept
+	inline constexpr bool is_empty() const noexcept
 	{
 		return address_begin == address_end;
 	}
-	constexpr ::std::size_t size() const noexcept
+	inline constexpr ::std::size_t size() const noexcept
 	{
 		return static_cast<::std::size_t>(address_end - address_begin);
 	}
-	constexpr ::std::size_t max_size() const noexcept
+	inline constexpr ::std::size_t max_size() const noexcept
 	{
 		return SIZE_MAX;
 	}
-	constexpr const_iterator cbegin() const noexcept
+	inline constexpr const_iterator cbegin() const noexcept
 	{
 		return address_begin;
 	}
-	constexpr const_iterator begin() const noexcept
+	inline constexpr const_iterator begin() const noexcept
 	{
 		return address_begin;
 	}
-	constexpr iterator begin() noexcept
+	inline constexpr iterator begin() noexcept
 	{
 		return address_begin;
 	}
-	constexpr const_iterator cend() const noexcept
+	inline constexpr const_iterator cend() const noexcept
 	{
 		return address_end;
 	}
-	constexpr const_iterator end() const noexcept
+	inline constexpr const_iterator end() const noexcept
 	{
 		return address_end;
 	}
-	constexpr iterator end() noexcept
+	inline constexpr iterator end() noexcept
 	{
 		return address_end;
 	}
-	constexpr const_reverse_iterator crbegin() const noexcept
+	inline constexpr const_reverse_iterator crbegin() const noexcept
 	{
 		return const_reverse_iterator{address_end};
 	}
-	constexpr reverse_iterator rbegin() noexcept
+	inline constexpr reverse_iterator rbegin() noexcept
 	{
 		return reverse_iterator{address_end};
 	}
-	constexpr const_reverse_iterator rbegin() const noexcept
+	inline constexpr const_reverse_iterator rbegin() const noexcept
 	{
 		return const_reverse_iterator{address_end};
 	}
-	constexpr const_reverse_iterator crend() const noexcept
+	inline constexpr const_reverse_iterator crend() const noexcept
 	{
 		return const_reverse_iterator{address_begin};
 	}
-	constexpr reverse_iterator rend() noexcept
+	inline constexpr reverse_iterator rend() noexcept
 	{
 		return reverse_iterator{address_begin};
 	}
-	constexpr const_reverse_iterator rend() const noexcept
+	inline constexpr const_reverse_iterator rend() const noexcept
 	{
 		return const_reverse_iterator{address_begin};
 	}
@@ -328,7 +311,7 @@ public:
 	[[msvc::forceinline]]
 #endif
 	[[nodiscard]]
-	constexpr const_reference front() const noexcept
+	inline constexpr const_reference front() const noexcept
 	{
 		if (address_begin == address_end) [[unlikely]]
 		{
@@ -342,7 +325,7 @@ public:
 	[[msvc::forceinline]]
 #endif
 	[[nodiscard]]
-	constexpr reference front() noexcept
+	inline constexpr reference front() noexcept
 	{
 		if (address_begin == address_end) [[unlikely]]
 		{
@@ -356,7 +339,7 @@ public:
 	[[msvc::forceinline]]
 #endif
 	[[nodiscard]]
-	constexpr const_reference back() const noexcept
+	inline constexpr const_reference back() const noexcept
 	{
 		if (address_begin == address_end) [[unlikely]]
 		{
@@ -370,7 +353,7 @@ public:
 	[[msvc::forceinline]]
 #endif
 	[[nodiscard]]
-	constexpr reference back() noexcept
+	inline constexpr reference back() noexcept
 	{
 		if (address_begin == address_end) [[unlikely]]
 		{
@@ -379,19 +362,19 @@ public:
 		return address_end[-1];
 	}
 
-	constexpr const_reference front_unchecked() const noexcept
+	inline constexpr const_reference front_unchecked() const noexcept
 	{
 		return *address_begin;
 	}
-	constexpr reference front_unchecked() noexcept
+	inline constexpr reference front_unchecked() noexcept
 	{
 		return *address_begin;
 	}
-	constexpr const_reference back_unchecked() const noexcept
+	inline constexpr const_reference back_unchecked() const noexcept
 	{
 		return address_end[-1];
 	}
-	constexpr reference back_unchecked() noexcept
+	inline constexpr reference back_unchecked() noexcept
 	{
 		return address_end[-1];
 	}
@@ -436,7 +419,7 @@ public:
 #if __has_cpp_attribute(nodiscard)
 	[[nodiscard]]
 #endif
-	constexpr pointer release() noexcept
+	inline constexpr pointer release() noexcept
 	{
 		pointer temp{this->address_begin};
 		this->address_end = this->address_begin = nullptr;
@@ -448,7 +431,7 @@ public:
 		::fast_io::win32::nt::details::nt_unload_address<family>(address_begin);
 		address_end = address_begin = nullptr;
 	}
-	~nt_family_file_loader()
+	inline ~nt_family_file_loader()
 	{
 		::fast_io::win32::nt::details::nt_unload_address<family>(address_begin);
 	}
