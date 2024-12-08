@@ -1070,7 +1070,7 @@ namespace uwvm::vm::wasi
         auto const rt{::fast_io::noexcept_call(_commit, fd)};
 #elif defined(__linux__) && defined(__NR_fdatasync)
         auto const rt{::fast_io::system_call<__NR_fdatasync, int>(fd)};
-#elif !defined(__MSDOS__)
+#elif !defined(__MSDOS__) && !defined(__DARWIN_C_LEVEL)
         auto const rt{::fast_io::noexcept_call(fdatasync, fd)};
 #else
         // fdatasync is temporarily not supported in msdosdjgpp
