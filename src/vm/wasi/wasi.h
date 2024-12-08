@@ -24,18 +24,13 @@
 #if (!defined(__NEWLIB__) || defined(__CYGWIN__)) && !defined(_WIN32) && __has_include(<dirent.h>) && !defined(_PICOLIBC__)
 namespace uwvm::posix
 {
-    #if !defined(__MSDOS__)
-        #if defined(__DARWIN_C_LEVEL)
-    extern int fadvise(int fd, off_t offset, off_t len, int advice) noexcept __asm__("_posix_fadvise");
-    extern int fallocate(int fd, int mode, off_t offset, off_t len) noexcept __asm__("_fallocate");
-        #else
+    #if !defined(__MSDOS__) && !defined(__DARWIN_C_LEVEL)
     extern int fadvise(int fd, off_t offset, off_t len, int advice) noexcept __asm__("posix_fadvise");
     extern int fallocate(int fd, int mode, off_t offset, off_t len) noexcept __asm__("fallocate");
-        #endif
     #endif
 
     extern int fcntl(int fd, int cmd, ... /* arg */) noexcept
-    #if !defined(__MSDOS__)
+    #if !defined(__MSDOS__) && !defined(__DARWIN_C_LEVEL)
         __asm__("fcntl")
     #else
         __asm__("_fcntl")
@@ -968,7 +963,7 @@ namespace uwvm::vm::wasi
 
 #if (!defined(__NEWLIB__) || defined(__CYGWIN__)) && !defined(_WIN32) && !defined(__MSDOS__) &&                                                                \
     __has_include(<dirent.h>) && !defined(_PICOLIBC__) && !defined(__wasi__) && !defined(__DragonFly__) && !defined(__FreeBSD__) &&                            \
-    !defined(__FreeBSD_kernel__) && !defined(__NetBSD__) && !defined(BSD) &&!defined(_SYSTYPE_BSD)  && !defined(__OpenBSD__)
+    !defined(__FreeBSD_kernel__) && !defined(__NetBSD__) && !defined(BSD) &&!defined(_SYSTYPE_BSD) && !defined(__OpenBSD__) && !defined(__DARWIN_C_LEVEL)
     #if defined(__linux__) && defined(__NR_fallocate)
         auto const rt{::fast_io::system_call<__NR_fallocate, int>(fd, 0, static_cast<off_t>(arg1), static_cast<off_t>(arg2))};
         if(rt == -1) [[unlikely]] { return static_cast<::std::int_least32_t>(::uwvm::vm::wasi::errno_t::efault); }
