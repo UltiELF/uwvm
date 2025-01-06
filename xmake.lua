@@ -188,18 +188,12 @@ function defopt()
 	if is_mode("release", "releasedbg") then
 		local opt_name = get_config("min-win32-sys")
 
-		if is_plat("mingw") and (opt_name == "WINME" or opt_name == "WIN98" or opt_name == "WIN95") then
-			set_optimize("faster") -- win9x doesnt support O1, O3, Ofast
-		else
-			set_optimize("aggressive")
-		end
+		set_optimize("aggressive")
 
 		set_strip("all")
 
 		if is_kind("binary") then
-			if not (is_plat("mingw") and (opt_name == "WINME" or opt_name == "WIN98" or opt_name == "WIN95")) then
-				set_policy("build.optimization.lto", true) -- win9x doesnt support flto
-			end
+			set_policy("build.optimization.lto", true) 
 		end
 
 	elseif is_mode("debug") then	
@@ -327,10 +321,13 @@ function defopt()
 			add_defines("_WIN32_WINNT=0x0500")
 		elseif opt_name == "WINME" then
 			add_defines("_WIN32_WINDOWS=0x0490")
+			add_cxflags("-march=i386")
 		elseif opt_name == "WIN98" then
 			add_defines("_WIN32_WINDOWS=0x0410")
+			add_cxflags("-march=i386")
 		elseif opt_name == "WIN95" then
 			add_defines("_WIN32_WINDOWS=0x0400")
+			add_cxflags("-march=i386")
 		else
 			error("invalid value")
 		end
@@ -652,7 +649,9 @@ target("uwvm")
 
 	add_files("src/vm/unchecked_interpreter/func/**.cpp")
 
-	if is_plat("windows", "mingw") then 
+	local opt_name = get_config("min-win32-sys")
+
+	if (is_plat("windows") or (is_plat("mingw") and opt_name ~= "WINME" and opt_name ~= "WIN98" and opt_name ~= "WIN95")) then 
 		add_files("src/program/uwvm.rc")
 	end
 target_end()

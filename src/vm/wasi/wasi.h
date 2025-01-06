@@ -2447,7 +2447,7 @@ namespace uwvm::vm::wasi
         if(pfd == -10) [[unlikely]] { return static_cast<::std::int_least32_t>(::uwvm::vm::wasi::errno_t::enotdir); }
         auto& path{gfd.win9x_dir_file};
 
-        for(auto const& ent: current(::fast_io::win9x_at_entry{path}))
+        for(auto const& ent: current(::fast_io::win32_9xa_at_entry{path}))
 #else
         for(auto const& ent: current(at(::fast_io::posix_io_observer{pfd})))
 #endif
@@ -3124,10 +3124,7 @@ namespace uwvm::vm::wasi
             original_wasm_fd_p->rights_base = fs_rights_base;
             original_wasm_fd_p->rights_inherit = fs_rights_inherit;
 
-            original_wasm_fd_p->win9x_dir_file = ::fast_io::win32::details::win9x_create_dir_file_at_impl(
-                pdir,
-                path_sv,
-                {new_file_om | (::fast_io::open_mode::in | ::fast_io::open_mode::out), static_cast<::fast_io::perms>(436)});
+            original_wasm_fd_p->win9x_dir_file = ::fast_io::win32::details::win32_9xa_create_dir_file_at_impl(pdir, path_sv);
 
             return static_cast<::std::int_least32_t>(::uwvm::vm::wasi::errno_t::esuccess);
         }
@@ -3136,7 +3133,7 @@ namespace uwvm::vm::wasi
         try
     #endif
         {
-            new_file = ::fast_io::posix_file{::fast_io::win9x_at_entry{pdir}, path_sv, new_file_om | (::fast_io::open_mode::in | ::fast_io::open_mode::out)};
+            new_file = ::fast_io::posix_file{::fast_io::win32_9xa_at_entry{pdir}, path_sv, new_file_om | (::fast_io::open_mode::in | ::fast_io::open_mode::out)};
         }
     #ifdef __cpp_exceptions
         catch(::fast_io::error e)

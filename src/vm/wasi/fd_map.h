@@ -22,7 +22,7 @@ namespace uwvm::vm::wasi
         handle fd{-1};
 
 #if defined(_WIN32) && defined(_WIN32_WINDOWS)
-        ::fast_io::win9x_dir_handle win9x_dir_file{};
+        ::fast_io::win32_9xa_dir_handle win9x_dir_file{};
 #endif 
 
         // ====== for vm ======
@@ -126,7 +126,7 @@ namespace uwvm::vm::wasi
             }
             copy_mutex = false;
 #if defined(_WIN32) && defined(_WIN32_WINDOWS)
-            ::fast_io::win32::details::close_win9x_dir_handle(win9x_dir_file);
+            ::fast_io::win32::details::close_win32_9xa_dir_handle(win9x_dir_file);
 #endif 
         }
 
