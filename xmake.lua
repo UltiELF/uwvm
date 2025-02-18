@@ -372,8 +372,12 @@ function defopt()
 			-- none
 		end
 
+		if use_llvm_toolchain then	
+			add_syslinks("c++abi")
+		end
+
 		add_syslinks("dl")
-		add_syslinks("c++abi")
+
 		--add_syslinks("unwind")
 
 		add_cxflags("-pthread",{force = true})
@@ -436,6 +440,10 @@ function defopt()
 		add_cxflags("-pthread",{force = true})
 		add_ldflags("-pthread",{force = true})
 
+		if use_llvm_toolchain then	
+			add_syslinks("c++abi")
+		end 
+
 	elseif is_plat("macosx", "iphoneos", "watchos") then -- unknown-apple-darwin
 		add_cxxflags("-fno-rtti")
 		add_cxxflags("-fno-unwind-tables")
@@ -463,7 +471,9 @@ function defopt()
 			add_ldflags("-static", {force = true})
 		end
 
-		add_syslinks("c++abi")
+		if use_llvm_toolchain then	
+			add_syslinks("c++abi")
+		end
 		--add_syslinks("unwind")
 
 		add_cxflags("-pthread",{force = true})
@@ -580,7 +590,10 @@ function defopt()
 		if static_link then	
 			add_ldflags("-static", {force = true})
 		end
-
+		
+		if use_llvm_toolchain then	
+			add_syslinks("c++abi")
+		end
 	end
 
 	before_build(
