@@ -12,3 +12,4 @@ build
 !CMakeLists.txt
 test/**/*.exe
 !.github/*
+.DS_Store

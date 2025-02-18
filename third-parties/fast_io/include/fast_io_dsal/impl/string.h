@@ -32,14 +32,14 @@ inline constexpr ::fast_io::basic_allocation_least_result<chtype *> string_alloc
 {
 	using typed_allocator_type = typed_generic_allocator_adapter<allocator_type, chtype>;
 	// n is not possible to SIZE_MAX since that would overflow the memory which is not possible
-	::std::size_t np1{n + 1};
+	::std::size_t const np1{static_cast<::std::size_t>(n + 1u)};
 	auto [ptr, allocn]{typed_allocator_type::allocate_at_least(np1)};
 	*::fast_io::freestanding::non_overlapped_copy_n(first, n, ptr) = 0;
 	return {ptr, static_cast<::std::size_t>(allocn - 1u)};
 }
 
 template <typename allocator_type, ::std::integral chtype>
-inline constexpr void string_heap_dilate_uncheck(::fast_io::containers::details::string_internal<chtype> &imp, ::std::size_t rsize, chtype *pnullterminate) noexcept
+inline constexpr void string_heap_dilate_uncheck(::fast_io::containers::details::string_internal<chtype> &imp, ::std::size_t rsize) noexcept
 {
 	using untyped_allocator_type = generic_allocator_adapter<allocator_type>;
 	using typed_allocator_type = typed_generic_allocator_adapter<untyped_allocator_type, chtype>;
@@ -49,8 +49,8 @@ inline constexpr void string_heap_dilate_uncheck(::fast_io::containers::details:
 
 	chtype *ptr;
 	auto beginptr{imp.begin_ptr};
-	bool const is_sso{beginptr == pnullterminate};
-	if (beginptr == pnullterminate)
+	bool const is_sso{!bfsize};
+	if (is_sso)
 	{
 		beginptr = nullptr;
 	}
@@ -66,15 +66,11 @@ inline constexpr void string_heap_dilate_uncheck(::fast_io::containers::details:
 		ptr = newptr;
 		rsize = newcap - 1u;
 	}
-	if (is_sso)
-	{
-		*ptr = 0;
-	}
 	imp = {ptr, ptr + strsize, ptr + rsize};
 }
 
 template <typename allocator_type, ::std::integral chtype>
-inline constexpr void string_push_back_heap_grow_twice(::fast_io::containers::details::string_internal<chtype> &imp, chtype *pnullterminate) noexcept
+inline constexpr void string_push_back_heap_grow_twice(::fast_io::containers::details::string_internal<chtype> &imp) noexcept
 {
 
 	::std::size_t const bfsize{static_cast<::std::size_t>(imp.end_ptr - imp.begin_ptr)};
@@ -86,17 +82,13 @@ inline constexpr void string_push_back_heap_grow_twice(::fast_io::containers::de
 		::fast_io::fast_terminate();
 	}
 	::std::size_t const bfsizep1mul2{bfsizep1 << 1u};
-	return ::fast_io::containers::details::string_heap_dilate_uncheck<allocator_type>(imp, bfsizep1mul2, pnullterminate);
+	return ::fast_io::containers::details::string_heap_dilate_uncheck<allocator_type>(imp, bfsizep1mul2);
 }
 
 } // namespace details
 
 template <::std::integral chtype, typename alloctype>
-class
-#if __has_cpp_attribute(clang::trivial_abi)
-	[[clang::trivial_abi]]
-#endif
-	basic_string
+class basic_string
 {
 public:
 	using allocator_type = alloctype;
@@ -116,23 +108,43 @@ public:
 	using cstring_view_type = ::fast_io::containers::basic_cstring_view<char_type>;
 
 	::fast_io::containers::details::string_internal<char_type> imp;
-	char_type nullterminator;
 
-	inline constexpr basic_string() noexcept
-		: imp{__builtin_addressof(this->nullterminator),
-			  __builtin_addressof(this->nullterminator),
-			  __builtin_addressof(this->nullterminator)},
-		  nullterminator{}
+private:
+	constexpr void reset_imp() noexcept
 	{
+
+#if (__cpp_if_consteval >= 202106L || __cpp_lib_is_constant_evaluated >= 201811L) && __cpp_constexpr_dynamic_alloc >= 201907L
+#if __cpp_if_consteval >= 202106L
+		if consteval
+#else
+		if (__builtin_is_constant_evaluated())
+#endif
+		{
+			using untyped_allocator_type = generic_allocator_adapter<allocator_type>;
+			using typed_allocator_type = typed_generic_allocator_adapter<untyped_allocator_type, chtype>;
+			auto [ptr, cap]{typed_allocator_type::allocate_at_least(2)};
+			*ptr = 0;
+			this->imp = {ptr, ptr, ptr + static_cast<size_type>(cap - 1u)};
+		}
+		else
+#endif
+		{
+			char_type *const ncstr{const_cast<char_type *>(null_terminated_c_str_v<char_type>)};
+			this->imp = {ncstr, ncstr, ncstr};
+		}
+	}
+
+public:
+	inline constexpr basic_string() noexcept
+	{
+		this->reset_imp();
 	}
 
 	inline explicit constexpr basic_string(size_type n) noexcept
 	{
 		if (!n)
 		{
-			this->imp = {__builtin_addressof(this->nullterminator),
-						 __builtin_addressof(this->nullterminator), __builtin_addressof(this->nullterminator)};
-			this->nullterminator = 0;
+			this->reset_imp();
 		}
 		else
 		{
@@ -152,9 +164,7 @@ public:
 	{
 		if (!n)
 		{
-			this->imp = {__builtin_addressof(this->nullterminator),
-						 __builtin_addressof(this->nullterminator), __builtin_addressof(this->nullterminator)};
-			this->nullterminator = 0;
+			this->reset_imp();
 		}
 		else
 		{
@@ -177,9 +187,7 @@ private:
 	{
 		if (!othern)
 		{
-			this->imp = {__builtin_addressof(this->nullterminator),
-						 __builtin_addressof(this->nullterminator), __builtin_addressof(this->nullterminator)};
-			this->nullterminator = 0;
+			this->reset_imp();
 		}
 		else
 		{
@@ -419,21 +427,8 @@ public:
 private:
 	inline constexpr void moveconstructorcommon(basic_string &&other) noexcept
 	{
-		if (other.imp.begin_ptr == __builtin_addressof(other.nullterminator))
-		{
-			this->imp = {__builtin_addressof(this->nullterminator),
-						 __builtin_addressof(this->nullterminator),
-						 __builtin_addressof(this->nullterminator)};
-			this->nullterminator = 0;
-		}
-		else
-		{
-			this->imp = other.imp;
-			other.imp = {__builtin_addressof(other.nullterminator),
-						 __builtin_addressof(other.nullterminator),
-						 __builtin_addressof(other.nullterminator)};
-			other.nullterminator = 0;
-		}
+		this->imp = other.imp;
+		other.reset_imp();
 	}
 
 public:
@@ -444,7 +439,7 @@ public:
 
 	inline constexpr basic_string &operator=(basic_string &&other) noexcept
 	{
-		if (__builtin_addressof(other) == this)
+		if (__builtin_addressof(other) == this) [[unlikely]]
 		{
 			return *this;
 		}
@@ -459,9 +454,7 @@ public:
 		auto othercurr{other.imp.curr_ptr};
 		if (otherbegin == othercurr)
 		{
-			this->imp = {__builtin_addressof(this->nullterminator),
-						 __builtin_addressof(this->nullterminator), __builtin_addressof(this->nullterminator)};
-			this->nullterminator = 0;
+			this->reset_imp();
 			return;
 		}
 		::std::size_t const stringlength{static_cast<::std::size_t>(othercurr - otherbegin)};
@@ -479,7 +472,11 @@ private:
 		{
 			this->destroy();
 			auto [ptr, allocn] = ::fast_io::containers::details::string_allocate_init<allocator_type>(otherptr, othern);
-			this->imp.end_ptr = (this->imp.begin_ptr = thisbegin = ptr) + allocn;
+			this->imp.end_ptr = thisend = ((this->imp.curr_ptr = this->imp.begin_ptr = thisbegin = ptr) + allocn);
+		}
+		if (thisbegin == thisend) [[unlikely]]
+		{
+			return;
 		}
 		*(this->imp.curr_ptr = ::fast_io::freestanding::overlapped_copy_n(otherptr, othern, thisbegin)) = 0;
 	}
@@ -506,9 +503,14 @@ public:
 			using untyped_allocator_type = generic_allocator_adapter<allocator_type>;
 			using typed_allocator_type = typed_generic_allocator_adapter<untyped_allocator_type, chtype>;
 			auto [ptr, allocn]{typed_allocator_type::allocate_at_least(np1)};
-			this->imp.end_ptr = (this->imp.begin_ptr = beginptr = ptr) + static_cast<size_type>(allocn - 1u);
+			this->imp.end_ptr = endptr = ((this->imp.curr_ptr = this->imp.begin_ptr = beginptr = ptr) + static_cast<size_type>(allocn - 1u));
 		}
-		*(this->imp.curr_ptr = ::fast_io::freestanding::uninitialized_fill_n(beginptr, n, ch)) = 0;
+		if (beginptr == endptr) [[unlikely]]
+		{
+			return;
+		}
+		::fast_io::freestanding::uninitialized_fill_n(beginptr, n, ch);
+		*(this->imp.curr_ptr = beginptr + n) = 0;
 	}
 	inline constexpr void assign_characters(size_type n) noexcept
 	{
@@ -520,7 +522,7 @@ public:
 	}
 	inline constexpr basic_string &operator=(basic_string const &other) noexcept
 	{
-		if (__builtin_addressof(other) == this)
+		if (__builtin_addressof(other) == this) [[unlikely]]
 		{
 			return *this;
 		}
@@ -541,7 +543,7 @@ private:
 		constexpr size_type mxm1{static_cast<size_type>(mx - 1u)};
 
 		auto beginptr{this->imp.begin_ptr}, currptr{this->imp.curr_ptr}, endptr{this->imp.end_ptr};
-		bool const is_sso{this->imp.begin_ptr == __builtin_addressof(this->nullterminator)};
+		bool const is_sso{this->imp.begin_ptr == this->imp.end_ptr};
 		size_type thissize{static_cast<size_type>(currptr - beginptr)};
 		size_type thiscap{static_cast<size_type>(endptr - beginptr)};
 		size_type newsize{thissize + othern};
@@ -553,7 +555,14 @@ private:
 		}
 		else
 		{
-			bigcap = static_cast<size_type>(thiscap << 1u);
+			if (thiscap)
+			{
+				bigcap = static_cast<size_type>(thiscap << 1u);
+			}
+			else
+			{
+				bigcap = 1u;
+			}
 		}
 		size_type newcap{newsize};
 		if (newcap < bigcap)
@@ -565,9 +574,13 @@ private:
 			::fast_io::fast_terminate();
 		}
 		size_type const newcapp1{static_cast<size_type>(newcap + 1u)};
+
+		// Allocate memory with the new capacity
 		auto [ptr, allocn]{typed_allocator_type::allocate_at_least(newcapp1)};
 		this->imp.begin_ptr = ptr;
 		this->imp.end_ptr = ptr + static_cast<size_type>(allocn - 1u);
+
+		// Perform the insertion
 		auto it{ptr};
 		it = ::fast_io::freestanding::non_overlapped_copy(beginptr, insertpos, it);
 		auto retit{it};
@@ -575,6 +588,8 @@ private:
 		it = ::fast_io::freestanding::non_overlapped_copy(insertpos, currptr, it);
 		*it = 0;
 		this->imp.curr_ptr = it;
+
+		// Deallocate the old memory if it was not small string optimization (SSO)
 		if (!is_sso)
 		{
 			typed_allocator_type::deallocate_n(beginptr, static_cast<size_type>(static_cast<size_type>(endptr - beginptr) + 1u));
@@ -586,56 +601,14 @@ private:
 #endif
 	inline constexpr void append_cold_impl(char_type const *otherptr, size_type othern) noexcept
 	{
-#if 0
-		using untyped_allocator_type = generic_allocator_adapter<allocator_type>;
-		using typed_allocator_type = typed_generic_allocator_adapter<untyped_allocator_type, chtype>;
-		constexpr size_type mx{::std::numeric_limits<size_type>::max()};
-		constexpr size_type mxdiv2{::std::numeric_limits<size_type>::max() / 2u};
-		constexpr size_type mxm1{static_cast<size_type>(mx - 1u)};
-
-		auto beginptr{this->imp.begin_ptr}, currptr{this->imp.curr_ptr}, endptr{this->imp.end_ptr};
-		bool const is_sso{this->imp.begin_ptr == __builtin_addressof(this->nullterminator)};
-		size_type thissize{static_cast<size_type>(currptr - beginptr)};
-		size_type thiscap{static_cast<size_type>(endptr - beginptr)};
-		size_type newsize{thissize + othern};
-
-		size_type bigcap;
-		if (mxdiv2 <= thiscap)
-		{
-			bigcap = mxm1;
-		}
-		else
-		{
-			bigcap = static_cast<size_type>(thiscap << 1u);
-		}
-		size_type newcap{newsize};
-		if (newcap < bigcap)
-		{
-			newcap = bigcap;
-		}
-		if (newcap == mx)
-		{
-			::fast_io::fast_terminate();
-		}
-		size_type const newcapp1{static_cast<size_type>(newcap + 1u)};
-		auto [ptr, allocn]{typed_allocator_type::allocate_at_least(newcapp1)};
-		this->imp.begin_ptr = ptr;
-		this->imp.end_ptr = ptr + static_cast<size_type>(allocn - 1u);
-		auto it{ptr};
-		it = ::fast_io::freestanding::non_overlapped_copy(beginptr, currptr, it);
-		it = ::fast_io::freestanding::non_overlapped_copy_n(otherptr, othern, it);
-		*it = 0;
-		this->imp.curr_ptr = it;
-		if (!is_sso)
-		{
-			typed_allocator_type::deallocate_n(beginptr, static_cast<size_type>(static_cast<size_type>(endptr - beginptr) + 1u));
-		}
-#else
 		this->insert_cold_impl(this->imp.curr_ptr, otherptr, othern);
-#endif
 	}
 	inline constexpr void append_impl(char_type const *otherptr, size_type othern) noexcept
 	{
+		if (!othern)
+		{
+			return;
+		}
 		auto beginptr{this->imp.begin_ptr}, currptr{this->imp.curr_ptr}, endptr{this->imp.end_ptr};
 		size_type thissize{static_cast<size_type>(currptr - beginptr)};
 		size_type thiscap{static_cast<size_type>(endptr - beginptr)};
@@ -661,16 +634,17 @@ public:
 
 	inline constexpr void clear() noexcept
 	{
+		if (this->imp.begin_ptr == this->imp.end_ptr) [[unlikely]]
+		{
+			return;
+		}
 		*(this->imp.curr_ptr = this->imp.begin_ptr) = 0;
 	}
 
 	inline constexpr void clear_destroy() noexcept
 	{
 		this->destroy();
-		this->imp = {__builtin_addressof(this->nullterminator),
-					 __builtin_addressof(this->nullterminator),
-					 __builtin_addressof(this->nullterminator)};
-		this->nullterminator = 0;
+		this->reset_imp();
 	}
 
 	inline constexpr void push_back_unchecked(char_type ch) noexcept
@@ -685,7 +659,7 @@ private:
 #endif
 	inline constexpr void grow_twice() noexcept
 	{
-		::fast_io::containers::details::string_push_back_heap_grow_twice<allocator_type>(this->imp, __builtin_addressof(this->nullterminator));
+		::fast_io::containers::details::string_push_back_heap_grow_twice<allocator_type>(this->imp);
 	}
 
 public:
@@ -790,7 +764,7 @@ public:
 		{
 			return;
 		}
-		::fast_io::containers::details::string_heap_dilate_uncheck<allocator_type>(this->imp, new_cap, __builtin_addressof(this->nullterminator));
+		::fast_io::containers::details::string_heap_dilate_uncheck<allocator_type>(this->imp, new_cap);
 	}
 
 	inline constexpr void shrink_to_fit() noexcept
@@ -799,20 +773,22 @@ public:
 		{
 			return;
 		}
-		::fast_io::containers::details::string_heap_dilate_uncheck<allocator_type>(this->imp, static_cast<size_type>(this->imp.curr_ptr - this->imp.begin_ptr), __builtin_addressof(this->nullterminator));
+		::fast_io::containers::details::string_heap_dilate_uncheck<allocator_type>(this->imp, static_cast<size_type>(this->imp.curr_ptr - this->imp.begin_ptr));
 	}
 
 private:
 	inline constexpr void destroy() noexcept
 	{
 		auto beginptr{this->imp.begin_ptr};
+		auto endptr{this->imp.end_ptr};
 
-		if (beginptr != __builtin_addressof(this->nullterminator))
+		if (beginptr == endptr)
 		{
-			using untyped_allocator_type = generic_allocator_adapter<allocator_type>;
-			using typed_allocator_type = typed_generic_allocator_adapter<untyped_allocator_type, chtype>;
-			typed_allocator_type::deallocate_n(beginptr, static_cast<size_type>(static_cast<size_type>(this->imp.end_ptr - beginptr) + 1u));
+			return;
 		}
+		using untyped_allocator_type = generic_allocator_adapter<allocator_type>;
+		using typed_allocator_type = typed_generic_allocator_adapter<untyped_allocator_type, chtype>;
+		typed_allocator_type::deallocate_n(beginptr, static_cast<size_type>(static_cast<size_type>(endptr - beginptr) + 1u));
 	}
 
 public:
@@ -832,6 +808,10 @@ private:
 		if (needreallocate) [[unlikely]]
 		{
 			return this->insert_cold_impl(ptr, otherptr, othern);
+		}
+		if (!thiscap) [[unlikely]]
+		{
+			return beginptr;
 		}
 		auto newcurrptr{currptr + othern};
 		*newcurrptr = 0;
@@ -879,7 +859,10 @@ public:
 private:
 	inline constexpr pointer erase_impl(pointer first, pointer last) noexcept
 	{
-		*(this->imp.curr_ptr = ::fast_io::freestanding::my_copy(last, this->imp.curr_ptr, first)) = 0;
+		if (this->imp.begin_ptr != this->imp.end_ptr) [[likely]]
+		{
+			*(this->imp.curr_ptr = ::fast_io::freestanding::my_copy(last, this->imp.curr_ptr, first)) = 0;
+		}
 		return first;
 	}
 
@@ -946,20 +929,6 @@ public:
 	inline constexpr void swap(basic_string &other) noexcept
 	{
 		::std::swap(other.imp, this->imp);
-		if (other.imp.begin_ptr == __builtin_addressof(this->nullterminator))
-		{
-			other.imp = {__builtin_addressof(other.nullterminator),
-						 __builtin_addressof(other.nullterminator),
-						 __builtin_addressof(other.nullterminator)};
-			other.nullterminator = 0;
-		}
-		if (this->imp.begin_ptr == __builtin_addressof(other.nullterminator))
-		{
-			this->imp = {__builtin_addressof(this->nullterminator),
-						 __builtin_addressof(this->nullterminator),
-						 __builtin_addressof(this->nullterminator)};
-			this->nullterminator = 0;
-		}
 	}
 	inline constexpr iterator insert(const_iterator ptr, basic_string const &other) noexcept
 	{
@@ -986,11 +955,11 @@ private:
 		using untyped_allocator_type = generic_allocator_adapter<allocator_type>;
 		using typed_allocator_type = typed_generic_allocator_adapter<untyped_allocator_type, chtype>;
 		constexpr size_type mx{::std::numeric_limits<size_type>::max()};
-		constexpr size_type mxdiv2{::std::numeric_limits<size_type>::max() / 2u};
+		constexpr size_type mxdiv2{mx >> 1u};
 		constexpr size_type mxm1{static_cast<size_type>(mx - 1u)};
 
 		auto beginptr{this->imp.begin_ptr}, currptr{this->imp.curr_ptr}, endptr{this->imp.end_ptr};
-		bool const is_sso{this->imp.begin_ptr == __builtin_addressof(this->nullterminator)};
+		bool const is_sso{beginptr == endptr};
 		size_type thissize{static_cast<size_type>(currptr - beginptr)};
 		size_type thiscap{static_cast<size_type>(endptr - beginptr)};
 		size_type const toremoven{static_cast<size_type>(last - first)};
@@ -1435,30 +1404,35 @@ public:
 			size_type thiscap{static_cast<size_type>(endptr - beginptr)};
 			if (thiscap < count)
 			{
-				::fast_io::containers::details::string_heap_dilate_uncheck<allocator_type>(this->imp, count, __builtin_addressof(this->nullterminator));
+				::fast_io::containers::details::string_heap_dilate_uncheck<allocator_type>(this->imp, count);
 				beginptr = this->imp.begin_ptr;
 			}
 		}
-		*(this->imp.curr_ptr = (beginptr + op(beginptr, count))) = 0;
+		this->imp.curr_ptr = (beginptr + op(beginptr, count));
+		if (this->imp.end_ptr == this->imp.begin_ptr) [[unlikely]]
+		{
+			return;
+		}
+		*(this->imp.curr_ptr) = 0;
 	}
 
 	inline constexpr void resize(size_type count, char_type ch) noexcept
 	{
 		auto beginptr{this->imp.begin_ptr}, currptr{this->imp.curr_ptr};
+		auto endptr{this->imp.end_ptr};
 		size_type thissize{static_cast<size_type>(currptr - beginptr)};
 		if (count <= thissize)
 		{
-			if (count != thissize)
+			if (beginptr != endptr && count != thissize)
 			{
 				*(this->imp.curr_ptr -= static_cast<size_type>(thissize - count)) = 0;
 			}
 			return;
 		}
-		auto endptr{this->imp.end_ptr};
 		size_type thiscap{static_cast<size_type>(endptr - beginptr)};
 		if (thiscap < count)
 		{
-			::fast_io::containers::details::string_heap_dilate_uncheck<allocator_type>(this->imp, count, __builtin_addressof(this->nullterminator));
+			::fast_io::containers::details::string_heap_dilate_uncheck<allocator_type>(this->imp, count);
 			currptr = this->imp.curr_ptr;
 		}
 		*(this->imp.curr_ptr = ::fast_io::freestanding::uninitialized_fill_n(currptr, static_cast<size_type>(count - thissize), ch)) = 0;
@@ -1519,38 +1493,38 @@ inline constexpr bool operator==(char_type const (&buffer)[n], ::fast_io::contai
 	return ::std::equal(buffer, buffer + nm1, a.cbegin(), a.cend());
 }
 
-#if defined(__cpp_lib_three_way_comparison)
+#if __cpp_lib_three_way_comparison >= 201907L
 
 template <::std::integral chtype, typename allocator1, typename allocator2>
 inline constexpr auto operator<=>(::fast_io::containers::basic_string<chtype, allocator1> const &lhs, ::fast_io::containers::basic_string<chtype, allocator2> const &rhs) noexcept
 {
-	return ::std::lexicographical_compare_three_way(lhs.cbegin(), lhs.cend(), rhs.cbegin(), rhs.cend(), ::std::compare_three_way{});
+	return ::fast_io::freestanding::lexicographical_compare_three_way(lhs.cbegin(), lhs.cend(), rhs.cbegin(), rhs.cend(), ::std::compare_three_way{});
 }
 
 template <::std::integral chtype, typename allocator1>
 inline constexpr auto operator<=>(::fast_io::containers::basic_string<chtype, allocator1> const &lhs, ::fast_io::containers::basic_string_view<chtype> rhs) noexcept
 {
-	return ::std::lexicographical_compare_three_way(lhs.cbegin(), lhs.cend(), rhs.cbegin(), rhs.cend(), ::std::compare_three_way{});
+	return ::fast_io::freestanding::lexicographical_compare_three_way(lhs.cbegin(), lhs.cend(), rhs.cbegin(), rhs.cend(), ::std::compare_three_way{});
 }
 
 template <::std::integral chtype, typename allocator1>
 inline constexpr auto operator<=>(::fast_io::containers::basic_string_view<chtype> lhs, ::fast_io::containers::basic_string<chtype, allocator1> const &rhs) noexcept
 {
-	return ::std::lexicographical_compare_three_way(lhs.cbegin(), lhs.cend(), rhs.cbegin(), rhs.cend(), ::std::compare_three_way{});
+	return ::fast_io::freestanding::lexicographical_compare_three_way(lhs.cbegin(), lhs.cend(), rhs.cbegin(), rhs.cend(), ::std::compare_three_way{});
 }
 
 template <::std::integral char_type, typename allocator1, ::std::size_t n>
 inline constexpr auto operator<=>(::fast_io::containers::basic_string<char_type, allocator1> a, char_type const (&buffer)[n]) noexcept
 {
 	constexpr ::std::size_t nm1{n - 1u};
-	return ::std::lexicographical_compare_three_way(a.cbegin(), a.cend(), buffer, buffer + nm1, ::std::compare_three_way{});
+	return ::fast_io::freestanding::lexicographical_compare_three_way(a.cbegin(), a.cend(), buffer, buffer + nm1, ::std::compare_three_way{});
 }
 
 template <::std::integral char_type, typename allocator1, ::std::size_t n>
 inline constexpr auto operator<=>(char_type const (&buffer)[n], ::fast_io::containers::basic_string<char_type, allocator1> a) noexcept
 {
 	constexpr ::std::size_t nm1{n - 1u};
-	return ::std::lexicographical_compare_three_way(buffer, buffer + nm1, a.cbegin(), a.cend(), ::std::compare_three_way{});
+	return ::fast_io::freestanding::lexicographical_compare_three_way(buffer, buffer + nm1, a.cbegin(), a.cend(), ::std::compare_three_way{});
 }
 
 #endif
@@ -1598,6 +1572,10 @@ inline constexpr chtype *strlike_end(::fast_io::io_strlike_type_t<chtype, basic_
 template <::std::integral chtype, typename alloctype>
 inline constexpr void strlike_set_curr(::fast_io::io_strlike_type_t<chtype, basic_string<chtype, alloctype>>, basic_string<chtype, alloctype> &str, chtype *p) noexcept
 {
+	if (str.imp.begin_ptr == str.imp.end_ptr) [[unlikely]]
+	{
+		return;
+	}
 	*(str.imp.curr_ptr = p) = 0;
 }
 
@@ -1619,6 +1597,8 @@ inline constexpr void swap(::fast_io::containers::basic_string<chtype, alloctype
 	a.swap(b);
 }
 
+template <::std::integral chtype, typename alloctype>
+using basic_ostring_ref_fast_io = ::fast_io::io_strlike_reference_wrapper<chtype, ::fast_io::containers::basic_string<chtype, alloctype>>;
 // context scan
 
 struct scan_fast_io_string_context
@@ -1818,4 +1798,16 @@ whole_get(::fast_io::containers::basic_string<char_type, allocator_type> &whole_
 	return {whole_str};
 }
 } // namespace manipulators
+
+namespace freestanding
+{
+
+template <::std::integral chtype, typename alloctype>
+struct is_trivially_relocatable<::fast_io::containers::basic_string<chtype, alloctype>>
+{
+	inline static constexpr bool value = true;
+};
+
+} // namespace freestanding
+
 } // namespace fast_io

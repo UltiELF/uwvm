@@ -8,8 +8,7 @@ enum class win32_9xa_at_flags : ::std::uint_least32_t
 	symlink_nofollow = static_cast<::std::uint_least32_t>(1) << 1,
 	no_automount = static_cast<::std::uint_least32_t>(1) << 2,
 	removedir = static_cast<::std::uint_least32_t>(1) << 3,
-	empty_path = static_cast<::std::uint_least32_t>(1) << 4,
-	nt_path = 0
+	empty_path = static_cast<::std::uint_least32_t>(1) << 4
 };
 
 inline constexpr win32_9xa_at_flags operator&(win32_9xa_at_flags x, win32_9xa_at_flags y) noexcept
@@ -53,45 +52,6 @@ inline constexpr win32_9xa_at_flags &operator^=(win32_9xa_at_flags &x, win32_9xa
 
 namespace win32::details
 {
-
-inline ::fast_io::win32::details::tlc_win32_9xa_dir_handle_path_str concat_tlc_win32_9xa_path_uncheck_whether_exist(::fast_io::win32_9xa_dir_handle const &dirhd, char8_t const *path_c_str, ::std::size_t path_size) noexcept
-{
-	auto const beg{path_c_str};
-	auto curr{beg};
-
-	if (auto const fc{*curr++}; fc == u8'+' ||
-								fc == u8'-' ||
-								fc == u8'.') [[unlikely]]
-	{
-		throw_win32_error(3221225530);
-	}
-
-	for (; curr != beg + path_size; ++curr)
-	{
-		auto fc{*curr};
-		if (fc == u8'/' ||
-			fc == u8'\\' ||
-			fc == u8'\t' ||
-			fc == u8'\b' ||
-			fc == u8'@' ||
-			fc == u8'#' ||
-			fc == u8'$' ||
-			fc == u8'%' ||
-			fc == u8'^' ||
-			fc == u8'&' ||
-			fc == u8'*' ||
-			fc == u8'(' ||
-			fc == u8')' ||
-			fc == u8'[' ||
-			fc == u8']') [[unlikely]]
-		{
-			throw_win32_error(3221225530);
-		}
-	}
-
-	return ::fast_io::win32::details::concat_tlc_win32_9xa_dir_handle_path_str(::fast_io::mnp::code_cvt(dirhd.path), u8"\\", ::fast_io::mnp::os_c_str_with_known_size(beg, path_size));
-}
-
 inline void win32_9xa_unlinkat_impl(::fast_io::win32_9xa_dir_handle const &dirhd, char8_t const *path_c_str, ::std::size_t path_size, win32_9xa_at_flags flags)
 {
 	auto file_or_path{concat_tlc_win32_9xa_path_uncheck_whether_exist(dirhd, path_c_str, path_size)};
@@ -124,7 +84,7 @@ inline void win32_9xa_mkdirat_impl(::fast_io::win32_9xa_dir_handle const &dirhd,
 
 	auto const attr{::fast_io::win32::GetFileAttributesA(reinterpret_cast<char const *>(path.c_str()))};
 
-	if (attr == -1) [[unlikely]]
+	if (attr == static_cast<::std::uint_least32_t>(-1)) [[unlikely]]
 	{
 		throw_win32_error(0x2);
 	}
@@ -165,7 +125,7 @@ inline void win32_9xa_faccessat_impl(::fast_io::win32_9xa_dir_handle const &dirh
 
 	auto const attr{::fast_io::win32::GetFileAttributesA(reinterpret_cast<char const *>(path.c_str()))};
 
-	if (attr == -1) [[unlikely]]
+	if (attr == static_cast<::std::uint_least32_t>(-1)) [[unlikely]]
 	{
 		throw_win32_error(0x2);
 	}
@@ -198,7 +158,7 @@ inline void win32_9xa_fchmodat_impl(::fast_io::win32_9xa_dir_handle const &dirhd
 
 	auto const attr{::fast_io::win32::GetFileAttributesA(reinterpret_cast<char const *>(path.c_str()))};
 
-	if (attr == -1) [[unlikely]]
+	if (attr == static_cast<::std::uint_least32_t>(-1)) [[unlikely]]
 	{
 		throw_win32_error(0x2);
 	}
@@ -226,7 +186,7 @@ inline void win32_9xa_fchmodat_impl(::fast_io::win32_9xa_dir_handle const &dirhd
 
 	auto const attr{::fast_io::win32::GetFileAttributesA(reinterpret_cast<char const *>(path.c_str()))};
 
-	if (attr == -1) [[unlikely]]
+	if (attr == static_cast<::std::uint_least32_t>(-1)) [[unlikely]]
 	{
 		throw_win32_error(0x2);
 	}
@@ -236,7 +196,7 @@ inline void win32_9xa_fchmodat_impl(::fast_io::win32_9xa_dir_handle const &dirhd
 	throw_win32_error(0x1);
 }
 
-inline constexpr auto calculate_win32_9xa_onlyread_open_mode(bool write_attribute, bool fsymlink_nofollow) noexcept
+inline constexpr auto calculate_win32_9xa_readonly_open_mode(bool write_attribute, bool fsymlink_nofollow) noexcept
 {
 	::fast_io::details::win32_open_mode md;
 	md.dwShareMode = 3;
@@ -258,7 +218,7 @@ inline constexpr auto calculate_win32_9xa_onlyread_open_mode(bool write_attribut
 inline posix_file_status win32_9xa_fstatat_impl(::fast_io::win32_9xa_dir_handle const &dirhd, char8_t const *path_c_str, ::std::size_t path_size, win32_9xa_at_flags flags)
 {
 	auto path{concat_tlc_win32_9xa_path_uncheck_whether_exist(dirhd, path_c_str, path_size)};
-	auto md{calculate_win32_9xa_onlyread_open_mode(false, (flags & win32_9xa_at_flags::symlink_nofollow) != win32_9xa_at_flags::symlink_nofollow)};
+	auto md{calculate_win32_9xa_readonly_open_mode(false, (flags & win32_9xa_at_flags::symlink_nofollow) != win32_9xa_at_flags::symlink_nofollow)};
 	::fast_io::win32_file_9xa f{::fast_io::details::win32_family_create_file_internal_impl<win32_family::ansi_9x>(reinterpret_cast<char const *>(path.c_str()), md)};
 
 	return ::fast_io::win32::details::win32_status_impl(f.native_handle());
@@ -268,15 +228,15 @@ inline void win32_9xa_utimensat_impl(::fast_io::win32_9xa_dir_handle const &dirh
 									 unix_timestamp_option last_access_time, unix_timestamp_option last_modification_time, win32_9xa_at_flags flags)
 {
 	auto path{concat_tlc_win32_9xa_path_uncheck_whether_exist(dirhd, path_c_str, path_size)};
-	auto md{calculate_win32_9xa_onlyread_open_mode(true, (flags & win32_9xa_at_flags::symlink_nofollow) != win32_9xa_at_flags::symlink_nofollow)};
+	auto md{calculate_win32_9xa_readonly_open_mode(true, (flags & win32_9xa_at_flags::symlink_nofollow) != win32_9xa_at_flags::symlink_nofollow)};
 	::fast_io::win32_file_9xa f{::fast_io::details::win32_family_create_file_internal_impl<win32_family::ansi_9x>(reinterpret_cast<char const *>(path.c_str()), md)};
 
 	::fast_io::win32::filetime ftm;
 	::fast_io::win32::GetSystemTimeAsFileTime(__builtin_addressof(ftm));
 
-	::std::uint_least64_t current_time{(static_cast<::std::uint_least64_t>(ftm.dwHighDateTime) << 32) | ftm.dwLowDateTime};
+	// ::std::uint_least64_t current_time{(static_cast<::std::uint_least64_t>(ftm.dwHighDateTime) << 32) | ftm.dwLowDateTime};
 
-	constexpr ::std::uint_least64_t mul_factor{::fast_io::uint_least64_subseconds_per_second / 10000000ULL};
+	// constexpr ::std::uint_least64_t mul_factor{::fast_io::uint_least64_subseconds_per_second / 10000000ULL};
 
 	::fast_io::win32::filetime CreationTime;
 	::fast_io::win32::filetime *pCreationTime{__builtin_addressof(CreationTime)};
@@ -404,13 +364,13 @@ inline auto win32_9xa_22_api_dispatcher(::fast_io::win32_9xa_dir_handle const &o
 	}
 }
 
-template <::fast_io::details::posix_api_12 dsp, typename... Args>
+template <::fast_io::details::posix_api_12 dsp>
 inline auto win32_9xa_12_api_dispatcher(char8_t const *oldpath_c_str, ::std::size_t oldpath_size,
-										::fast_io::win32_9xa_dir_handle const &newdirhd, char8_t const *newpath_c_str, ::std::size_t newpath_size, Args... args)
+										::fast_io::win32_9xa_dir_handle const &newdirhd, char8_t const *newpath_c_str, ::std::size_t newpath_size)
 {
 	if constexpr (dsp == ::fast_io::details::posix_api_12::symlinkat)
 	{
-		win32_9xa_symlinkat_impl(oldpath_c_str, oldpath_size, newdirhd, newpath_c_str, newpath_size, args...);
+		win32_9xa_symlinkat_impl(oldpath_c_str, oldpath_size, newdirhd, newpath_c_str, newpath_size);
 	}
 }
 
@@ -510,7 +470,7 @@ inline void win32_9xa_unlinkat(::fast_io::win32_9xa_at_entry const &ent, path_ty
 }
 
 template <::fast_io::constructible_to_os_c_str path_type>
-inline void win32_9xa_mkdirat(::fast_io::win32_9xa_at_entry const &ent, path_type &&path, perms pm = static_cast<perms>(436), [[maybe_unused]] win32_9xa_at_flags flags = {})
+inline void win32_9xa_mkdirat(::fast_io::win32_9xa_at_entry const &ent, path_type &&path, perms pm = static_cast<perms>(436))
 {
 	::fast_io::win32::details::win32_9xa_deal_with1x<details::posix_api_1x::mkdirat>(ent.handle, path, pm);
 }
@@ -542,7 +502,7 @@ inline void win32_9xa_utimensat(::fast_io::win32_9xa_at_entry const &ent, path_t
 }
 
 template <::fast_io::constructible_to_os_c_str old_path_type, ::fast_io::constructible_to_os_c_str new_path_type>
-inline void win32_9xa_symlinkat(old_path_type &&oldpath, win32_9xa_at_entry const &newdirfd, new_path_type &&newpath, [[maybe_unused]] win32_9xa_at_flags flags = {})
+inline void win32_9xa_symlinkat(old_path_type &&oldpath, win32_9xa_at_entry const &newdirfd, new_path_type &&newpath)
 {
 	::fast_io::win32::details::win32_9xa_deal_with12<details::posix_api_12::symlinkat>(oldpath, newdirfd.handle, newpath);
 }
@@ -554,7 +514,7 @@ inline void win32_9xa_linkat(win32_9xa_at_entry const &oldent, old_path_type &&o
 }
 
 template <::fast_io::constructible_to_os_c_str old_path_type, ::fast_io::constructible_to_os_c_str new_path_type>
-inline void win32_9xa_renameat(win32_9xa_at_entry const &oldent, old_path_type &&oldpath, win32_9xa_at_entry const &newent, new_path_type &&newpath, [[maybe_unused]] win32_9xa_at_flags flags = {})
+inline void win32_9xa_renameat(win32_9xa_at_entry const &oldent, old_path_type &&oldpath, win32_9xa_at_entry const &newent, new_path_type &&newpath)
 {
 	::fast_io::win32::details::win32_9xa_deal_with22<::fast_io::details::posix_api_22::renameat>(oldent.handle, oldpath, newent.handle, newpath);
 }
@@ -576,7 +536,7 @@ inline void native_unlinkat(::fast_io::win32_9xa_at_entry const &ent, path_type 
 }
 
 template <::fast_io::constructible_to_os_c_str path_type>
-inline void native_mkdirat(::fast_io::win32_9xa_at_entry const &ent, path_type &&path, perms pm = static_cast<perms>(436), [[maybe_unused]] win32_9xa_at_flags flags = {})
+inline void native_mkdirat(::fast_io::win32_9xa_at_entry const &ent, path_type &&path, perms pm = static_cast<perms>(436))
 {
 	::fast_io::win32::details::win32_9xa_deal_with1x<details::posix_api_1x::mkdirat>(ent.handle, path, pm);
 }
@@ -615,7 +575,7 @@ inline void native_utimensat(::fast_io::win32_9xa_at_entry const &ent, path_type
 // 12
 
 template <::fast_io::constructible_to_os_c_str old_path_type, ::fast_io::constructible_to_os_c_str new_path_type>
-inline void native_symlinkat(old_path_type &&oldpath, win32_9xa_at_entry const &newdirfd, new_path_type &&newpath, [[maybe_unused]] win32_9xa_at_flags flags = {})
+inline void native_symlinkat(old_path_type &&oldpath, win32_9xa_at_entry const &newdirfd, new_path_type &&newpath)
 {
 	::fast_io::win32::details::win32_9xa_deal_with12<details::posix_api_12::symlinkat>(oldpath, newdirfd.handle, newpath);
 }
@@ -629,7 +589,7 @@ inline void native_linkat(win32_9xa_at_entry const &oldent, old_path_type &&oldp
 }
 
 template <::fast_io::constructible_to_os_c_str old_path_type, ::fast_io::constructible_to_os_c_str new_path_type>
-inline void native_renameat(win32_9xa_at_entry const &oldent, old_path_type &&oldpath, win32_9xa_at_entry const &newent, new_path_type &&newpath, [[maybe_unused]] win32_9xa_at_flags flags = {})
+inline void native_renameat(win32_9xa_at_entry const &oldent, old_path_type &&oldpath, win32_9xa_at_entry const &newent, new_path_type &&newpath)
 {
 	::fast_io::win32::details::win32_9xa_deal_with22<::fast_io::details::posix_api_22::renameat>(oldent.handle, oldpath, newent.handle, newpath);
 }

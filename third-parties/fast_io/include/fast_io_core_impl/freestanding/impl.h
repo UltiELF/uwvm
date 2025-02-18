@@ -44,12 +44,12 @@ no ::std::array, ::std::copy and others
 #include "allocator.h"
 #endif
 
+#include <algorithm>
+
 #include "noexcept_call.h"
 #include "array.h"
 #include "cstr_len.h"
 #include "bytes.h"
-#include "algorithm.h"
 #include "relocatable.h"
+#include "algorithm.h"
 #include "ranges.h"
-
-#include <algorithm>

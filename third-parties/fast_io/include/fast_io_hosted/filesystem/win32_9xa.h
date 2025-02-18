@@ -12,7 +12,7 @@ struct win32_9xa_dirent
 	[[maybe_unused]] ::std::uint_least64_t d_ino{};
 	::fast_io::win32::details::win32_9xa_dir_handle_path_str filename{};
 
-	inline ~win32_9xa_dirent()
+	inline constexpr ~win32_9xa_dirent()
 	{
 		if (file_struct) [[likely]]
 		{
@@ -163,17 +163,17 @@ inline constexpr bool operator==(::std::default_sentinel_t, win32_9xa_family_dir
 	return b.finish;
 }
 
-inline constexpr bool operator==(win32_9xa_family_directory_iterator b, ::std::default_sentinel_t other) noexcept
+inline constexpr bool operator==(win32_9xa_family_directory_iterator b, [[maybe_unused]] ::std::default_sentinel_t other) noexcept
 {
 	return b.finish;
 }
 
-inline constexpr bool operator!=(::std::default_sentinel_t other, win32_9xa_family_directory_iterator b) noexcept
+inline constexpr bool operator!=([[maybe_unused]] ::std::default_sentinel_t other, win32_9xa_family_directory_iterator b) noexcept
 {
 	return !b.finish;
 }
 
-inline constexpr bool operator!=(win32_9xa_family_directory_iterator b, ::std::default_sentinel_t other) noexcept
+inline constexpr bool operator!=(win32_9xa_family_directory_iterator b, [[maybe_unused]] ::std::default_sentinel_t other) noexcept
 {
 	return !b.finish;
 }
@@ -196,6 +196,7 @@ struct basic_win32_9xa_directory_generator
 	inline basic_win32_9xa_directory_generator &
 	operator=(basic_win32_9xa_directory_generator &&__restrict other) noexcept
 	{
+		// There is no need to check the 'this' pointer as there are no side effects
 		entry = ::std::move(other.entry);
 		return *this;
 	}
@@ -264,6 +265,7 @@ struct basic_win32_9xa_recursive_directory_generator
 	inline constexpr basic_win32_9xa_recursive_directory_generator &
 	operator=(basic_win32_9xa_recursive_directory_generator &&__restrict other) noexcept
 	{
+		// There is no need to check the 'this' pointer as there are no side effects
 		root_handle = ::std::move(other.root_handle);
 		entry = ::std::move(other.entry);
 		return *this;
@@ -277,28 +279,39 @@ struct win32_9xa_dir_file_stack_type
 {
 	win32_9xa_dir_file dirf{};
 	void *file_struct{};
-	inline constexpr win32_9xa_dir_file_stack_type() noexcept = default;
+
+	inline win32_9xa_dir_file_stack_type() noexcept = default;
+	inline win32_9xa_dir_file_stack_type(win32_9xa_dir_file o_dirf, void *o_file_struct) noexcept
+		: dirf(::std::move(o_dirf)), file_struct(o_file_struct)
+	{}
+
 	inline win32_9xa_dir_file_stack_type(win32_9xa_dir_file_stack_type const &) = delete;
 	inline win32_9xa_dir_file_stack_type &operator=(win32_9xa_dir_file_stack_type const &) = delete;
+
 	inline win32_9xa_dir_file_stack_type(win32_9xa_dir_file_stack_type &&other) noexcept
 		: dirf(::std::move(other.dirf)), file_struct(other.file_struct)
 	{
 		other.file_struct = nullptr;
 	}
+
 	inline win32_9xa_dir_file_stack_type &operator=(win32_9xa_dir_file_stack_type &&other) noexcept
 	{
-		if (__builtin_addressof(other) != this)
+		if (__builtin_addressof(other) == this) [[unlikely]]
 		{
-			if (this->file_struct) [[likely]]
-			{
-				::fast_io::win32::FindClose(this->file_struct);
-			}
-			dirf = ::std::move(other.dirf);
-			this->file_struct = other.file_struct;
-			other.file_struct = nullptr;
+			return *this;
 		}
+
+		if (this->file_struct) [[likely]]
+		{
+			::fast_io::win32::FindClose(this->file_struct);
+		}
+		dirf = ::std::move(other.dirf);
+		this->file_struct = other.file_struct;
+		other.file_struct = nullptr;
+
 		return *this;
 	}
+
 	inline ~win32_9xa_dir_file_stack_type()
 	{
 		if (file_struct) [[likely]]
@@ -440,13 +453,13 @@ inline bool operator==(::std::default_sentinel_t,
 
 template <typename StackType>
 inline bool operator==(basic_win32_9xa_recursive_directory_iterator<StackType> const &b,
-					   ::std::default_sentinel_t sntnl) noexcept
+					   [[maybe_unused]] ::std::default_sentinel_t sntnl) noexcept
 {
 	return b.stack.empty() && b.finish;
 }
 
 template <typename StackType>
-inline bool operator!=(::std::default_sentinel_t sntnl,
+inline bool operator!=([[maybe_unused]] ::std::default_sentinel_t sntnl,
 					   basic_win32_9xa_recursive_directory_iterator<StackType> const &b) noexcept
 {
 	return !(b.stack.empty() && b.finish);
@@ -454,7 +467,7 @@ inline bool operator!=(::std::default_sentinel_t sntnl,
 
 template <typename StackType>
 inline bool operator!=(basic_win32_9xa_recursive_directory_iterator<StackType> const &b,
-					   ::std::default_sentinel_t sntnl) noexcept
+					   [[maybe_unused]] ::std::default_sentinel_t sntnl) noexcept
 {
 	return !(b.stack.empty() && b.finish);
 }

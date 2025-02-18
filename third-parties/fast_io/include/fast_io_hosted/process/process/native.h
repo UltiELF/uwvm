@@ -1,7 +1,7 @@
 ﻿#pragma once
 
 #if !defined(__MSDOS__) && !defined(__NEWLIB__) && !defined(__wasi__) && !defined(_PICOLIBC__)
-// #include "base.h"
+#include "option.h"
 #include "arg_env.h"
 #if (defined(_WIN32) && !defined(__WINE__)) || defined(__CYGWIN__)
 #include "win32.h"
@@ -24,8 +24,8 @@ using native_process_observer = ::fast_io::nt_process_observer;
 using native_process = ::fast_io::nt_process;
 #else
 using native_wait_status = ::fast_io::win32_wait_status;
-using native_process_args = ::fast_io::win32_process_args<::fast_io::win32_family::native>;
-using native_process_envs = ::fast_io::win32_process_envs<::fast_io::win32_family::native>;
+using native_process_args = ::fast_io::win32_process_args;
+using native_process_envs = ::fast_io::win32_process_envs;
 using native_process_observer = ::fast_io::win32_process_observer;
 using native_process = ::fast_io::win32_process;
 #endif

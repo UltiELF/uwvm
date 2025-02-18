@@ -138,12 +138,22 @@ inline void set_size(::std::basic_string<elem, traits, alloc> &str,
 	decltype(auto) __r_{hack_rep(str)};
 	if (bool(__r_.__s.__is_long_))
 	{
-#if !defined(_LIBCPP_HAS_NO_ASAN) && defined(_LIBCPP_INSTRUMENTED_WITH_ASAN)
+#if (_LIBCPP_VERSION < 20 && !defined(_LIBCPP_HAS_NO_ASAN) || _LIBCPP_HAS_ASAN) && defined(_LIBCPP_INSTRUMENTED_WITH_ASAN)
 		if (!::std::__libcpp_is_constant_evaluated())
 		{
 			auto dataptr{str.data()};
 			auto edptr{dataptr + __r_.__l.__size_};
-			::std::__annotate_contiguous_container<alloc>(dataptr, dataptr + str.capacity(), dataptr + s + 1, edptr + 1);
+			auto longcap{__r_.__l.__cap_};
+			constexpr bool libcxx_is_alternate_string_layout{
+#ifdef _LIBCPP_ABI_ALTERNATE_STRING_LAYOUT
+				true
+#endif
+			};
+			if constexpr ((std::endian::big == std::endian::native) == libcxx_is_alternate_string_layout)
+			{
+				longcap <<= 1u;
+			}
+			::std::__annotate_contiguous_container<alloc>(dataptr, dataptr + longcap, edptr + 1, dataptr + s + 1);
 		}
 #endif
 		__r_.__l.__size_ = s;

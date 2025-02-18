@@ -52,6 +52,18 @@ enum class nt_family
 
 namespace win32::nt::details
 {
+#if __has_cpp_attribute(__gnu__::__always_inline__)
+[[__gnu__::__always_inline__]]
+#elif __has_cpp_attribute(msvc::forceinline)
+[[msvc::forceinline]]
+#endif
+inline void check_nt_status(::std::uint_least32_t status)
+{
+	if (status) [[unlikely]]
+	{
+		throw_nt_error(status);
+	}
+}
 
 struct nt_open_mode
 {
@@ -362,8 +374,7 @@ template <bool zw>
 inline void *nt_family_create_file_impl(char16_t const *filename_cstr, open_mode_perms ompm)
 {
 	return ::fast_io::win32::nt::details::nt_call_invoke_without_directory_handle_impl(
-		filename_cstr, static_cast<bool>(ompm.om & ::fast_io::open_mode::nt_path),
-		nt_create_callback<zw>{::fast_io::win32::nt::details::calculate_nt_open_mode(ompm)});
+		filename_cstr, nt_create_callback<zw>{::fast_io::win32::nt::details::calculate_nt_open_mode(ompm)});
 }
 
 template <bool zw>
@@ -401,7 +412,7 @@ inline void *nt_family_create_file_at_impl(void *directory_handle, char16_t cons
 	else
 	{
 		return ::fast_io::win32::nt::details::nt_call_callback(
-			directory_handle, filename_c_str, filename_c_str_len, static_cast<bool>(md.om & ::fast_io::open_mode::nt_path),
+			directory_handle, filename_c_str, filename_c_str_len,
 			nt_create_callback<zw>{::fast_io::win32::nt::details::calculate_nt_open_mode(md)});
 	}
 }
@@ -493,8 +504,8 @@ inline ::std::int_least64_t nt_calculate_offset_impl(::fast_io::intfpos_t off)
 {
 	if constexpr (sizeof(::fast_io::intfpos_t) > sizeof(::std::int_least64_t))
 	{
-		constexpr ::std::int_least64_t mn{::std::numeric_limits<::std::int_least64_t>::min()},
-			mx{::std::numeric_limits<::std::int_least64_t>::max()};
+		[[maybe_unused]] constexpr ::std::int_least64_t mn{::std::numeric_limits<::std::int_least64_t>::min()};
+		constexpr ::std::int_least64_t mx{::std::numeric_limits<::std::int_least64_t>::max()};
 		if (off < 0 || off > mx)
 		{
 			throw_nt_error(0xC0000106);
@@ -708,15 +719,13 @@ inline constexpr bool operator==(basic_nt_family_io_observer<family, ch_type> a,
 	return a.handle == b.handle;
 }
 
-#if __cpp_lib_three_way_comparison >= 201907L
-
+#if __cpp_impl_three_way_comparison >= 201907L
 template <nt_family family, ::std::integral ch_type>
 inline constexpr auto operator<=>(basic_nt_family_io_observer<family, ch_type> a,
 								  basic_nt_family_io_observer<family, ch_type> b) noexcept
 {
 	return a.handle <=> b.handle;
 }
-
 #endif
 
 template <nt_family family, ::std::integral ch_type>
@@ -1360,7 +1369,7 @@ public:
 	}
 	template <::fast_io::constructible_to_os_c_str T>
 	inline explicit basic_nt_family_file(io_kernel_t, nt_at_entry ent, T const &t, open_mode om,
-								  perms pm = static_cast<perms>(436))
+										 perms pm = static_cast<perms>(436))
 		: basic_nt_family_io_observer<family, ch_type>{
 			  ::fast_io::win32::nt::details::nt_create_file_at_impl<family == nt_family::zw, true>(ent.handle, t,
 																								   {om, pm})}
@@ -1394,6 +1403,10 @@ public:
 	}
 	inline basic_nt_family_file &operator=(basic_nt_family_file const &other)
 	{
+		if (__builtin_addressof(other) == this) [[unlikely]]
+		{
+			return *this;
+		}
 		this->handle = ::fast_io::win32::nt::details::nt_dup2_impl<family == nt_family::zw>(other.handle, this->handle);
 		return *this;
 	}
@@ -1404,6 +1417,10 @@ public:
 	}
 	inline basic_nt_family_file &operator=(basic_nt_family_file &&__restrict other) noexcept
 	{
+		if (__builtin_addressof(other) == this) [[unlikely]]
+		{
+			return *this;
+		}
 		if (this->handle) [[likely]]
 		{
 			::fast_io::win32::nt::nt_close<family == nt_family::zw>(this->handle);
@@ -1431,7 +1448,7 @@ inline void nt_create_pipe(void **hReadPipe, void **hWritePipe)
 	constexpr decltype(auto) namedpipe_part{u"\\Device\\NamedPipe\\"};
 	::fast_io::win32::nt::unicode_string us{
 		.Length = static_cast<::std::uint_least16_t>(sizeof(namedpipe_part) - sizeof(char16_t)),
-		.MaximumLength = static_cast<::std::uint_least16_t>(sizeof(namedpipe_part)),
+		.MaximumLength = ::fast_io::win32::nt::details::nt_filename_bytes_check(sizeof(namedpipe_part)),
 		.Buffer = const_cast<char16_t *>(namedpipe_part)};
 
 	::fast_io::win32::nt::object_attributes obj{.Length = sizeof(::fast_io::win32::nt::object_attributes),
@@ -1475,8 +1492,8 @@ inline void nt_create_pipe(void **hReadPipe, void **hWritePipe)
 																 0x00000000 /*FILE_PIPE_BYTE_STREAM_MODE*/,
 																 0x00000000 /*FILE_PIPE_QUEUE_OPERATION*/,
 																 1,
-																 0x1000 /*buffer size*/,
-																 0x1000 /*buffer size*/,
+																 0x4000 /*buffer size*/,
+																 0x4000 /*buffer size*/,
 																 __builtin_addressof(DefaultTimeout));
 
 	if (status)

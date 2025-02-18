@@ -500,14 +500,12 @@ inline constexpr bool operator==(basic_posix_family_io_observer<family, ch_type>
 	return a.fd == b.fd;
 }
 
-#if __cpp_lib_three_way_comparison >= 201907L
-
+#if __cpp_impl_three_way_comparison >= 201907L
 template <::fast_io::posix_family family, ::std::integral ch_type>
 inline constexpr auto operator<=>(basic_posix_family_io_observer<family, ch_type> a, basic_posix_family_io_observer<family, ch_type> b) noexcept
 {
 	return a.fd <=> b.fd;
 }
-
 #endif
 
 template <::fast_io::posix_family family, ::std::integral ch_type>
@@ -1246,6 +1244,10 @@ public:
 	{}
 	inline basic_posix_family_file &operator=(basic_posix_family_file const &dp)
 	{
+		if (__builtin_addressof(dp) == this) [[unlikely]]
+		{
+			return *this;
+		}
 		this->fd = details::sys_dup2(dp.fd, this->fd);
 		return *this;
 	}
@@ -1256,6 +1258,10 @@ public:
 	}
 	inline basic_posix_family_file &operator=(basic_posix_family_file &&__restrict b) noexcept
 	{
+		if (__builtin_addressof(b) == this) [[unlikely]]
+		{
+			return *this;
+		}
 		if (this->fd != -1) [[likely]]
 		{
 			details::sys_close(this->fd);

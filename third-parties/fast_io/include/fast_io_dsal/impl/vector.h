@@ -437,6 +437,10 @@ public:
 	inline constexpr vector &operator=(vector const &vec)
 		requires(::std::copyable<value_type>)
 	{
+		if (__builtin_addressof(vec) == this) [[unlikely]]
+		{
+			return *this;
+		}
 		vector newvec(vec);
 		this->operator=(::std::move(newvec));
 		return *this;
@@ -449,6 +453,10 @@ public:
 	}
 	inline constexpr vector &operator=(vector &&vec) noexcept
 	{
+		if (__builtin_addressof(vec) == this) [[unlikely]]
+		{
+			return *this;
+		}
 		this->destroy();
 		this->imp = vec.imp;
 		vec.imp = {};
@@ -980,7 +988,7 @@ private:
 		auto lastele{imp.curr_ptr};
 		if constexpr (!::std::is_trivially_destructible_v<value_type>)
 		{
-            ::std::destroy_at(it);
+			::std::destroy_at(it);
 		}
 		::fast_io::freestanding::uninitialized_relocate(it + 1, lastele, it);
 		imp.curr_ptr = lastele;
@@ -1054,7 +1062,61 @@ public:
 		}
 		this->erase_iters_common(beginptr + firstidx, beginptr + lastidx);
 	}
-	
+
+	inline constexpr void resize(size_type n) noexcept(::std::is_nothrow_default_constructible_v<value_type>)
+	{
+		auto beginptr{imp.begin_ptr};
+		auto currptr{imp.curr_ptr};
+		size_type sz{static_cast<size_type>(currptr - beginptr)};
+		if (sz < n)
+		{
+			this->reserve(n);
+			::fast_io::freestanding::uninitialized_default_construct(imp.curr_ptr, imp.begin_ptr + n);
+			imp.curr_ptr = imp.begin_ptr + n;
+		}
+		else if (n < sz)
+		{
+			if constexpr (!::std::is_trivially_destructible_v<value_type>)
+			{
+				::std::destroy(imp.begin_ptr + n, imp.curr_ptr);
+			}
+			imp.curr_ptr = imp.begin_ptr + n;
+		}
+	}
+
+	inline constexpr void resize(size_type n, const_reference val) noexcept(::std::is_nothrow_copy_constructible_v<value_type>)
+	{
+		auto beginptr{imp.begin_ptr};
+		auto currptr{imp.curr_ptr};
+		size_type sz{static_cast<size_type>(currptr - beginptr)};
+		if (sz < n)
+		{
+			this->reserve(n);
+			::fast_io::freestanding::uninitialized_fill(imp.curr_ptr, imp.begin_ptr + n, val);
+			imp.curr_ptr = imp.begin_ptr + n;
+		}
+		else if (n < sz)
+		{
+			if constexpr (!::std::is_trivially_destructible_v<value_type>)
+			{
+				::std::destroy(imp.begin_ptr + n, imp.curr_ptr);
+			}
+			imp.curr_ptr = imp.begin_ptr + n;
+		}
+	}
+
+	inline constexpr void assign(size_type n, const_reference val) noexcept(::std::is_nothrow_copy_constructible_v<value_type>)
+	{
+		this->clear();
+		this->reserve(n);
+		::fast_io::freestanding::uninitialized_fill(imp.begin_ptr, imp.begin_ptr + n, val);
+		imp.curr_ptr = imp.begin_ptr + n;
+	}
+
+	inline constexpr void swap(vector &other) noexcept
+	{
+		::std::swap(imp, other.imp);
+	}
 };
 
 template <typename T, typename allocator1, typename allocator2>
@@ -1064,12 +1126,12 @@ inline constexpr bool operator==(vector<T, allocator1> const &lhs, vector<T, all
 	return ::std::equal(lhs.imp.begin_ptr, lhs.imp.curr_ptr, rhs.imp.begin_ptr, rhs.imp.curr_ptr);
 }
 
-#if __cpp_lib_three_way_comparison >= 201907L
+#if __cpp_impl_three_way_comparison >= 201907L
 template <typename T, typename allocator1, typename allocator2>
 	requires ::std::three_way_comparable<T>
 inline constexpr auto operator<=>(vector<T, allocator1> const &lhs, vector<T, allocator2> const &rhs) noexcept
 {
-	return ::std::lexicographical_compare_three_way(lhs.imp.begin_ptr, lhs.imp.curr_ptr, rhs.imp.begin_ptr, rhs.imp.curr_ptr, ::std::compare_three_way{});
+	return ::fast_io::freestanding::lexicographical_compare_three_way(lhs.imp.begin_ptr, lhs.imp.curr_ptr, rhs.imp.begin_ptr, rhs.imp.curr_ptr, ::std::compare_three_way{});
 }
 #endif
 

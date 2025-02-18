@@ -1,7 +1,5 @@
 ﻿#pragma once
 
-#include "nt_preliminary_definition.h"
-
 namespace fast_io::win32::nt
 {
 
@@ -872,9 +870,9 @@ struct reparse_data_buffer
 	::std::uint_least32_t ReparseTag;
 	::std::uint_least16_t ReparseDataLength;
 	::std::uint_least16_t Reserved;
-	union
+	union BuffersU
 	{
-		struct
+		struct SymbolicLinkReparseBufferT
 		{
 			::std::uint_least16_t SubstituteNameOffset;
 			::std::uint_least16_t SubstituteNameLength;
@@ -883,7 +881,7 @@ struct reparse_data_buffer
 			::std::uint_least32_t Flags;
 			char16_t PathBuffer[1];
 		} SymbolicLinkReparseBuffer;
-		struct
+		struct MountPointReparseBufferT
 		{
 			::std::uint_least16_t SubstituteNameOffset;
 			::std::uint_least16_t SubstituteNameLength;
@@ -891,11 +889,11 @@ struct reparse_data_buffer
 			::std::uint_least16_t PrintNameLength;
 			char16_t PathBuffer[1];
 		} MountPointReparseBuffer;
-		struct
+		struct GenericReparseBufferT
 		{
 			::std::uint_least8_t DataBuffer[1];
 		} GenericReparseBuffer;
-	};
+	} u;
 };
 
 struct file_disposition_information
@@ -911,7 +909,7 @@ struct kernel_user_times
 	::std::int_least64_t UserTime;
 };
 
-enum class thread_information_class
+enum class thread_information_class : ::std::uint_least32_t
 {
 	ThreadBasicInformation,
 	ThreadTimes,
@@ -1234,7 +1232,7 @@ struct cs_port_context
 struct alpc_message
 {
 	port_message PortHeader;
-	::std::uint_least8_t PortMessage[1000]; // Hard limit for this is 65488. An Error is thrown if AlpcMaxAllowedMessageLength() is exceeded
+	::std::uint_least8_t PortMessage[1];
 };
 
 namespace details
@@ -1276,6 +1274,18 @@ struct kalpc_security_data
 	void *OwningProcess;
 	void *OwnerPort;
 	security_client_context DynamicSecurity;
+};
+
+struct mounter_target_name
+{
+	::std::uint_least16_t DeviceNameLength;
+	char16_t DeviceName[1];
+};
+
+struct mountmgr_volume_paths
+{
+	::std::uint_least32_t MultiSzLength;
+	char16_t MultiSz[1];
 };
 
 } // namespace fast_io::win32::nt

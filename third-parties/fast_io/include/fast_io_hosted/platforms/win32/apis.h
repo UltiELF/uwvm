@@ -3337,7 +3337,7 @@ __declspec(dllimport)
 #if (__has_cpp_attribute(__gnu__::__stdcall__) && !defined(__WINE__))
 [[__gnu__::__stdcall__]]
 #endif
-extern void*
+extern void *
 #if (!__has_cpp_attribute(__gnu__::__stdcall__) && !defined(__WINE__)) && defined(_MSC_VER)
 	__stdcall
 #endif
@@ -3493,7 +3493,7 @@ __declspec(dllimport)
 #if (__has_cpp_attribute(__gnu__::__stdcall__) && !defined(__WINE__))
 [[__gnu__::__stdcall__]]
 #endif
-extern void*
+extern void *
 #if (!__has_cpp_attribute(__gnu__::__stdcall__) && !defined(__WINE__)) && defined(_MSC_VER)
 	__stdcall
 #endif
@@ -3549,7 +3549,7 @@ extern int
 #if (!__has_cpp_attribute(__gnu__::__stdcall__) && !defined(__WINE__)) && defined(_MSC_VER)
 	__stdcall
 #endif
-	DeleteFileA(char const*) noexcept
+	DeleteFileA(char const *) noexcept
 #if defined(__clang__) || defined(__GNUC__)
 #if SIZE_MAX <= UINT_LEAST32_MAX && (defined(__x86__) || defined(_M_IX86) || defined(__i386__))
 #if !defined(__clang__)
@@ -3627,7 +3627,7 @@ extern int
 #if (!__has_cpp_attribute(__gnu__::__stdcall__) && !defined(__WINE__)) && defined(_MSC_VER)
 	__stdcall
 #endif
-	CreateDirectoryW(char16_t const *, security_attributes*) noexcept
+	CreateDirectoryW(char16_t const *, security_attributes *) noexcept
 #if defined(__clang__) || defined(__GNUC__)
 #if SIZE_MAX <= UINT_LEAST32_MAX && (defined(__x86__) || defined(_M_IX86) || defined(__i386__))
 #if !defined(__clang__)
@@ -3887,7 +3887,7 @@ extern int
 #if (!__has_cpp_attribute(__gnu__::__stdcall__) && !defined(__WINE__)) && defined(_MSC_VER)
 	__stdcall
 #endif
-	TerminateProcess(void*, ::std::uint_least32_t) noexcept
+	TerminateProcess(void *, ::std::uint_least32_t) noexcept
 #if defined(__clang__) || defined(__GNUC__)
 #if SIZE_MAX <= UINT_LEAST32_MAX && (defined(__x86__) || defined(_M_IX86) || defined(__i386__))
 #if !defined(__clang__)
@@ -3897,6 +3897,190 @@ extern int
 #endif
 #else
 	__asm__("TerminateProcess")
+#endif
+#endif
+		;
+
+#if defined(_MSC_VER) && !defined(__clang__)
+__declspec(dllimport)
+#elif (__has_cpp_attribute(__gnu__::__dllimport__) && !defined(__WINE__))
+[[__gnu__::__dllimport__]]
+#endif
+#if (__has_cpp_attribute(__gnu__::__stdcall__) && !defined(__WINE__))
+[[__gnu__::__stdcall__]]
+#endif
+extern ::std::uint_least32_t
+#if (!__has_cpp_attribute(__gnu__::__stdcall__) && !defined(__WINE__)) && defined(_MSC_VER)
+	__stdcall
+#endif
+	GetFinalPathNameByHandleW(void *, char16_t *, ::std::uint_least32_t, ::std::uint_least32_t) noexcept
+#if defined(__clang__) || defined(__GNUC__)
+#if SIZE_MAX <= UINT_LEAST32_MAX && (defined(__x86__) || defined(_M_IX86) || defined(__i386__))
+#if !defined(__clang__)
+	__asm__("GetFinalPathNameByHandleW@16")
+#else
+	__asm__("_GetFinalPathNameByHandleW@16")
+#endif
+#else
+	__asm__("GetFinalPathNameByHandleW")
+#endif
+#endif
+		;
+
+#if defined(_MSC_VER) && !defined(__clang__)
+__declspec(dllimport)
+#elif (__has_cpp_attribute(__gnu__::__dllimport__) && !defined(__WINE__))
+[[__gnu__::__dllimport__]]
+#endif
+#if (__has_cpp_attribute(__gnu__::__stdcall__) && !defined(__WINE__))
+[[__gnu__::__stdcall__]]
+#endif
+extern ::std::uint_least32_t
+#if (!__has_cpp_attribute(__gnu__::__stdcall__) && !defined(__WINE__)) && defined(_MSC_VER)
+	__stdcall
+#endif
+	GetFinalPathNameByHandleA(void *, char *, ::std::uint_least32_t, ::std::uint_least32_t) noexcept
+#if defined(__clang__) || defined(__GNUC__)
+#if SIZE_MAX <= UINT_LEAST32_MAX && (defined(__x86__) || defined(_M_IX86) || defined(__i386__))
+#if !defined(__clang__)
+	__asm__("GetFinalPathNameByHandleA@16")
+#else
+	__asm__("_GetFinalPathNameByHandleA@16")
+#endif
+#else
+	__asm__("GetFinalPathNameByHandleA")
+#endif
+#endif
+		;
+
+#if defined(_MSC_VER) && !defined(__clang__)
+__declspec(dllimport)
+#elif (__has_cpp_attribute(__gnu__::__dllimport__) && !defined(__WINE__))
+[[__gnu__::__dllimport__]]
+#endif
+#if (__has_cpp_attribute(__gnu__::__stdcall__) && !defined(__WINE__))
+[[__gnu__::__stdcall__]]
+#endif
+extern ::std::uint_least32_t
+#if (!__has_cpp_attribute(__gnu__::__stdcall__) && !defined(__WINE__)) && defined(_MSC_VER)
+	__stdcall
+#endif
+	GetProcessId(void *) noexcept
+#if defined(__clang__) || defined(__GNUC__)
+#if SIZE_MAX <= UINT_LEAST32_MAX && (defined(__x86__) || defined(_M_IX86) || defined(__i386__))
+#if !defined(__clang__)
+	__asm__("GetProcessId@4")
+#else
+	__asm__("_GetProcessId@4")
+#endif
+#else
+	__asm__("GetProcessId")
+#endif
+#endif
+		;
+
+#if defined(_MSC_VER) && !defined(__clang__)
+__declspec(dllimport)
+#elif (__has_cpp_attribute(__gnu__::__dllimport__) && !defined(__WINE__))
+[[__gnu__::__dllimport__]]
+#endif
+#if (__has_cpp_attribute(__gnu__::__stdcall__) && !defined(__WINE__))
+[[__gnu__::__stdcall__]]
+#endif
+extern void *
+#if (!__has_cpp_attribute(__gnu__::__stdcall__) && !defined(__WINE__)) && defined(_MSC_VER)
+	__stdcall
+#endif
+	CreateNamedPipeW(char16_t const *, ::std::uint_least32_t, ::std::uint_least32_t, ::std::uint_least32_t,
+					 ::std::uint_least32_t, ::std::uint_least32_t, ::std::uint_least32_t, security_attributes *) noexcept
+#if defined(__clang__) || defined(__GNUC__)
+#if SIZE_MAX <= UINT_LEAST32_MAX && (defined(__x86__) || defined(_M_IX86) || defined(__i386__))
+#if !defined(__clang__)
+	__asm__("CreateNamedPipeW@32")
+#else
+	__asm__("_CreateNamedPipeW@32")
+#endif
+#else
+	__asm__("CreateNamedPipeW")
+#endif
+#endif
+		;
+
+#if defined(_MSC_VER) && !defined(__clang__)
+__declspec(dllimport)
+#elif (__has_cpp_attribute(__gnu__::__dllimport__) && !defined(__WINE__))
+[[__gnu__::__dllimport__]]
+#endif
+#if (__has_cpp_attribute(__gnu__::__stdcall__) && !defined(__WINE__))
+[[__gnu__::__stdcall__]]
+#endif
+extern void *
+#if (!__has_cpp_attribute(__gnu__::__stdcall__) && !defined(__WINE__)) && defined(_MSC_VER)
+	__stdcall
+#endif
+	CreateNamedPipeA(char const *, ::std::uint_least32_t, ::std::uint_least32_t, ::std::uint_least32_t,
+					 ::std::uint_least32_t, ::std::uint_least32_t, ::std::uint_least32_t, security_attributes *) noexcept
+#if defined(__clang__) || defined(__GNUC__)
+#if SIZE_MAX <= UINT_LEAST32_MAX && (defined(__x86__) || defined(_M_IX86) || defined(__i386__))
+#if !defined(__clang__)
+	__asm__("CreateNamedPipeA@32")
+#else
+	__asm__("_CreateNamedPipeA@32")
+#endif
+#else
+	__asm__("CreateNamedPipeA")
+#endif
+#endif
+		;
+
+#if defined(_MSC_VER) && !defined(__clang__)
+__declspec(dllimport)
+#elif (__has_cpp_attribute(__gnu__::__dllimport__) && !defined(__WINE__))
+[[__gnu__::__dllimport__]]
+#endif
+#if (__has_cpp_attribute(__gnu__::__stdcall__) && !defined(__WINE__))
+[[__gnu__::__stdcall__]]
+#endif
+extern int
+#if (!__has_cpp_attribute(__gnu__::__stdcall__) && !defined(__WINE__)) && defined(_MSC_VER)
+	__stdcall
+#endif
+	ConnectNamedPipe(void *, overlapped *) noexcept
+#if defined(__clang__) || defined(__GNUC__)
+#if SIZE_MAX <= UINT_LEAST32_MAX && (defined(__x86__) || defined(_M_IX86) || defined(__i386__))
+#if !defined(__clang__)
+	__asm__("ConnectNamedPipe@8")
+#else
+	__asm__("_ConnectNamedPipe@8")
+#endif
+#else
+	__asm__("ConnectNamedPipe")
+#endif
+#endif
+		;
+
+#if defined(_MSC_VER) && !defined(__clang__)
+__declspec(dllimport)
+#elif (__has_cpp_attribute(__gnu__::__dllimport__) && !defined(__WINE__))
+[[__gnu__::__dllimport__]]
+#endif
+#if (__has_cpp_attribute(__gnu__::__stdcall__) && !defined(__WINE__))
+[[__gnu__::__stdcall__]]
+#endif
+extern int
+#if (!__has_cpp_attribute(__gnu__::__stdcall__) && !defined(__WINE__)) && defined(_MSC_VER)
+	__stdcall
+#endif
+	DisconnectNamedPipe(void *) noexcept
+#if defined(__clang__) || defined(__GNUC__)
+#if SIZE_MAX <= UINT_LEAST32_MAX && (defined(__x86__) || defined(_M_IX86) || defined(__i386__))
+#if !defined(__clang__)
+	__asm__("DisconnectNamedPipe@4")
+#else
+	__asm__("_DisconnectNamedPipe@4")
+#endif
+#else
+	__asm__("DisconnectNamedPipe")
 #endif
 #endif
 		;

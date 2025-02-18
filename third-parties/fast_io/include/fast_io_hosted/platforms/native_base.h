@@ -1,6 +1,7 @@
 ﻿#pragma once
 
 #include "util.h"
+#include "vaild_filename_check.h"
 #if defined(_WIN32) || defined(__CYGWIN__)
 #include "win32/impl.h"
 namespace fast_io
@@ -49,14 +50,16 @@ template <::std::integral ch_type>
 using basic_native_io_observer = basic_win32_io_observer<ch_type>;
 template <::std::integral ch_type>
 using basic_native_file = basic_win32_file<ch_type>;
+template <::std::integral ch_type>
+using basic_native_pipe = basic_win32_pipe<ch_type>;
 #else
 template <::std::integral ch_type>
 using basic_native_io_observer = basic_nt_io_observer<ch_type>;
 template <::std::integral ch_type>
 using basic_native_file = basic_nt_file<ch_type>;
-#endif
 template <::std::integral ch_type>
-using basic_native_pipe = basic_win32_pipe<ch_type>;
+using basic_native_pipe = basic_nt_pipe<ch_type>;
+#endif
 using native_process_io = win32_process_io;
 
 #else

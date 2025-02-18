@@ -855,8 +855,6 @@ inline ::fast_io::intfpos_t io_stream_seek_bytes_define(basic_c_family_io_observ
 	return details::my_c_io_seek_impl<family>(cfhd.fp, offset, s);
 }
 
-#if __cpp_lib_three_way_comparison >= 201907L
-
 template <c_family family, ::std::integral ch_type>
 inline constexpr bool operator==(basic_c_family_io_observer<family, ch_type> a,
 								 basic_c_family_io_observer<family, ch_type> b) noexcept
@@ -864,6 +862,7 @@ inline constexpr bool operator==(basic_c_family_io_observer<family, ch_type> a,
 	return a.fp == b.fp;
 }
 
+#if __cpp_impl_three_way_comparison >= 201907L
 template <c_family family, ::std::integral ch_type>
 inline constexpr auto operator<=>(basic_c_family_io_observer<family, ch_type> a,
 								  basic_c_family_io_observer<family, ch_type> b) noexcept
@@ -959,7 +958,7 @@ public:
 	}
 	inline basic_c_family_file &operator=(basic_c_family_file &&other) noexcept
 	{
-		if (__builtin_addressof(other) != this)
+		if (__builtin_addressof(other) == this) [[unlikely]]
 		{
 			return *this;
 		}
@@ -1012,11 +1011,21 @@ public:
 		}
 	}
 #if !defined(__AVR__)
+	template <::fast_io::constructible_to_os_c_str T>
+	inline basic_c_family_file(T const &file, open_mode om, perms pm = static_cast<perms>(436))
+		: basic_c_family_file(basic_posix_file<char_type>(file, om, pm), om)
+	{
+	}
 	template <posix_family pfamily>
 	inline basic_c_family_file(basic_posix_family_file<pfamily, char_type> &&phd, open_mode om)
 		: basic_c_family_io_observer<family, ch_type>{::fast_io::details::my_c_file_open_impl(phd.fd, om)}
 	{
 		phd.fd = -1;
+	}
+	template <posix_family pfamily>
+	inline explicit constexpr basic_c_family_file(io_construct_t, basic_posix_family_io_observer<pfamily, ch_type> piob, open_mode om) noexcept
+		: basic_c_family_io_observer<family, char_type>{::fast_io::details::my_c_file_open_impl(piob.fd, om)}
+	{
 	}
 #if (defined(_WIN32) && !defined(__WINE__) && !defined(__BIONIC__)) || defined(__CYGWIN__)
 	// windows specific. open posix file from win32 io handle
@@ -1030,26 +1039,35 @@ public:
 		: basic_c_family_file(basic_posix_file<char_type>(::std::move(nt_handle), om), om)
 	{
 	}
-#endif
-	inline basic_c_family_file(native_fs_dirent ent, open_mode om, perms pm = static_cast<perms>(436))
+	inline basic_c_family_file(nt_fs_dirent ent, open_mode om, perms pm = static_cast<perms>(436))
+		: basic_c_family_file(basic_posix_file<char_type>(ent, om, pm), om)
+	{
+	}
+	inline basic_c_family_file(win32_9xa_fs_dirent ent, open_mode om, perms pm = static_cast<perms>(436))
 		: basic_c_family_file(basic_posix_file<char_type>(ent, om, pm), om)
 	{
 	}
 	template <::fast_io::constructible_to_os_c_str T>
-	inline basic_c_family_file(T const &file, open_mode om, perms pm = static_cast<perms>(436))
-		: basic_c_family_file(basic_posix_file<char_type>(file, om, pm), om)
-	{
-	}
-	template <::fast_io::constructible_to_os_c_str T>
-	inline basic_c_family_file(native_at_entry nate, T const &file, open_mode om, perms pm = static_cast<perms>(436))
+	inline basic_c_family_file(nt_at_entry nate, T const &file, open_mode om, perms pm = static_cast<perms>(436))
 		: basic_c_family_file(basic_posix_file<char_type>(nate, file, om, pm), om)
 	{
 	}
-	template <posix_family pfamily>
-	inline explicit constexpr basic_c_family_file(io_construct_t, basic_posix_family_io_observer<pfamily, ch_type> piob, open_mode om) noexcept
-		: basic_c_family_io_observer<family, char_type>{::fast_io::details::my_c_file_open_impl(piob.fd, om)}
+	template <::fast_io::constructible_to_os_c_str T>
+	inline basic_c_family_file(win32_9xa_at_entry nate, T const &file, open_mode om, perms pm = static_cast<perms>(436))
+		: basic_c_family_file(basic_posix_file<char_type>(nate, file, om, pm), om)
 	{
 	}
+#else
+	inline basic_c_family_file(posix_fs_dirent ent, open_mode om, perms pm = static_cast<perms>(436))
+		: basic_c_family_file(basic_posix_file<char_type>(ent, om, pm), om)
+	{
+	}
+	template <::fast_io::constructible_to_os_c_str T>
+	inline basic_c_family_file(posix_at_entry nate, T const &file, open_mode om, perms pm = static_cast<perms>(436))
+		: basic_c_family_file(basic_posix_file<char_type>(nate, file, om, pm), om)
+	{
+	}
+#endif
 #endif
 	inline basic_c_family_file(io_temp_t)
 		: basic_c_family_io_observer<family, ch_type>{::fast_io::details::my_c_open_tmp_file()}
@@ -1093,7 +1111,6 @@ using c_file_factory_unlocked = c_family_file_factory<c_family::native_unlocked>
 
 namespace freestanding
 {
-
 template <c_family fm, ::std::integral char_type>
 struct is_trivially_relocatable<basic_c_family_file<fm, char_type>>
 {
