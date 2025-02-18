@@ -160,7 +160,7 @@ function defopt()
 	elseif not is_plat("wasm-wasi", "wasm-wasip1", "wasm-wasip2") then 
 		if use_llvm_toolchain then	
 			set_toolchains("clang")
-			add_ldflags("-fuse-ld=lld")
+			add_ldflags("-fuse-ld=lld", {force = true})
 		end
 	end
 
@@ -294,7 +294,7 @@ function defopt()
 		--add_ldflags("-static-libgcc")
 		local static_link = get_config("static")
 		if static_link then	
-			add_ldflags("-static")
+			add_ldflags("-static", {force = true})
 		end
 
 		add_syslinks("ntdll")
@@ -342,7 +342,7 @@ function defopt()
 			add_cxflags("-fno-ident")
 		end
 		
-		if is_mode("debug") and is_plat("linux") then
+		if is_mode("debug") then
 			--set_policy("build.sanitizer.address", true)
 			--set_policy("build.sanitizer.leak", true)
 		end
@@ -361,7 +361,7 @@ function defopt()
 		--add_ldflags("-static-libgcc")
 		local static_link = get_config("static")
 		if static_link then	
-			add_ldflags("-static")
+			add_ldflags("-static", {force = true})
 		end
 
 		if is_arch("x86_64") then
@@ -373,6 +373,8 @@ function defopt()
 		end
 
 		add_syslinks("dl")
+		add_syslinks("c++abi")
+		--add_syslinks("unwind")
 
 		add_cxflags("-pthread",{force = true})
 		add_ldflags("-pthread",{force = true})
@@ -401,7 +403,7 @@ function defopt()
 		--add_ldflags("-static-libgcc")
 		local static_link = get_config("static")
 		if static_link then	
-			add_ldflags("-static")
+			add_ldflags("-static", {force = true})
 		end
 
 	elseif is_plat("unix", "bsd", "freebsd", "dragonflybsd", "netbsd", "openbsd", "sun") then
@@ -428,7 +430,7 @@ function defopt()
 		--add_ldflags("-static-libgcc")
 		local static_link = get_config("static")
 		if static_link then	
-			add_ldflags("-static")
+			add_ldflags("-static", {force = true})
 		end
 
 		add_cxflags("-pthread",{force = true})
@@ -458,8 +460,11 @@ function defopt()
 		--add_ldflags("-static-libgcc")
 		local static_link = get_config("static")
 		if static_link then	
-			add_ldflags("-static")
+			add_ldflags("-static", {force = true})
 		end
+
+		add_syslinks("c++abi")
+		--add_syslinks("unwind")
 
 		add_cxflags("-pthread",{force = true})
 		add_ldflags("-pthread",{force = true})
@@ -490,11 +495,11 @@ function defopt()
 		--add_ldflags("-static-libgcc")
 		local static_link = get_config("static")
 		if static_link then	
-			add_ldflags("-static")
+			add_ldflags("-static", {force = true})
 		end
 
 		set_toolchains("clang")
-		add_ldflags("-fuse-ld=lld")
+		add_ldflags("-fuse-ld=lld", {force = true})
 		if is_arch("wasm32") then
 			if is_plat("wasm-wasi") then
 				add_cxflags("--target=wasm32-wasi", {force = true})
@@ -573,7 +578,7 @@ function defopt()
 		--add_ldflags("-static-libgcc")
 		local static_link = get_config("static")
 		if static_link then	
-			add_ldflags("-static")
+			add_ldflags("-static", {force = true})
 		end
 
 	end
