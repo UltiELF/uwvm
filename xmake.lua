@@ -272,7 +272,7 @@ function defopt()
 		end
 
 		add_cxxflags("-fno-rtti")
-		add_cxflags("-fno-unwind-tables")
+		add_cxxflags("-fno-unwind-tables")
 		if disable_cpp_exceptions then
 			add_cxflags("-fno-asynchronous-unwind-tables")
 		end
@@ -334,7 +334,7 @@ function defopt()
 
 	elseif is_plat("linux") then
 		add_cxxflags("-fno-rtti")
-		add_cxflags("-fno-unwind-tables")
+		add_cxxflags("-fno-unwind-tables")
 		if disable_cpp_exceptions then
 			add_cxflags("-fno-asynchronous-unwind-tables")
 		end
@@ -381,7 +381,7 @@ function defopt()
 
 	elseif is_plat("msdosdjgpp") then
 		add_cxxflags("-fno-rtti")
-		add_cxflags("-fno-unwind-tables")
+		add_cxxflags("-fno-unwind-tables")
 		if disable_cpp_exceptions then
 			add_cxflags("-fno-asynchronous-unwind-tables")
 		end
@@ -408,7 +408,7 @@ function defopt()
 
 	elseif is_plat("unix", "bsd", "freebsd", "dragonflybsd", "netbsd", "openbsd", "sun") then
 		add_cxxflags("-fno-rtti")
-		add_cxflags("-fno-unwind-tables")
+		add_cxxflags("-fno-unwind-tables")
 		if disable_cpp_exceptions then
 			add_cxflags("-fno-asynchronous-unwind-tables")
 		end
@@ -438,7 +438,7 @@ function defopt()
 
 	elseif is_plat("macosx", "iphoneos", "watchos") then -- unknown-apple-darwin
 		add_cxxflags("-fno-rtti")
-		add_cxflags("-fno-unwind-tables")
+		add_cxxflags("-fno-unwind-tables")
 		if disable_cpp_exceptions then
 			add_cxflags("-fno-asynchronous-unwind-tables")
 		end
@@ -473,7 +473,7 @@ function defopt()
 		set_extension(".wasm")
 
 		add_cxxflags("-fno-rtti")
-		add_cxflags("-fno-unwind-tables")
+		add_cxxflags("-fno-unwind-tables")
 		if disable_cpp_exceptions then
 			add_cxflags("-fno-asynchronous-unwind-tables")
 		end
@@ -556,7 +556,7 @@ function defopt()
 
 	elseif is_plat("cross") then
 		add_cxxflags("-fno-rtti")
-		add_cxflags("-fno-unwind-tables")
+		add_cxxflags("-fno-unwind-tables")
 		if disable_cpp_exceptions then
 			add_cxflags("-fno-asynchronous-unwind-tables")
 		end
